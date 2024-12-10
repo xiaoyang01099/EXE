@@ -15,25 +15,23 @@ import net.minecraft.world.item.UseAnim;
 public class ModelArmorNebula extends HumanoidModel<LivingEntity> {
     private final EquipmentSlot slot;
     private final ModelPart head;
-    private final ModelPart chest;
+    private final ModelPart body;
     private final ModelPart lArm;
     private final ModelPart rArm;
     private final ModelPart lLeg;
     private final ModelPart rLeg;
-    private final ModelPart lBoot;
-    private final ModelPart rBoot;
+    private final ModelPart hat;
 
     public ModelArmorNebula(ModelPart root, EquipmentSlot slot) {
         super(root);
         this.slot = slot;
         this.head = root.getChild("head");
-        this.chest = root.getChild("chest");
-        this.lArm = root.getChild("lArm");
-        this.rArm = root.getChild("rArm");
-        this.lLeg = root.getChild("lLeg");
-        this.rLeg = root.getChild("rLeg");
-        this.lBoot = root.getChild("lBoot");
-        this.rBoot = root.getChild("rBoot");
+        this.body = root.getChild("body");
+        this.lArm = root.getChild("left_arm");
+        this.rArm = root.getChild("right_arm");
+        this.lLeg = root.getChild("left_leg");
+        this.rLeg = root.getChild("right_leg");
+        this.hat = root.getChild("hat");
     }
 
     public static LayerDefinition createArmorLayer() {
@@ -77,13 +75,8 @@ public class ModelArmorNebula extends HumanoidModel<LivingEntity> {
                 , PartPose.offset(0.0F, 12.0F, 0.0F));
 
         // 左靴
-        partdefinition.addOrReplaceChild("lBoot", CubeListBuilder.create()
+        partdefinition.addOrReplaceChild("hat", CubeListBuilder.create()
                         .texOffs(18, 56).addBox(0.0F, 9.0F, -2.8F, 4, 3, 5, new CubeDeformation(0.2F))
-                , PartPose.offset(0.0F, 12.0F, 0.0F));
-
-        // 右靴
-        partdefinition.addOrReplaceChild("rBoot", CubeListBuilder.create()
-                        .texOffs(44, 53).addBox(-4.0F, 9.0F, -2.8F, 4, 3, 5, new CubeDeformation(0.2F))
                 , PartPose.offset(0.0F, 12.0F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 64, 128);
@@ -102,13 +95,12 @@ public class ModelArmorNebula extends HumanoidModel<LivingEntity> {
 
         //基于插槽的自定义渲染逻辑
         this.head.visible = slot == EquipmentSlot.HEAD;
-        this.chest.visible = slot == EquipmentSlot.CHEST;
+        this.body.visible = slot == EquipmentSlot.CHEST;
         this.lArm.visible = slot == EquipmentSlot.CHEST;
         this.rArm.visible = slot == EquipmentSlot.CHEST;
         this.lLeg.visible = slot == EquipmentSlot.LEGS;
         this.rLeg.visible = slot == EquipmentSlot.LEGS;
-        this.lBoot.visible = slot == EquipmentSlot.FEET;
-        this.rBoot.visible = slot == EquipmentSlot.FEET;
+        this.hat.visible = slot == EquipmentSlot.FEET;
 
         // 针对特定场景的姿势调整
         if (entity instanceof Player player) {
