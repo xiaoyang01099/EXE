@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "ex_enigmaticlegacy:platinum_ore",
+    "ex_enigmaticlegacy:iridium_ore",
+    "ex_enigmaticlegacy:nickel_ore",
+    "ex_enigmaticlegacy:end_ore"
+  ]
+}

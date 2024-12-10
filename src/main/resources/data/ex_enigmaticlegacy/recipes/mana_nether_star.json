@@ -1,0 +1,10 @@
+{
+  "type": "botania:mana_infusion",
+  "input": {
+    "item": "minecraft:nether_star"
+  },
+  "output": {
+    "item": "ex_enigmaticlegacy:mana_nether_star"
+  },
+  "mana": 250000
+}

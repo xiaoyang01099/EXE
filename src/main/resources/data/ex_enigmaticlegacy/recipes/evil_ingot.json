@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ex_enigmaticlegacy:evilblock"
+    }
+  ],
+  "result": {
+    "item": "enigmaticlegacy:evil_ingot",
+    "count": 9
+  }
+}

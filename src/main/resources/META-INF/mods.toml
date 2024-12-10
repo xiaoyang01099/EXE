@@ -1,0 +1,41 @@
+modLoader="javafml"
+loaderVersion="[40,)"
+license="null"
+
+[[mods]]
+modId="ex_enigmaticlegacy"
+version="1.18.2-1.0.0"
+displayName="神秘遗物EX"
+credits="xiaoyang010"
+displayURL="https://space.bilibili.com/176266911"
+authors="xiaoyang010"
+logoFile="logo.png"
+description = '''正在努力变强，我会加油哒！'''
+
+[[dependencies.ex_enigmaticlegacy]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.18.2]"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.ex_enigmaticlegacy]]
+    modId="curios"
+    mandatory=true
+    versionRange="[1.18.2-5.0.9.2,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.ex_enigmaticlegacy]]
+    modId="botania"
+    mandatory=true
+    versionRange="[1.18.2-435,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.ex_enigmaticlegacy]]
+    modId="enigmaticlegacy"
+    mandatory=true
+    versionRange="[1.18.2-2.18.0,)"
+    ordering="AFTER"
+    side="BOTH"

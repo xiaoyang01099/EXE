@@ -1,0 +1,80 @@
+{
+  "display": {
+    "background": "minecraft:textures/block/stone.png",
+    "icon": {
+      "item": "ex_enigmaticlegacy:prismaticradianceingot"
+    },
+    "title": {
+      "translate": "Sovereign Pinnacle",
+      "color": "gold"
+    },
+    "description": {
+      "text": "",
+      "extra": [
+        {
+          "text": "你获得了",
+          "color": "green",
+          "italic": true
+        },
+        {
+          "text": "七",
+          "color": "red",
+          "italic": true
+        },
+        {
+          "text": "彩",
+          "color": "red",
+          "italic": true
+        },
+        {
+          "text": "霞",
+          "color": "red",
+          "italic": true
+        },
+        {
+          "text": "光",
+          "color": "red",
+          "italic": true
+        },
+        {
+          "text": "锭",
+          "color": "blue",
+          "italic": true
+        },
+        {
+          "text": "神将会指引你",
+          "color": "yellow",
+          "italic": true
+        }
+      ]
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "sovereign_pinnacle": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ex_enigmaticlegacy:prismaticradianceingot"
+            ],
+            "count": {
+              "min": 1,
+              "max": 1
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "experience": 100,
+    "recipes": [
+      "ex_enigmaticlegacy:recipe_2"
+    ]
+  }
+}

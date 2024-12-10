@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "ex_enigmaticlegacy:blocks/ores/iridium_ore",
+    "particle": "ex_enigmaticlegacy:blocks/ores/iridium_ore"
+  }
+}

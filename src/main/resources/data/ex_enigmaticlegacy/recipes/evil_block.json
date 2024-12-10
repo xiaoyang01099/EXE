@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NNN",
+    "NNN",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "enigmaticlegacy:evil_ingot"
+    }
+  },
+  "result": {
+    "item": "ex_enigmaticlegacy:evilblock",
+    "count": 1
+  }
+}

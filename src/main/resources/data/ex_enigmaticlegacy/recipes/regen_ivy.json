@@ -1,0 +1,9 @@
+{
+  "type": "ex_enigmaticlegacy:crafting_special_regen_ivy",
+  "conditions": [
+    {
+      "type": "forge:item_exists",
+      "item": "ex_enigmaticlegacy:regen_ivy"
+    }
+  ]
+}

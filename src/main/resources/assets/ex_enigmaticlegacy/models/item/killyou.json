@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/weapons/wo_yao_sha_liao_ni_"
+  }
+}

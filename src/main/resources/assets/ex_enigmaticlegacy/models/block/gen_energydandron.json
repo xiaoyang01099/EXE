@@ -1,0 +1,7 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "ex_enigmaticlegacy:blocks/flowers/flower_gen_energydandron",
+    "particle": "ex_enigmaticlegacy:blocks/flowers/flower_gen_energydandron"
+  }
+}

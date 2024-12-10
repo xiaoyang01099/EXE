@@ -1,0 +1,6 @@
+{
+  "parent": "block/template_glass_pane_noside",
+  "textures": {
+    "pane": "ex_enigmaticlegacy:blocks/portal/another_portal"
+  }
+}

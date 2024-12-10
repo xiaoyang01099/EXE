@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.xiaoyang010.ex_enigmaticlegacy.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "refmap": "ex_enigmaticlegacy.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

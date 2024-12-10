@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=z": {
+      "model": "ex_enigmaticlegacy:block/miners_heaven_old_portal_ew"
+    },
+    "axis=x": {
+      "model": "ex_enigmaticlegacy:block/miners_heaven_old_portal_ns"
+    }
+  }
+}

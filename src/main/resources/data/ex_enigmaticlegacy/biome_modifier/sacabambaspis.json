@@ -1,0 +1,12 @@
+
+{
+  "type": "forge:add_spawns",
+  "biomes": [
+  ],
+  "spawners": {
+    "type": "ex_enigmaticlegacy:sacabambaspis",
+    "weight": 5,
+    "minCount": 1,
+    "maxCount": 3
+  }
+}

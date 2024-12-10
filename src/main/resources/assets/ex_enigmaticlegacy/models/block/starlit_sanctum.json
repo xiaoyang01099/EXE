@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ex_enigmaticlegacy:blocks/crafting/starlit_bottom",
+    "north": "ex_enigmaticlegacy:blocks/crafting/starlit_side",
+    "south": "ex_enigmaticlegacy:blocks/crafting/starlit_front",
+    "east": "ex_enigmaticlegacy:blocks/crafting/starlit_side",
+    "west": "ex_enigmaticlegacy:blocks/crafting/starlit_front",
+    "up": "ex_enigmaticlegacy:blocks/crafting/starlit_top",
+    "down": "ex_enigmaticlegacy:blocks/crafting/starlit_bottom"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ex_enigmaticlegacy:prismaticradianceblock"
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:prismaticradianceingot",
+    "count": 9
+  }
+}

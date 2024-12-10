@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "III",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "ex_enigmaticlegacy:iridium_ingot"
+    }
+  },
+  "result": {
+    "item": "ex_enigmaticlegacy:iridium_block",
+    "count": 1
+  }
+}

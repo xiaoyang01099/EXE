@@ -1,0 +1,74 @@
+{
+  "nothing": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:du_bie_xiang_huo_zhao_",
+        "stream": false
+      }
+    ]
+  },
+  "what": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:shi_yao_ren_a_shi_yao_ren_a_",
+        "stream": false
+      }
+    ]
+  },
+  "aaaaa": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:wo_bang_bu_zhu_liao_",
+        "stream": false
+      }
+    ]
+  },
+  "kill": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:wo_yao_sha_liao_ni_",
+        "stream": false
+      }
+    ]
+  },
+  "scray": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:zhe_tai_kong_bu_liao_",
+        "stream": false
+      }
+    ]
+  },
+  "meow": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:meow",
+        "stream": false
+      }
+    ]
+  },
+  "cute": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:cute",
+        "stream": false
+      }
+    ]
+  },
+  "hunt_down": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:hunt_down",
+        "stream": false
+      }
+    ]
+  },
+  "flowey_laugh": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:flowey_laugh",
+        "stream": false
+      }
+    ]
+  }
+}

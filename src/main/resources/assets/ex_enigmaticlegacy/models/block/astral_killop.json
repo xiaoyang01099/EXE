@@ -1,0 +1,7 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "ex_enigmaticlegacy:blocks/flowers/astral_killop",
+    "particle": "ex_enigmaticlegacy:blocks/flowers/astral_killop"
+  }
+}
