@@ -1,37 +1,127 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Item.armor;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.xiaoyang010.ex_enigmaticlegacy.api.AdvancedBotanyAPI;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.model.ModelArmorNebula;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmor;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
+import net.xiaoyang010.ex_enigmaticlegacy.api.AdvancedBotanyAPI;
+import vazkii.botania.api.BotaniaAPI;
+import vazkii.botania.api.item.IManaProficiencyArmor;
 import vazkii.botania.api.mana.IManaItem;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.item.equipment.armor.manasteel.ItemManasteelArmor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
-public abstract class NebulaArmor extends ItemManasteelArmor implements IManaItem {
+public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaProficiencyArmor {
     private static final String TAG_MANA = "mana";
     private static final int MAX_MANA = 250000;
     private static ItemStack[] armorSet;
+    protected static final float MAX_SPEED = 0.275F;
+    public static final List<String> playersWithStepup = new ArrayList<>();
+    public static final List<String> playersWithFlight = new ArrayList<>();
 
-    public NebulaArmor(EquipmentSlot slot, Properties props) {
-        super(slot, AdvancedBotanyAPI.nebulaArmorMaterial,
-                        props.tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
-                                .durability(1000)
-                                .rarity(AdvancedBotanyAPI.rarityNebula));
+    private static final Properties NEBULA_ARMOR = new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).durability(1000).rarity(AdvancedBotanyAPI.rarityNebula);
+
+    public NebulaArmor(EquipmentSlot slot) {
+        super(slot, AdvancedBotanyAPI.nebulaArmorMaterial, NEBULA_ARMOR);
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
+
+        if (slot == EquipmentSlot.CHEST) {
+            attributes.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(UUID.randomUUID(), "Nebula Chest modifier",
+                    1.0F - (float) getDamage(stack) / 1000.0F, AttributeModifier.Operation.ADDITION));
+        }else if (slot == EquipmentSlot.HEAD && stack.getItem() == ModArmors.NEBULA_HELMET_REVEAL.get()) {
+            attributes.put(Attributes.MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "Nebula Helm Reveal modifier",
+                    20.0F * (1.0F - (float)getDamage(stack) / 1000.0F), AttributeModifier.Operation.ADDITION));
+        }else if (slot == EquipmentSlot.HEAD && stack.getItem() == ModArmors.NEBULA_HELMET.get()) {
+            attributes.put(Attributes.MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "Nebula Helm modifier",
+                    20.0F * (1.0F - (float)getDamage(stack) / 1000.0F), AttributeModifier.Operation.ADDITION));
+        }
+
+
+        return attributes;
+    }
+
+    public float getEfficiency(ItemStack stack, Player player) {
+        if (this.slot == EquipmentSlot.HEAD) {
+            return 0.3f;
+        }
+        return 0;
+    }
+
+    @Override
+    public void onArmorTick(ItemStack stack, Level level, Player player) {
+        if (!level.isClientSide() && getMana() != getMaxMana() &&
+                ManaItemHandler.instance().requestManaExactForTool(stack, player, 1000, true)) {
+            addMana(1000);
+        }
+
+        ItemStack itemBySlot = player.getItemBySlot(this.slot);
+
+        if (!level.isClientSide || itemBySlot.isEmpty()) return;
+
+        if (this.slot == EquipmentSlot.FEET && itemBySlot.getItem() == ModArmors.NEBULA_BOOTS.get() && player.isSprinting()) {
+            float r = 0.6F + (float)Math.random() * 0.4f;
+            float g = 0.6F + (float)Math.random() * 0.4f;
+            float b = 0.6F + (float)Math.random() * 0.4f;
+
+            for(int i = 0; i < 2; ++i) {
+                BotaniaAPI.instance().sparkleFX(level, player.getX() + (Math.random() - 0.5F), player.getY() - 1.25F + (Math.random() / 4.0F - 0.125F), player.getZ() + (Math.random() - 0.5F),
+                        r, g, b, 0.7F + (float)Math.random() / 2.0F, 25);
+            }
+        }else if (this.slot == EquipmentSlot.HEAD && itemBySlot.getItem() == ModArmors.NEBULA_HELMET.get()) {
+            NebulaArmorHelper.foodToHeal(player);
+            NebulaArmorHelper.dispatchManaExact(stack, player, 2, true);
+        }else if (this.slot == EquipmentSlot.HEAD && itemBySlot.getItem() == ModArmors.NEBULA_HELMET_REVEAL.get()) {
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 40, 4, false, false));
+            if (player.hasEffect(MobEffects.WITHER)) {
+                player.removeEffect(MobEffects.WITHER);
+            }
+            NebulaArmorHelper.foodToHeal(player);
+            NebulaArmorHelper.dispatchManaExact(stack, player, 2, true);
+        }
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.isShiftKeyDown()) {
+            NebulaArmorHelper.setCosmicFace(stack, !NebulaArmorHelper.enableCosmicFace(stack));
+            return InteractionResultHolder.success(stack);
+        }
+        return super.use(level, player, hand);
     }
 
     @Override
@@ -56,46 +146,20 @@ public abstract class NebulaArmor extends ItemManasteelArmor implements IManaIte
         return ModelArmorNebula.createArmorLayer();
     }
 
-    public ItemStack[] getArmorSet() {
-        if (armorSet == null) {
-            armorSet = new ItemStack[]{
-                    new ItemStack(ModArmor.NEBULA_HELMET.get()),
-                    new ItemStack(ModArmor.NEBULA_CHESTPLATE.get()),
-                    new ItemStack(ModArmor.NEBULA_LEGGINGS.get()),
-                    new ItemStack(ModArmor.NEBULA_BOOTS.get())
-            };
-        }
-        return armorSet;
-    }
-
     public boolean hasArmorSetItem(Player player, EquipmentSlot slot) {
         ItemStack stack = player.getItemBySlot(slot);
         if (stack.isEmpty()) {
             return false;
         }
 
-        switch(slot) {
-            case HEAD:
-                return stack.getItem() == ModArmor.NEBULA_HELMET.get() ||
-                        stack.getItem() == ModArmor.NEBULA_HELMET_REVEAL.get();
-            case CHEST:
-                return stack.getItem() == ModArmor.NEBULA_CHESTPLATE.get();
-            case LEGS:
-                return stack.getItem() == ModArmor.NEBULA_LEGGINGS.get();
-            case FEET:
-                return stack.getItem() == ModArmor.NEBULA_BOOTS.get();
-            default:
-                return false;
-        }
-    }
-
-
-    @Override
-    public void onArmorTick(ItemStack stack, Level world, Player player) {
-        if (!world.isClientSide() && getMana() != getMaxMana() &&
-                ManaItemHandler.instance().requestManaExactForTool(stack, player, 1000, true)) {
-            addMana(1000);
-        }
+        return switch (slot) {
+            case HEAD -> stack.getItem() == ModArmors.NEBULA_HELMET.get() ||
+                    stack.getItem() == ModArmors.NEBULA_HELMET_REVEAL.get();
+            case CHEST -> stack.getItem() == ModArmors.NEBULA_CHESTPLATE.get();
+            case LEGS -> stack.getItem() == ModArmors.NEBULA_LEGGINGS.get();
+            case FEET -> stack.getItem() == ModArmors.NEBULA_BOOTS.get();
+            default -> false;
+        };
     }
 
     @Override
@@ -113,14 +177,6 @@ public abstract class NebulaArmor extends ItemManasteelArmor implements IManaIte
 
     }
 
-    /*@Override
-    public void onArmorTick(ItemStack stack, Level world, Player player) {
-        if (!world.isClientSide() && getManaInternal(stack) != MAX_MANA &&
-                ManaItemHandler.instance().requestManaExactForTool(stack, player, 1000, true)) {
-            setManaInternal(stack, getManaInternal(stack) + 1000);
-        }
-    }*/
-
     protected int getManaInternal(ItemStack stack) {
         return stack.getOrCreateTag().getInt(TAG_MANA);
     }
@@ -130,9 +186,15 @@ public abstract class NebulaArmor extends ItemManasteelArmor implements IManaIte
     }
 
     @Override
-    public int getDamage(ItemStack stack) {
-        float mana = getManaInternal(stack);
-        return 1000 - (int)(mana / MAX_MANA * 1000.0F);
+    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
+        int manaInternal = getManaInternal(stack);
+        if (manaInternal > 100){
+            int i = manaInternal % 100; //可以抵扣的耐久
+            amount -= i;
+            setManaInternal(stack, manaInternal - i * 100); //消耗100魔力 抵1点耐久
+            return super.damageItem(stack, amount, entity, onBroken);
+        }
+        return super.damageItem(stack, amount, entity, onBroken);
     }
 
     @Override
@@ -160,5 +222,74 @@ public abstract class NebulaArmor extends ItemManasteelArmor implements IManaIte
         return true;  // 标记为不可导出魔力
     }
 
-    public abstract float getEfficiency(ItemStack stack, Player player);
+
+    @SubscribeEvent
+    public void updatePlayerStepStatus(LivingEvent.LivingUpdateEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            ItemStack armor = player.getItemBySlot(EquipmentSlot.FEET);
+            String playerStr = player.getGameProfile().getName();
+
+            if (playersWithStepup.contains(playerStr)) {
+                if (NebulaArmorHelper.shouldPlayerHaveStepup(player)) {
+                    if ((player.isOnGround() || player.getAbilities().flying) && player.zza > 0.0F) {
+
+                        float speed = getSpeed(armor) * (player.isSprinting() ? 1.0F : 0.2F);
+
+                        player.setDeltaMovement(player.getDeltaMovement().add(0, 0, player.getAbilities().flying ? speed * 0.6F : speed));
+                    }
+
+                    player.maxUpStep = player.isCrouching() ? 0.50001F : 1.0F;
+                } else {
+                    player.maxUpStep = 0.5F;
+                    playersWithStepup.remove(playerStr);
+                }
+            } else if (NebulaArmorHelper.shouldPlayerHaveStepup(player)) {
+                playersWithStepup.add(playerStr);
+                player.maxUpStep = 1.0F;
+            }
+
+            if (playersWithFlight.contains(playerStr)) {
+                if (NebulaArmorHelper.shouldPlayerHaveFlight(player)) {
+                    player.getAbilities().mayfly = true;
+                } else {
+                    if (!player.getAbilities().instabuild) {
+                        player.getAbilities().mayfly = false;
+                        player.getAbilities().flying = false;
+                        player.getAbilities().invulnerable = false;
+                    }
+                    playersWithFlight.remove(playerStr);
+                }
+            } else if (NebulaArmorHelper.shouldPlayerHaveFlight(player)) {
+                playersWithFlight.add(playerStr);
+                player.getAbilities().mayfly = true;
+            }
+            player.onUpdateAbilities();
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerJump(LivingEvent.LivingJumpEvent event) {
+        if (event.getEntity() instanceof Player player) {  // 使用新的模式匹配语法
+            ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
+            if (!legs.isEmpty() && legs.getItem() == ModArmors.NEBULA_LEGGINGS.get()) {
+                // 更新为新的运动属性访问方式
+                player.setDeltaMovement(player.getDeltaMovement().add(
+                        0, getJump(legs), 0
+                ));
+                player.fallDistance = -getFallBuffer(legs);  // 更新为新的摔落伤害计算
+            }
+        }
+    }
+
+    private float getJump(ItemStack stack) {
+        return 0.3F * (1.0F - (float)getDamage(stack) / 1000.0F);
+    }
+
+    private float getFallBuffer(ItemStack stack) {
+        return 12.0F * (1.0F - (float)getDamage(stack) / 1000.0F);
+    }
+
+    public float getSpeed(ItemStack stack) {
+        return MAX_SPEED * (1.0F - (float)getDamage(stack) / 1000.0F);
+    }
 }

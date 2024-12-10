@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
-import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.ManaitaChestplate;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
 
 public class ArmorProtectionEvent {
 
@@ -18,7 +18,7 @@ public class ArmorProtectionEvent {
             ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
 
             // 如果穿戴了 ManaitaChestplate，取消所有伤害
-            if (chestplate.getItem() instanceof ManaitaChestplate) {
+            if (chestplate.getItem() == ModArmors.MANAITA_CHESTPLATE.get()) {
                 event.setCanceled(true); // 取消伤害事件
             }
         }

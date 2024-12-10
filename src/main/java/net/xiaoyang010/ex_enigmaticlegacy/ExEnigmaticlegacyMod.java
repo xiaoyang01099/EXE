@@ -63,7 +63,7 @@ public class ExEnigmaticlegacyMod {
 		ModEntities.REGISTRY.register(bus);
 		ModBlockEntities.REGISTRY.register(bus);
 		ModWeapons.REGISTRY.register(bus);
-		ModArmor.REGISTRY.register(bus);
+		ModArmors.REGISTRY.register(bus);
 		ModMaterials.REGISTRY.register(bus);
 		ModFoods.ITEMS.register(bus);
 		ModEffects.registerEffects();

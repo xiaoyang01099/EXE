@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmor;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
 
 @Mod.EventBusSubscriber
 public class ArmorEffectEvent {
@@ -49,9 +49,9 @@ public class ArmorEffectEvent {
         ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
         ItemStack feet = player.getItemBySlot(EquipmentSlot.FEET);
 
-        return head.getItem() == ModArmor.MANAITA_HELMET.get()
-                && chest.getItem() == ModArmor.MANAITA_CHESTPLATE.get()
-                && legs.getItem() == ModArmor.MANAITA_LEGGINGS.get()
-                && feet.getItem() == ModArmor.MANAITA_BOOTS.get();
+        return head.getItem() == ModArmors.MANAITA_HELMET.get()
+                && chest.getItem() == ModArmors.MANAITA_CHESTPLATE.get()
+                && legs.getItem() == ModArmors.MANAITA_LEGGINGS.get()
+                && feet.getItem() == ModArmors.MANAITA_BOOTS.get();
     }
 }

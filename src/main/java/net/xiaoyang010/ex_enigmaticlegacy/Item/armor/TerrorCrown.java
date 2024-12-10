@@ -9,19 +9,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy")
 public class TerrorCrown extends ArmorItem {
-    public TerrorCrown(ArmorMaterial material, EquipmentSlot slot, Item.Properties properties) {
-        super(material, slot, properties);
+    public TerrorCrown(ArmorMaterial material, EquipmentSlot slot) {
+        super(material, slot, ManaitaArmor.MANAITA_ARMOR);
     }
 
     // 检查玩家是否穿戴了恐惧皇冠
@@ -43,13 +41,13 @@ public class TerrorCrown extends ArmorItem {
 
     // 阻止任何生物对佩戴皇冠玩家的攻击锁定
 //    @SubscribeEvent
-    public static void onLivingSetAttackTarget(LivingSetAttackTargetEvent event) {
-        if (event.getTarget() instanceof Player player) {
-            if (isWearingTerrorCrown(player)) {
-                event.setCanceled(true); // 阻止设定攻击目标
-            }
-        }
-    }
+//    public static void onLivingSetAttackTarget(LivingSetAttackTargetEvent event) {
+//        if (event.getTarget() instanceof Player player) {
+//            if (isWearingTerrorCrown(player)) {
+//                event.setCanceled(true); // 阻止设定攻击目标
+//            }
+//        }
+//    }
 
     // 取消任何攻击事件的仇恨
     @SubscribeEvent
