@@ -1,6 +1,8 @@
 
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.Rarity;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.curio.HolyRing;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.*;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
@@ -14,7 +16,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.BlockItem;
-import net.xiaoyang010.ex_enigmaticlegacy.Item.ingot.*;
 import vazkii.botania.common.item.block.ItemBlockSpecialFlower;
 
 public class ModItems {
@@ -53,61 +54,62 @@ public class ModItems {
 	public static final RegistryObject<Item> WITCH_OPOOD = block(ModBlockss.WITCH_OPOOD,ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 
 
-	public static final RegistryObject<Item> IRIDIUM_INGOT = REGISTRY.register("iridium_ingot", () -> new IridiumIngot());
-	public static final RegistryObject<Item> NICKEL_INGOT = REGISTRY.register("nickel_ingot", () -> new NickelIngot());
-	public static final RegistryObject<Item> PLATINUM_INGOT = REGISTRY.register("platinum_ingot", () -> new PlatinumIngot());
 
-	public static final RegistryObject<Item> MANA_NETHER_STAR = REGISTRY.register("mana_nether_star", () -> new ManaNetherStar());
-	public static final RegistryObject<Item> END_CRYSTAIC = REGISTRY.register("end_crystaic", () -> new EndCrystaic());
-	public static final RegistryObject<Item> CUSTOM_NUGGET = REGISTRY.register("custom_nugget", () -> new CustomNugget());
-	public static final RegistryObject<Item> ASTRAL_PILE = REGISTRY.register("astral_pile", () -> new AstralPile());
-	public static final RegistryObject<Item> ASTRAL_NUGGET = REGISTRY.register("astral_nugget", () -> new AstralNugget());
-	public static final RegistryObject<Item> ASTRAL_INGOT = REGISTRY.register("astral_ingot", () -> new AstralInogt());
-	public static final RegistryObject<Item> CUSTOM_INGOT = REGISTRY.register("custom_ingot", () -> new CustomIngot());
-	public static final RegistryObject<Item> SPECTRITE_INGOT = REGISTRY.register("spectrite_ingot", () -> new SpectriteIngot());
-	public static final RegistryObject<Item> NATUREINGOT = REGISTRY.register("natureingot", () -> new Natureingot());
-	public static final RegistryObject<Item> PRISMATICRADIANCEINGOT = REGISTRY.register("prismaticradianceingot", () -> new PrismaticRadianceIngot());
-	public static final RegistryObject<Item> ICE_INGOT = REGISTRY.register("ice_ingot", () -> new IceIngot());
-	public static final RegistryObject<Item> DEATH_INGOT =REGISTRY.register("death_ingot", () -> new DeathIngot());
-	public static final RegistryObject<Item> DIRT_INGOT = REGISTRY.register("dirt_ingot", () -> new DirtIngot());
-	public static final RegistryObject<Item> ELECTRIC_INGOT = REGISTRY.register("electric_ingot", () -> new ElectricIngot());
-	public static final RegistryObject<Item> GRASS_INGOT = REGISTRY.register("grass_ingot", () -> new GrassIngot());
-	public static final RegistryObject<Item> LAVA_INGOT = REGISTRY.register("lava_ingot", () -> new LavaIngot());
-	public static final RegistryObject<Item> WOOD_INGOT = REGISTRY.register("wood_ingot", () -> new WoodIngot());
-	public static final RegistryObject<Item> INGOT_ANIMATION = REGISTRY.register("ingot_animation", () -> new IngotAnimation());
-	public static final RegistryObject<Item> OBSCURE = REGISTRY.register("obscure", () -> new Obscure());
-	public static final RegistryObject<Item> COLORFUL_SHADOW_SHARD = REGISTRY.register("colorful_shadow_shard", () -> new ColorfulShadowShard());
-	public static final RegistryObject<Item> SPECTRITE_CRYSTAL = REGISTRY.register("spectrite_crystal", () -> new SpectriteCrystal());
-	public static final RegistryObject<Item> DYEABLE_REDSTONE = REGISTRY.register("dyeable_redstone", () -> new DyeableRedstone());
+	//31个物品通用属性
+	private static final Properties INGOT_PROPERTIES = new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_MINERAL).stacksTo(64);
+
+	public static final RegistryObject<Item> ASTRAL_PILE = REGISTRY.register("astral_pile", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> ASTRAL_NUGGET = REGISTRY.register("astral_nugget", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> ASTRAL_INGOT = REGISTRY.register("astral_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> CUSTOM_INGOT = REGISTRY.register("custom_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> CUSTOM_NUGGET = REGISTRY.register("custom_nugget", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> COLORFUL_SHADOW_SHARD = REGISTRY.register("colorful_shadow_shard", () -> new ModIngot(INGOT_PROPERTIES.fireResistant().rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> DEATH_INGOT =REGISTRY.register("death_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> DIRT_INGOT = REGISTRY.register("dirt_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> DYEABLE_REDSTONE = REGISTRY.register("dyeable_redstone", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> END_CRYSTAIC = REGISTRY.register("end_crystaic", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> ELECTRIC_INGOT = REGISTRY.register("electric_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> GRASS_INGOT = REGISTRY.register("grass_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> GHASTLYSKULL = REGISTRY.register("ghastly_skull", () -> new ModIngot(INGOT_PROPERTIES.fireResistant().rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> IRIDIUM_INGOT = REGISTRY.register("iridium_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> ICE_INGOT = REGISTRY.register("ice_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> INGOT_ANIMATION = REGISTRY.register("ingot_animation", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> INFINITYDROP = REGISTRY.register("infinitydrop", () -> new ModIngot(INGOT_PROPERTIES.fireResistant().rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> LAVA_INGOT = REGISTRY.register("lava_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> MANA_NETHER_STAR = REGISTRY.register("mana_nether_star", () -> new ModIngot(INGOT_PROPERTIES.fireResistant().rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> MEMORIZE = REGISTRY.register("memorize", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> MIAOMIAOTOU = REGISTRY.register("miaomiaotou", () -> new ModIngot(INGOT_PROPERTIES.stacksTo(1).rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> NATUREINGOT = REGISTRY.register("natureingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> NICKEL_INGOT = REGISTRY.register("nickel_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> OBSCURE = REGISTRY.register("obscure", () -> new ModIngot(INGOT_PROPERTIES.fireResistant().rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> PLATINUM_INGOT = REGISTRY.register("platinum_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> PRISMATICRADIANCEINGOT = REGISTRY.register("prismaticradianceingot", () -> new ModIngot(INGOT_PROPERTIES.fireResistant().rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> SPECTRITE_INGOT = REGISTRY.register("spectrite_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> SPECTRITE_DUST = REGISTRY.register("spectrite_dust", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> SPECTRITE_STAR = REGISTRY.register("spectrite_star", () -> new ModIngot(INGOT_PROPERTIES.fireResistant().rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> SPECTRITE_GEM = REGISTRY.register("spectrite_gem", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> WHITE_DUST = REGISTRY.register("white_dust", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> WOOD_INGOT = REGISTRY.register("wood_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
 
 
-	public static final RegistryObject<Item> BIBLE = REGISTRY.register("bible", () -> new Bible());
-
-	public static final RegistryObject<Item> IGNITER = REGISTRY.register("igniter", () -> new Igniter());
-
-	public static final RegistryObject<Item> WHITE_DUST = REGISTRY.register("white_dust", () -> new WhiteDust());
-	public static final RegistryObject<Item> BEDROCK_BREAKER = REGISTRY.register("bedrock_breaker", () -> new BedrockBreaker());
-	public static final RegistryObject<Item> MEMORIZE = REGISTRY.register("memorize", () -> new Memorize());
-	public static final RegistryObject<Item> SPECTRITE_DUST = REGISTRY.register("spectrite_dust", () -> new SpectriteDust());
-	public static final RegistryObject<Item> SPECTRITE_STAR = REGISTRY.register("spectrite_star", () -> new SpectriteStar());
-	public static final RegistryObject<Item> SPECTRITE_GEM = REGISTRY.register("spectrite_gem", () -> new SpectriteGem());
-	public static final RegistryObject<Item> IVYREGEN = REGISTRY.register("ivyregen", () -> new RegenIvy());
-	public static final RegistryObject<Item> WEATHERSTONE = REGISTRY.register("weather_stone", () -> new WeatherStone());
-	public static final RegistryObject<Item> DIMENSIONALMIRROR = REGISTRY.register("dimensional_mirror", () -> new DimensionalMirror());
-	public static final RegistryObject<Item> GHASTLYSKULL = REGISTRY.register("ghastly_skull", () -> new GhastlySkull());
-	public static final RegistryObject<Item> NEBULOUSCORE = REGISTRY.register("nebulous_core", () -> new NebulousCore());
-	public static final RegistryObject<Item> OMEGACORE = REGISTRY.register("omega_core", () -> new OmegaCore());
-	public static final RegistryObject<Item> CHAOSCORE = REGISTRY.register("chaos_core", () -> new ChaosCore());
-	public static final RegistryObject<Item> SHINYSTONE = REGISTRY.register("shiny_stone", () -> new ShinyStone());
-	public static final RegistryObject<Item> STARFLOWERSTONE = REGISTRY.register("starflowerstone", () -> new StarflowerStone());
-	public static final RegistryObject<Item> RAINBOWMANAITA = REGISTRY.register("rainbowmanaita", () -> new RainbowManaita());
-	public static final RegistryObject<Item> HOLY_RING = REGISTRY.register("holy_ring", () -> new HolyRing());
-	public static final RegistryObject<Item> INFINITYDROP = REGISTRY.register("infinitydrop", () -> new InfinityDrop());
-	public static final RegistryObject<Item> STARFUEL = REGISTRY.register("starfuel", () -> new StarfuelItem());
-	public static final RegistryObject<Item> KILLYOU = REGISTRY.register("killyou", () -> new KillyouItem());
-	public static final RegistryObject<Item> MIAOMIAOTOU = REGISTRY.register("miaomiaotou", () -> new MiaomiaotouItem());
-	public static final RegistryObject<Item> EGG = REGISTRY.register("egg", () -> new RainBowEggItem());
-	public static final RegistryObject<Item> INFINITY_MATTER = REGISTRY.register("infinity_matter", () -> new InfinityMatter());
+	public static final RegistryObject<Item> SPECTRITE_CRYSTAL = REGISTRY.register("spectrite_crystal", SpectriteCrystal::new);
+	public static final RegistryObject<Item> BIBLE = REGISTRY.register("bible", Bible::new);
+	public static final RegistryObject<Item> IGNITER = REGISTRY.register("igniter", Igniter::new);
+	public static final RegistryObject<Item> BEDROCK_BREAKER = REGISTRY.register("bedrock_breaker", BedrockBreaker::new);
+	public static final RegistryObject<Item> IVYREGEN = REGISTRY.register("ivyregen", RegenIvy::new);
+	public static final RegistryObject<Item> WEATHERSTONE = REGISTRY.register("weather_stone", WeatherStone::new);
+	public static final RegistryObject<Item> DIMENSIONALMIRROR = REGISTRY.register("dimensional_mirror", DimensionalMirror::new);
+	public static final RegistryObject<Item> NEBULOUSCORE = REGISTRY.register("nebulous_core", NebulousCore::new);
+	public static final RegistryObject<Item> OMEGACORE = REGISTRY.register("omega_core", OmegaCore::new);
+	public static final RegistryObject<Item> CHAOSCORE = REGISTRY.register("chaos_core", ChaosCore::new);
+	public static final RegistryObject<Item> SHINYSTONE = REGISTRY.register("shiny_stone", ShinyStone::new);
+	public static final RegistryObject<Item> STARFLOWERSTONE = REGISTRY.register("starflowerstone", StarflowerStone::new);
+	public static final RegistryObject<Item> RAINBOWMANAITA = REGISTRY.register("rainbowmanaita", RainbowManaita::new);
+	public static final RegistryObject<Item> HOLY_RING = REGISTRY.register("holy_ring", HolyRing::new);
+	public static final RegistryObject<Item> STARFUEL = REGISTRY.register("starfuel", StarfuelItem::new);
+	public static final RegistryObject<Item> KILLYOU = REGISTRY.register("killyou", KillyouItem::new);
+	public static final RegistryObject<Item> EGG = REGISTRY.register("egg", RainBowEggItem::new);
+	public static final RegistryObject<Item> INFINITY_MATTER = REGISTRY.register("infinity_matter", InfinityMatter::new);
 	/*public static final RegistryObject<Item> LOLIPICKAXE = REGISTRY.register("loli_pickaxe", () -> new LolipickaxeItem());
 	public static final RegistryObject<Item> DEATHITEM = REGISTRY.register("loli_death",()-> new DeathItem(new Item.Properties()));*/
 
