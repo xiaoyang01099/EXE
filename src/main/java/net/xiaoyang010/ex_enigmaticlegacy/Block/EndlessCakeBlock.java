@@ -101,7 +101,7 @@ public class EndlessCakeBlock extends CakeBlock {
             if (world.isClientSide)
                 player.sendMessage(new TranslatableComponent("info.ex_enigmaticlegacy.flying.star"), player.getUUID());
             if (!world.isClientSide)
-                player.addEffect(new MobEffectInstance(ModEffects.FLYING.get(), 240, 0));
+                player.addEffect(new MobEffectInstance(ModEffects.FLYING.get(), 24000, 0));
         } else {
             // 随机给予增益效果
             MobEffect randomEffect = effects[random.nextInt(effects.length)];

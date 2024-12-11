@@ -1,15 +1,18 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Item.weapon;
 
-import net.minecraft.world.entity.Entity;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.AbstractArrow.Pickup;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.ManaitaArrow;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 
@@ -21,30 +24,26 @@ public class ManaitaBow extends BowItem {
 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
-        int charge = this.getUseDuration(stack) - timeLeft;
+        if (entity instanceof Player player) {
+            if (!level.isClientSide) {
+                ManaitaArrow arrowEntity = new ManaitaArrow(level, player);
 
-        if (entity instanceof Player player && !level.isClientSide) {
-            if (!canFireArrow(player)) {
-                return;
+                arrowEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 0.01F);
+                arrowEntity.setCritArrow(true);
+                arrowEntity.setPierceLevel((byte) 5);
+
+                arrowEntity.pickup = Pickup.CREATIVE_ONLY;
+                level.addFreshEntity(arrowEntity);
+
+                level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 3.0f);
+                player.awardStat(Stats.ITEM_USED.get(this));
             }
-
-            // 创建自定义箭矢 ManaitaArrow
-            ManaitaArrow arrow = new ManaitaArrow(ModEntities.MANAITA_ARROW.get(), level);
-            arrow.setPos(player.getX(), player.getEyeY() - 0.1, player.getZ()); // 设置箭矢的位置
-
-            // 设置箭矢为直线飞行
-            double speed = charge * 0.1 + 3.0;  // 修改为 double 类型
-            arrow.shootFromRotation((Entity) player, player.getXRot(), player.getYRot(), 0.0F, (float) speed, 0.0F);
-            arrow.setNoGravity(true); // 取消重力影响，使其直线飞行
-
-            // 设置箭矢为暴击箭矢，并且伤害无限大
-            arrow.setCritArrow(true);
-            arrow.setBaseDamage(Double.MAX_VALUE); // 设置伤害为最大
-
-            stack.hurtAndBreak(1, player, (p) -> p.broadcastBreakEvent(player.getUsedItemHand()));
-
-            level.addFreshEntity(arrow); // 将箭矢添加到世界中
         }
+    }
+
+    @Override
+    public AbstractArrow customArrow(AbstractArrow arrow) {
+        return super.customArrow(arrow);
     }
 
     @Override

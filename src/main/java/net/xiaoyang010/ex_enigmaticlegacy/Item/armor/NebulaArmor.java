@@ -147,6 +147,7 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
     }
 
     public boolean hasArmorSetItem(Player player, EquipmentSlot slot) {
+        if (player == null) return false;
         ItemStack stack = player.getItemBySlot(slot);
         if (stack.isEmpty()) {
             return false;

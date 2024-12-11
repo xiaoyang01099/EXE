@@ -1,8 +1,8 @@
 {
-  "advancements.aristocratic.descr": "§3获得一个铱锭",
+  "advancements.aristocratic.descr": "§3Iridium Ingot",
   "advancements.aristocratic.title": "§6Aristocratic",
   "advancements.lucky.title": "§4A Hight Foutunate Elite",
-  "advancements.oh_my_god.descr": "§3我的上帝呀",
+  "advancements.oh_my_god.descr": "§3OH MY GOD",
   "advancements.zhen_gui_zhi_wu.descr": "§6获得一个铂锭",
   "advancements.zhen_gui_zhi_wu.title": "§5Apple Of My Eye",
   "block.ex_enigmaticlegacy.aerialite_block": "天空块",
@@ -24,7 +24,6 @@
   "block.ex_enigmaticlegacy.infinityglass": "无尽玻璃",
   "block.ex_enigmaticlegacy.iridium_block": "§7铱块",
   "block.ex_enigmaticlegacy.iridium_ore": "铱矿",
-  "block.ex_enigmaticlegacy.nether_star_block": "下界之心块",
   "block.ex_enigmaticlegacy.nickel_block": "§6镍块",
   "block.ex_enigmaticlegacy.nickel_ore": "镍矿",
   "block.ex_enigmaticlegacy.nightshade": "夜颠茄（未完成）",
@@ -101,7 +100,6 @@
   "item.ex_enigmaticlegacy.prismaticradianceingot": "七彩霞光锭",
   "item.ex_enigmaticlegacy.prismaticradianceingot.desc": "至高无上的七彩霞光，神将引领你走向光明",
   "item.ex_enigmaticlegacy.rainbowmanaita": "彩虹魔法尘埃",
-  "item.ex_enigmaticlegacy.sacabambaspis_spawn_egg": "生成萨卡班甲鱼（未完成+模型错误）",
   "item.ex_enigmaticlegacy.shiny_stone": "日曜石",
   "item.ex_enigmaticlegacy.song_of_the_abyss": "海渊之歌",
   "item.ex_enigmaticlegacy.spectrite_crystal": "彩虹水晶(未完成)",
@@ -125,7 +123,6 @@
   "itemGroup.ex_enigmaticlegacy_food": "§e神秘遗物EX-食物",
   "itemGroup.ex_enigmaticlegacy_mineral": "§7神秘遗物EX-矿物",
   "itemGroup.ex_enigmaticlegacy_weapon": "§b神秘遗物EX-武器防具",
-  "itemGroup.tabexenigmaticlegacy": "enigmaticlegacyEX",
   "subtitles.aaaaa": "",
   "subtitles.cute": "",
   "subtitles.hunt_down": "",
@@ -138,5 +135,6 @@
   "effect.ex_enigmaticlegacy.flying": "飞行",
   "info.ex_enigmaticlegacy.flying.stop": "你的体验结束啦,如果你还在飞行，请别怕，神秘的力量会把你安全送到地面",
   "info.ex_enigmaticlegacy.flying.error": "你现在是创造，这个效果没有用的",
-  "info.ex_enigmaticlegacy.flying.star": "你现在有20分钟的飞行体验时间啦！"
+  "info.ex_enigmaticlegacy.flying.star": "你现在有20分钟的飞行体验时间啦！",
+  "entity.ex_enigmaticlegacy.manaita_arrow": "砧板箭矢"
 }
