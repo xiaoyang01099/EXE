@@ -43,13 +43,12 @@ import java.util.function.Consumer;
 public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaProficiencyArmor {
     private static final String TAG_MANA = "mana";
     private static final int MAX_MANA = 250000;
-    private static ItemStack[] armorSet;
     protected static final float MAX_SPEED = 0.275F;
     public static final List<String> playersWithStepup = new ArrayList<>();
     public static final List<String> playersWithFlight = new ArrayList<>();
-    private static UUID CHEST_UUID = UUID.fromString("6d88f904-e22f-7cfa-8c66-c0bee4e40289");
-    private static UUID HEAD_UUID = UUID.fromString("cfb111e4-9caa-12bf-6a67-01bccaabe34d");
-    private static UUID HEAD_REVEAL_UUID = UUID.fromString("584424ee-c473-d5b7-85b9-aa4081577bd7");
+    private static final UUID CHEST_UUID = UUID.fromString("6d88f904-e22f-7cfa-8c66-c0bee4e40289");
+    private static final UUID HEAD_UUID = UUID.fromString("cfb111e4-9caa-12bf-6a67-01bccaabe34d");
+    private static final UUID HEAD_REVEAL_UUID = UUID.fromString("584424ee-c473-d5b7-85b9-aa4081577bd7");
 
     private static final Properties NEBULA_ARMOR = new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).durability(1000).rarity(AdvancedBotanyAPI.rarityNebula);
 
@@ -242,14 +241,14 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
 //                        player.setDeltaMovement(player.getDeltaMovement().add(0, 0, player.getAbilities().flying ? speed * 0.6F : speed));
                     }
 
-                    player.maxUpStep = player.isCrouching() ? 0.50001F : 1.0F;
+                    player.maxUpStep = player.isCrouching() ? 0.250001F : 0.5F;
                 } else {
-                    player.maxUpStep = 0.5F;
+                    player.maxUpStep = 0.25F;
                     playersWithStepup.remove(playerStr);
                 }
             } else if (NebulaArmorHelper.shouldPlayerHaveStepup(player)) {
                 playersWithStepup.add(playerStr);
-                player.maxUpStep = 1.0F;
+                player.maxUpStep = 0.5F;
             }
 
             if (playersWithFlight.contains(playerStr)) {
@@ -292,9 +291,5 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
 
     private float getFallBuffer(ItemStack stack) {
         return 12.0F * (1.0F - (float)getDamage(stack) / 1000.0F);
-    }
-
-    public float getSpeed(ItemStack stack) {
-        return MAX_SPEED * (1.0F - (float)getDamage(stack) / 1000.0F);
     }
 }
