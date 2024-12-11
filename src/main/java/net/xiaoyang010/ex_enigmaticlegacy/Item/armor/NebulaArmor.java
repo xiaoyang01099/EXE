@@ -47,6 +47,9 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
     protected static final float MAX_SPEED = 0.275F;
     public static final List<String> playersWithStepup = new ArrayList<>();
     public static final List<String> playersWithFlight = new ArrayList<>();
+    private static UUID CHEST_UUID = UUID.fromString("6d88f904-e22f-7cfa-8c66-c0bee4e40289");
+    private static UUID HEAD_UUID = UUID.fromString("cfb111e4-9caa-12bf-6a67-01bccaabe34d");
+    private static UUID HEAD_REVEAL_UUID = UUID.fromString("584424ee-c473-d5b7-85b9-aa4081577bd7");
 
     private static final Properties NEBULA_ARMOR = new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).durability(1000).rarity(AdvancedBotanyAPI.rarityNebula);
 
@@ -60,13 +63,13 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
         Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
 
         if (slot == EquipmentSlot.CHEST) {
-            attributes.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(UUID.randomUUID(), "Nebula Chest modifier",
+            attributes.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(CHEST_UUID, "Nebula Chest modifier",
                     1.0F - (float) getDamage(stack) / 1000.0F, AttributeModifier.Operation.ADDITION));
         }else if (slot == EquipmentSlot.HEAD && stack.getItem() == ModArmors.NEBULA_HELMET_REVEAL.get()) {
-            attributes.put(Attributes.MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "Nebula Helm Reveal modifier",
+            attributes.put(Attributes.MAX_HEALTH, new AttributeModifier(HEAD_REVEAL_UUID, "Nebula Helm Reveal modifier",
                     20.0F * (1.0F - (float)getDamage(stack) / 1000.0F), AttributeModifier.Operation.ADDITION));
         }else if (slot == EquipmentSlot.HEAD && stack.getItem() == ModArmors.NEBULA_HELMET.get()) {
-            attributes.put(Attributes.MAX_HEALTH, new AttributeModifier(UUID.randomUUID(), "Nebula Helm modifier",
+            attributes.put(Attributes.MAX_HEALTH, new AttributeModifier(HEAD_UUID, "Nebula Helm modifier",
                     20.0F * (1.0F - (float)getDamage(stack) / 1000.0F), AttributeModifier.Operation.ADDITION));
         }
 
@@ -165,7 +168,7 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
 
     @Override
     public int getMana() {
-        return 0;
+        return getManaInternal(new ItemStack(this));
     }
 
     @Override
@@ -175,7 +178,7 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
 
     @Override
     public void addMana(int mana) {
-
+        setManaInternal(new ItemStack(this), getMana() + mana);
     }
 
     protected int getManaInternal(ItemStack stack) {
@@ -234,9 +237,9 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
                 if (NebulaArmorHelper.shouldPlayerHaveStepup(player)) {
                     if ((player.isOnGround() || player.getAbilities().flying) && player.zza > 0.0F) {
 
-                        float speed = getSpeed(armor) * (player.isSprinting() ? 1.0F : 0.2F);
-
-                        player.setDeltaMovement(player.getDeltaMovement().add(0, 0, player.getAbilities().flying ? speed * 0.6F : speed));
+                        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 5, 2));
+//                        float speed = getSpeed(armor) * (player.isSprinting() ? 1.0F : 0.2F);
+//                        player.setDeltaMovement(player.getDeltaMovement().add(0, 0, player.getAbilities().flying ? speed * 0.6F : speed));
                     }
 
                     player.maxUpStep = player.isCrouching() ? 0.50001F : 1.0F;
