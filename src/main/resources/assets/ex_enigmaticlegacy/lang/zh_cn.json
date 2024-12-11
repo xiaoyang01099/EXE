@@ -136,5 +136,11 @@
   "info.ex_enigmaticlegacy.flying.stop": "你的体验结束啦,如果你还在飞行，请别怕，神秘的力量会把你安全送到地面",
   "info.ex_enigmaticlegacy.flying.error": "你现在是创造，这个效果没有用的",
   "info.ex_enigmaticlegacy.flying.star": "你现在有20分钟的飞行体验时间啦！",
-  "entity.ex_enigmaticlegacy.manaita_arrow": "砧板箭矢"
+  "entity.ex_enigmaticlegacy.manaita_arrow": "砧板箭矢",
+  "item.ex_enigmaticlegacy.manaita_sword": "砧板之刃[神]",
+  "item.ex_enigmaticlegacy.real_final_sword": "最终之剑[神]",
+  "text.ex_enigmaticlegacy.manaita_sword.hand": "在主手时:",
+  "text.ex_enigmaticlegacy.manaita_sword.infinity": "无限 ",
+  "text.ex_enigmaticlegacy.manaita_sword.damage": "攻击伤害",
+  "text.ex_enigmaticlegacy.manaita_sword.speed": "1.6 攻击速度"
 }
