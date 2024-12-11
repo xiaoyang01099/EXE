@@ -54,11 +54,11 @@ public class ZMaterial implements ArmorMaterial {
 
     @Override
     public float getToughness() {
-        return Float.MAX_VALUE; // 无限韧性
+        return 10240f; // 无限韧性
     }
 
     @Override
     public float getKnockbackResistance() {
-        return Float.MAX_VALUE; // 无限击退抗性
+        return 102.4f; // 无限击退抗性
     }
 }

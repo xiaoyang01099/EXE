@@ -21,7 +21,7 @@ import java.util.List;
 public class Crissaegrim extends SwordItem {
     // 极高的攻击伤害和攻速
     private static final int INFINITE_DAMAGE = Integer.MAX_VALUE;
-    private static final float INFINITE_ATTACK_SPEED = Float.MAX_VALUE;
+    private static final float INFINITE_ATTACK_SPEED = 4.0f;
 
     public Crissaegrim() {
         // 设置极高的攻击伤害和攻击速度

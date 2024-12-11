@@ -21,11 +21,8 @@ public class ManaitaArmor extends ArmorItem {
     // 覆盖此方法以隐藏盔甲的属性提示信息
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        if (slot == EquipmentSlot.FEET) {
-            // 返回空的属性映射以隐藏提示信息
-            return ImmutableMultimap.of();
-        }
-        return super.getAttributeModifiers(slot, stack);
+        // 返回空的属性映射以隐藏提示信息
+        return ImmutableMultimap.of();
     }
 
     @Override
