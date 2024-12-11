@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.model.PlayerModelN;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.PlayerModelN;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.Xingyun2825Entity;
 
 public class Xingyun2825Renderer extends MobRenderer<Xingyun2825Entity, PlayerModelN<Xingyun2825Entity>> {

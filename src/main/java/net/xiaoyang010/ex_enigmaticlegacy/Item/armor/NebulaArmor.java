@@ -25,7 +25,7 @@ import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.model.ModelArmorNebula;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.ModelArmorNebula;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 import net.xiaoyang010.ex_enigmaticlegacy.api.AdvancedBotanyAPI;
@@ -227,7 +227,7 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
     public void updatePlayerStepStatus(LivingEvent.LivingUpdateEvent event) {
         if (event.getEntity() instanceof Player player) {
             ItemStack armor = player.getItemBySlot(EquipmentSlot.FEET);
-            String playerStr = player.getGameProfile().getName();
+            String playerStr = player.getGameProfile().getName() + ":" + player.level.isClientSide;
 
             if (playersWithStepup.contains(playerStr)) {
                 if (NebulaArmorHelper.shouldPlayerHaveStepup(player)) {
@@ -250,20 +250,21 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
 
             if (playersWithFlight.contains(playerStr)) {
                 if (NebulaArmorHelper.shouldPlayerHaveFlight(player)) {
-                    player.getAbilities().mayfly = true;
+                    if (!player.getAbilities().mayfly){
+                        player.getAbilities().mayfly = true;
+                        player.onUpdateAbilities();
+                    }
                 } else {
-                    if (!player.getAbilities().instabuild) {
+                    if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()) {
                         player.getAbilities().mayfly = false;
                         player.getAbilities().flying = false;
-                        player.getAbilities().invulnerable = false;
+                        player.onUpdateAbilities();
                     }
                     playersWithFlight.remove(playerStr);
                 }
             } else if (NebulaArmorHelper.shouldPlayerHaveFlight(player)) {
                 playersWithFlight.add(playerStr);
-                player.getAbilities().mayfly = true;
             }
-            player.onUpdateAbilities();
         }
     }
 

@@ -3,7 +3,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Client.renderer;
 
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.*;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.model.PlayerModelN;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.PlayerModelN;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.Xiaoyang010Entity;
 
 import net.minecraft.resources.ResourceLocation;

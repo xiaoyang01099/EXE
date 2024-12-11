@@ -133,5 +133,10 @@
   "subtitles.meow": "",
   "subtitles.nothing": "",
   "subtitles.scray": "",
-  "subtitles.what": ""
+  "subtitles.what": "",
+
+  "effect.ex_enigmaticlegacy.flying": "飞行",
+  "info.ex_enigmaticlegacy.flying.stop": "你的体验结束啦,如果你还在飞行，请别怕，神秘的力量会把你安全送到地面",
+  "info.ex_enigmaticlegacy.flying.error": "你现在是创造，这个效果没有用的",
+  "info.ex_enigmaticlegacy.flying.star": "你现在有20分钟的飞行体验时间啦！"
 }

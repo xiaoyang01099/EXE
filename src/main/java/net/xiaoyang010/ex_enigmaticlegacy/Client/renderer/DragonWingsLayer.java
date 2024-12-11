@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.model.DragonWingsModel;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.DragonWingsModel;
 
 public class DragonWingsLayer<T extends Player, M extends PlayerModel<T>> extends RenderLayer<T, M> {
     private final DragonWingsModel dragonWingsModel;

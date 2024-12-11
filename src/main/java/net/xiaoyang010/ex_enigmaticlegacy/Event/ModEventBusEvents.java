@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Init;
+package net.xiaoyang010.ex_enigmaticlegacy.Event;
 
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -11,7 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.DragonWingsLayer;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.model.DragonWingsModel;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.DragonWingsModel;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.CelestialTransmuteRecipe;
 
 

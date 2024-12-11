@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.model;
+package net.xiaoyang010.ex_enigmaticlegacy.Client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

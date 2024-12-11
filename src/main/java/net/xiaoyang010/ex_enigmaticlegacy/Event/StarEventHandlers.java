@@ -32,12 +32,10 @@ public class StarEventHandlers {
         //head
         if (playersWithStone.contains(key)){
             if (hasStone){
-// 飞行能力
                 if (!player.getAbilities().mayfly) {
                     player.getAbilities().mayfly = true;
                     player.onUpdateAbilities();
                 }
-
                 // 添加各种效果
                 addEffects(player);
             }else {
@@ -47,8 +45,7 @@ public class StarEventHandlers {
                     player.getAbilities().flying = false;
                     player.onUpdateAbilities();
                 }
-
-//                // 移除所有与 StarflowerStone 相关的效果
+                // 移除所有与 StarflowerStone 相关的效果
                 removeEffects(player);
                 playersWithStone.remove(key);
             }
@@ -56,50 +53,6 @@ public class StarEventHandlers {
             playersWithStone.add(key);
         }
 
-//        if (!player.level.isClientSide) {
-//            boolean hasStarflowerStone = false;
-//
-//
-//
-//            // 如果有 StarflowerStone，给予飞行和其他效果
-//            if (hasStarflowerStone) {
-//                // 飞行能力
-//                if (!player.getAbilities().mayfly) {
-//                    player.getAbilities().mayfly = true;
-//                    player.onUpdateAbilities();
-//                }
-//
-//                // 添加各种效果
-//                addEffects(player);
-//
-//            } else if (isWearingFullArmor(player)) {
-//                // 如果没有 StarflowerStone，但穿戴了整套盔甲，则给予飞行能力
-//                if (!player.getAbilities().mayfly) {
-//                    player.getAbilities().mayfly = true;
-//                    player.onUpdateAbilities();
-//                }
-//
-//                // 不添加其他效果，仅处理飞行和饱食度
-//                if (player.getFoodData().getFoodLevel() < 20) {
-//                    player.getFoodData().setFoodLevel(20);
-//                }
-//                if (player.getFoodData().getSaturationLevel() < 5.0F) {
-//                    player.getFoodData().setSaturation(5.0F);
-//                }
-//
-//            } else {
-//                // 如果没有 StarflowerStone 且没有穿戴整套盔甲，则移除飞行能力和所有效果
-//                if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()) {
-//                    player.getAbilities().mayfly = false;
-//                    player.getAbilities().flying = false;
-//                    player.onUpdateAbilities();
-//                }
-//
-//                // 移除所有与 StarflowerStone 相关的效果
-//                removeEffects(player);  //这个是啥东西？ 这里没tick移除了再生效果  你这个逻辑是：没用石和全套盔甲就持续移除效果
-//                // 将给予的buff时间设为5秒左右 这样没用时时间结束就自动移除 夜视需单独设为20秒 还有飞行可能也有问题 会和其他飞行道具冲突
-//            }
-//        }
     }
 
     private static boolean isStone(Player player){

@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.resources.ResourceLocation;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.model.PlayerModelNI;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.PlayerModelNI;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.MiaoMiaoEntity;
 
 public class MiaoMiaoRenderer extends MobRenderer<MiaoMiaoEntity, PlayerModelNI<MiaoMiaoEntity>> {

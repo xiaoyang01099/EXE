@@ -1,16 +1,17 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -23,22 +24,20 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 public class EndlessCakeBlock extends CakeBlock {
+    private static final List<String> playersWithFlyEffect = new ArrayList<>();
+    private static final String NBT_FLYING = "exe:flying";
 
     public static final IntegerProperty BITES = IntegerProperty.create("bites", 0, 6);
-
-    // 保存玩家的飞行剩余时间
-    private static final HashMap<UUID, Integer> flightTimers = new HashMap<>();
-    // 保存玩家的缓降状态，确保着陆时取消缓降效果
-    private static final HashMap<UUID, Boolean> slowFallStatus = new HashMap<>();
 
     public EndlessCakeBlock() {
         super(Block.Properties.of(Material.CAKE).strength(0.5f).noOcclusion());
@@ -55,13 +54,11 @@ public class EndlessCakeBlock extends CakeBlock {
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if (world.isClientSide) {
-            if (consumeCake(world, pos, state, player).consumesAction()) {
-                return InteractionResult.SUCCESS;
-            }
-            if (itemstack.isEmpty()) {
-                return InteractionResult.CONSUME;
-            }
+        if (consumeCake(world, pos, state, player).consumesAction()) {
+            return InteractionResult.SUCCESS;
+        }
+        if (itemstack.isEmpty()) {
+            return InteractionResult.CONSUME;
         }
 
         return consumeCake(world, pos, state, player);
@@ -98,65 +95,64 @@ public class EndlessCakeBlock extends CakeBlock {
 
         if (giveFlight && player.isCreative()) {
             // 如果玩家在创造模式，不做飞行操作，创造模式自带飞行
-            player.sendMessage(new TextComponent("你现在是创造，这个效果没有用的"), player.getUUID());
+            if (world.isClientSide())
+                player.sendMessage(new TranslatableComponent("info.ex_enigmaticlegacy.flying.error"), player.getUUID());
         } else if (giveFlight) {
-
-            player.sendMessage(new TextComponent("你现在有20分钟的飞行体验时间啦！"), player.getUUID());
-
-            // 设置飞行计时器为24000 ticks (20分钟)
-            flightTimers.put(player.getUUID(), 20 * 60 * 20 );
-            slowFallStatus.put(player.getUUID(), false); // 初始时不处于缓降状态
+            if (world.isClientSide)
+                player.sendMessage(new TranslatableComponent("info.ex_enigmaticlegacy.flying.star"), player.getUUID());
+            if (!world.isClientSide)
+                player.addEffect(new MobEffectInstance(ModEffects.FLYING.get(), 240, 0));
         } else {
             // 随机给予增益效果
             MobEffect randomEffect = effects[random.nextInt(effects.length)];
             MobEffectInstance effectInstance = new MobEffectInstance(randomEffect, 24000, 9); // 20分钟，等级9
-            player.addEffect(effectInstance);
+            if (!world.isClientSide)
+                player.addEffect(effectInstance);
         }
 
         return InteractionResult.SUCCESS;
     }
 
-    // 在每个 tick 检查玩家飞行时间
     @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+    public void playerFall(LivingFallEvent event){
+        LivingEntity living = event.getEntityLiving();
+        if (living instanceof Player player) {
+            boolean flying = player.getPersistentData().getBoolean(NBT_FLYING);
+            if (flying && !player.level.isClientSide){ //取消玩家摔落
+                player.getPersistentData().remove(NBT_FLYING); //重置标记
+                event.setDamageMultiplier(0);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void playerUpdate(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
-        UUID playerUUID = player.getUUID();
-
-        if (!player.level.isClientSide) {
-            if (flightTimers.containsKey(playerUUID)) {
-                int remainingTime = flightTimers.get(playerUUID);
-
-                if (remainingTime > 0) {
-                    // 给玩家飞行能力（仅限生存模式）
+        String playerStr = player.getGameProfile().getName() + ":" + player.level.isClientSide;
+        MobEffectInstance effect = player.getEffect(ModEffects.FLYING.get());
+        boolean flying = effect != null && effect.getAmplifier() >= 0;
+        if (playersWithFlyEffect.contains(playerStr)) {
+            if (flying) {
+                if (!player.getAbilities().mayfly) {
                     player.getAbilities().mayfly = true;
-                    player.getAbilities().flying = true;
-                    player.onUpdateAbilities();
-                    flightTimers.put(playerUUID, remainingTime - 1); // 递减飞行时间
-                } else {
-                    // 飞行时间结束，取消飞行并提示玩家
-                    if (!player.isCreative()) {  // 只在非创造模式下移除飞行
-                        player.getAbilities().mayfly = false;
-                        player.getAbilities().flying = false;
-                        player.onUpdateAbilities();
-                        player.sendMessage(new TextComponent("你的体验结束啦,如果你还在飞行，请别怕，神秘的力量会把你安全送到地面"), player.getUUID());
-                    }
-
-                    // 如果玩家仍然在空中，给予缓降效果
-                    if (!player.isOnGround()) {
-                        player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, Integer.MAX_VALUE, 1)); // 无限缓降
-                        slowFallStatus.put(playerUUID, true); // 标记玩家处于缓降状态
-                    }
-
-                    flightTimers.remove(playerUUID); // 移除飞行计时器
+                    playersWithFlyEffect.add(playerStr);
                 }
-            }
+            } else {
+                if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()) {
+                    player.getAbilities().mayfly = false;
+                    player.getAbilities().flying = false;
+                    player.onUpdateAbilities();
 
-            // 如果玩家处于缓降状态，检查其是否已着陆
-            if (slowFallStatus.getOrDefault(playerUUID, false) && player.isOnGround()) {
-                // 玩家已着陆，移除缓降效果
-                player.removeEffect(MobEffects.SLOW_FALLING);
-                slowFallStatus.remove(playerUUID); // 移除缓降状态
+                    player.displayClientMessage(new TranslatableComponent("info.ex_enigmaticlegacy.flying.stop"), true);
+                    // 如果玩家仍然在空中，标记玩家
+                    if (!player.isOnGround()) {
+                        player.getPersistentData().putBoolean(NBT_FLYING, true);
+                    }
+                }
+                playersWithFlyEffect.remove(playerStr);
             }
+        } else if (flying) {
+            playersWithFlyEffect.add(playerStr);
         }
     }
 

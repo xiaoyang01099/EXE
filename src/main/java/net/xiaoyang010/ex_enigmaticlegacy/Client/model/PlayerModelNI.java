@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.model;
+package net.xiaoyang010.ex_enigmaticlegacy.Client.model;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
