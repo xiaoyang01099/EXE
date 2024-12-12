@@ -35,7 +35,7 @@ import java.util.Optional;
 import java.util.Comparator;
 
 import com.google.common.collect.ImmutableSet;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MinersHeavenOldTeleporter implements ITeleporter {
@@ -46,7 +46,7 @@ public class MinersHeavenOldTeleporter implements ITeleporter {
 	public static void registerPointOfInterest(RegistryEvent.Register<PoiType> event) {
 		poi = new PoiType("miners_heaven_old_portal",
 				com.google.common.collect.Sets.newHashSet(
-						ImmutableSet.copyOf(ModBlockss.MINERS_HEAVEN_PORTAL.get().getStateDefinition().getPossibleStates())),
+						ImmutableSet.copyOf(ModBlocks.MINERS_HEAVEN_PORTAL.get().getStateDefinition().getPossibleStates())),
 				0, 1).setRegistryName("miners_heaven_old_portal");
 		ForgeRegistries.POI_TYPES.register(poi);
 	}
@@ -164,7 +164,7 @@ public class MinersHeavenOldTeleporter implements ITeleporter {
 				}
 			}
 		}
-		BlockState blockstate = ModBlockss.MINERS_HEAVEN_PORTAL.get().defaultBlockState().setValue(NetherPortalBlock.AXIS, p_77668_);
+		BlockState blockstate = ModBlocks.MINERS_HEAVEN_PORTAL.get().defaultBlockState().setValue(NetherPortalBlock.AXIS, p_77668_);
 		for (int k2 = 0; k2 < 2; ++k2) {
 			for (int l2 = 0; l2 < 3; ++l2) {
 				blockpos$mutableblockpos.setWithOffset(blockpos, k2 * direction.getStepX(), l2, k2 * direction.getStepZ());

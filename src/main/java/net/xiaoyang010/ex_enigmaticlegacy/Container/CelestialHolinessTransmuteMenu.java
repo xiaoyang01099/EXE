@@ -1,5 +1,5 @@
 
-package net.xiaoyang010.ex_enigmaticlegacy.Menu;
+package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 import java.util.Map;
 import java.util.HashMap;
 
-public class CobblestonesMenu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
+public class CelestialHolinessTransmuteMenu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
 	public final static HashMap<String, Object> guistate = new HashMap<>();
 	public final Level world;
 	public final Player entity;
@@ -33,11 +33,11 @@ public class CobblestonesMenu extends AbstractContainerMenu implements Supplier<
 	private final Map<Integer, Slot> customSlots = new HashMap<>();
 	private boolean bound = false;
 
-	public CobblestonesMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-		super(ModMenus.COBBLE_STONES, id);
+	public CelestialHolinessTransmuteMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
+		super(ModMenus.CELESTIAL_HOLINESS_TRANSMUTE, id);
 		this.entity = inv.player;
 		this.world = inv.player.level;
-		this.internal = new ItemStackHandler(10);
+		this.internal = new ItemStackHandler(5);
 		BlockPos pos = null;
 		if (extraData != null) {
 			pos = extraData.readBlockPos();
@@ -75,29 +75,19 @@ public class CobblestonesMenu extends AbstractContainerMenu implements Supplier<
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 29, 17) {
-		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 47, 17) {
-		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 65, 17) {
-		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 29, 35) {
-		}));
-		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 47, 35) {
-		}));
-		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, 65, 35) {
-		}));
-		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, 29, 53) {
-		}));
-		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, 47, 53) {
-		}));
-		this.customSlots.put(8, this.addSlot(new SlotItemHandler(internal, 8, 65, 53) {
-		}));
-		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, 123, 35) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 132, 51) {
 			@Override
 			public boolean mayPlace(ItemStack stack) {
 				return false;
 			}
+		}));
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 21, 23) {
+		}));
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 56, 23) {
+		}));
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 38, 51) {
+		}));
+		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 132, 23) {
 		}));
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
@@ -118,18 +108,18 @@ public class CobblestonesMenu extends AbstractContainerMenu implements Supplier<
 		if (slot != null && slot.hasItem()) {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
-			if (index < 10) {
-				if (!this.moveItemStackTo(itemstack1, 10, this.slots.size(), true)) {
+			if (index < 5) {
+				if (!this.moveItemStackTo(itemstack1, 5, this.slots.size(), true)) {
 					return ItemStack.EMPTY;
 				}
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (!this.moveItemStackTo(itemstack1, 0, 10, false)) {
-				if (index < 10 + 27) {
-					if (!this.moveItemStackTo(itemstack1, 10 + 27, this.slots.size(), true)) {
+			} else if (!this.moveItemStackTo(itemstack1, 0, 5, false)) {
+				if (index < 5 + 27) {
+					if (!this.moveItemStackTo(itemstack1, 5 + 27, this.slots.size(), true)) {
 						return ItemStack.EMPTY;
 					}
 				} else {
-					if (!this.moveItemStackTo(itemstack1, 10, 10 + 27, false)) {
+					if (!this.moveItemStackTo(itemstack1, 5, 5 + 27, false)) {
 						return ItemStack.EMPTY;
 					}
 				}

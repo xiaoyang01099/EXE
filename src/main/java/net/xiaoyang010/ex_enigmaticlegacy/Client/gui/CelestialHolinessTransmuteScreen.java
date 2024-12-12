@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.xiaoyang010.ex_enigmaticlegacy.Menu.CelestialHolinessTransmuteMenu;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHolinessTransmuteMenu;
 
 public class CelestialHolinessTransmuteScreen extends AbstractContainerScreen<CelestialHolinessTransmuteMenu> {
 	private final static HashMap<String, Object> guistate = CelestialHolinessTransmuteMenu.guistate;

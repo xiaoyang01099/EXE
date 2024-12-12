@@ -15,7 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.BlockUtil;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
 
 import javax.annotation.Nullable;
 
@@ -139,7 +139,7 @@ public class MinersHeavenOldPortalShape {
 				if (!isEmpty(blockstate)) {
 					return i;
 				}
-				if (blockstate.getBlock() == ModBlockss.MINERS_HEAVEN_PORTAL.get()) {
+				if (blockstate.getBlock() == ModBlocks.MINERS_HEAVEN_PORTAL.get()) {
 					++this.numPortalBlocks;
 				}
 			}
@@ -148,7 +148,7 @@ public class MinersHeavenOldPortalShape {
 	}
 
 	private static boolean isEmpty(BlockState p_77718_) {
-		return p_77718_.isAir() || p_77718_.getBlock() == ModBlockss.MINERS_HEAVEN_PORTAL.get();
+		return p_77718_.isAir() || p_77718_.getBlock() == ModBlocks.MINERS_HEAVEN_PORTAL.get();
 	}
 
 	public boolean isValid() {
@@ -156,7 +156,7 @@ public class MinersHeavenOldPortalShape {
 	}
 
 	public void createPortalBlocks() {
-		BlockState blockstate = ModBlockss.MINERS_HEAVEN_PORTAL.get().defaultBlockState().setValue(NetherPortalBlock.AXIS, this.axis);
+		BlockState blockstate = ModBlocks.MINERS_HEAVEN_PORTAL.get().defaultBlockState().setValue(NetherPortalBlock.AXIS, this.axis);
 		BlockPos.betweenClosed(this.bottomLeft, this.bottomLeft.relative(Direction.UP, this.height - 1).relative(this.rightDir, this.width - 1))
 				.forEach((p_77725_) -> {
 					this.level.setBlock(p_77725_, blockstate, 18);

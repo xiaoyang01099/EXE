@@ -15,7 +15,7 @@ import java.util.HashMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.Menu.InfinityChestMenu;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.InfinityChestMenu;
 
 public class InfinityChestScreen extends AbstractContainerScreen<InfinityChestMenu> {
     private final static HashMap<String, Object> guistate = InfinityChestMenu.guistate;

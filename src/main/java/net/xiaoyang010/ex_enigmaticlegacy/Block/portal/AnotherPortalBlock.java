@@ -1,7 +1,7 @@
 
 package net.xiaoyang010.ex_enigmaticlegacy.Block.portal;
 
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
 
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,6 +43,6 @@ public class AnotherPortalBlock extends IronBarsBlock {
 	public static void blockColorLoad(ColorHandlerEvent.Block event) {
 		event.getBlockColors().register((bs, world, pos, index) -> {
 			return world != null && pos != null ? Minecraft.getInstance().level.getBiome(pos).value().getSkyColor() : 8562943;
-		}, ModBlockss.ANOTHER_PORTAL.get());
+		}, ModBlocks.ANOTHER_PORTAL.get());
 	}
 }

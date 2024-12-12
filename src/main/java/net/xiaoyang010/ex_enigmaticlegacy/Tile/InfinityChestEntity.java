@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
-import net.xiaoyang010.ex_enigmaticlegacy.Menu.InfinityChestMenu;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.InfinityChestMenu;
 
 public class InfinityChestEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     private NonNullList<ItemStack> stacks = NonNullList.withSize(273, ItemStack.EMPTY);

@@ -1,42 +1,54 @@
 
 package net.xiaoyang010.ex_enigmaticlegacy.Block;
 
-import net.minecraft.world.item.TieredItem;
-import net.minecraftforge.network.NetworkHooks;
-
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.CraftingTableBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.CobblesStoneMenu;
 
-
-
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
-import io.netty.buffer.Unpooled;
-import net.xiaoyang010.ex_enigmaticlegacy.Menu.CobblestonesMenu;
-
-public class Cobblestone extends Block {
+public class Cobblestone extends CraftingTableBlock {
+    private static final Component CONTAINER_TITLE = new TranslatableComponent("container.crafting");
     public Cobblestone() {
         super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(1.5f, 10f).requiresCorrectToolForDrops());
+    }
+
+    @Override
+    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+        if (pLevel.isClientSide) {
+            return InteractionResult.SUCCESS;
+        } else {
+            pPlayer.openMenu(pState.getMenuProvider(pLevel, pPos));
+            pPlayer.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
+            return InteractionResult.CONSUME;
+        }
+    }
+
+    @Override
+    public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
+        return new SimpleMenuProvider((p_52229_, p_52230_, p_52231_) -> {
+            return new CobblesStoneMenu(p_52229_, p_52230_, ContainerLevelAccess.create(pLevel, pPos));
+        }, CONTAINER_TITLE);
     }
 
     @Override
@@ -65,22 +77,4 @@ public class Cobblestone extends Block {
         return Collections.singletonList(new ItemStack(this, 1));
     }
 
-    @Override
-    public InteractionResult use(BlockState blockstate, Level world, BlockPos pos, Player entity, InteractionHand hand, BlockHitResult hit) {
-        super.use(blockstate, world, pos, entity, hand, hit);
-        if (entity instanceof ServerPlayer player) {
-            NetworkHooks.openGui(player, new MenuProvider() {
-                @Override
-                public Component getDisplayName() {
-                    return new TextComponent("Cobblestone");
-                }
-
-                @Override
-                public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-                    return new CobblestonesMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
-                }
-            }, pos);
-        }
-        return InteractionResult.SUCCESS;
-    }
 }

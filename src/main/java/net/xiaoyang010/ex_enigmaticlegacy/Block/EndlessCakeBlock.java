@@ -26,7 +26,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import java.util.Random;
 
 public class EndlessCakeBlock extends CakeBlock {
     private static final List<String> playersWithFlyEffect = new ArrayList<>();
-    private static final String NBT_FLYING = "exe:flying";
+    public static final String NBT_FLYING = "exe:flying";
 
     public static final IntegerProperty BITES = IntegerProperty.create("bites", 0, 6);
 
@@ -129,31 +129,7 @@ public class EndlessCakeBlock extends CakeBlock {
     public void playerUpdate(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         String playerStr = player.getGameProfile().getName() + ":" + player.level.isClientSide;
-        MobEffectInstance effect = player.getEffect(ModEffects.FLYING.get());
-        boolean flying = effect != null && effect.getAmplifier() >= 0;
-        if (playersWithFlyEffect.contains(playerStr)) {
-            if (flying) {
-                if (!player.getAbilities().mayfly) {
-                    player.getAbilities().mayfly = true;
-                    playersWithFlyEffect.add(playerStr);
-                }
-            } else {
-                if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()) {
-                    player.getAbilities().mayfly = false;
-                    player.getAbilities().flying = false;
-                    player.onUpdateAbilities();
 
-                    player.displayClientMessage(new TranslatableComponent("info.ex_enigmaticlegacy.flying.stop"), true);
-                    // 如果玩家仍然在空中，标记玩家
-                    if (!player.isOnGround()) {
-                        player.getPersistentData().putBoolean(NBT_FLYING, true);
-                    }
-                }
-                playersWithFlyEffect.remove(playerStr);
-            }
-        } else if (flying) {
-            playersWithFlyEffect.add(playerStr);
-        }
     }
 
     @Override
@@ -164,6 +140,6 @@ public class EndlessCakeBlock extends CakeBlock {
     @Override
     public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
         // 返回该方块的掉落物为自身
-        return new ItemStack(ModBlockss.ENDLESS_CAKE.get());
+        return new ItemStack(ModBlocks.ENDLESS_CAKE.get());
     }
 }

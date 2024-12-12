@@ -39,7 +39,7 @@ apply plugin: 'maven-publish'
 //mixin
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.18.2-1.0.0'
+version = '1.18.2-1.0.0-Beta'
 group = 'ex_enigmaticlegacy'
 archivesBaseName = 'EXE'
 
@@ -217,7 +217,7 @@ dependencies {
     //等价交换
     //implementation fg.deobf("curse.maven:projecte-226410:4860857")
     compileOnly fg.deobf("curse.maven:projecte-226410:4860857")
-    runtimeOnly fg.deobf("curse.maven:projecte-226410:4860857")
+//    runtimeOnly fg.deobf("curse.maven:projecte-226410:4860857")
 
     //神秘遗物
     compileOnly fg.deobf("curse.maven:enigmatic-legacy-336184:4074264")
@@ -232,16 +232,16 @@ dependencies {
 
     //CrT
     compileOnly fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.116')
-    runtimeOnly fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.116')
+//    runtimeOnly fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.116')
 
     //鼠标手势
-    implementation fg.deobf("curse.maven:mouse-tweaks-60089:3578801")
+//    runtimeOnly fg.deobf("curse.maven:mouse-tweaks-60089:3578801")
 
     //geckolib
-    implementation fg.deobf("curse.maven:geckolib-388172:4181370")
+//    runtimeOnly fg.deobf("curse.maven:geckolib-388172:4181370")
 
     //mob-battle
-    implementation fg.deobf("curse.maven:mob-battle-mod-268746:4748498")
+    runtimeOnly fg.deobf("curse.maven:mob-battle-mod-268746:4748498")
 
     //blueprint
     //implementation fg.deobf("com.teamabnormals:blueprint:1.18.2-5.5.0")
@@ -252,11 +252,11 @@ dependencies {
 
     //属性修复
     compileOnly fg.deobf("curse.maven:attributefix-280510:5312029")
-    implementation fg.deobf("curse.maven:attributefix-280510:5312029")
+    runtimeOnly fg.deobf("curse.maven:attributefix-280510:5312029")
 
     //twilight forest
     compileOnly fg.deobf("teamtwilight:twilightforest:4.1.1494:universal")
-    implementation fg.deobf("teamtwilight:twilightforest:4.1.1494:universal")
+//    runtimeOnly fg.deobf("teamtwilight:twilightforest:4.1.1494:universal")
 
 
     //mixin

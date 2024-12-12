@@ -1,5 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Event;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -10,15 +11,19 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xiaoyang010.ex_enigmaticlegacy.Item.StarflowerStone;
+import net.xiaoyang010.ex_enigmaticlegacy.Block.EndlessCakeBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.StarflowerStone;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
-public class StarEventHandlers {
+public class FlyingEventHandlers {
     public static List<String> playersWithStone = new ArrayList<>();
+    public static final List<String> playersWithNebulaChest = new ArrayList<>();
+    public static final List<String> playersWithFlyEffect = new ArrayList<>();
 
 
     @SubscribeEvent
@@ -26,10 +31,13 @@ public class StarEventHandlers {
         Player player = event.player;
 
         boolean hasStone = isStone(player);
+        boolean hasNeutralChest = hasNeutralChest(player);
+        MobEffectInstance effect = player.getEffect(ModEffects.FLYING.get());
+        boolean flying = effect != null && effect.getAmplifier() >= 0;
 
         //防止其它模组飞行装备无法使用 参考1.12无尽
         String key = player.getGameProfile().getName()+":"+player.level.isClientSide;
-        //head
+        //星花石
         if (playersWithStone.contains(key)){
             if (hasStone){
                 if (!player.getAbilities().mayfly) {
@@ -53,6 +61,79 @@ public class StarEventHandlers {
             playersWithStone.add(key);
         }
 
+        //星云盔甲
+        if (playersWithNebulaChest.contains(key)) {
+            if (hasNeutralChest) {
+                if (!player.getAbilities().mayfly){
+                    player.getAbilities().mayfly = true;
+                    player.onUpdateAbilities();
+                }
+            } else {
+                if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()) {
+                    player.getAbilities().mayfly = false;
+                    player.getAbilities().flying = false;
+                    player.onUpdateAbilities();
+                }
+                playersWithNebulaChest.remove(key);
+            }
+        } else if (hasNeutralChest) {
+            playersWithNebulaChest.add(key);
+        }
+
+        //飞行buff
+
+//        player.sendMessage(new TextComponent("flying: " + flying + "----" + "fly:" + player.getAbilities().mayfly), player.getUUID());
+        if (playersWithFlyEffect.contains(key)) {
+            if (flying) {
+                if (!player.getAbilities().mayfly) {
+                    player.getAbilities().mayfly = true;
+                    player.onUpdateAbilities();
+                }
+            } else {
+                if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()) {
+                    player.getAbilities().mayfly = false;
+                    player.getAbilities().flying = false;
+                    player.onUpdateAbilities();
+
+                    player.displayClientMessage(new TranslatableComponent("info.ex_enigmaticlegacy.flying.stop"), true);
+                    // 如果玩家仍然在空中，标记玩家
+                    if (!player.isOnGround()) {
+                        player.getPersistentData().putBoolean(EndlessCakeBlock.NBT_FLYING, true);
+                    }
+                }
+                playersWithFlyEffect.remove(key);
+            }
+        } else if (flying) {
+            playersWithFlyEffect.add(key);
+        }
+
+        // 检查玩家是否穿戴了整套砧板盔甲
+        if (isWearingFullArmor(player)) {
+            // 给予玩家飞行能力，如果其他物品没有控制飞行能力
+            if (!player.getAbilities().mayfly && !player.isCreative() && !player.getAbilities().flying) {
+                player.getAbilities().mayfly = true;
+                player.onUpdateAbilities(); // 确保同步能力
+            }
+            // 给予玩家无限饱食度
+            if (player.getFoodData().getFoodLevel() < 20) {
+                player.getFoodData().setFoodLevel(20);
+            }
+            if (player.getFoodData().getSaturationLevel() < 5.0F) {
+                player.getFoodData().setSaturation(5.0F);
+            }
+        } else {
+            // 如果没穿整套盔甲且玩家不在创造模式，移除飞行能力
+            if (!player.isCreative() && !player.hasEffect(MobEffects.NIGHT_VISION) && player.getAbilities().mayfly) {
+                player.getAbilities().mayfly = false;
+                player.getAbilities().flying = false; // 停止飞行
+                player.onUpdateAbilities(); // 确保同步能力
+            }
+        }
+    }
+
+    private static boolean hasNeutralChest(Player player) {
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        return !chest.isEmpty() && chest.getItem() == ModArmors.NEBULA_CHESTPLATE.get();
     }
 
     private static boolean isStone(Player player){

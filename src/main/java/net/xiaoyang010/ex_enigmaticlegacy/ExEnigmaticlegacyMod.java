@@ -1,13 +1,12 @@
 package net.xiaoyang010.ex_enigmaticlegacy;
 
 import com.integral.enigmaticlegacy.proxy.CommonProxy;
-import moze_intel.projecte.api.imc.CustomEMCRegistration;
-import moze_intel.projecte.api.nss.NSSItem;
-import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -21,27 +20,22 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.InfinityChestModel;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.InfinityChestRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityPotatoRender;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.model.InfinityChestModel;
-/*import net.xiaoyang010.ex_enigmaticlegacy.entity.biological.Sacabambaspis;*/
 import net.xiaoyang010.ex_enigmaticlegacy.Event.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
-
-
-
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.FriendlyByteBuf;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.OmegaCore;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.TooltipColorEvent;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-
-;
+import org.apache.logging.log4j.Logger;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+/*import net.xiaoyang010.ex_enigmaticlegacy.entity.biological.Sacabambaspis;*/
+;
 
 /*import static net.xiaoyang010.ex_enigmaticlegacy.init.ModEntities.SACABAMBASPIS;*/
 
@@ -58,7 +52,7 @@ public class ExEnigmaticlegacyMod {
 	public ExEnigmaticlegacyMod() {
 		ModTabs.load();
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-		ModBlockss.REGISTRY.register(bus);
+		ModBlocks.REGISTRY.register(bus);
 		ModItems.REGISTRY.register(bus);
 		ModEntities.REGISTRY.register(bus);
 		ModBlockEntities.REGISTRY.register(bus);
@@ -73,8 +67,7 @@ public class ExEnigmaticlegacyMod {
 		ModFeatures.REGISTRY.register(bus);
 		ModBiomes.REGISTRY.register(bus);
 
-		MinecraftForge.EVENT_BUS.register(new ArmorEffectEvent());
-		MinecraftForge.EVENT_BUS.register(new StarEventHandlers());
+		MinecraftForge.EVENT_BUS.register(new FlyingEventHandlers());
 		MinecraftForge.EVENT_BUS.register(new ArmorProtectionEvent());
 		MinecraftForge.EVENT_BUS.register(new OmegaCoreEffectHandler());
 		MinecraftForge.EVENT_BUS.register(new TimeStopEffectHandler());
@@ -113,7 +106,7 @@ public class ExEnigmaticlegacyMod {
 
 	private void clientSetup(final FMLClientSetupEvent event) {
 		// 为自定义玻璃设置渲染层
-		ItemBlockRenderTypes.setRenderLayer(ModBlockss.INFINITYGlASS.get(), RenderType.translucent());
+		ItemBlockRenderTypes.setRenderLayer(ModBlocks.INFINITYGlASS.get(), RenderType.translucent());
 		event.enqueueWork(() ->{
 			/*EntityRenderers.register(SACABAMBASPIS.get(), SacabambaspisRenderer::new);*/
 
@@ -135,9 +128,9 @@ public class ExEnigmaticlegacyMod {
 	}
 
 	public void registerCustomEMC() {
-		NSSItem endlessCake = NSSItem.createItem(new ResourceLocation("ex_enigmaticlegacy:endless_cake"));
-		CustomEMCRegistration emcRegistration = new CustomEMCRegistration(endlessCake, 100245);
-		APICustomEMCMapper.INSTANCE.registerCustomEMC("ex_enigmaticlegacy", emcRegistration);
+//		NSSItem endlessCake = NSSItem.createItem(new ResourceLocation("ex_enigmaticlegacy:endless_cake"));
+//		CustomEMCRegistration emcRegistration = new CustomEMCRegistration(endlessCake, 100245);
+//		APICustomEMCMapper.INSTANCE.registerCustomEMC("ex_enigmaticlegacy", emcRegistration);
 	}
 
 

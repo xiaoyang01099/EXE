@@ -10,7 +10,10 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.*;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -23,14 +26,9 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.ChestType;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -38,9 +36,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.InfinityChestMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.ILidBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.InfinityChestEntity;
-import net.xiaoyang010.ex_enigmaticlegacy.Menu.InfinityChestMenu;
 
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +61,7 @@ public class InfinityChest extends Block implements EntityBlock, ILidBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED; // 定义水浸属性
 
     public InfinityChest() {
-        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE)
+        super(Properties.of(Material.STONE).sound(SoundType.STONE)
                 .strength(1f, 10f)
                 .isValidSpawn((state, level, pos, entityType) -> false)
                 .isRedstoneConductor((state, level, pos) -> true)

@@ -22,7 +22,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
-import net.xiaoyang010.ex_enigmaticlegacy.Menu.StarlitSanctumMenu;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
 
 
 import javax.annotation.Nullable;

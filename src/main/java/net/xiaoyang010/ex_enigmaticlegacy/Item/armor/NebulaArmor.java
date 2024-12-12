@@ -24,6 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.ModelArmorNebula;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
@@ -45,7 +46,7 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
     private static final int MAX_MANA = 250000;
     protected static final float MAX_SPEED = 0.275F;
     public static final List<String> playersWithStepup = new ArrayList<>();
-    public static final List<String> playersWithFlight = new ArrayList<>();
+
     private static final UUID CHEST_UUID = UUID.fromString("6d88f904-e22f-7cfa-8c66-c0bee4e40289");
     private static final UUID HEAD_UUID = UUID.fromString("cfb111e4-9caa-12bf-6a67-01bccaabe34d");
     private static final UUID HEAD_REVEAL_UUID = UUID.fromString("584424ee-c473-d5b7-85b9-aa4081577bd7");
@@ -229,50 +230,28 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
     @SubscribeEvent
     public void updatePlayerStepStatus(LivingEvent.LivingUpdateEvent event) {
         if (event.getEntity() instanceof Player player) {
-            ItemStack armor = player.getItemBySlot(EquipmentSlot.FEET);
             String playerStr = player.getGameProfile().getName() + ":" + player.level.isClientSide;
 
             if (playersWithStepup.contains(playerStr)) {
                 if (NebulaArmorHelper.shouldPlayerHaveStepup(player)) {
-                    if ((player.isOnGround() || player.getAbilities().flying) && player.zza > 0.0F) {
-
+                    if (!player.level.isClientSide)
                         player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 5, 2));
-//                        float speed = getSpeed(armor) * (player.isSprinting() ? 1.0F : 0.2F);
-//                        player.setDeltaMovement(player.getDeltaMovement().add(0, 0, player.getAbilities().flying ? speed * 0.6F : speed));
-                    }
-
-                    player.maxUpStep = player.isCrouching() ? 0.250001F : 0.5F;
+                    player.maxUpStep = player.isCrouching() ? 1.0F : 1.5F; //上坡高度
                 } else {
-                    player.maxUpStep = 0.25F;
+                    if (player.maxUpStep > 1.0F)
+                        player.maxUpStep = 1.0F;
                     playersWithStepup.remove(playerStr);
                 }
             } else if (NebulaArmorHelper.shouldPlayerHaveStepup(player)) {
                 playersWithStepup.add(playerStr);
-                player.maxUpStep = 0.5F;
+                player.maxUpStep = 1.5F;
             }
 
-            if (playersWithFlight.contains(playerStr)) {
-                if (NebulaArmorHelper.shouldPlayerHaveFlight(player)) {
-                    if (!player.getAbilities().mayfly){
-                        player.getAbilities().mayfly = true;
-                        player.onUpdateAbilities();
-                    }
-                } else {
-                    if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()) {
-                        player.getAbilities().mayfly = false;
-                        player.getAbilities().flying = false;
-                        player.onUpdateAbilities();
-                    }
-                    playersWithFlight.remove(playerStr);
-                }
-            } else if (NebulaArmorHelper.shouldPlayerHaveFlight(player)) {
-                playersWithFlight.add(playerStr);
-            }
         }
     }
 
     @SubscribeEvent
-    public void onPlayerJump(LivingEvent.LivingJumpEvent event) {
+    public void onPlayerJump(LivingJumpEvent event) {
         if (event.getEntity() instanceof Player player) {  // 使用新的模式匹配语法
             ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
             if (!legs.isEmpty() && legs.getItem() == ModArmors.NEBULA_LEGGINGS.get()) {

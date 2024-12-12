@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.Unpooled;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
-import net.xiaoyang010.ex_enigmaticlegacy.Menu.CelestialHolinessTransmuteMenu;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHolinessTransmuteMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.CelestialTransmuteRecipe;
 
 import java.util.Optional;

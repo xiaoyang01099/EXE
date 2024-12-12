@@ -29,7 +29,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.StarlitSanctumOfMystiqueBlockEntity;
-import net.xiaoyang010.ex_enigmaticlegacy.Menu.StarlitSanctumMenu;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
 
 import java.util.Collections;
 import java.util.List;

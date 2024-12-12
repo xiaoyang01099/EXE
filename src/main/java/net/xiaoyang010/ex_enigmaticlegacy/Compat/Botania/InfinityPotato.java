@@ -29,7 +29,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -151,11 +151,11 @@ public class InfinityPotato extends Block implements SimpleWaterloggedBlock, Ent
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
-        return new ItemStack(ModBlockss.INFINITY_POTATO.get());
+        return new ItemStack(ModBlocks.INFINITY_POTATO.get());
     }
 
     @Override
     public @NotNull List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-        return Collections.singletonList(new ItemStack(ModBlockss.INFINITY_POTATO.get()));
+        return Collections.singletonList(new ItemStack(ModBlocks.INFINITY_POTATO.get()));
     }
 }

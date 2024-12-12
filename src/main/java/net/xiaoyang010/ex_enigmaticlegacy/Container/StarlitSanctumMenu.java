@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Menu;
+package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.ItemStackHandler;

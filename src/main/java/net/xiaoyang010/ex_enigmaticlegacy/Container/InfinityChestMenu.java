@@ -1,5 +1,5 @@
 
-package net.xiaoyang010.ex_enigmaticlegacy.Menu;
+package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

@@ -24,7 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
 import net.xiaoyang010.ex_enigmaticlegacy.World.teleporter.MinersHeavenOldPortalShape;
 import net.xiaoyang010.ex_enigmaticlegacy.World.teleporter.MinersHeavenOldTeleporter;
 
@@ -109,7 +109,7 @@ public class MinersHeavenPortalBlock extends NetherPortalBlock {
 
 	@OnlyIn(Dist.CLIENT)
 	public static void registerRenderLayer() {
-		ItemBlockRenderTypes.setRenderLayer(ModBlockss.MINERS_HEAVEN_PORTAL.get(),
+		ItemBlockRenderTypes.setRenderLayer(ModBlocks.MINERS_HEAVEN_PORTAL.get(),
 				renderType -> renderType == RenderType.translucent());
 	}
 }

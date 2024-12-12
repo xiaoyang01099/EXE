@@ -25,11 +25,6 @@ public class NebulaArmorHelper {
         return !armor.isEmpty() && armor.getItem() == ModArmors.NEBULA_BOOTS.get();
     }
 
-    public static boolean shouldPlayerHaveFlight(Player player) {
-        ItemStack armor = player.getItemBySlot(EquipmentSlot.CHEST);
-        return !armor.isEmpty() && armor.getItem() == ModArmors.NEBULA_CHESTPLATE.get();
-    }
-
     //回血
     public static void foodToHeal(Player player){
         int food = player.getFoodData().getFoodLevel();

@@ -14,7 +14,7 @@ import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,7 +50,7 @@ public class EvilIngotHandler {
             ItemStack stack = event.getItemStack();
 
             // 正确获取方块的 Item 实例进行比较
-            if (stack.getItem() == ModBlockss.EVILBLOCK.get().asItem()) {
+            if (stack.getItem() == ModBlocks.EVILBLOCK.get().asItem()) {
                 boolean hasevilIngot = player.getPersistentData().getBoolean("hasevilIngot");
 
                 List<Either<FormattedText, TooltipComponent>> tooltipComponents = event.getTooltipElements();

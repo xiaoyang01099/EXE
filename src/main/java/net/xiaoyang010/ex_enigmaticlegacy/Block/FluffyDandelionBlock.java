@@ -17,7 +17,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModParticleTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,18 +47,18 @@ public class FluffyDandelionBlock extends FlowerBlock {
 
     @OnlyIn(Dist.CLIENT)
     public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ModBlockss.FLUFFY_DANDELION.get(), renderType -> renderType == RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.FLUFFY_DANDELION.get(), renderType -> renderType == RenderType.cutout());
     }
 
     @Override
     public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
         BlockState soil = worldIn.getBlockState(pos.below());
-        return soil.is(Blocks.DIRT) || soil.is(Blocks.GRASS_BLOCK) || soil.is(ModBlockss.BLOCKNATURE.get());
+        return soil.is(Blocks.DIRT) || soil.is(Blocks.GRASS_BLOCK) || soil.is(ModBlocks.BLOCKNATURE.get());
     }
 
     @Override
     public @NotNull List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-        return Collections.singletonList(new ItemStack(ModBlockss.FLUFFY_DANDELION.get()));
+        return Collections.singletonList(new ItemStack(ModBlocks.FLUFFY_DANDELION.get()));
     }
 
     @Override

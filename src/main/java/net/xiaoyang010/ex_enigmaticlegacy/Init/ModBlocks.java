@@ -23,7 +23,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.GenEnergydandron
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityPotato;
 import vazkii.botania.common.block.BlockSpecialFlower;
 
-public class ModBlockss {
+public class ModBlocks {
 	public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, ExEnigmaticlegacyMod.MODID);
 	public static final Properties FLOWER_PROPS = Properties.copy(Blocks.POPPY);
 
@@ -38,38 +38,38 @@ public class ModBlockss {
 	public static final RegistryObject<Block> SOARLEANDER = REGISTRY.register("soarleander", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.SOARLEANDERTILE::get));
 	public static final RegistryObject<Block> ORECHIDENDIUM = REGISTRY.register("orechid_endium", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ORECHIDENDIUMTILE::get));
 	public static final RegistryObject<Block> WITCH_OPOOD = REGISTRY.register("witch_opood", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.WITCH_OPOOD_TILE::get));
-	public static final RegistryObject<Block> INFINITY_POTATO = REGISTRY.register("infinity_potato", () -> new InfinityPotato());
-	public static final RegistryObject<Block> GENENERGYDANDRON = REGISTRY.register("gen_energydandron", () -> new GenEnergydandron());
+	public static final RegistryObject<Block> INFINITY_POTATO = REGISTRY.register("infinity_potato", InfinityPotato::new);
+	public static final RegistryObject<Block> GENENERGYDANDRON = REGISTRY.register("gen_energydandron", GenEnergydandron::new);
 
 
 
 
 	//其他
-	public static final RegistryObject<Block> INFINITYGlASS = REGISTRY.register("infinityglass",()->new InfinityGlass());
-	public static final RegistryObject<Block> STARLITSANCTUM = REGISTRY.register("starlit_sanctum", () -> new StarlitSanctumOfMystique());
-	public static final RegistryObject<Block> CELESTIAL_HOLINESS_TRANSMUTER = REGISTRY.register("celestial_holiness_transmuter", () -> new CelestialHolinessTransmuter());
-	public static final RegistryObject<Block> ENDLESS_CAKE = REGISTRY.register("endless_cake", () -> new EndlessCakeBlock());
-	public static final RegistryObject<Block> FLUFFY_DANDELION = REGISTRY.register("fluffy_dandelion", () -> new FluffyDandelionBlock());
-	public static final RegistryObject<Block> COBBLE_STONE = REGISTRY.register("cobble_stone", () -> new Cobblestone());
-	public static final RegistryObject<Block> BLOCKNATURE = REGISTRY.register("blocknature", () -> new BlocknatureBlock());
-	public static final RegistryObject<Block> EVILBLOCK = REGISTRY.register("evilblock", () -> new EvilBlock());
-	public static final RegistryObject<Block> PRISMATICRADIANCEBLOCK = REGISTRY.register("prismaticradianceblock", () -> new PrismaticRadianceBlock());
-	public static final RegistryObject<Block> INFINITYCHEST = REGISTRY.register("infinity_chest", () -> new InfinityChest());
-	public static final RegistryObject<Block> IRIDIUM_BLOCK = REGISTRY.register("iridium_block", () -> new IridiumBlock());
-	public static final RegistryObject<Block> NICKEL_BLOCK = REGISTRY.register("nickel_block", () -> new NickelBlock());
-	public static final RegistryObject<Block> AERIALITE_BLOCK = REGISTRY.register("aerialite_block", () -> new AerialiteBlock());
+	public static final RegistryObject<Block> INFINITYGlASS = REGISTRY.register("infinityglass", InfinityGlass::new);
+	public static final RegistryObject<Block> STARLITSANCTUM = REGISTRY.register("starlit_sanctum", StarlitSanctumOfMystique::new);
+	public static final RegistryObject<Block> CELESTIAL_HOLINESS_TRANSMUTER = REGISTRY.register("celestial_holiness_transmuter", CelestialHolinessTransmuter::new);
+	public static final RegistryObject<Block> ENDLESS_CAKE = REGISTRY.register("endless_cake", EndlessCakeBlock::new);
+	public static final RegistryObject<Block> FLUFFY_DANDELION = REGISTRY.register("fluffy_dandelion", FluffyDandelionBlock::new);
+	public static final RegistryObject<Block> COBBLE_STONE = REGISTRY.register("cobble_stone", Cobblestone::new);
+	public static final RegistryObject<Block> BLOCKNATURE = REGISTRY.register("blocknature", BlocknatureBlock::new);
+	public static final RegistryObject<Block> EVILBLOCK = REGISTRY.register("evilblock", EvilBlock::new);
+	public static final RegistryObject<Block> PRISMATICRADIANCEBLOCK = REGISTRY.register("prismaticradianceblock", PrismaticRadianceBlock::new);
+	public static final RegistryObject<Block> INFINITYCHEST = REGISTRY.register("infinity_chest", InfinityChest::new);
+	public static final RegistryObject<Block> IRIDIUM_BLOCK = REGISTRY.register("iridium_block", IridiumBlock::new);
+	public static final RegistryObject<Block> NICKEL_BLOCK = REGISTRY.register("nickel_block", NickelBlock::new);
+	public static final RegistryObject<Block> AERIALITE_BLOCK = REGISTRY.register("aerialite_block", AerialiteBlock::new);
 
 
 
 
 	//矿物
-	public static final RegistryObject<Block> IRIDIUM_ORE = REGISTRY.register("iridium_ore", () -> new IridiumOre());
-	public static final RegistryObject<Block> NICKEL_ORE = REGISTRY.register("nickel_ore", () -> new NickelOre());
-	public static final RegistryObject<Block> PLATINUM_ORE = REGISTRY.register("platinum_ore", () -> new PlatinumOre());
-	public static final RegistryObject<Block> END_ORE = REGISTRY.register("end_ore", () -> new EndOre());
+	public static final RegistryObject<Block> IRIDIUM_ORE = REGISTRY.register("iridium_ore", IridiumOre::new);
+	public static final RegistryObject<Block> NICKEL_ORE = REGISTRY.register("nickel_ore", NickelOre::new);
+	public static final RegistryObject<Block> PLATINUM_ORE = REGISTRY.register("platinum_ore", PlatinumOre::new);
+	public static final RegistryObject<Block> END_ORE = REGISTRY.register("end_ore", EndOre::new);
 
 	//传送门方块
-	public static final RegistryObject<Block> MINERS_HEAVEN_PORTAL = REGISTRY.register("heaven_portal", () -> new MinersHeavenPortalBlock());
-	public static final RegistryObject<Block> ANOTHER_PORTAL = REGISTRY.register("another_portal", () -> new AnotherPortalBlock());
+	public static final RegistryObject<Block> MINERS_HEAVEN_PORTAL = REGISTRY.register("heaven_portal", MinersHeavenPortalBlock::new);
+	public static final RegistryObject<Block> ANOTHER_PORTAL = REGISTRY.register("another_portal", AnotherPortalBlock::new);
 
 }

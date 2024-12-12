@@ -55,7 +55,7 @@ public class ModTabs {
 		TAB_EXENIGMATICLEGACY_BLOCK = new CreativeModeTab("ex_enigmaticlegacy_block") {
 			@Override
 			public ItemStack makeIcon() {
-				return new ItemStack(ModBlockss.EVILBLOCK.get());
+				return new ItemStack(ModBlocks.EVILBLOCK.get());
 			}
 
 			@OnlyIn(Dist.CLIENT)
@@ -79,7 +79,7 @@ public class ModTabs {
 		TAB_EXENIGMATICLEGACY_BOTANIA = new CreativeModeTab("ex_enigmaticlegacy_botania") {
 			@Override
 			public ItemStack makeIcon() {
-				return new ItemStack(ModBlockss.INFINITY_POTATO.get());
+				return new ItemStack(ModBlocks.INFINITY_POTATO.get());
 			}
 
 			@OnlyIn(Dist.CLIENT)

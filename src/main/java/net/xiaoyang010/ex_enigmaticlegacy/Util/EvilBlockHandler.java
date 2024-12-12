@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class EvilBlockHandler {
 
     @SubscribeEvent
     public static void onItemPickup(TickEvent.PlayerTickEvent event) {
-        if (event.player.getInventory().contains(new ItemStack(ModBlockss.EVILBLOCK.get()))) {
+        if (event.player.getInventory().contains(new ItemStack(ModBlocks.EVILBLOCK.get()))) {
             event.player.getPersistentData().putBoolean("hasEvilBlock", true);
         }
     }
