@@ -5,10 +5,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.EndlessCakeBlock;
@@ -24,7 +27,34 @@ public class FlyingEventHandlers {
     public static List<String> playersWithStone = new ArrayList<>();
     public static final List<String> playersWithNebulaChest = new ArrayList<>();
     public static final List<String> playersWithFlyEffect = new ArrayList<>();
+    public static final List<String> playersWithFly = new ArrayList<>();
 
+//    @SubscribeEvent
+    public static void onPlayerUpdate(LivingUpdateEvent event) {
+        LivingEntity entityLiving = event.getEntityLiving();
+        if (entityLiving instanceof Player player) {
+            String key = player.getGameProfile().getName()+":"+player.level.isClientSide;
+            boolean hasNeutralChest = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == Items.DIAMOND_SWORD;
+            //星云盔甲
+            if (playersWithFly.contains(key)) {
+                if (hasNeutralChest) {
+                    if (!player.getAbilities().mayfly){
+                        player.getAbilities().mayfly = true;
+                        player.onUpdateAbilities();
+                    }
+                } else {
+                    if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()) {
+                        player.getAbilities().mayfly = false;
+                        player.getAbilities().flying = false;
+                        player.onUpdateAbilities();
+                    }
+                    playersWithFly.remove(key);
+                }
+            } else if (hasNeutralChest) {
+                playersWithFly.add(key);
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
