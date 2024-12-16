@@ -7,7 +7,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.IContainerFactory;
-import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHolinessTransmuteMenu;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHTMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.InfinityChestMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
 
@@ -24,8 +24,8 @@ public class ModMenus {
     public static final MenuType<StarlitSanctumMenu> STARLIT_SANCTUM_SCREEN = register("starlit_sanctum_screen",
             StarlitSanctumMenu::new);
 
-    public static final MenuType<CelestialHolinessTransmuteMenu> CELESTIAL_HOLINESS_TRANSMUTE = register("celestial_holiness_transmute",
-            CelestialHolinessTransmuteMenu::new);
+    public static final MenuType<CelestialHTMenu> CELESTIAL_HOLINESS_TRANSMUTE = register("celestial_holiness_transmute",
+            CelestialHTMenu::new);
 
     private static <T extends AbstractContainerMenu> MenuType<T> register(String registryname, IContainerFactory<T> containerFactory) {
         MenuType<T> menuType = new MenuType<T>(containerFactory);

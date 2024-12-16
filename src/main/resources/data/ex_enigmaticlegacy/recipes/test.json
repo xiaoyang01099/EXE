@@ -1,0 +1,24 @@
+{
+  "type": "ex_enigmaticlegacy:celestial_transmute",
+  "inputs": [
+    {
+      "item": "avaritia:infinity_ingot"
+    },
+
+    {
+      "item": "avaritia:infinity_ingot"
+    },
+
+    {
+      "item": "minecraft:diamond"
+    },
+
+    {
+      "item": "minecraft:diamond"
+    }
+  ],
+  "result": {
+    "item": "minecraft:apple",
+    "count": 1
+  }
+}

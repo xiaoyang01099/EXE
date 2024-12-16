@@ -1,29 +1,27 @@
 
 package net.xiaoyang010.ex_enigmaticlegacy.Client.gui;
 
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.chat.Component;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHTMenu;
 
 import java.util.HashMap;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHolinessTransmuteMenu;
-
-public class CelestialHolinessTransmuteScreen extends AbstractContainerScreen<CelestialHolinessTransmuteMenu> {
-	private final static HashMap<String, Object> guistate = CelestialHolinessTransmuteMenu.guistate;
+public class CelestialHTScreen extends AbstractContainerScreen<CelestialHTMenu> {
+	private final static HashMap<String, Object> guistate = CelestialHTMenu.guistate;
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
 
-	public CelestialHolinessTransmuteScreen(CelestialHolinessTransmuteMenu container, Inventory inventory, Component text) {
+	public CelestialHTScreen(CelestialHTMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);
 		this.world = container.world;
 		this.x = container.x;
@@ -69,7 +67,8 @@ public class CelestialHolinessTransmuteScreen extends AbstractContainerScreen<Ce
 
 	@Override
 	protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-		this.font.draw(poseStack, new TranslatableComponent("心之感化台"), 11, 6, -6684673);
+		this.font.draw(poseStack, new TranslatableComponent("screen.ex_enigmaticlegacy.celestia_ht.name"), 11, 6, -6684673);
+		this.font.draw(poseStack, this.menu.getRecipeTimePro(), 100, 20, 0x000000);
 	}
 
 	@Override

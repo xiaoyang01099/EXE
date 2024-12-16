@@ -1,30 +1,31 @@
 
 package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
-
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.SlotItemHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
 
-
-import java.util.function.Supplier;
-import java.util.Map;
+import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
-public class CelestialHolinessTransmuteMenu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
+public class CelestialHTMenu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
 	public final static HashMap<String, Object> guistate = new HashMap<>();
 	public final Level world;
 	public final Player entity;
@@ -32,12 +33,18 @@ public class CelestialHolinessTransmuteMenu extends AbstractContainerMenu implem
 	private IItemHandler internal;
 	private final Map<Integer, Slot> customSlots = new HashMap<>();
 	private boolean bound = false;
+	private final ChtMenuData data;
 
-	public CelestialHolinessTransmuteMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
+	public CelestialHTMenu(int id, Inventory inv, FriendlyByteBuf extraData){
+		this(id, inv, extraData, new ChtMenuData());
+	}
+
+	public CelestialHTMenu(int id, Inventory inv, FriendlyByteBuf extraData, ChtMenuData data) {
 		super(ModMenus.CELESTIAL_HOLINESS_TRANSMUTE, id);
 		this.entity = inv.player;
 		this.world = inv.player.level;
 		this.internal = new ItemStackHandler(5);
+		this.data = data;
 		BlockPos pos = null;
 		if (extraData != null) {
 			pos = extraData.readBlockPos();
@@ -75,7 +82,7 @@ public class CelestialHolinessTransmuteMenu extends AbstractContainerMenu implem
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 132, 51) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 132, 23) {
 			@Override
 			public boolean mayPlace(ItemStack stack) {
 				return false;
@@ -87,13 +94,22 @@ public class CelestialHolinessTransmuteMenu extends AbstractContainerMenu implem
 		}));
 		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 38, 51) {
 		}));
-		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 132, 23) {
+		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 132, 51) {
 		}));
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
 				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 0 + 84 + si * 18));
 		for (int si = 0; si < 9; ++si)
 			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, 0 + 142));
+
+		this.addDataSlots(data);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public String getRecipeTimePro(){
+		float v = this.data.get(0) / (200 * 1.0f) * 100;
+		DecimalFormat df = new DecimalFormat("#.##");
+		return df.format(v) + "%";
 	}
 
 	@Override
