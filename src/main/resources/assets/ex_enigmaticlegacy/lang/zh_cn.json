@@ -143,5 +143,6 @@
   "text.ex_enigmaticlegacy.manaita_sword.infinity": "无限 ",
   "text.ex_enigmaticlegacy.manaita_sword.damage": "攻击伤害",
   "text.ex_enigmaticlegacy.manaita_sword.speed": "1.6 攻击速度",
-  "screen.ex_enigmaticlegacy.celestia_ht.name": "心之感化台"
+  "screen.ex_enigmaticlegacy.celestia_ht.name": "心之感化台",
+  "gui.ex_enigmaticlegacy.category.celestial_transmute": "心之感化台"
 }

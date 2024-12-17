@@ -38,7 +38,6 @@ public class CelestialHTMenu extends AbstractContainerMenu implements Supplier<M
 	public CelestialHTMenu(int id, Inventory inv, FriendlyByteBuf extraData){
 		this(id, inv, extraData, new ChtMenuData());
 	}
-
 	public CelestialHTMenu(int id, Inventory inv, FriendlyByteBuf extraData, ChtMenuData data) {
 		super(ModMenus.CELESTIAL_HOLINESS_TRANSMUTE, id);
 		this.entity = inv.player;
@@ -53,7 +52,7 @@ public class CelestialHTMenu extends AbstractContainerMenu implements Supplier<M
 			this.z = pos.getZ();
 		}
 		if (pos != null) {
-			if (extraData.readableBytes() == 1) { // bound to item
+			if (extraData.readableBytes() == 1) {
 				byte hand = extraData.readByte();
 				ItemStack itemstack;
 				if (hand == 0)
@@ -65,7 +64,7 @@ public class CelestialHTMenu extends AbstractContainerMenu implements Supplier<M
 					this.bound = true;
 				});
 			} else if (extraData.readableBytes() > 1) {
-				extraData.readByte(); // drop padding
+				extraData.readByte();
 				Entity entity = world.getEntity(extraData.readVarInt());
 				if (entity != null)
 					entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(capability -> {
@@ -98,9 +97,9 @@ public class CelestialHTMenu extends AbstractContainerMenu implements Supplier<M
 		}));
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
-				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 0 + 84 + si * 18));
+				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 8 + sj * 18, 84 + si * 18));
 		for (int si = 0; si < 9; ++si)
-			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, 0 + 142));
+			this.addSlot(new Slot(inv, si, 8 + si * 18, 142));
 
 		this.addDataSlots(data);
 	}
@@ -108,8 +107,8 @@ public class CelestialHTMenu extends AbstractContainerMenu implements Supplier<M
 	@OnlyIn(Dist.CLIENT)
 	public String getRecipeTimePro(){
 		float v = this.data.get(0) / (200 * 1.0f) * 100;
-		DecimalFormat df = new DecimalFormat("#.##");
-		return df.format(v) + "%";
+		DecimalFormat df = new DecimalFormat("#.#");
+		return df.format(v);
 	}
 
 	@Override

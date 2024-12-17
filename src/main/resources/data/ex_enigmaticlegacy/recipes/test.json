@@ -2,23 +2,24 @@
   "type": "ex_enigmaticlegacy:celestial_transmute",
   "inputs": [
     {
-      "item": "avaritia:infinity_ingot"
+      "item": "minecraft:diamond",
+      "count": 64
     },
-
     {
-      "item": "avaritia:infinity_ingot"
+      "item": "minecraft:emerald",
+      "count": 32
     },
-
     {
-      "item": "minecraft:diamond"
+      "item": "minecraft:gold_ingot",
+      "count": 16
     },
-
     {
-      "item": "minecraft:diamond"
+      "item": "minecraft:iron_ingot",
+      "count": 8
     }
   ],
   "result": {
-    "item": "minecraft:apple",
-    "count": 1
+    "item": "minecraft:nether_star",
+    "count": 4
   }
 }

@@ -2,6 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Recipe;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -16,23 +17,30 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.CelestialHTTile;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 
 public class CelestialTransmuteRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "celestial_transmute");
     private final ResourceLocation id;
     private final ItemStack result;
     private final NonNullList<Ingredient> recipeItems;
+    private final NonNullList<Integer> inputCounts;
 
-    public CelestialTransmuteRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems) {
+    public CelestialTransmuteRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, NonNullList<Integer> inputCounts) {
         this.id = id;
         this.result = output;
         this.recipeItems = recipeItems;
+        this.inputCounts = inputCounts;
     }
 
-//    public static List<CelestialTransmuteRecipe> getAllRecipes() {
-//        return Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(CelestialTransmuteRecipe.Type.INSTANCE);
-//    }
+     public static List<CelestialTransmuteRecipe> getAllRecipes() {
+       return Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(Type.INSTANCE);
+   }
 
+    public NonNullList<Ingredient> getRecipeItems() {
+        return this.recipeItems;
+    }
 
     @Override
     public boolean matches(Container pContainer, Level pLevel) {
@@ -45,13 +53,18 @@ public class CelestialTransmuteRecipe implements Recipe<Container> {
             for (int i = 0; i < recipeItems.size(); i++) {
                 Ingredient ingredient = recipeItems.get(i);
                 ItemStack stack = tile.getItem(i + 1);
-                if (!ingredient.test(stack)) return false;
+
+                if (!ingredient.test(stack) || stack.getCount() < inputCounts.get(i))
+                    return false;
             }
             return true;
         }
         return false;
     }
 
+    public NonNullList<Integer> getInputCounts() {
+        return inputCounts;
+    }
 
     @Override
     public ItemStack assemble(Container container) {
@@ -84,9 +97,9 @@ public class CelestialTransmuteRecipe implements Recipe<Container> {
     }
 
     public static class Type implements RecipeType<CelestialTransmuteRecipe> {
-//        public Type(){ }
-//        public static final Type INSTANCE = new Type();
-//        public static final String ID = "celestial_transmute";
+       public Type(){ }
+       public static final Type INSTANCE = new Type();
+       public static final String ID = "celestial_transmute";
 
         @Override
         public String toString() {
@@ -104,12 +117,16 @@ public class CelestialTransmuteRecipe implements Recipe<Container> {
 
             JsonArray ingredients = GsonHelper.getAsJsonArray(json, "inputs");
             NonNullList<Ingredient> inputs = NonNullList.withSize(4, Ingredient.EMPTY);
+            NonNullList<Integer> counts = NonNullList.withSize(4, 1);
 
             for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
+                JsonObject inputObj = ingredients.get(i).getAsJsonObject();
+                inputs.set(i, Ingredient.fromJson(inputObj));
+                if (inputObj.has("count")) {
+                    counts.set(i, inputObj.get("count").getAsInt());
+                }
             }
-
-            return new CelestialTransmuteRecipe(id, output, inputs);
+            return new CelestialTransmuteRecipe(id, output, inputs, counts);
         }
 
 
@@ -117,21 +134,24 @@ public class CelestialTransmuteRecipe implements Recipe<Container> {
         @Override
         public CelestialTransmuteRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
             NonNullList<Ingredient> inputs = NonNullList.withSize(4, Ingredient.EMPTY);
+            NonNullList<Integer> counts = NonNullList.withSize(4, 1);
 
-            inputs.replaceAll(ignored -> Ingredient.fromNetwork(buf));
+            for (int i = 0; i < 4; i++) {
+                inputs.set(i, Ingredient.fromNetwork(buf));
+                counts.set(i, buf.readVarInt());
+            }
 
             ItemStack output = buf.readItem();
-            return new CelestialTransmuteRecipe(id, output, inputs);
+            return new CelestialTransmuteRecipe(id, output, inputs, counts);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buf, CelestialTransmuteRecipe recipe) {
-            for (Ingredient recipeItem : recipe.recipeItems) {
-                recipeItem.toNetwork(buf);
+            for (int i = 0; i < recipe.recipeItems.size(); i++) {
+                recipe.recipeItems.get(i).toNetwork(buf);
+                buf.writeVarInt(recipe.inputCounts.get(i));
             }
             buf.writeItemStack(recipe.getResultItem(), false);
         }
-
-
     }
 }

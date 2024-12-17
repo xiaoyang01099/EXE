@@ -32,7 +32,7 @@ public class CelestialHTScreen extends AbstractContainerScreen<CelestialHTMenu> 
 		this.imageHeight = 166;
 	}
 
-	private static final ResourceLocation texture = new ResourceLocation("ex_enigmaticlegacy:textures/gui/container/celestial_holiness_transmute.png");
+	public static final ResourceLocation texture = new ResourceLocation("ex_enigmaticlegacy:textures/gui/container/celestial_holiness_transmute.png");
 
 	@Override
 	public void render(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
@@ -68,7 +68,11 @@ public class CelestialHTScreen extends AbstractContainerScreen<CelestialHTMenu> 
 	@Override
 	protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
 		this.font.draw(poseStack, new TranslatableComponent("screen.ex_enigmaticlegacy.celestia_ht.name"), 11, 6, -6684673);
-		this.font.draw(poseStack, this.menu.getRecipeTimePro(), 100, 20, 0x000000);
+		String timePro = this.menu.getRecipeTimePro();
+		if (Float.parseFloat(timePro) > 0) {
+			this.font.draw(poseStack, timePro, 90, 20, 4210752);
+			this.font.draw(poseStack, "%", 110, 20, 4210752);
+		}
 	}
 
 	@Override

@@ -110,7 +110,7 @@ public class CelestialHTTile extends RandomizableContainerBlockEntity implements
 
 		boolean isInput = true;
 
-		for (int j = 1; j < 5; j++){
+		for (int j = 1; j < 5; j++) {
 			if (tile.getItem(j).isEmpty()) {
 				isInput = false;
 				tile.data.set(0, 0);
@@ -125,32 +125,46 @@ public class CelestialHTTile extends RandomizableContainerBlockEntity implements
 		recipes.ifPresent(recipe -> {
 			ItemStack resultItem = recipe.getResultItem();
 			if (resultItem.isEmpty()) return;
-			//可以合成
-			if (result.isEmpty()){
+
+			// 检查输出槽
+			if (result.isEmpty() || (resultItem.getItem() == result.getItem()
+					&& result.getCount() + resultItem.getCount() <= result.getMaxStackSize())) {
+
 				tile.data.set(0, tile.data.get(0) + 1);
 				if (tile.data.get(0) <= 200) {
 					setChanged(level, pos, state);
 					return; //时间限制
 				}
 
+				// 检查并消耗材料
+				boolean hasEnoughItems = true;
+				NonNullList<ItemStack> tempInputs = NonNullList.withSize(4, ItemStack.EMPTY);
+
+				// 复制当前物品状态
 				for (int i = 0; i < 4; i++) {
-					tile.removeItem(i + 1, 1);
+					tempInputs.set(i, tile.getItem(i + 1).copy());
+					int required = recipe.getInputCounts().get(i);
+					if (tempInputs.get(i).getCount() < required) {
+						hasEnoughItems = false;
+						break;
+					}
 				}
-				tile.setItem(0, resultItem);
-				tile.data.set(0, 0);
-			}else {
-				if (resultItem.getItem() == result.getItem()) {
-					tile.data.set(0, tile.data.get(0) + 1);
-					if (tile.data.get(0) <= 200) {
-						setChanged(level, pos, state);
-						return; //时间限制
+
+				if (hasEnoughItems) {
+					// 实际消耗物品
+					for (int i = 0; i < 4; i++) {
+						int required = recipe.getInputCounts().get(i);
+						ItemStack currentItem = tile.getItem(i + 1);
+						currentItem.setCount(currentItem.getCount() - required);
 					}
 
-					for (int i = 0; i < 4; i++) {
-						tile.removeItem(i + 1, 1);
+					// 添加输出物品
+					if (result.isEmpty()) {
+						tile.setItem(0, resultItem.copy());
+					} else {
+						result.grow(resultItem.getCount());
 					}
-					result.setCount(result.getCount() + resultItem.getCount());
-					tile.setItem(0, result);
+
 					tile.data.set(0, 0);
 					setChanged(level, pos, state);
 				}

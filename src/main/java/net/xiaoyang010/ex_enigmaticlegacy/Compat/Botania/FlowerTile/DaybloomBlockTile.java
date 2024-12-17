@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 
 public class DaybloomBlockTile extends TileEntityGeneratingFlower {
     public static final String TAG = ExEnigmaticlegacyMod.MODID + ":decayTicks";
-    public static final int DECAY_TIME = 48000;
+    public static final int DECAY_TIME = 480;
     private int decayTicks;
 
     public DaybloomBlockTile(BlockPos pos, BlockState state) {
@@ -38,7 +38,7 @@ public class DaybloomBlockTile extends TileEntityGeneratingFlower {
                 }
                 return;
             }
-            if (day && gameTime % 1200 == 0) {
+            if (day && gameTime % 120 == 0) {
                 addMana(100);
                 setChanged();
             }
