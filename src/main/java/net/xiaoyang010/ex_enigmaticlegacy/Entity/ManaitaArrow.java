@@ -3,7 +3,6 @@ package net.xiaoyang010.ex_enigmaticlegacy.Entity;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import morph.avaritia.util.InfinityDamageSource;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
@@ -20,6 +19,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.EnderDragonPart;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Arrow;
@@ -35,7 +37,10 @@ import net.minecraft.world.phys.Vec3;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class ManaitaArrow extends AbstractArrow {
     private static final int EXPOSED_POTION_DECAY_TIME = 600;
@@ -89,10 +94,10 @@ public class ManaitaArrow extends AbstractArrow {
             i = (int)Math.min(j + (long)i, 2147483647L);
         }
 
-        Entity entity1 = this.getOwner();
-        DamageSource damagesource = new InfinityDamageSource(this);
-        if (entity1 instanceof LivingEntity) {
-            ((LivingEntity)entity1).setLastHurtMob(entity);
+        Entity owner = this.getOwner();
+        DamageSource damagesource = DamageSource.arrow(this, owner);
+        if (owner instanceof LivingEntity) {
+            ((LivingEntity)owner).setLastHurtMob(entity);
         }
 
         int k = entity.getRemainingFireTicks();
@@ -100,7 +105,23 @@ public class ManaitaArrow extends AbstractArrow {
             entity.setSecondsOnFire(5);
         }
 
-        if (entity.hurt(damagesource, (float)i)) { //类型为投掷物伤害 则会被末影人传送
+        boolean hurt;
+        if (entity instanceof EnderDragon enderDragon){
+            hurt = enderDragon.hurt(enderDragon.head, damagesource, Integer.MAX_VALUE);
+        }else if (entity instanceof WitherBoss witherBoss){
+            witherBoss.setInvulnerableTicks(0);
+            hurt = witherBoss.hurt(damagesource, Float.MAX_VALUE);
+        }else if (entity instanceof EnderDragonPart part){
+            EnderDragon enderDragon = part.parentMob;
+            if (enderDragon != null) {
+                hurt = enderDragon.hurt(enderDragon.head, damagesource, Integer.MAX_VALUE);
+            }
+            hurt = part.parentMob.hurt(part.parentMob.head, damagesource, Integer.MAX_VALUE);
+        }else {
+            hurt = entity.hurt(damagesource, (float) i);
+        }
+
+        if (hurt) { //类型为投掷物伤害 则会被末影人传送
 
             if (entity instanceof LivingEntity livingentity) {
                 if (!this.level.isClientSide && this.getPierceLevel() <= 0) {
@@ -114,21 +135,21 @@ public class ManaitaArrow extends AbstractArrow {
                     }
                 }
 
-                if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
-                    EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
-                    EnchantmentHelper.doPostDamageEffects((LivingEntity)entity1, livingentity);
+                if (!this.level.isClientSide && owner instanceof LivingEntity) {
+                    EnchantmentHelper.doPostHurtEffects(livingentity, owner);
+                    EnchantmentHelper.doPostDamageEffects((LivingEntity)owner, livingentity);
                 }
 
                 this.doPostHurtEffects(livingentity);
-                if (livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer && !this.isSilent()) {
-                    ((ServerPlayer)entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+                if (livingentity != owner && livingentity instanceof Player && owner instanceof ServerPlayer && !this.isSilent()) {
+                    ((ServerPlayer)owner).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
                 }
 
                 if (!entity.isAlive() && this.piercedAndKilledEntities != null) {
                     this.piercedAndKilledEntities.add(livingentity);
                 }
 
-                if (!this.level.isClientSide && entity1 instanceof ServerPlayer serverplayer) {
+                if (!this.level.isClientSide && owner instanceof ServerPlayer serverplayer) {
                     if (this.piercedAndKilledEntities != null && this.shotFromCrossbow()) {
                         CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayer, this.piercedAndKilledEntities);
                     } else if (!entity.isAlive() && this.shotFromCrossbow()) {
