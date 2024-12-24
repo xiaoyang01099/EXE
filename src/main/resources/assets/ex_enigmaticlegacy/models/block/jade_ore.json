@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "ex_enigmaticlegacy:blocks/ores/jade_ore",
+    "particle": "ex_enigmaticlegacy:blocks/ores/jade_ore"
+  }
+}

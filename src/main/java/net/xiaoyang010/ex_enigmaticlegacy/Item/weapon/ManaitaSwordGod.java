@@ -16,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.EntityRainBowLightningBlot;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.Xingyun2825Entity;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.ColorText;
@@ -83,14 +85,15 @@ public class ManaitaSwordGod extends SwordItem {
 
             // 对每个非玩家生物召唤彩色雷电并杀死它们
             for (LivingEntity entity : entities) {
-                createRainLightning_blot(entity.getX(), entity.getY(), entity.getZ(), level);
-                // 使用雷电伤害源杀死生物
-                entity.die(DamageSource.mobAttack(player));
-                if (entity instanceof Player playerHurt)
-                    dropItem(playerHurt);
-                entity.hurt(DamageSource.LIGHTNING_BOLT, Float.MAX_VALUE);
-                entity.setHealth(0.0F); // 确保死亡
-                //这里确保死亡建议用setRemove()
+                if (entity instanceof Monster) {
+                    createRainLightning_blot(entity.getX(), entity.getY(), entity.getZ(), level);
+                    // 使用雷电伤害源杀死生物
+                    entity.die(DamageSource.mobAttack(player));
+                    if (entity instanceof Player playerHurt)
+                        dropItem(playerHurt);
+                    entity.hurt(DamageSource.LIGHTNING_BOLT, Float.MAX_VALUE);
+                    entity.setHealth(0.0F);
+                }
             }
             List<ItemEntity> itemEntities = serverLevel.getEntitiesOfClass(ItemEntity.class, boundingBox);
             for (ItemEntity itemEntity : itemEntities) {
@@ -117,7 +120,9 @@ public class ManaitaSwordGod extends SwordItem {
                 if (entity instanceof Player playerHurt) {
                     playerHurt.hurt(new InfinityDamageSource(player), Integer.MAX_VALUE);
                     dropItem(playerHurt);
-                }else living.hurt(new InfinityDamageSource(player), Float.POSITIVE_INFINITY);
+                } else if (entity instanceof Xingyun2825Entity xingyun2825Entity) {
+                    xingyun2825Entity.costomDie();
+                } else living.hurt(new InfinityDamageSource(player), Float.POSITIVE_INFINITY);
                 living.setHealth(-1.0f);
                 if (living.isAlive()){
                     living.die(new InfinityDamageSource(player));

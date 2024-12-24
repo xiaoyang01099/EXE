@@ -95,7 +95,8 @@ public class ManaitaArrow extends AbstractArrow {
         }
 
         Entity owner = this.getOwner();
-        DamageSource damagesource = DamageSource.arrow(this, owner);
+        // DamageSource damagesource = DamageSource.arrow(this, owner);
+        DamageSource damagesource = DamageSource.playerAttack((Player)owner);
         if (owner instanceof LivingEntity) {
             ((LivingEntity)owner).setLastHurtMob(entity);
         }

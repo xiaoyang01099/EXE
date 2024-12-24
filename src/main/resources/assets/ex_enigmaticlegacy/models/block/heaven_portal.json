@@ -1,0 +1,7 @@
+{
+  "parent": "block/leaves",
+  "textures": {
+    "all": "ex_enigmaticlegacy:blocks/portal/another_portal",
+    "particle": "ex_enigmaticlegacy:blocks/portal/another_portal"
+  }
+}

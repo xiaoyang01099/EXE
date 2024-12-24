@@ -71,7 +71,7 @@ public class CelestialHTMenu extends AbstractContainerMenu implements Supplier<M
 						this.internal = capability;
 						this.bound = true;
 					});
-			} else { // might be bound to block
+			} else {
 				BlockEntity ent = inv.player != null ? inv.player.level.getBlockEntity(pos) : null;
 				if (ent != null) {
 					ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(capability -> {

@@ -8,6 +8,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.IContainerFactory;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHTMenu;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.DimensionalMirrorContainer;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.InfinityChestMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
 
@@ -19,13 +20,16 @@ public class ModMenus {
     private static final List<MenuType<?>> REGISTRY = new ArrayList<>();
 
     public static final MenuType<InfinityChestMenu> INFINITE_CHEST_SCREEN = register("infinite_chest_screen",
-            InfinityChestMenu::new);;
+            InfinityChestMenu::new);
 
     public static final MenuType<StarlitSanctumMenu> STARLIT_SANCTUM_SCREEN = register("starlit_sanctum_screen",
             StarlitSanctumMenu::new);
 
     public static final MenuType<CelestialHTMenu> CELESTIAL_HOLINESS_TRANSMUTE = register("celestial_holiness_transmute",
             CelestialHTMenu::new);
+
+    public static final MenuType<DimensionalMirrorContainer> DIMENSIONAL_MIRROR = register("dimensional_mirror",
+            (windowId, inv, data) -> new DimensionalMirrorContainer(windowId, inv, inv.player));
 
     private static <T extends AbstractContainerMenu> MenuType<T> register(String registryname, IContainerFactory<T> containerFactory) {
         MenuType<T> menuType = new MenuType<T>(containerFactory);

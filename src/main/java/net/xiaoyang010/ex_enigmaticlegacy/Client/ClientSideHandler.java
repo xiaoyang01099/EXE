@@ -30,7 +30,6 @@ public class ClientSideHandler {
         DaybloomBlock.registerRenderLayer();
         NightshadeBlock.registerRenderLayer();
         AstralKillop.registerRenderLayer();
-        CelestialHolinessTransmuter.registerRenderLayer();
     }
 
 

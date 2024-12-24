@@ -25,14 +25,14 @@ import java.util.List;
 public class CelestialTransmuteRecipeCategory implements IRecipeCategory<CelestialTransmuteRecipe> {
     public static final ResourceLocation UID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "celestial_transmute");
     public static final ResourceLocation TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID,
-            "textures/gui/container/celestial_holiness_transmute.png"); //container/celestial_holiness_transmute
+            "textures/gui/celestial_holiness_transmute_jei.png");
 
     private final IDrawable background;
     private final IDrawable icon;
     private final Component title;
 
     public CelestialTransmuteRecipeCategory(IGuiHelper helper) {
-        this.background = helper.createDrawable(TEXTURE, 20, 21,176, 83);
+        this.background = helper.createDrawable(TEXTURE,0,0,176,88);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK,
                 new ItemStack(ModBlocks.CELESTIAL_HOLINESS_TRANSMUTER.get()));
         this.title = new TranslatableComponent("gui." + ExEnigmaticlegacyMod.MODID + ".category.celestial_transmute");

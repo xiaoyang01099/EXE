@@ -70,5 +70,13 @@
         "stream": false
       }
     ]
+  },
+  "golden_laurel": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:golden_laurel",
+        "stream": false
+      }
+    ]
   }
 }

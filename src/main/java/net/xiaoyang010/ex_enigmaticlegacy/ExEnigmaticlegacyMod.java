@@ -26,6 +26,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityPotatoRender;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.OmegaCore;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.TooltipColorEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -76,9 +77,12 @@ public class ExEnigmaticlegacyMod {
 		MinecraftForge.EVENT_BUS.register(new CreeperBehaviorHandler());
 		MinecraftForge.EVENT_BUS.register(new BedrockBreakEventHandler());
 		MinecraftForge.EVENT_BUS.register(new TooltipColorEvent());
-		/*MinecraftForge.EVENT_BUS.register(new WaterClickEvent());*/
+		MinecraftForge.EVENT_BUS.register(new InfinityTotemEvent());
+		MinecraftForge.EVENT_BUS.register(new WolfHandlerEvent());
+		MinecraftForge.EVENT_BUS.register(new AnvilRepairHandler());
 
 
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 		/*bus.addListener(this::registerAttributes);*/
 		bus.addListener(this::commonSetup);
@@ -95,6 +99,7 @@ public class ExEnigmaticlegacyMod {
 
 	private void setup(final FMLCommonSetupEvent event) {
 		registerCustomEMC();
+		event.enqueueWork(NetworkHandler::register);
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
@@ -108,8 +113,6 @@ public class ExEnigmaticlegacyMod {
 		// 为自定义玻璃设置渲染层
 		ItemBlockRenderTypes.setRenderLayer(ModBlocks.INFINITYGlASS.get(), RenderType.translucent());
 		event.enqueueWork(() ->{
-			/*EntityRenderers.register(SACABAMBASPIS.get(), SacabambaspisRenderer::new);*/
-
 		});
 
 		BlockEntityRenderers.register(ModBlockEntities.INFINITY_CHEST.get(), InfinityChestRenderer::new);

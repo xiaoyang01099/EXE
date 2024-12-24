@@ -13,22 +13,47 @@ import java.util.HashMap;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModSounds {
-	public static Map<ResourceLocation, SoundEvent> REGISTRY = new HashMap<>();
+	public static final Map<ResourceLocation, SoundEvent> REGISTRY = new HashMap<>();
+
+	public static final ResourceLocation NOTHING_ID = new ResourceLocation("ex_enigmaticlegacy", "nothing");
+	public static final ResourceLocation WHAT_ID = new ResourceLocation("ex_enigmaticlegacy", "what");
+	public static final ResourceLocation AAAAA_ID = new ResourceLocation("ex_enigmaticlegacy", "aaaaa");
+	public static final ResourceLocation KILL_ID = new ResourceLocation("ex_enigmaticlegacy", "kill");
+	public static final ResourceLocation SCRAY_ID = new ResourceLocation("ex_enigmaticlegacy", "scray");
+	public static final ResourceLocation MEOW_ID = new ResourceLocation("ex_enigmaticlegacy", "meow");
+	public static final ResourceLocation CUTE_ID = new ResourceLocation("ex_enigmaticlegacy", "cute");
+	public static final ResourceLocation HUNT_DOWN_ID = new ResourceLocation("ex_enigmaticlegacy", "hunt_down");
+	public static final ResourceLocation FLOWEY_LAUGH_ID = new ResourceLocation("ex_enigmaticlegacy", "flowey_laugh");
+	public static final ResourceLocation GOLDEN_LAUREL_ID = new ResourceLocation("ex_enigmaticlegacy", "golden_laurel");
+
+	public static final SoundEvent NOTHING = new SoundEvent(NOTHING_ID);
+	public static final SoundEvent WHAT = new SoundEvent(WHAT_ID);
+	public static final SoundEvent AAAAA = new SoundEvent(AAAAA_ID);
+	public static final SoundEvent KILL = new SoundEvent(KILL_ID);
+	public static final SoundEvent SCRAY = new SoundEvent(SCRAY_ID);
+	public static final SoundEvent MEOW = new SoundEvent(MEOW_ID);
+	public static final SoundEvent CUTE = new SoundEvent(CUTE_ID);
+	public static final SoundEvent HUNT_DOWN = new SoundEvent(HUNT_DOWN_ID);
+	public static final SoundEvent FLOWEY_LAUGH = new SoundEvent(FLOWEY_LAUGH_ID);
+	public static final SoundEvent GOLDEN_LAUREL = new SoundEvent(GOLDEN_LAUREL_ID);
+
 	static {
-		REGISTRY.put(new ResourceLocation("ex_enigmaticlegacy", "nothing"), new SoundEvent(new ResourceLocation("ex_enigmaticlegacy", "nothing")));
-		REGISTRY.put(new ResourceLocation("ex_enigmaticlegacy", "what"), new SoundEvent(new ResourceLocation("ex_enigmaticlegacy", "what")));
-		REGISTRY.put(new ResourceLocation("ex_enigmaticlegacy", "aaaaa"), new SoundEvent(new ResourceLocation("ex_enigmaticlegacy", "aaaaa")));
-		REGISTRY.put(new ResourceLocation("ex_enigmaticlegacy", "kill"), new SoundEvent(new ResourceLocation("ex_enigmaticlegacy", "kill")));
-		REGISTRY.put(new ResourceLocation("ex_enigmaticlegacy", "scray"), new SoundEvent(new ResourceLocation("ex_enigmaticlegacy", "scray")));
-		REGISTRY.put(new ResourceLocation("ex_enigmaticlegacy", "meow"), new SoundEvent(new ResourceLocation("ex_enigmaticlegacy", "meow")));
-		REGISTRY.put(new ResourceLocation("ex_enigmaticlegacy", "cute"), new SoundEvent(new ResourceLocation("ex_enigmaticlegacy", "cute")));
-		REGISTRY.put(new ResourceLocation("ex_enigmaticlegacy", "hunt_down"), new SoundEvent(new ResourceLocation("ex_enigmaticlegacy", "hunt_down")));
-		REGISTRY.put(new ResourceLocation("ex_enigmaticlegacy", "flowey_laugh"), new SoundEvent(new ResourceLocation("ex_enigmaticlegacy", "flowey_laugh")));
+		REGISTRY.put(NOTHING_ID, NOTHING);
+		REGISTRY.put(WHAT_ID, WHAT);
+		REGISTRY.put(AAAAA_ID, AAAAA);
+		REGISTRY.put(KILL_ID, KILL);
+		REGISTRY.put(SCRAY_ID, SCRAY);
+		REGISTRY.put(MEOW_ID, MEOW);
+		REGISTRY.put(CUTE_ID, CUTE);
+		REGISTRY.put(HUNT_DOWN_ID, HUNT_DOWN);
+		REGISTRY.put(FLOWEY_LAUGH_ID, FLOWEY_LAUGH);
+		REGISTRY.put(GOLDEN_LAUREL_ID, GOLDEN_LAUREL);
 	}
 
 	@SubscribeEvent
 	public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
-		for (Map.Entry<ResourceLocation, SoundEvent> sound : REGISTRY.entrySet())
+		for (Map.Entry<ResourceLocation, SoundEvent> sound : REGISTRY.entrySet()) {
 			event.getRegistry().register(sound.getValue().setRegistryName(sound.getKey()));
+		}
 	}
 }

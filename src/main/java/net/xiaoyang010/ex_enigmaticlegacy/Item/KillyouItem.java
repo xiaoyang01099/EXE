@@ -20,7 +20,7 @@ public class KillyouItem extends SwordItem {
 			}
 
 			public float getAttackDamageBonus() {
-				return 40000000f;
+				return 19f;
 			}
 
 			public int getLevel() {

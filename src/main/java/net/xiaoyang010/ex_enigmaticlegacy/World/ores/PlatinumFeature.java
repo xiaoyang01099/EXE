@@ -51,7 +51,9 @@ public class PlatinumFeature extends OreFeature {
     public PlatinumFeature() {
         super(OreConfiguration.CODEC);
         this.generate_dimensions = Set.of(
-                Level.OVERWORLD
+                Level.OVERWORLD,
+                ResourceKey.create(Registry.DIMENSION_REGISTRY,
+                        new ResourceLocation("ex_enigmaticlegacy:miners_heaven_old"))
         );
     }
 

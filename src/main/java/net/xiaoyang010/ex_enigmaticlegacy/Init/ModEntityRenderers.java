@@ -18,7 +18,6 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.SPECTRITE_CRYSTAL.get(), SpectriteCrystalRenderer::new);
 		event.registerEntityRenderer(ModEntities.SPECTRITE_WITHER.get(), SpectriteWitherRenderer::new);
 		event.registerEntityRenderer(ModEntities.KIND_MIAO.get(), MiaoMiaoRenderer::new);
-		/*event.registerEntityRenderer(ModEntities.SACABAMBASPIS.get(), SacabambaspisRenderer::new);*/
 	}
 
 }

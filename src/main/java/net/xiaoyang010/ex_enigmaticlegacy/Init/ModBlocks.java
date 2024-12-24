@@ -5,6 +5,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Block.ore.*;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 import net.minecraftforge.registries.RegistryObject;
@@ -13,10 +14,6 @@ import net.minecraftforge.registries.DeferredRegister;
 
 import net.minecraft.world.level.block.Block;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.StarlitSanctumOfMystique;
-import net.xiaoyang010.ex_enigmaticlegacy.Block.ore.EndOre;
-import net.xiaoyang010.ex_enigmaticlegacy.Block.ore.IridiumOre;
-import net.xiaoyang010.ex_enigmaticlegacy.Block.ore.NickelOre;
-import net.xiaoyang010.ex_enigmaticlegacy.Block.ore.PlatinumOre;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.portal.AnotherPortalBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.portal.MinersHeavenPortalBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.GenEnergydandron;
@@ -58,6 +55,9 @@ public class ModBlocks {
 	public static final RegistryObject<Block> IRIDIUM_BLOCK = REGISTRY.register("iridium_block", IridiumBlock::new);
 	public static final RegistryObject<Block> NICKEL_BLOCK = REGISTRY.register("nickel_block", NickelBlock::new);
 	public static final RegistryObject<Block> AERIALITE_BLOCK = REGISTRY.register("aerialite_block", AerialiteBlock::new);
+	public static final RegistryObject<Block> DECAY_BLOCK = REGISTRY.register("decay_block", DecayBlock::new);
+	public static final RegistryObject<Block> ARCANE_ICE_CHUNK = REGISTRY.register("arcane_ice_chunk", ArcaneIceChunk::new);
+
 
 
 
@@ -67,6 +67,20 @@ public class ModBlocks {
 	public static final RegistryObject<Block> NICKEL_ORE = REGISTRY.register("nickel_ore", NickelOre::new);
 	public static final RegistryObject<Block> PLATINUM_ORE = REGISTRY.register("platinum_ore", PlatinumOre::new);
 	public static final RegistryObject<Block> END_ORE = REGISTRY.register("end_ore", EndOre::new);
+	public static final RegistryObject<Block> AMETHYST_ORE = REGISTRY.register("amethyst_ore", AmethystOre::new);
+	public static final RegistryObject<Block> BAUXITE_ORE = REGISTRY.register("bauxite_ore", BauxiteOre::new);
+	public static final RegistryObject<Block> CHROMITE_ORE = REGISTRY.register("chromite_ore", ChromiteOre::new);
+	public static final RegistryObject<Block> FLUORITE_ORE = REGISTRY.register("fluorite_ore", FluoriteOre::new);
+	public static final RegistryObject<Block> GYPSUM_ORE = REGISTRY.register("gypsum_ore", GypsumOre::new);
+	public static final RegistryObject<Block> JADE_ORE = REGISTRY.register("jade_ore", JadeOre::new);
+	public static final RegistryObject<Block> LEAD_ORE = REGISTRY.register("lead_ore", LeadOre::new);
+	public static final RegistryObject<Block> BRONZE_ORE = REGISTRY.register("bronze_ore", BronzeOre::new);
+	public static final RegistryObject<Block> OPAL_ORE = REGISTRY.register("opal_ore", OpalOre::new);
+
+
+
+
+
 
 	//传送门方块
 	public static final RegistryObject<Block> MINERS_HEAVEN_PORTAL = REGISTRY.register("heaven_portal", MinersHeavenPortalBlock::new);

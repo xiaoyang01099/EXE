@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.xiaoyang010.ex_enigmaticlegacy.mixin",
+  "package": "net.xiaoyang010.ex_enigmaticlegacy.Mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "refmap": "ex_enigmaticlegacy.refmap.json",

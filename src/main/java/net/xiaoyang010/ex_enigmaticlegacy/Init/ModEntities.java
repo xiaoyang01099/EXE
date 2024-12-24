@@ -53,13 +53,6 @@ public class ModEntities {
                     .sized(0.9f, 3.5f)
 	);
 
-	/*public static final RegistryObject<EntityType<Sacabambaspis>> SACABAMBASPIS = REGISTRY.register("sacabambaspis",
-			() -> EntityType.Builder.of(Sacabambaspis::new, MobCategory.WATER_CREATURE)
-					.sized(0.6F, 0.4F)
-					.clientTrackingRange(4)
-					.updateInterval(3)
-					.build("sacabambaspis"));*/
-
 	private static <T extends Entity> RegistryObject<EntityType<T>> register(String registryname, EntityType.Builder<T> entityTypeBuilder) {
 		return REGISTRY.register(registryname, () -> (EntityType<T>) entityTypeBuilder.build(registryname));
 	}

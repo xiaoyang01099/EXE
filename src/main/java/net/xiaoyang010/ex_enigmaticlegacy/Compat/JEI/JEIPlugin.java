@@ -40,7 +40,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addRecipeClickArea(CelestialHTScreen.class, 20,21, 256, 256, CelestialTransmuteRecipe.TYPE_ID);
+        registration.addRecipeClickArea(CelestialHTScreen.class, 0, 0, 0, 0, CelestialTransmuteRecipe.TYPE_ID);
     }
 
     //+号添加

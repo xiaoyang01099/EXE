@@ -34,7 +34,6 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
     }
 
     private void registerStandardRecipes(Consumer<FinishedRecipe> consumer) {
-        // Regen Ivy Recipe
         resultExists(consumer,
                 ShapelessRecipeBuilder.shapeless(ModItems.IVYREGEN.get())
                         .requires(Items.VINE)

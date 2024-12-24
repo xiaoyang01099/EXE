@@ -43,10 +43,6 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 
 @Mod.EventBusSubscriber
 public class Xiaoyang010Entity extends Monster {
-	/*@SubscribeEvent
-	public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
-		event.getSpawns().getSpawner(MobCategory.CREATURE).add(new MobSpawnSettings.SpawnerData(ModEntities.XIAOYANG_010.get(), 20, 4, 4));
-	}*/
 
 	private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.PINK, ServerBossEvent.BossBarOverlay.PROGRESS);
 

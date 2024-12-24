@@ -25,6 +25,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.World.teleporter.MinersHeavenOldTeleporter;
 
 import java.util.List;
 import java.util.Random;
@@ -52,7 +53,9 @@ public class IridiumFeature extends OreFeature {
         super(OreConfiguration.CODEC);
         // 在这里添加你想要生成的维度
         this.generate_dimensions = Set.of(
-                Level.OVERWORLD
+                Level.OVERWORLD,
+                ResourceKey.create(Registry.DIMENSION_REGISTRY,
+                        new ResourceLocation("ex_enigmaticlegacy:miners_heaven_old"))
         );
     }
 

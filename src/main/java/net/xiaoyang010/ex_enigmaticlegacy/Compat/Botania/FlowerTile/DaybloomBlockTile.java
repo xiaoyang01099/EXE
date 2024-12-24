@@ -65,7 +65,7 @@ public class DaybloomBlockTile extends TileEntityGeneratingFlower {
 
     @Override
     public int getMaxMana() {
-        return 5000;  // 最大魔力为100
+        return 5000;
     }
 
     @Override

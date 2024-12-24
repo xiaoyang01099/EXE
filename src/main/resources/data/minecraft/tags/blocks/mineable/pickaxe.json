@@ -4,6 +4,15 @@
     "ex_enigmaticlegacy:platinum_ore",
     "ex_enigmaticlegacy:iridium_ore",
     "ex_enigmaticlegacy:nickel_ore",
-    "ex_enigmaticlegacy:end_ore"
+    "ex_enigmaticlegacy:end_ore",
+    "ex_enigmaticlegacy:amethyst_ore",
+    "ex_enigmaticlegacy:bauxite_ore",
+    "ex_enigmaticlegacy:chromite_ore",
+    "ex_enigmaticlegacy:fluorite_ore",
+    "ex_enigmaticlegacy:gypsum_ore",
+    "ex_enigmaticlegacy:jade_ore",
+    "ex_enigmaticlegacy:lead_ore",
+    "ex_enigmaticlegacy:bronze_ore",
+    "ex_enigmaticlegacy:opal_ore"
   ]
 }

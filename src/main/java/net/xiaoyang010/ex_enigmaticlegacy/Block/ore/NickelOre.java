@@ -1,8 +1,13 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Block.ore;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -21,6 +26,14 @@ public class NickelOre extends Block {
                 .sound(SoundType.STONE)
                 .strength(2f, 10f)
                 .requiresCorrectToolForDrops());
+    }
+
+    @Override
+    public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
+        if (player.getMainHandItem().getItem() instanceof TieredItem tieredItem) {
+            return tieredItem.getTier().getLevel() >= Tiers.DIAMOND.getLevel();
+        }
+        return false;
     }
 
     @Override

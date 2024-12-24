@@ -134,20 +134,137 @@ public class SpectriteCrystalRenderer extends EntityRenderer<SpectriteCrystalEnt
         this.cube.render(poseStack, vertexConsumer, packedLight, overlay);
         poseStack.popPose();
 
-        // 渲染光柱，如果有光柱目标
-        BlockPos beamTarget = entity.getBeamTarget();
-        if (beamTarget != null) {
-            float f3 = (float) beamTarget.getX() + 0.5F;
-            float f4 = (float) beamTarget.getY() + 0.5F;
-            float f5 = (float) beamTarget.getZ() + 0.5F;
-            float dx = f3 - (float) entity.getX();
-            float dy = f4 - (float) entity.getY();
-            float dz = f5 - (float) entity.getZ();
-            poseStack.translate(dx, dy, dz);
-            // 渲染光束逻辑（可扩展）
+        /// 添加光束渲染代码
+        if (entity.healingTarget != null) {
+            float targetX = (float)entity.healingTarget.getX();
+            float targetY = (float)entity.healingTarget.getY() + entity.healingTarget.getBbHeight() / 2;
+            float targetZ = (float)entity.healingTarget.getZ();
+            float sourceX = (float)entity.getX();
+            float sourceY = (float)entity.getY() + 1.0F;
+            float sourceZ = (float)entity.getZ();
+
+            float dx = targetX - sourceX;
+            float dy = targetY - sourceY;
+            float dz = targetZ - sourceZ;
+
+            // 渲染彩虹光束
+            renderBeam(poseStack, bufferSource, partialTicks, entity.tickCount,
+                    sourceX, sourceY, sourceZ,
+                    dx, dy, dz,
+                    packedLight);
         }
 
         poseStack.popPose();
+    }
+
+    private void renderBeam(PoseStack poseStack, MultiBufferSource bufferSource, float partialTicks,
+                            int tickCount, float sourceX, float sourceY, float sourceZ,
+                            float dx, float dy, float dz, int packedLight) {
+        float length = (float)Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        poseStack.pushPose();
+        poseStack.translate(sourceX, sourceY, sourceZ);
+
+        // 计算旋转角度
+        float yRot = (float)Math.atan2(dz, dx);
+        float xRot = (float)Math.atan2(dy, Math.sqrt(dx * dx + dz * dz));
+        poseStack.mulPose(Vector3f.YP.rotation(-yRot));
+        poseStack.mulPose(Vector3f.XP.rotation(xRot));
+
+        float time = (float)tickCount + partialTicks;
+
+        // 渲染彩虹螺旋光束
+        renderRainbowHelix(poseStack, bufferSource, time, length, packedLight);
+
+        poseStack.popPose();
+    }
+
+    private void renderRainbowHelix(PoseStack poseStack, MultiBufferSource bufferSource,
+                                    float time, float length, int packedLight) {
+        PoseStack.Pose pose = poseStack.last();
+        float beamWidth = 0.15F; // 光束宽度
+        int segments = 60; // 螺旋段数
+        float rotationSpeed = 0.5F; // 螺旋旋转速度
+        float waveAmplitude = 0.3F; // 波浪幅度
+        float waveFrequency = 3.0F; // 波浪频率
+
+        // 彩虹颜色数组
+        float[][] rainbowColors = {
+                {1.0F, 0.0F, 0.0F}, // 红
+                {1.0F, 0.5F, 0.0F}, // 橙
+                {1.0F, 1.0F, 0.0F}, // 黄
+                {0.0F, 1.0F, 0.0F}, // 绿
+                {0.0F, 0.0F, 1.0F}, // 蓝
+                {0.29F, 0.0F, 0.51F}, // 靛
+                {0.58F, 0.0F, 0.83F}  // 紫
+        };
+
+        // 为每个螺旋线渲染一条彩虹光束
+        for (int spiralIndex = 0; spiralIndex < 2; spiralIndex++) {
+            float spiralOffset = spiralIndex * (float)Math.PI; // 两条螺旋线的相位差
+
+            for (int i = 0; i < segments; i++) {
+                float progress = i / (float)segments;
+                float nextProgress = (i + 1) / (float)segments;
+
+                // 计算螺旋线位置
+                float angle1 = progress * 20.0F * (float)Math.PI + time * rotationSpeed + spiralOffset;
+                float angle2 = nextProgress * 20.0F * (float)Math.PI + time * rotationSpeed + spiralOffset;
+
+                float wave1 = Mth.sin(progress * waveFrequency * (float)Math.PI + time) * waveAmplitude;
+                float wave2 = Mth.sin(nextProgress * waveFrequency * (float)Math.PI + time) * waveAmplitude;
+
+                // 当前段的颜色
+                int colorIndex = (int)((progress * rainbowColors.length + time * 0.5F) % rainbowColors.length);
+                float[] color = rainbowColors[colorIndex];
+
+                // 获取专门的光束渲染器
+                VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.lightning());
+
+                // 渲染螺旋线段
+                float x1 = Mth.cos(angle1) * beamWidth;
+                float z1 = Mth.sin(angle1) * beamWidth;
+                float x2 = Mth.cos(angle2) * beamWidth;
+                float z2 = Mth.sin(angle2) * beamWidth;
+
+                float y1 = progress * length + wave1;
+                float y2 = nextProgress * length + wave2;
+
+                // 添加顶点
+                vertexConsumer.vertex(pose.pose(), x1, y1, z1)
+                        .color(color[0], color[1], color[2], 0.7F)
+                        .uv(0, 0)
+                        .overlayCoords(OverlayTexture.NO_OVERLAY)
+                        .uv2(packedLight)
+                        .normal(pose.normal(), 1, 0, 0)
+                        .endVertex();
+
+                vertexConsumer.vertex(pose.pose(), x2, y2, z2)
+                        .color(color[0], color[1], color[2], 0.7F)
+                        .uv(0, 1)
+                        .overlayCoords(OverlayTexture.NO_OVERLAY)
+                        .uv2(packedLight)
+                        .normal(pose.normal(), 1, 0, 0)
+                        .endVertex();
+
+                // 添加连接线
+                vertexConsumer.vertex(pose.pose(), x1, y1, z1)
+                        .color(color[0], color[1], color[2], 0.7F)
+                        .uv(0, 0)
+                        .overlayCoords(OverlayTexture.NO_OVERLAY)
+                        .uv2(packedLight)
+                        .normal(pose.normal(), 0, 1, 0)
+                        .endVertex();
+
+                vertexConsumer.vertex(pose.pose(), x2, y2, z2)
+                        .color(color[0], color[1], color[2], 0.7F)
+                        .uv(1, 0)
+                        .overlayCoords(OverlayTexture.NO_OVERLAY)
+                        .uv2(packedLight)
+                        .normal(pose.normal(), 0, 1, 0)
+                        .endVertex();
+            }
+        }
     }
 
     private static float calculateCustomY(SpectriteCrystalEntity crystal, float partialTicks) {

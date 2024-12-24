@@ -25,8 +25,6 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<CelestialHTTile>> CELESTIAL_HOLINESS_TRANSMUTER = register("celestial_holiness_transmuter", ModBlocks.CELESTIAL_HOLINESS_TRANSMUTER, CelestialHTTile::new);
 
 
-
-
     //botania
     public static final RegistryObject<BlockEntityType<InfinityPotatoEntity>> INFINITY_POTATO = register("infinity_potato", ModBlocks.INFINITY_POTATO, InfinityPotatoEntity::new);
     public static final RegistryObject<BlockEntityType<NightshadeTile>> NIGHTSHADE_TILE = register("nightshade_tile", ModBlocks.NIGHTSHADE, NightshadeTile::new);

@@ -3,6 +3,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.Rarity;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.GoldenLaurel;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.curio.HolyRing;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.*;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
@@ -16,6 +17,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.BlockItem;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModAmorphous;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModDetermination;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModIngot;
 import vazkii.botania.common.item.block.ItemBlockSpecialFlower;
 
 public class ModItems {
@@ -25,8 +29,18 @@ public class ModItems {
 	public static final RegistryObject<Item> NICKEL_ORE = block(ModBlocks.NICKEL_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> PLATINUM_ORE = block(ModBlocks.PLATINUM_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> END_ORE = block(ModBlocks.END_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> AMETHYST_ORE = block(ModBlocks.AMETHYST_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> BAUXITE_ORE = block(ModBlocks.BAUXITE_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> CHROMITE_ORE = block(ModBlocks.CHROMITE_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> FLUORITE_ORE = block(ModBlocks.FLUORITE_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> GYPSUM_ORE = block(ModBlocks.GYPSUM_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> JADE_ORE = block(ModBlocks.JADE_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> LEAD_ORE = block(ModBlocks.LEAD_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> BRONZE_ORE = block(ModBlocks.BRONZE_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> OPAL_ORE = block(ModBlocks.OPAL_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 
-
+	public static final RegistryObject<Item> ARCANE_ICE_CHUNK = block(ModBlocks.ARCANE_ICE_CHUNK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> DECAY_BLOCK = block(ModBlocks.DECAY_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> IRIDIUM_BLOCK = block(ModBlocks.IRIDIUM_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> NICKEL_BLOCK = block(ModBlocks.NICKEL_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> AERIALITE_BLOCK = block(ModBlocks.AERIALITE_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
@@ -58,6 +72,16 @@ public class ModItems {
 	//31个物品通用属性
 	private static final Properties INGOT_PROPERTIES = new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_MINERAL).stacksTo(64);
 
+	public static final RegistryObject<Item> AMETHYST_INGOT = REGISTRY.register("amethyst_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> BAUXITE_INGOT = REGISTRY.register("bauxite_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> BRONZE_INGOT = REGISTRY.register("bronze_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> CHROMITE_INGOT = REGISTRY.register("chromite_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> FLUORITE_INGOT = REGISTRY.register("fluorite_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> GYPSUM_INGOT = REGISTRY.register("gypsum_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> JADE_INGOT = REGISTRY.register("jade_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> LEAD_INGOT = REGISTRY.register("lead_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> OPALLY = REGISTRY.register("opally", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> OPAL_INGOT = REGISTRY.register("opal_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
 	public static final RegistryObject<Item> ASTRAL_PILE = REGISTRY.register("astral_pile", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> ASTRAL_NUGGET = REGISTRY.register("astral_nugget", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> ASTRAL_INGOT = REGISTRY.register("astral_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
@@ -77,8 +101,7 @@ public class ModItems {
 	public static final RegistryObject<Item> INFINITYDROP = REGISTRY.register("infinitydrop", () -> new ModIngot(INGOT_PROPERTIES.fireResistant().rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> LAVA_INGOT = REGISTRY.register("lava_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
 	public static final RegistryObject<Item> MANA_NETHER_STAR = REGISTRY.register("mana_nether_star", () -> new ModIngot(INGOT_PROPERTIES.fireResistant().rarity(Rarity.EPIC)));
-	public static final RegistryObject<Item> MEMORIZE = REGISTRY.register("memorize", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
-	public static final RegistryObject<Item> MIAOMIAOTOU = REGISTRY.register("miaomiaotou", () -> new ModIngot(INGOT_PROPERTIES.stacksTo(1).rarity(Rarity.EPIC)));
+
 	public static final RegistryObject<Item> NATUREINGOT = REGISTRY.register("natureingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> NICKEL_INGOT = REGISTRY.register("nickel_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
 	public static final RegistryObject<Item> OBSCURE = REGISTRY.register("obscure", () -> new ModIngot(INGOT_PROPERTIES.fireResistant().rarity(ModRarities.MIRACLE)));
@@ -90,7 +113,6 @@ public class ModItems {
 	public static final RegistryObject<Item> SPECTRITE_GEM = REGISTRY.register("spectrite_gem", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> WHITE_DUST = REGISTRY.register("white_dust", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
 	public static final RegistryObject<Item> WOOD_INGOT = REGISTRY.register("wood_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
-
 
 	public static final RegistryObject<Item> SPECTRITE_CRYSTAL = REGISTRY.register("spectrite_crystal", SpectriteCrystal::new);
 	public static final RegistryObject<Item> BIBLE = REGISTRY.register("bible", Bible::new);
@@ -110,19 +132,51 @@ public class ModItems {
 	public static final RegistryObject<Item> KILLYOU = REGISTRY.register("killyou", KillyouItem::new);
 	public static final RegistryObject<Item> EGG = REGISTRY.register("egg", RainBowEggItem::new);
 	public static final RegistryObject<Item> INFINITY_MATTER = REGISTRY.register("infinity_matter", InfinityMatter::new);
-	/*public static final RegistryObject<Item> LOLIPICKAXE = REGISTRY.register("loli_pickaxe", () -> new LolipickaxeItem());
-	public static final RegistryObject<Item> DEATHITEM = REGISTRY.register("loli_death",()-> new DeathItem(new Item.Properties()));*/
+	/*public static final RegistryObject<Item> LOLIPICKAXE = REGISTRY.register("loli_pickaxe", () -> new LolipickaxeItem());*/
+	public static final RegistryObject<Item> MEMORIZE = REGISTRY.register("memorize", Memorize::new);
+	public static final RegistryObject<Item> MIAOMIAOTOU = REGISTRY.register("miaomiaotou", MiaoMiaoTou::new);
+	public static final RegistryObject<Item> LOPPING_PEARL = REGISTRY.register("lopping_pearl",LoppingPearl::new);
+	public static final RegistryObject<Item> MERCURIAL_EYE = REGISTRY.register("mercurial_eye",MercurialEye::new);
+	public static final RegistryObject<Item> HEARTHSTONE = REGISTRY.register("hearth_stone",HearthStone::new);
+	public static final RegistryObject<Item> INFINITY_TOTEM = REGISTRY.register("infinity_totem",InfinityTotem::new);
+	public static final RegistryObject<Item> RADIANT_SACRED_RUBY = REGISTRY.register("radiant_sacred_ruby", RadiantSacredRuby::new);
+
+
+	//材料
+	public static final RegistryObject<Item> MATTER_AMORPHOUS = REGISTRY.register("matter_amorphous_max", ModAmorphous::new);
+	public static final RegistryObject<Item> MATTER_CORPOREAL = REGISTRY.register("matter_corporeal_max", ModAmorphous::new);
+	public static final RegistryObject<Item> MATTER_DARK = REGISTRY.register("matter_dark_max", ModAmorphous::new);
+	public static final RegistryObject<Item> MATTER_ESSENTIA = REGISTRY.register("matter_essentia_max", ModAmorphous::new);
+	public static final RegistryObject<Item> MATTER_KINETIC = REGISTRY.register("matter_kinetic_max", ModAmorphous::new);
+	public static final RegistryObject<Item> MATTER_OMNI = REGISTRY.register("matter_omni_max", ModAmorphous::new);
+	public static final RegistryObject<Item> MATTER_PROTO = REGISTRY.register("matter_proto_max", ModAmorphous::new);
+	public static final RegistryObject<Item> MATTER_TEMPORAL = REGISTRY.register("matter_temporal_max", ModAmorphous::new);
+	public static final RegistryObject<Item> MATTER_VOID = REGISTRY.register("matter_void_max", ModAmorphous::new);
+
+
+
+	//决心
+	public static final RegistryObject<Item> GREEN_DETERMINATION = REGISTRY.register("green_determination", ModDetermination::new);
+	public static final RegistryObject<Item> RED_DETERMINATION = REGISTRY.register("red_determination", ModDetermination::new);
+	public static final RegistryObject<Item> BLUE_DETERMINATION = REGISTRY.register("blue_determination", ModDetermination::new);
+	public static final RegistryObject<Item> ORANGE_DETERMINATION = REGISTRY.register("orange_determination", ModDetermination::new);
+	public static final RegistryObject<Item> YELLOW_DETERMINATION = REGISTRY.register("yellow_determination", ModDetermination::new);
+	public static final RegistryObject<Item> CYAN_DETERMINATION = REGISTRY.register("cyan_determination", ModDetermination::new);
+	public static final RegistryObject<Item> LIGHTER_PURPLE_DETERMINATION = REGISTRY.register("lighter_purple_determination", ModDetermination::new);
+	public static final RegistryObject<Item> BLACK_DETERMINATION = REGISTRY.register("black_determination", ModDetermination::new);
+	public static final RegistryObject<Item> PINK_DETERMINATION = REGISTRY.register("pink_determination", ModDetermination::new);
+	public static final RegistryObject<Item> DEEPER_PURPLE_DETERMINATION = REGISTRY.register("deeper_purple_determination", ModDetermination::new);
 
 
 
 
+
+
+
+	public static final RegistryObject<Item> GOLDEN_LAUREL = REGISTRY.register("golden_laurel", () -> new GoldenLaurel(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(1).rarity(Rarity.RARE)));
 	public static final RegistryObject<Item> XIAOYANG_010_SPAWN_EGG = REGISTRY.register("xiaoyang_010_spawn_egg",
 			() -> new ForgeSpawnEggItem(ModEntities.XIAOYANG_010, -1, -1,
 					new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)));
-
-	/*public static final RegistryObject<Item> SACABAMBASPIS_SPAWN_EGG = REGISTRY.register("sacabambaspis_spawn_egg",
-			() -> new ForgeSpawnEggItem(ModEntities.SACABAMBASPIS, 0xFF0000, 0xAA0000,
-					new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)));*/
 
 
 	private static RegistryObject<Item> block(RegistryObject<Block> block, CreativeModeTab tab) {

@@ -1,6 +1,5 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Item;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -9,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ServerLevelData;
+import net.minecraft.server.level.ServerLevel;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 
 public class WeatherStone extends Item {

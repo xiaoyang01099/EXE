@@ -66,7 +66,7 @@ public class HolyRing extends Item implements ICurioItem {
         }
 
         // 添加飞行能力
-        if (entity instanceof Player player && !player.getAbilities().mayfly) {
+        if (entity instanceof Player player) {
             player.getAbilities().mayfly = true;
 //            player.getAbilities().flying = true;
             player.onUpdateAbilities();
@@ -88,10 +88,9 @@ public class HolyRing extends Item implements ICurioItem {
         // 移除飞行能力
         if (entity instanceof Player player) {
             // 只有在玩家不是创造模式时才移除飞行能力
-            if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()) {
+            if (!player.isCreative()) {
                 player.getAbilities().mayfly = false;
-                if (player.getAbilities().flying)
-                    player.getAbilities().flying = false;
+                player.getAbilities().flying = false;
                 player.onUpdateAbilities();
             }
         }
