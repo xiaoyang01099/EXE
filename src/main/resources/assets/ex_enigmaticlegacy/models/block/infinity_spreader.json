@@ -1,0 +1,9 @@
+{
+  "parent": "botania:block/shapes/spreader",
+  "textures": {
+    "side": "ex_enigmaticlegacy:blocks/infinity_spreader",
+    "back": "ex_enigmaticlegacy:blocks/block_infinity",
+    "inside": "botania:block/stripped_dreamwood_log_3",
+    "outside": "botania:block/dreamwood_log_3"
+  }
+}

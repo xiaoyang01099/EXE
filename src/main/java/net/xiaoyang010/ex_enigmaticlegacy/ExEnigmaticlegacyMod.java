@@ -22,6 +22,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.InfinityChestModel;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.InfinityChestRenderer;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityGaiaSpreaderRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityPotatoRender;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
@@ -117,6 +118,7 @@ public class ExEnigmaticlegacyMod {
 
 		BlockEntityRenderers.register(ModBlockEntities.INFINITY_CHEST.get(), InfinityChestRenderer::new);
 		BlockEntityRenderers.register(ModBlockEntities.INFINITY_POTATO.get(), InfinityPotatoRender::new);
+		BlockEntityRenderers.register(ModBlockEntities.INFINITY_SPREADER.get(), InfinityGaiaSpreaderRenderer::new);
 
 	}
 

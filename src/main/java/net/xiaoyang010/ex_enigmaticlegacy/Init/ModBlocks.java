@@ -2,10 +2,14 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.ore.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityGaiaSpreader;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityGaiaSpreader.VariantE;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 import net.minecraftforge.registries.RegistryObject;
@@ -38,6 +42,9 @@ public class ModBlocks {
 	public static final RegistryObject<Block> INFINITY_POTATO = REGISTRY.register("infinity_potato", InfinityPotato::new);
 	public static final RegistryObject<Block> GENENERGYDANDRON = REGISTRY.register("gen_energydandron", GenEnergydandron::new);
 
+	private static final BlockBehaviour.StateArgumentPredicate<EntityType<?>> NO_SPAWN = (state, world, pos, et) -> false;
+	public static final RegistryObject<Block> infinitySpreader = REGISTRY.register("infinity_spreader", () ->
+			new InfinityGaiaSpreader(VariantE.INFINITY, Properties.copy(Blocks.BIRCH_WOOD).isValidSpawn(NO_SPAWN)));
 
 
 

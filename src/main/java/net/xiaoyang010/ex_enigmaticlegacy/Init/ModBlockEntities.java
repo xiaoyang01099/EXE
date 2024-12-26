@@ -11,6 +11,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.FlowerTile.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityGaiaSpreaderTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityPotatoEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.CelestialHTTile;
@@ -28,6 +29,7 @@ public class ModBlockEntities {
     //botania
     public static final RegistryObject<BlockEntityType<InfinityPotatoEntity>> INFINITY_POTATO = register("infinity_potato", ModBlocks.INFINITY_POTATO, InfinityPotatoEntity::new);
     public static final RegistryObject<BlockEntityType<NightshadeTile>> NIGHTSHADE_TILE = register("nightshade_tile", ModBlocks.NIGHTSHADE, NightshadeTile::new);
+    public static final RegistryObject<BlockEntityType<InfinityGaiaSpreaderTile>> INFINITY_SPREADER = register("infinity_spreader", ModBlocks.infinitySpreader, InfinityGaiaSpreaderTile::new);
 
 
     public static final RegistryObject<BlockEntityType<AstralKillopTile>> ASTRAL_KILLOP_TILE = register("astral_killop_tile", ModBlocks.ASTRAL_KILLOP, AstralKillopTile::new);

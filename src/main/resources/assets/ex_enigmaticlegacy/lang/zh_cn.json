@@ -44,6 +44,7 @@
   "block.ex_enigmaticlegacy.starlit_sanctum": "星辉秘境台（未完成）",
   "block.ex_enigmaticlegacy.witch_opood": "巫媛织梦之花（未完成）",
   "block.ex_enigmaticlegacy.arcane_ice_chunk": "奥数玄冰",
+  "block.ex_enigmaticlegacy.infinity_spreader": "无尽魔力发射器",
 
   "curios.identifier.holy_ring": "戒指",
   "curios.modifiers.holy_ring": "属性修饰符",
@@ -190,5 +191,6 @@
   "text.ex_enigmaticlegacy.manaita_sword.infinity": "无限 ",
   "text.ex_enigmaticlegacy.manaita_sword.damage": "攻击伤害",
   "text.ex_enigmaticlegacy.manaita_sword.speed": "1.6 攻击速度",
-  "screen.ex_enigmaticlegacy.celestia_ht.name": "心之感化台"
+  "screen.ex_enigmaticlegacy.celestia_ht.name": "心之感化台",
+  "item.ex_enigmaticlegacy.stone_philosophers": ""
 }
