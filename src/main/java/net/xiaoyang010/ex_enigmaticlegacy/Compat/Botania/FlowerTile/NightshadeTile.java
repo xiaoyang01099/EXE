@@ -7,7 +7,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeClientCapabilities;
@@ -17,9 +16,9 @@ import vazkii.botania.api.subtile.TileEntityGeneratingFlower;
 import javax.annotation.Nullable;
 
 public class NightshadeTile extends TileEntityGeneratingFlower {
-	public static final String TAG = ExEnigmaticlegacyMod.MODID + ":decayTicks";
+	public static final String TAG = "passiveDecayTicks";
 	public static final int DECAY_TIME = 48000;
-	private int decayTicks;
+	private int passiveDecayTicks;
 
 	public NightshadeTile(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.NIGHTSHADE_TILE.get(), pos, state);
@@ -47,7 +46,7 @@ public class NightshadeTile extends TileEntityGeneratingFlower {
         if (level != null && !level.isClientSide()) {
 			boolean night = level.isNight();
 			long gameTime = level.getGameTime();
-			if (++decayTicks >= DECAY_TIME){
+			if (++passiveDecayTicks >= DECAY_TIME){
 				this.level.destroyBlock(this.getBlockPos(), false);
 				if (Blocks.DEAD_BUSH.defaultBlockState().canSurvive(this.level, this.getBlockPos())) {
 					this.level.setBlockAndUpdate(this.getBlockPos(), Blocks.DEAD_BUSH.defaultBlockState());
@@ -70,12 +69,12 @@ public class NightshadeTile extends TileEntityGeneratingFlower {
 	@Override
 	public void readFromPacketNBT(CompoundTag cmp) {
 		super.readFromPacketNBT(cmp);
-		this.decayTicks = cmp.getInt(TAG);
+		this.passiveDecayTicks = cmp.getInt(TAG);
 	}
 
 	@Override
 	public void writeToPacketNBT(CompoundTag cmp) {
 		super.writeToPacketNBT(cmp);
-		cmp.putInt(TAG, decayTicks);
+		cmp.putInt(TAG, passiveDecayTicks);
 	}
 }

@@ -1,26 +1,24 @@
 
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.Rarity;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.GoldenLaurel;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.curio.HolyRing;
-import net.xiaoyang010.ex_enigmaticlegacy.Item.*;
-import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.common.ForgeSpawnEggItem;
-
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.BlockItem;
+import net.minecraftforge.common.ForgeSpawnEggItem;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.GoldenLaurel;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.ItemBlockFlower;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.curio.HolyRing;
+import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModAmorphous;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModDetermination;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModIngot;
-import vazkii.botania.common.item.block.ItemBlockSpecialFlower;
 
 public class ModItems {
 	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, ExEnigmaticlegacyMod.MODID);
@@ -184,6 +182,6 @@ public class ModItems {
 	}
 
 	private static RegistryObject<Item> blockFlower(RegistryObject<Block> block, CreativeModeTab tab) {
-		return REGISTRY.register(block.getId().getPath(), () -> new ItemBlockSpecialFlower(block.get(), new Item.Properties().tab(tab)));
+		return REGISTRY.register(block.getId().getPath(), () -> new ItemBlockFlower(block.get(), new Item.Properties().tab(tab)));
 	}
 }
