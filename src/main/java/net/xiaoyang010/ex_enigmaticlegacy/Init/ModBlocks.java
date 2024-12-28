@@ -4,8 +4,10 @@ package net.xiaoyang010.ex_enigmaticlegacy.Init;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.material.Material;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.ore.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityGaiaSpreader;
@@ -64,7 +66,7 @@ public class ModBlocks {
 	public static final RegistryObject<Block> AERIALITE_BLOCK = REGISTRY.register("aerialite_block", AerialiteBlock::new);
 	public static final RegistryObject<Block> DECAY_BLOCK = REGISTRY.register("decay_block", DecayBlock::new);
 	public static final RegistryObject<Block> ARCANE_ICE_CHUNK = REGISTRY.register("arcane_ice_chunk", ArcaneIceChunk::new);
-
+	public static final RegistryObject<Block> PAGED_CHEST = REGISTRY.register("paged_chest", () -> new PagedChestBlock(Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD)));
 
 
 

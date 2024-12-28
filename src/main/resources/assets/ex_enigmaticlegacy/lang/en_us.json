@@ -193,5 +193,6 @@
   "effect.ex_enigmaticlegacy.flying": "Flying",
   "info.ex_enigmaticlegacy.flying.stop": "Your experience is over, and if you're still flying, don't fear, mysterious forces will get you safely to the ground",
   "info.ex_enigmaticlegacy.flying.error": "You Are Now Creating This Effect Is Useless",
-  "info.ex_enigmaticlegacy.flying.star": "You Now Have 20 Minutes To Experience The Flight！"
+  "info.ex_enigmaticlegacy.flying.star": "You Now Have 20 Minutes To Experience The Flight！",
+  "block.ex_enigmaticlegacy.paged_chest": "Paged  Chest"
 }

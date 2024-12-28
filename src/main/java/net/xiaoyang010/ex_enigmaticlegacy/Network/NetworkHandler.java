@@ -25,5 +25,12 @@ public class NetworkHandler {
                 TeleportPacket::decode,
                 TeleportPacket::handle
         );
+        CHANNEL.registerMessage(
+                packetId++,
+                PageChestPacket.class,
+                PageChestPacket::encode,
+                PageChestPacket::decode,
+                PageChestPacket::handle
+        );
     }
 }

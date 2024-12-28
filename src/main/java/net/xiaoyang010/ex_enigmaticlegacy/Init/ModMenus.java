@@ -1,16 +1,14 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
 
+import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.IContainerFactory;
-import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHTMenu;
-import net.xiaoyang010.ex_enigmaticlegacy.Container.DimensionalMirrorContainer;
-import net.xiaoyang010.ex_enigmaticlegacy.Container.InfinityChestMenu;
-import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +19,10 @@ public class ModMenus {
 
     public static final MenuType<InfinityChestMenu> INFINITE_CHEST_SCREEN = register("infinite_chest_screen",
             InfinityChestMenu::new);
+
+    public static final MenuType<PagedChestContainer> PAGED_CHEST = register("paged_chest",
+            (windowId, inv, data) -> new PagedChestContainer(windowId, inv,
+                    (Container)inv.player.level.getBlockEntity(data.readBlockPos())));
 
     public static final MenuType<StarlitSanctumMenu> STARLIT_SANCTUM_SCREEN = register("starlit_sanctum_screen",
             StarlitSanctumMenu::new);

@@ -16,6 +16,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityPotatoEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.CelestialHTTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.InfinityChestEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.PagedChestBlockEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.StarlitSanctumOfMystiqueBlockEntity;
 
 
@@ -24,6 +25,7 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<InfinityChestEntity>> INFINITY_CHEST = register("infinity_chest_entity", ModBlocks.INFINITYCHEST, InfinityChestEntity::new);
     public static final RegistryObject<BlockEntityType<StarlitSanctumOfMystiqueBlockEntity>> STARLIT_SANCTUM_OF_MYSTIQUE = register("starlit_sanctum_of_mystique", ModBlocks.STARLITSANCTUM, StarlitSanctumOfMystiqueBlockEntity::new);
     public static final RegistryObject<BlockEntityType<CelestialHTTile>> CELESTIAL_HOLINESS_TRANSMUTER = register("celestial_holiness_transmuter", ModBlocks.CELESTIAL_HOLINESS_TRANSMUTER, CelestialHTTile::new);
+    public static final RegistryObject<BlockEntityType<PagedChestBlockEntity>> PAGED_CHEST = REGISTRY.register("paged_chest", () -> BlockEntityType.Builder.of(PagedChestBlockEntity::new, ModBlocks.PAGED_CHEST.get()).build(null));
 
 
     //botania
