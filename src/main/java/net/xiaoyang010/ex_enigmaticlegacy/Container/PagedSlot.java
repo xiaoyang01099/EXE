@@ -3,53 +3,60 @@ package net.xiaoyang010.ex_enigmaticlegacy.Container;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.PagedChestBlockEntity;
 
 public class PagedSlot extends Slot {
-    private final int baseIndex;
-    private int currentPage;
+    // 在当前页面内的实际槽位索引
+    private final int baseSlot;
+    // 当前页码
+    private int page;
+    // 每页的槽位数
+    private static final int SLOTS_PER_PAGE = 117;
 
-    public PagedSlot(Container container, int index, int x, int y, int page) {
-        super(container, index, x, y);
-        this.baseIndex = index;
-        this.currentPage = page;
+    public PagedSlot(Container container, int slotIndex, int x, int y, int page) {
+        // 调用父类构造函数，传入真实的槽位索引
+        super(container, slotIndex + (page * SLOTS_PER_PAGE), x, y);
+        this.baseSlot = slotIndex;
+        this.page = page;
     }
 
-    public int getCurrentPage() {
-        return currentPage;
+    // 计算当前实际的槽位索引
+    private int getActualSlot() {
+        return baseSlot + (page * SLOTS_PER_PAGE);
     }
 
-    public void setPage(int page) {
-        this.currentPage = page;
-    }
-
-    @Override
-    public int getSlotIndex() {
-        return this.baseIndex + this.currentPage * 117;
-    }
-
-    @Override
-    public int getContainerSlot() {
-        return this.baseIndex + this.currentPage * 117;
-    }
-
+    // 重写getItem以确保从正确的页面获取物品
     @Override
     public ItemStack getItem() {
-        return this.container.getItem(baseIndex + (currentPage * 117));
+        return this.container.getItem(getActualSlot());
     }
 
+    // 重写set以确保物品放在正确的页面
     @Override
     public void set(ItemStack stack) {
-        if (container instanceof PagedChestBlockEntity pagedChestBlock) {
-//            if (pagedChestBlock.getLevel() != null && pagedChestBlock.getLevel().isClientSide) return;
-//            int currentPage1 = ((PagedChestContainer) container).getCurrentPage();
-            this.container.setItem(baseIndex + (currentPage * 117), stack); // Client page 为1 但 Server page为0
-            this.setChanged();
-        }
+        this.container.setItem(getActualSlot(), stack);
+        this.setChanged();
     }
 
+    // 重写remove以确保从正确的页面移除物品
     @Override
     public ItemStack remove(int amount) {
-        return this.container.removeItem(baseIndex + (currentPage * 117), amount);
+        return this.container.removeItem(getActualSlot(), amount);
+    }
+
+    // 重写getSlotIndex以返回真实的槽位索引
+    @Override
+    public int getSlotIndex() {
+        return getActualSlot();
+    }
+
+    // 重写getContainerSlot以返回真实的容器槽位索引
+    @Override
+    public int getContainerSlot() {
+        return getActualSlot();
+    }
+
+    // 设置页码并更新槽位索引
+    public void setPage(int newPage) {
+        this.page = newPage;
     }
 }

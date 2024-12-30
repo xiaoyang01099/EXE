@@ -10,33 +10,50 @@ import net.minecraft.world.item.ItemStack;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.PageChestPacket;
+import net.xiaoyang010.ex_enigmaticlegacy.Util.PagedSlot;
 
 public class PagedChestContainer extends AbstractContainerMenu {
     private final Container container;
-//    private int currentPage = 0;
     private static final int PAGES = 5;
-    private static final int SLOTS_PER_PAGE = 117; // 9 rows * 13 columns
-    private final Player player;
-    private DatePage datePage = new DatePage();
+    private static final int SLOTS_PER_PAGE = 117;
+    private final ContainerData pageData;
 
     public PagedChestContainer(int windowId, Inventory playerInventory, Container container) {
         super(ModMenus.PAGED_CHEST, windowId);
         this.container = container;
-        this.player = playerInventory.player;
 
+        // 初始化页面数据
+        this.pageData = new ContainerData() {
+            private int page;
 
-//        // 为当前页面添加宝箱库存槽
-//        int containerRows = 9;
-//        for (int row = 0; row < containerRows; row++) {
-//            for (int col = 0; col < 13; col++) {
-//                int index = col + row * 13 + (currentPage * SLOTS_PER_PAGE);
-//                this.addSlot(new PagedSlot(container, index, 12 + col * 18, 8 + row * 18, currentPage));
-//            }
-//        }
-        datePage.set(0, 0);
-        addSlot(datePage.get(0));
+            @Override
+            public int get(int index) {
+                return page;
+            }
 
-        // 添加玩家物品栏槽
+            @Override
+            public void set(int index, int value) {
+                if (value >= 0 && value < PAGES && page != value) {
+                    page = value;
+                    updateSlots();
+                }
+            }
+
+            @Override
+            public int getCount() {
+                return 1;
+            }
+        };
+
+        // 添加箱子槽位（第一页）
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 13; col++) {
+                int index = col + (row * 13);
+                this.addSlot(new PagedSlot(container, index, 12 + col * 18, 8 + row * 18, 0));
+            }
+        }
+
+        // 添加玩家物品栏槽位
         int playerInvY = 174;
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
@@ -44,69 +61,49 @@ public class PagedChestContainer extends AbstractContainerMenu {
             }
         }
 
-        // 添加玩家热键栏槽位
+        // 添加玩家快捷栏槽位
         for (int col = 0; col < 9; col++) {
             this.addSlot(new Slot(playerInventory, col, 48 + col * 18, 232));
         }
 
-        this.addDataSlots(datePage);
+        this.addDataSlots(pageData);
     }
 
-    @Override
-    public boolean stillValid(Player player) {
-        return this.container.stillValid(player);
-    }
-
-    private void addSlot(int page){
-        // 为当前页面添加宝箱库存槽
-        int containerRows = 9;
-        for (int row = 0; row < containerRows; row++) {
-            for (int col = 0; col < 13; col++) {
-                int index = col + row * 13 ;//+ (page * SLOTS_PER_PAGE);
-                this.addSlot(new PagedSlot(container, index, 12 + col * 18, 8 + row * 18, page));
+    private void updateSlots() {
+        for (int i = 0; i < SLOTS_PER_PAGE; i++) {
+            if (this.slots.get(i) instanceof PagedSlot pagedSlot) {
+                pagedSlot.setPage(pageData.get(0));
             }
         }
     }
 
     public void nextPage() {
-        if (datePage.get(0) < PAGES) {
-            NetworkHandler.CHANNEL.sendToServer(new PageChestPacket(datePage.get(0) + 1));
-            updateSlots();
+        if (getCurrentPage() < PAGES - 1) {
+            NetworkHandler.CHANNEL.sendToServer(new PageChestPacket(getCurrentPage() + 1));
         }
     }
 
     public void previousPage() {
-        if (datePage.get(0) > 0) {
-            NetworkHandler.CHANNEL.sendToServer(new PageChestPacket(datePage.get(0) - 1));
-            updateSlots();
+        if (getCurrentPage() > 0) {
+            NetworkHandler.CHANNEL.sendToServer(new PageChestPacket(getCurrentPage() - 1));
         }
     }
 
     public void setPages(int page) {
-        this.datePage.set(0, page);
-    }
-
-    @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-    }
-
-    private void updateSlots() {
-//        if (!player.level.isClientSide) return;
-        for (int i = 0; i < SLOTS_PER_PAGE; i++) {
-            PagedSlot slot = (PagedSlot) this.slots.get(i);
-            slot.setPage(datePage.get(0));
-        }
-//        addSlot(datePage.get(0));
-        this.broadcastChanges();
+        this.pageData.set(0, page);
     }
 
     public int getCurrentPage() {
-        return datePage.get(0);
+        return pageData.get(0);
     }
 
     public int getTotalPages() {
         return PAGES;
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        return container.stillValid(player);
     }
 
     @Override
@@ -115,18 +112,22 @@ public class PagedChestContainer extends AbstractContainerMenu {
         Slot slot = this.slots.get(index);
 
         if (slot != null && slot.hasItem()) {
-            ItemStack itemstack1 = slot.getItem();
-            itemstack = itemstack1.copy();
+            ItemStack stackInSlot = slot.getItem();
+            itemstack = stackInSlot.copy();
 
             if (index < SLOTS_PER_PAGE) {
-                if (!this.moveItemStackTo(itemstack1, SLOTS_PER_PAGE, this.slots.size(), true)) {
+                // 从箱子到玩家物品栏
+                if (!this.moveItemStackTo(stackInSlot, SLOTS_PER_PAGE, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.moveItemStackTo(itemstack1, 0, SLOTS_PER_PAGE, false)) {
-                return ItemStack.EMPTY;
+            } else {
+                // 从玩家物品栏到箱子
+                if (!this.moveItemStackTo(stackInSlot, 0, SLOTS_PER_PAGE, false)) {
+                    return ItemStack.EMPTY;
+                }
             }
 
-            if (itemstack1.isEmpty()) {
+            if (stackInSlot.isEmpty()) {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
@@ -134,24 +135,5 @@ public class PagedChestContainer extends AbstractContainerMenu {
         }
 
         return itemstack;
-    }
-
-    private static class DatePage implements ContainerData {
-        private int page;
-
-        @Override
-        public int get(int i) {
-            return page;
-        }
-
-        @Override
-        public void set(int i, int i1) {
-            this.page = i1;
-        }
-
-        @Override
-        public int getCount() {
-            return 1;
-        }
     }
 }

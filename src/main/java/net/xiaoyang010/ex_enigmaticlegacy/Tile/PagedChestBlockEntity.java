@@ -16,18 +16,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.PagedChestContainer;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 
-import javax.annotation.Nullable;
-
 public class PagedChestBlockEntity extends BlockEntity implements MenuProvider, Container {
-    private NonNullList<ItemStack> items = NonNullList.withSize(585, ItemStack.EMPTY);
-    private static final int TOTAL_SLOTS = 585;
-    public float lidAngle;
-    public float prevLidAngle;
+    // 5页，每页117个槽位（9x13）
+    private static final int TOTAL_SLOTS = 585;  // 117 * 5
+    private NonNullList<ItemStack> items = NonNullList.withSize(TOTAL_SLOTS, ItemStack.EMPTY);
 
     public PagedChestBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.PAGED_CHEST.get(), pos, state);
     }
-
 
     @Override
     public Component getDisplayName() {
@@ -35,8 +31,13 @@ public class PagedChestBlockEntity extends BlockEntity implements MenuProvider, 
     }
 
     @Override
+    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
+        return new PagedChestContainer(windowId, playerInventory, this);
+    }
+
+    @Override
     public int getContainerSize() {
-        return this.items.size();
+        return TOTAL_SLOTS;
     }
 
     @Override
@@ -46,37 +47,47 @@ public class PagedChestBlockEntity extends BlockEntity implements MenuProvider, 
 
     @Override
     public ItemStack getItem(int slot) {
-        return items.get(slot);
+        if (slot >= 0 && slot < TOTAL_SLOTS) {
+            return items.get(slot);
+        }
+        return ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack removeItem(int slot, int amount) {
-        ItemStack stack = ContainerHelper.removeItem(items, slot, amount);
-        if (!stack.isEmpty()) {
-            setChanged();
+        if (slot >= 0 && slot < TOTAL_SLOTS) {
+            ItemStack stack = ContainerHelper.removeItem(items, slot, amount);
+            if (!stack.isEmpty()) {
+                setChanged();
+            }
+            return stack;
         }
-        return stack;
+        return ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int slot) {
-        return ContainerHelper.takeItem(items, slot);
+        if (slot >= 0 && slot < TOTAL_SLOTS) {
+            return ContainerHelper.takeItem(items, slot);
+        }
+        return ItemStack.EMPTY;
     }
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-        items.set(slot, stack);
-        setChanged();
+        if (slot >= 0 && slot < TOTAL_SLOTS) {
+            items.set(slot, stack);
+            setChanged();
+        }
     }
 
     @Override
     public boolean stillValid(Player player) {
-        if (this.level.getBlockEntity(this.worldPosition) != this) {
-            return false;
-        }
-        return player.distanceToSqr(this.worldPosition.getX() + 0.5D,
-                this.worldPosition.getY() + 0.5D,
-                this.worldPosition.getZ() + 0.5D) <= 64.0D;
+        return this.level != null &&
+                this.level.getBlockEntity(this.worldPosition) == this &&
+                player.distanceToSqr(this.worldPosition.getX() + 0.5D,
+                        this.worldPosition.getY() + 0.5D,
+                        this.worldPosition.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
@@ -84,18 +95,8 @@ public class PagedChestBlockEntity extends BlockEntity implements MenuProvider, 
         items.clear();
     }
 
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-        return new PagedChestContainer(windowId, playerInventory, (Container) this);
-    }
-
     public void dropContents(Level level, BlockPos pos) {
-        SimpleContainer inventory = new SimpleContainer(items.size());
-        for (int i = 0; i < items.size(); i++) {
-            inventory.setItem(i, items.get(i));
-        }
-        Containers.dropContents(level, pos, inventory);
+        Containers.dropContents(level, pos, this);
     }
 
     @Override
@@ -109,13 +110,5 @@ public class PagedChestBlockEntity extends BlockEntity implements MenuProvider, 
         super.load(tag);
         this.items = NonNullList.withSize(TOTAL_SLOTS, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, this.items);
-    }
-
-    public NonNullList<ItemStack> getItems() {
-        return items;
-    }
-
-    public void setItems(NonNullList<ItemStack> items) {
-        this.items = items;
     }
 }

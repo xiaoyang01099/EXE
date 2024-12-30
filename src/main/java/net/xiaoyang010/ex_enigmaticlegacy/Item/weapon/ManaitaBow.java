@@ -1,5 +1,11 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Item.weapon;
 
+import morph.avaritia.entity.InfinityArrowEntity;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -10,8 +16,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.AbstractArrow.Pickup;
 import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -19,62 +25,130 @@ import net.xiaoyang010.ex_enigmaticlegacy.Entity.ManaitaArrow;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
+
 public class ManaitaBow extends BowItem {
+    private static final String TAG_ARROW_MODE = "ArrowMode";
+    private final Random random = new Random();
 
     public ManaitaBow() {
-        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).rarity(ModRarities.MIRACLE));
+        super(new Properties()
+                .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
+                .rarity(ModRarities.MIRACLE));
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
-        ItemStack itemstack = pPlayer.getItemInHand(pHand);
-        InteractionResultHolder<ItemStack> ret = ForgeEventFactory.onArrowNock(itemstack, pLevel, pPlayer, pHand, true);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+
+        if (player.isCrouching()) {
+            if (!level.isClientSide) {
+                toggleArrowMode(stack, player);
+            }
+            return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+        }
+
+        InteractionResultHolder<ItemStack> ret = ForgeEventFactory.onArrowNock(stack, level, player, hand, true);
         if (ret != null) {
             return ret;
-        } else {
-            pPlayer.startUsingItem(pHand);
-            return InteractionResultHolder.consume(itemstack);
         }
-    }
 
+        player.startUsingItem(hand);
+        return InteractionResultHolder.consume(stack);
+    }
 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
         if (entity instanceof Player player) {
             if (!level.isClientSide) {
-                ManaitaArrow arrowEntity = new ManaitaArrow(level, player);
+                AbstractArrow arrow;
 
-                arrowEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 0.01F);
-                arrowEntity.setCritArrow(true);
-                arrowEntity.setPierceLevel((byte) 5);
+                if (isManaMode(stack)) {
+                    // 魔力箭模式直接发射满威力的魔力箭
+                    ManaitaArrow manaitaArrow = new ManaitaArrow(level, player);
+                    manaitaArrow.setCritArrow(true);
+                    manaitaArrow.setPierceLevel((byte) 5);
+                    arrow = manaitaArrow;
 
-                arrowEntity.pickup = Pickup.CREATIVE_ONLY;
-                level.addFreshEntity(arrowEntity);
+                    // 发射特效和音效
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                            SoundEvents.DRAGON_FIREBALL_EXPLODE, SoundSource.PLAYERS, 0.5F, 1.0F + random.nextFloat() * 0.2F);
 
-                level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 3.0f);
+                    // 生成发射粒子效果
+                    ((ServerLevel)level).sendParticles(ParticleTypes.PORTAL,
+                            player.getX(), player.getY() + 1.0, player.getZ(),
+                            20,
+                            0.5,
+                            0.5,
+                            0.5,
+                            0.1
+                    );
+
+                    arrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 4.0F, 1.0F);
+                } else {
+                    // 普通模式使用无尽箭
+                    InfinityArrowEntity infinityArrow = new InfinityArrowEntity(level, player);
+                    infinityArrow.setSpectral(200);
+                    infinityArrow.setCritArrow(true);
+                    infinityArrow.setJumpCount(0);
+                    infinityArrow.setBaseDamage(Float.POSITIVE_INFINITY);
+
+                    // 计算力量仅影响速度
+                    int i = this.getUseDuration(stack) - timeLeft;
+                    float power = getPowerForTime(i);
+
+                    arrow = infinityArrow;
+                    arrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, power * 3.0F, 1.0F);
+                }
+
+                arrow.pickup = Pickup.CREATIVE_ONLY;
+                level.addFreshEntity(arrow);
+
+                // 发射音效
+                level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F);
                 player.awardStat(Stats.ITEM_USED.get(this));
             }
         }
     }
 
-    @Override
-    public AbstractArrow customArrow(AbstractArrow arrow) {
-        return super.customArrow(arrow);
+    private void toggleArrowMode(ItemStack stack, Player player) {
+        CompoundTag tag = stack.getOrCreateTag();
+        boolean currentMode = tag.getBoolean(TAG_ARROW_MODE);
+        tag.putBoolean(TAG_ARROW_MODE, !currentMode);
+
+        String message = !currentMode ? "切换为: 砧板箭模式" : "切换为: 无尽箭模式";
+        player.displayClientMessage(new TextComponent(message), true);
+
+        player.level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.0F);
+    }
+
+    private boolean isManaMode(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.getBoolean(TAG_ARROW_MODE);
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
-        return 72000; // 最大拉弓时间
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        super.appendHoverText(stack, level, tooltip, flag);
+        String mode = isManaMode(stack) ? "砧板箭模式" : "无尽箭模式";
+        tooltip.add(new TextComponent("当前模式: " + mode));
+        tooltip.add(new TextComponent("Shift+右键切换箭矢模式"));
+        tooltip.add(new TextComponent("§k砧板箭模式: 无需蓄力,伤害无限§r"));
+        tooltip.add(new TextComponent("§b无尽箭模式: 需要蓄力,箭矢会自动追踪"));
     }
 
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW; // 使用弓的动画
+        return UseAnim.BOW;
     }
 
-    private boolean canFireArrow(Player player) {
-        // 始终返回 true，这样即使没有箭矢也能发射
-        return true;
+    @Override
+    public int getUseDuration(ItemStack stack) {
+        return 72000;
     }
 
     @Override
