@@ -1,5 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Event;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -9,6 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xiaoyang010.ex_enigmaticlegacy.Effect.FlyingEffect;
+import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.StarflowerStone;
@@ -16,11 +19,12 @@ import net.xiaoyang010.ex_enigmaticlegacy.Item.StarflowerStone;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy")
+@Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID)
 public class FlyingEventHandlers {
     public static List<String> playersWithStone = new ArrayList<>();
     public static final List<String> playersWithNebulaChest = new ArrayList<>();
     public static final List<String> playersWithManaitaArmor = new ArrayList<>();
+    public static final List<String> playersWithFlyEffect = new ArrayList<>();
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
@@ -77,6 +81,7 @@ public class FlyingEventHandlers {
             playersWithNebulaChest.add(key);
         }
 
+        //砧板套
         if (playersWithManaitaArmor.contains(key)) {
             // 检查玩家是否穿戴了整套砧板盔甲
             if (hasManaitaArmor) {
@@ -103,6 +108,31 @@ public class FlyingEventHandlers {
             }
         } else if (hasManaitaArmor){
             playersWithManaitaArmor.add(key);
+        }
+
+        //飞行buff
+        if (playersWithFlyEffect.contains(key)) {
+            if (flying) {
+                if (!player.getAbilities().mayfly) {
+                    player.getAbilities().mayfly = true;
+                    player.onUpdateAbilities();
+                }
+            } else {
+                if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()) {
+                    player.getAbilities().mayfly = false;
+                    player.getAbilities().flying = false;
+                    player.onUpdateAbilities();
+
+                    player.displayClientMessage(new TranslatableComponent("info.ex_enigmaticlegacy.flying.stop"), true);
+                    // 如果玩家仍然在空中，标记玩家
+                    if (!player.isOnGround()) {
+                        player.getPersistentData().putBoolean(FlyingEffect.NBT_FLYING, true);
+                    }
+                }
+                playersWithFlyEffect.remove(key);
+            }
+        } else if (flying) {
+            playersWithFlyEffect.add(key);
         }
     }
 

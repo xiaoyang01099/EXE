@@ -10,7 +10,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -22,27 +21,17 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class EndlessCakeBlock extends CakeBlock {
-    private static final List<String> playersWithFlyEffect = new ArrayList<>();
-    public static final String NBT_FLYING = "exe:flying";
-
     public static final IntegerProperty BITES = IntegerProperty.create("bites", 0, 6);
 
     public EndlessCakeBlock() {
         super(Block.Properties.of(Material.CAKE).strength(0.5f).noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(BITES, 0));
-
-        MinecraftForge.EVENT_BUS.register(this); // 注册事件
     }
 
     @Override
@@ -110,18 +99,6 @@ public class EndlessCakeBlock extends CakeBlock {
         }
 
         return InteractionResult.SUCCESS;
-    }
-
-    @SubscribeEvent
-    public void playerFall(LivingFallEvent event){
-        LivingEntity living = event.getEntityLiving();
-        if (living instanceof Player player) {
-            boolean flying = player.getPersistentData().getBoolean(NBT_FLYING);
-            if (flying && !player.level.isClientSide){ //取消玩家摔落
-                player.getPersistentData().remove(NBT_FLYING); //重置标记
-                event.setDamageMultiplier(0);
-            }
-        }
     }
 
     @Override
