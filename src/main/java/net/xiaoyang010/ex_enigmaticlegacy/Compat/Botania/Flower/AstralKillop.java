@@ -22,7 +22,7 @@ public class AstralKillop extends FlowerBlock {
                 .noCollission()
                 .instabreak()
                 .sound(SoundType.GRASS)
-                .explosionResistance(1200.0F)); // 防爆属性，阻力值设为1200.0F
+                .explosionResistance(120000000000.0F));
     }
 
     @Override

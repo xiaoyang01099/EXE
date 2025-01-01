@@ -22,8 +22,8 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.InfinityChestModel;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.InfinityChestRenderer;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityGaiaSpreaderRenderer;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityPotatoRender;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityGaiaSpreaderRenderer;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityPotatoRender;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.OmegaCore;
@@ -68,6 +68,7 @@ public class ExEnigmaticlegacyMod {
 		ModRarities.register();
 		ModFeatures.REGISTRY.register(bus);
 		ModBiomes.REGISTRY.register(bus);
+		ModEnchantments.REGISTRY.register(bus);
 
 		MinecraftForge.EVENT_BUS.register(new FlyingEventHandlers());
 		MinecraftForge.EVENT_BUS.register(new ArmorProtectionEvent());
@@ -113,13 +114,13 @@ public class ExEnigmaticlegacyMod {
 	private void clientSetup(final FMLClientSetupEvent event) {
 		// 为自定义玻璃设置渲染层
 		ItemBlockRenderTypes.setRenderLayer(ModBlocks.INFINITYGlASS.get(), RenderType.translucent());
+		ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAGED_CHEST.get(), RenderType.cutoutMipped());
 		event.enqueueWork(() ->{
 		});
 
 		BlockEntityRenderers.register(ModBlockEntities.INFINITY_CHEST.get(), InfinityChestRenderer::new);
 		BlockEntityRenderers.register(ModBlockEntities.INFINITY_POTATO.get(), InfinityPotatoRender::new);
 		BlockEntityRenderers.register(ModBlockEntities.INFINITY_SPREADER.get(), InfinityGaiaSpreaderRenderer::new);
-
 	}
 
 	@SubscribeEvent

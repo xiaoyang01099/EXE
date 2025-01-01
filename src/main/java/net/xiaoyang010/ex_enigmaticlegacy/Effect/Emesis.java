@@ -21,7 +21,7 @@ public class Emesis extends MobEffect {
     private static final ResourceLocation EMESIS = new ResourceLocation("ex_enigmaticlegacy:textures/mob_effect/emesis.png");
 
     public Emesis() {
-        super(MobEffectCategory.HARMFUL, 0x98D982); // 绿色效果，HARMFUL类效果
+        super(MobEffectCategory.NEUTRAL, 0x98D982); // 绿色效果，HARMFUL类效果
     }
 
     @Override

@@ -1,0 +1,7 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "ex_enigmaticlegacy:blocks/flowers/flower_func_warponator",
+    "particle": "ex_enigmaticlegacy:blocks/flowers/flower_func_warponator"
+  }
+}

@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.Material;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.ore.*;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityGaiaSpreader;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityGaiaSpreader.VariantE;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityGaiaSpreader;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityGaiaSpreader.VariantE;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 import net.minecraftforge.registries.RegistryObject;
@@ -22,8 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.StarlitSanctumOfMystique;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.portal.AnotherPortalBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.portal.MinersHeavenPortalBlock;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.GenEnergydandron;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.InfinityPotato;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityPotato;
 import vazkii.botania.common.block.BlockSpecialFlower;
 
 public class ModBlocks {
@@ -41,9 +40,16 @@ public class ModBlocks {
 	public static final RegistryObject<Block> SOARLEANDER = REGISTRY.register("soarleander", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.SOARLEANDERTILE::get));
 	public static final RegistryObject<Block> ORECHIDENDIUM = REGISTRY.register("orechid_endium", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ORECHIDENDIUMTILE::get));
 	public static final RegistryObject<Block> WITCH_OPOOD = REGISTRY.register("witch_opood", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.WITCH_OPOOD_TILE::get));
-	public static final RegistryObject<Block> INFINITY_POTATO = REGISTRY.register("infinity_potato", InfinityPotato::new);
-	public static final RegistryObject<Block> GENENERGYDANDRON = REGISTRY.register("gen_energydandron", GenEnergydandron::new);
+	public static final RegistryObject<Block> GENENERGYDANDRON = REGISTRY.register("gen_energydandron", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.GENENERGYDANDRON::get));
+	public static final RegistryObject<Block> KILLING_BERRY = REGISTRY.register("killing_berry", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.KILLING_BERRY_TILE::get));
+	public static final RegistryObject<Block> DARK_NIGHT_GRASS = REGISTRY.register("dark_night_grass", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.DARK_NIGHT_GRASS_TILE::get));
+	public static final RegistryObject<Block> FROST_LOTUS = REGISTRY.register("frost_lotus", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.FROST_LOTUS_TILE::get));
+	public static final RegistryObject<Block> LYCORISRADIATA = REGISTRY.register("lycorisradiata", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.LYCORISRADIATA_TILE::get));
 
+
+
+
+	public static final RegistryObject<Block> INFINITY_POTATO = REGISTRY.register("infinity_potato", InfinityPotato::new);
 	private static final BlockBehaviour.StateArgumentPredicate<EntityType<?>> NO_SPAWN = (state, world, pos, et) -> false;
 	public static final RegistryObject<Block> infinitySpreader = REGISTRY.register("infinity_spreader", () ->
 			new InfinityGaiaSpreader(VariantE.INFINITY, Properties.copy(Blocks.BIRCH_WOOD).isValidSpawn(NO_SPAWN)));

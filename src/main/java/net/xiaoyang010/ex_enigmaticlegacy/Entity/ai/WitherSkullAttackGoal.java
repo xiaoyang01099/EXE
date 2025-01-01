@@ -29,8 +29,7 @@ public class WitherSkullAttackGoal extends Goal {
         LivingEntity livingentity = this.mob.getTarget();
         if (livingentity != null && livingentity.isAlive()) {
             this.target = livingentity;
-            double distance = this.mob.distanceToSqr(livingentity);
-            return distance >= this.attackRadius * this.attackRadius; // 当距离大于设定值时启用远程攻击
+            return true;
         }
         return false;
     }
@@ -54,6 +53,8 @@ public class WitherSkullAttackGoal extends Goal {
 
     @Override
     public void tick() {
+        if (this.target == null) return;
+
         double distanceToTargetSqr = this.mob.distanceToSqr(this.target);
         boolean canSeeTarget = this.mob.getSensing().hasLineOfSight(this.target);
 
@@ -62,6 +63,20 @@ public class WitherSkullAttackGoal extends Goal {
         } else {
             this.seeTime = 0;
         }
+
+        // 计算视线方向
+        double deltaX = this.target.getX() - this.mob.getX();
+        double deltaY = this.target.getY() + this.target.getEyeHeight() - (this.mob.getY() + this.mob.getEyeHeight());
+        double deltaZ = this.target.getZ() - this.mob.getZ();
+
+        // 计算yRot和xRot
+        double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
+        float yRot = (float) ((Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI) - 90.0F);
+        float xRot = (float) (-(Math.atan2(deltaY, horizontalDistance) * 180.0D / Math.PI));
+
+        // 更新实体的朝向
+        this.mob.setYRot(this.rotlerp(this.mob.getYRot(), yRot, 30.0F));
+        this.mob.setXRot(this.rotlerp(this.mob.getXRot(), xRot, 30.0F));
 
         // 更新移动策略
         if (distanceToTargetSqr <= this.attackRadius * this.attackRadius && this.seeTime >= 5) {
@@ -73,10 +88,10 @@ public class WitherSkullAttackGoal extends Goal {
         }
 
         if (this.strafingTime >= 20) {
-            if ((double)this.mob.getRandom().nextFloat() < 0.3D) {
+            if (this.mob.getRandom().nextFloat() < 0.3D) {
                 this.strafingClockwise = !this.strafingClockwise;
             }
-            if ((double)this.mob.getRandom().nextFloat() < 0.3D) {
+            if (this.mob.getRandom().nextFloat() < 0.3D) {
                 this.strafingBackwards = !this.strafingBackwards;
             }
             this.strafingTime = 0;
@@ -90,17 +105,44 @@ public class WitherSkullAttackGoal extends Goal {
             }
 
             this.mob.getMoveControl().strafe(this.strafingBackwards ? -0.5F : 0.5F, this.strafingClockwise ? 0.5F : -0.5F);
-            this.mob.lookAt(this.target, 30.0F, 30.0F);
         }
 
         // 处理攻击
         if (this.attackTime == 0) {
-            if (canSeeTarget) {
+            if (canSeeTarget && distanceToTargetSqr <= this.attackRadius * this.attackRadius) {
                 this.mob.shootWitherSkull(this.target);
-                this.attackTime = (int)(this.attackInterval * 20); // 转换为tick
+                this.attackTime = (int)(this.attackInterval * 20);
             }
         } else if (this.attackTime > 0) {
             --this.attackTime;
         }
+
+        // 确保头部朝向目标
+        this.mob.getLookControl().setLookAt(
+                this.target.getX(),
+                this.target.getY() + this.target.getEyeHeight(),
+                this.target.getZ(),
+                30.0F,
+                30.0F
+        );
+    }
+
+    private float rotlerp(float current, float target, float maxDelta) {
+        float delta = (target - current) % 360.0F;
+        if (delta > 180.0F) {
+            delta -= 360.0F;
+        }
+        if (delta < -180.0F) {
+            delta += 360.0F;
+        }
+
+        if (delta > maxDelta) {
+            delta = maxDelta;
+        }
+        if (delta < -maxDelta) {
+            delta = -maxDelta;
+        }
+
+        return current + delta;
     }
 }

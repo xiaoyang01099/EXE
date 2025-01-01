@@ -104,6 +104,16 @@ public class InfinityTotem extends Item {
         return ItemStack.EMPTY;
     }
 
+    @Override
+    public boolean isEnchantable(@NotNull ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, net.minecraft.world.item.enchantment.Enchantment enchantment) {
+        return false;
+    }
+
     // 触发图腾效果
     public void triggerTotemEffect(Player player, ItemStack stack, DamageSource source) {
 

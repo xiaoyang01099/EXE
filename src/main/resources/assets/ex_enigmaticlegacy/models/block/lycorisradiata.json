@@ -1,0 +1,7 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "ex_enigmaticlegacy:blocks/flowers/lycorisradiata-1",
+    "particle": "ex_enigmaticlegacy:blocks/flowers/lycorisradiata-1"
+  }
+}

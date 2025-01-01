@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.AbstractArrow.Pickup;
 import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
@@ -34,7 +35,7 @@ public class ManaitaBow extends BowItem {
     private final Random random = new Random();
 
     public ManaitaBow() {
-        super(new Properties()
+        super(new Item.Properties()
                 .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
                 .rarity(ModRarities.MIRACLE));
     }

@@ -32,7 +32,7 @@
   "block.ex_enigmaticlegacy.believer": "Believer（WIP）",
   "block.ex_enigmaticlegacy.celestial_holiness_transmuter": "Celestial Holiness Transmuter",
   "block.ex_enigmaticlegacy.cobble_stone": "Cobble Stone",
-  "block.ex_enigmaticlegacy.daybloom": "Daybloom（WIP）",
+  "block.ex_enigmaticlegacy.daybloom": "Daybloom",
   "block.ex_enigmaticlegacy.end_ore": "End Ore",
   "block.ex_enigmaticlegacy.decay_block": "Decay Block",
   "block.ex_enigmaticlegacy.endless_cake": "Endless Cake",
@@ -44,14 +44,18 @@
   "block.ex_enigmaticlegacy.iridium_ore": "Iridium Ore",
   "block.ex_enigmaticlegacy.nickel_block": "§6Nickel Block",
   "block.ex_enigmaticlegacy.nickel_ore": "Nickel Ore",
-  "block.ex_enigmaticlegacy.nightshade": "Nightshade（未完成）",
+  "block.ex_enigmaticlegacy.nightshade": "Nightshade",
   "block.ex_enigmaticlegacy.orechid_endium": "§5Orechid Endium（WIP）",
   "block.ex_enigmaticlegacy.platinum_ore": "Platinum Ore",
   "block.ex_enigmaticlegacy.prismaticradianceblock": "Prismatic Radiance Block",
   "block.ex_enigmaticlegacy.soarleander": "Soarleander",
   "block.ex_enigmaticlegacy.starlit_sanctum": "Starlit Sanctum（WIP）",
-  "block.ex_enigmaticlegacy.witch_opood": "Witch Opood（WIP）",
+  "block.ex_enigmaticlegacy.witch_opood": "Witch Opood",
   "block.ex_enigmaticlegacy.infinity_spreader": "Infinity Spreader",
+  "block.ex_enigmaticlegacy.killing_berry": "Killing Berry",
+  "block.ex_enigmaticlegacy.dark_night_grass": "Dark Night Grass",
+  "block.ex_enigmaticlegacy.frost_lotus": "Frost Lotus",
+
 
   "curios.identifier.holy_ring": "",
   "curios.modifiers.holy_ring": "",
@@ -189,10 +193,12 @@
   "text.ex_enigmaticlegacy.manaita_sword.damage": "Damage",
   "text.ex_enigmaticlegacy.manaita_sword.speed": "1.6 speed",
   "screen.ex_enigmaticlegacy.celestia_ht.name": "Celestia",
+  "enchantment.ex_enigmaticlegacy.wither": "Withering",
+  "enchantment.ex_enigmaticlegacy.wither.desc": "Inflicts wither effect on hit enemies",
+
 
   "effect.ex_enigmaticlegacy.flying": "Flying",
   "info.ex_enigmaticlegacy.flying.stop": "Your experience is over, and if you're still flying, don't fear, mysterious forces will get you safely to the ground",
   "info.ex_enigmaticlegacy.flying.error": "You Are Now Creating This Effect Is Useless",
-  "info.ex_enigmaticlegacy.flying.star": "You Now Have 20 Minutes To Experience The Flight！",
-  "block.ex_enigmaticlegacy.paged_chest": "Paged  Chest"
+  "info.ex_enigmaticlegacy.flying.star": "You Now Have 20 Minutes To Experience The Flight！"
 }

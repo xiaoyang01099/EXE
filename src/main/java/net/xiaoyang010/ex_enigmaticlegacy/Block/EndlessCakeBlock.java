@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
@@ -123,13 +122,6 @@ public class EndlessCakeBlock extends CakeBlock {
                 event.setDamageMultiplier(0);
             }
         }
-    }
-
-    @SubscribeEvent
-    public void playerUpdate(TickEvent.PlayerTickEvent event) {
-        Player player = event.player;
-        String playerStr = player.getGameProfile().getName() + ":" + player.level.isClientSide;
-
     }
 
     @Override

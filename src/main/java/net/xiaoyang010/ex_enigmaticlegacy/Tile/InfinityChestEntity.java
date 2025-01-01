@@ -1,7 +1,19 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Tile;
 
+import moze_intel.projecte.gameObjs.block_entities.EmcChestBlockEntity;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.CompoundContainer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.entity.ChestLidController;
+import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
+import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -25,6 +37,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
@@ -33,15 +46,48 @@ import net.xiaoyang010.ex_enigmaticlegacy.Container.InfinityChestMenu;
 public class InfinityChestEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     private NonNullList<ItemStack> stacks = NonNullList.withSize(273, ItemStack.EMPTY);
     private final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
+    private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
+        @Override
+        protected void onOpen(Level level, BlockPos pos, BlockState state) {
+            InfinityChestEntity.playSound(level, pos, state, SoundEvents.CHEST_OPEN);
+        }
+
+        @Override
+        protected void onClose(Level level, BlockPos pos, BlockState state) {
+            InfinityChestEntity.playSound(level, pos, state, SoundEvents.CHEST_CLOSE);
+        }
+
+        @Override
+        protected void openerCountChanged(Level level, BlockPos pos, BlockState state, int oldCount, int newCount) {
+            InfinityChestEntity.this.signalOpenCount(level, pos, state, oldCount, newCount);
+        }
+
+        @Override
+        protected boolean isOwnContainer(Player player) {
+            if (!(player.containerMenu instanceof InfinityChestMenu)) {
+                return false;
+            }
+
+            // 获取实际的容器
+            return ((InfinityChestMenu) player.containerMenu).get().values().stream()
+                    .anyMatch(slot -> {
+                        if (slot instanceof SlotItemHandler) {
+                            return ((SlotItemHandler) slot).getItemHandler() == InfinityChestEntity.this.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+                                    .orElse(null);
+                        }
+                        return false;
+                    });
+        }
+    };
+
+    private final ChestLidController chestLidController = new ChestLidController();
 
     private int openCount; // 当前打开箱子的人数
     private float openNess; // 开合状态，0.0表示关闭，1.0表示完全打开
     private float openNessPrev; // 上一tick的开合状态，用于插值
 
-    public InfinityChestEntity(BlockPos position, BlockState state) {
-        super(ModBlockEntities.INFINITY_CHEST.get(), position, state);
-        this.openNess = 0.0F;
-        this.openNessPrev = 0.0F;
+    public InfinityChestEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.INFINITY_CHEST.get(), pos, state);
     }
 
     @Override
@@ -153,42 +199,42 @@ public class InfinityChestEntity extends RandomizableContainerBlockEntity implem
             handler.invalidate();
     }
 
-    // 更新方法，处理开关动画
-    public void tick() {
-        this.openNessPrev = this.openNess;
-        if (this.openCount > 0 && this.openNess < 1.0F) {
-            this.openNess += 0.1F;
-        } else if (this.openCount == 0 && this.openNess > 0.0F) {
-            this.openNess -= 0.1F;
-        }
-        this.openNess = Math.max(0.0F, Math.min(1.0F, this.openNess));
-        if (this.openNess > 0.0F && this.openNessPrev == 0.0F) {
-            this.level.playSound(null, this.worldPosition, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-        } else if (this.openNess == 0.0F && this.openNessPrev > 0.0F) {
-            this.level.playSound(null, this.worldPosition, SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 1.0F, 1.0F);
+    private static void playSound(Level level, BlockPos pos, BlockState state, SoundEvent sound) {
+        double x = (double)pos.getX() + 0.5D;
+        double y = (double)pos.getY() + 0.5D;
+        double z = (double)pos.getZ() + 0.5D;
+        level.playSound(null, x, y, z, sound, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+    }
+
+    protected void signalOpenCount(Level level, BlockPos pos, BlockState state, int prevCount, int newCount) {
+        Block block = state.getBlock();
+        level.blockEvent(pos, block, 1, newCount);
+    }
+
+    public void stopOpen(Player player) {
+        if (!this.remove && !player.isSpectator()) {
+            this.openersCounter.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
         }
     }
 
-    // 开箱子时调用
-    public void openChest() {
-        if (this.openCount < 0) {
-            this.openCount = 0;
+
+    public void startOpen(Player player) {
+        if (!this.remove && !player.isSpectator()) {
+            this.openersCounter.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
         }
-        ++this.openCount;
-        this.level.blockEvent(this.worldPosition, this.getBlockState().getBlock(), 1, this.openCount);
     }
 
-    // 关箱子时调用
-    public void closeChest() {
-        if (this.openCount > 0) {
-            --this.openCount;
+    @Override
+    public boolean triggerEvent(int id, int type) {
+        if (id == 1) {
+            this.chestLidController.shouldBeOpen(type > 0);
+            return true;
         }
-        this.level.blockEvent(this.worldPosition, this.getBlockState().getBlock(), 1, this.openCount);
+        return super.triggerEvent(id, type);
     }
 
-    // 返回箱子当前的开合状态，0.0 表示关闭，1.0 表示完全打开
     public float getOpenNess(float partialTicks) {
-        return this.openNessPrev + (this.openNess - this.openNessPrev) * partialTicks;
+        return this.chestLidController.getOpenness(partialTicks);
     }
 
 }

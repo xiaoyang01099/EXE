@@ -1,14 +1,16 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Entity;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.BossEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.ai.WitherSkullAttackGoal;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -43,13 +45,13 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.entity.LightningBolt;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 @Mod.EventBusSubscriber
 public class MiaoMiaoEntity extends Monster {
 
-
+    private boolean battleStarted = false;
+    private final Set<UUID> playersInBattle = new HashSet<>();
     private boolean isInPhaseTwo = false;
     private static final double RANGED_ATTACK_RADIUS = 5.0D;
     private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.PINK, ServerBossEvent.BossBarOverlay.PROGRESS);
@@ -75,7 +77,7 @@ public class MiaoMiaoEntity extends Monster {
         setCustomName(new TextComponent("miaomiao"));
         setCustomNameVisible(true);
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.KILLYOU.get()));
-        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.STARFLOWERSTONE.get()));
+        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.MIAOMIAOTOU.get()));
         this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.NETHERITE_HELMET));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
@@ -435,7 +437,39 @@ public class MiaoMiaoEntity extends Monster {
 
     public static void init() {
         SpawnPlacements.register(ModEntities.KIND_MIAO.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) -> (world.getBlockState(pos.below()).getMaterial() == Material.GRASS && world.getRawBrightness(pos, 0) > 8));
+                (entityType, world, reason, pos, random) -> {
+                    // 基础条件：必须是草方块且亮度足够
+                    if (!(world.getBlockState(pos.below()).getMaterial() == Material.GRASS && world.getRawBrightness(pos, 0) > 8)) {
+                        return false;
+                    }
+
+                    // 获取生成位置的基准高度
+                    int baseY = pos.getY();
+                    int checkRadius = (int)LIGHTNING_CIRCLE_RADIUS;
+
+                    // 检查整个区域是否平整
+                    for (int x = -checkRadius; x <= checkRadius; x++) {
+                        for (int z = -checkRadius; z <= checkRadius; z++) {
+                            // 只检查圆形范围内的方块
+                            if (x * x + z * z > checkRadius * checkRadius) continue;
+
+                            // 获取当前位置方块
+                            int currentY = world.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX() + x, pos.getZ() + z);
+
+                            // 高度差不能超过1个方块
+                            if (Math.abs(currentY - baseY) > 1) {
+                                return false;
+                            }
+
+                            // 检查是否所有方块都是实心的
+                            if (!world.getBlockState(new BlockPos(pos.getX() + x, currentY - 1, pos.getZ() + z)).getMaterial().isSolid()) {
+                                return false;
+                            }
+                        }
+                    }
+
+                    return true;
+                });
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -766,22 +800,18 @@ public class MiaoMiaoEntity extends Monster {
 
     private void manageLightningCircle() {
         if (!this.level.isClientSide) {
-
             double bossDistanceFromCenter = Math.sqrt(
                     Math.pow(this.getX() - circleOriginX, 2) +
                             Math.pow(this.getZ() - circleOriginZ, 2)
             );
 
             if (bossDistanceFromCenter > LIGHTNING_CIRCLE_RADIUS - 1.0) {
-                // 计算角度
                 double angle = Math.atan2(this.getZ() - circleOriginZ, this.getX() - circleOriginX);
-                // 将boss推回圈内
                 this.setPos(
                         circleOriginX + Math.cos(angle) * (LIGHTNING_CIRCLE_RADIUS - 1.0),
                         this.getY(),
                         circleOriginZ + Math.sin(angle) * (LIGHTNING_CIRCLE_RADIUS - 1.0)
                 );
-                // 清除水平移动速度
                 this.setDeltaMovement(0, this.getDeltaMovement().y, 0);
             }
 
@@ -789,12 +819,10 @@ public class MiaoMiaoEntity extends Monster {
                 spawnBeaconBeams(serverLevel);
             }
 
-            // 更新粒子效果
-            if (tickCounter % 5 == 0) { // 每5tick生成一次粒子
+            if (tickCounter % 5 == 0) {
                 spawnBoundaryParticles();
             }
 
-            // 每20tick检查一次玩家
             if (tickCounter % 20 == 0) {
                 AABB checkArea = new AABB(
                         circleOriginX - LIGHTNING_CIRCLE_RADIUS - 10,
@@ -805,50 +833,88 @@ public class MiaoMiaoEntity extends Monster {
                         circleOriginZ + LIGHTNING_CIRCLE_RADIUS + 10
                 );
 
-
                 List<Player> players = this.level.getEntitiesOfClass(Player.class, checkArea);
+                double maxRadiusSquared = LIGHTNING_CIRCLE_RADIUS * LIGHTNING_CIRCLE_RADIUS;
+
                 for (Player player : players) {
-                    // 计算玩家到圈子中心的距离
                     double playerDistanceSquared = (player.getX() - circleOriginX) * (player.getX() - circleOriginX) +
                             (player.getZ() - circleOriginZ) * (player.getZ() - circleOriginZ);
-                    double radiusSquared = LIGHTNING_CIRCLE_RADIUS * LIGHTNING_CIRCLE_RADIUS;
+                    boolean isInside = playerDistanceSquared <= maxRadiusSquared;
+                    boolean wasInside = playersInBattle.contains(player.getUUID());
 
-                    if (playerDistanceSquared <= radiusSquared) {
-                        // 在范围内的玩家受到伤害
+                    if (isInside) {
+                        if (!wasInside) {
+                            playersInBattle.add(player.getUUID());
+                        }
                         player.hurt(DamageSource.LIGHTNING_BOLT, 10.0F);
                         this.setTarget(player);
-                    } else {
-                        // 超出范围的玩家
-                        if (player.getAbilities().instabuild) {
-                            // 创造模式玩家直接死亡
-                            player.kill();
-                        } else {
-                            // 将生存模式玩家推回圈内
-                            double angle = Math.atan2(player.getZ() - circleOriginZ, player.getX() - circleOriginX);
-                            player.teleportTo(
-                                    circleOriginX + Math.cos(angle) * (LIGHTNING_CIRCLE_RADIUS - 1.0),
-                                    player.getY(),
-                                    circleOriginZ + Math.sin(angle) * (LIGHTNING_CIRCLE_RADIUS - 1.0)
+                    } else if (wasInside) {
+                        double angle = Math.atan2(player.getZ() - circleOriginZ, player.getX() - circleOriginX);
+                        player.teleportTo(
+                                circleOriginX + Math.cos(angle) * (LIGHTNING_CIRCLE_RADIUS - 1.0),
+                                player.getY(),
+                                circleOriginZ + Math.sin(angle) * (LIGHTNING_CIRCLE_RADIUS - 1.0)
+                        );
+                        player.hurt(DamageSource.MAGIC, 20.0F);
+
+                        if (this.level instanceof ServerLevel serverLevel) {
+                            serverLevel.sendParticles(
+                                    ParticleTypes.PORTAL,
+                                    player.getX(), player.getY(), player.getZ(),
+                                    20, 0.5, 0.5, 0.5, 0.1
                             );
-                            player.hurt(DamageSource.MAGIC, 20.0F);
+                        }
+                    } else if (isLightningCircleActive && playerDistanceSquared <= (maxRadiusSquared + 25)) {
+                        Vec3 pushDir = new Vec3(
+                                player.getX() - circleOriginX,
+                                0,
+                                player.getZ() - circleOriginZ
+                        ).normalize();
+
+                        player.setDeltaMovement(
+                                pushDir.x * 0.5,
+                                0.2,
+                                pushDir.z * 0.5
+                        );
+
+                        if (!player.getAbilities().instabuild) {
+                            player.hurt(DamageSource.MAGIC, 5.0F);
+                        }
+
+                        if (this.level instanceof ServerLevel serverLevel) {
+                            serverLevel.sendParticles(
+                                    ParticleTypes.CRIT,
+                                    player.getX(), player.getY() + 1, player.getZ(),
+                                    1, 0, 0, 0, 0
+                            );
                         }
                     }
                 }
 
-                // 清除范围内的其他实体（除了boss自己和凋零骷髅头）
                 List<Entity> entities = this.level.getEntities(this, checkArea);
                 for (Entity entity : entities) {
                     if (entity instanceof WitherSkull || entity == this) {
                         continue;
                     }
                     if (entity instanceof LivingEntity && !(entity instanceof Player)) {
-                        entity.remove(RemovalReason.KILLED);
+                        if (entity instanceof Mob) {
+                            double entityDistanceSquared = entity.distanceToSqr(circleOriginX, entity.getY(), circleOriginZ);
+                            if (entityDistanceSquared <= maxRadiusSquared) {
+                                entity.remove(RemovalReason.KILLED);
+                                if (this.level instanceof ServerLevel serverLevel) {
+                                    serverLevel.sendParticles(
+                                            ParticleTypes.LARGE_SMOKE,
+                                            entity.getX(), entity.getY(), entity.getZ(),
+                                            10, 0.2, 0.2, 0.2, 0.05
+                                    );
+                                }
+                            }
+                        }
                     }
                 }
             }
 
-            // 维护雷电圈效果
-            if (tickCounter % 40 == 0) { // 每2秒刷新一次雷电
+            if (tickCounter % 40 == 0) {
                 for (LightningBolt lightning : lightningCircle) {
                     if (!lightning.isAlive()) {
                         LightningBolt newLightning = EntityType.LIGHTNING_BOLT.create(this.level);
@@ -861,22 +927,108 @@ public class MiaoMiaoEntity extends Monster {
                 }
             }
 
-            // 粒子效果显示边界
-            if (tickCounter % 5 == 0) { // 每5tick生成一次粒子
+            if (tickCounter % 5 == 0) {
                 for (int i = 0; i < LIGHTNING_CIRCLE_POINTS; i++) {
                     double angle = (2 * Math.PI * i) / LIGHTNING_CIRCLE_POINTS;
                     double xOffset = Math.cos(angle) * LIGHTNING_CIRCLE_RADIUS;
                     double zOffset = Math.sin(angle) * LIGHTNING_CIRCLE_RADIUS;
 
-                    ((ServerLevel) this.level).sendParticles(
-                            ParticleTypes.SOUL_FIRE_FLAME,
-                            circleOriginX + xOffset,
-                            circleOriginY + 1,
-                            circleOriginZ + zOffset,
-                            1, 0, 0, 0, 0
-                    );
+                    if (this.level instanceof ServerLevel serverLevel) {
+                        serverLevel.sendParticles(
+                                ParticleTypes.SOUL_FIRE_FLAME,
+                                circleOriginX + xOffset,
+                                circleOriginY + 1,
+                                circleOriginZ + zOffset,
+                                1, 0, 0, 0, 0
+                        );
+                    }
                 }
             }
         }
     }
+
+    // 添加方块保护事件处理器
+    @SubscribeEvent
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        Level level = (Level) event.getWorld();
+        if (!level.isClientSide) {
+            List<MiaoMiaoEntity> bosses = level.getEntitiesOfClass(
+                    MiaoMiaoEntity.class,
+                    new AABB(event.getPos()).inflate(LIGHTNING_CIRCLE_RADIUS * 2)
+            );
+
+            for (MiaoMiaoEntity boss : bosses) {
+                if (boss.isAlive()) {
+                    double distanceSquared =
+                            Math.pow(event.getPos().getX() + 0.5 - boss.getX(), 2) +
+                                    Math.pow(event.getPos().getZ() + 0.5 - boss.getZ(), 2);
+
+                    if (distanceSquared <= LIGHTNING_CIRCLE_RADIUS * LIGHTNING_CIRCLE_RADIUS) {
+                        event.setCanceled(true);
+
+                        // 显示取消效果
+                        if (level instanceof ServerLevel serverLevel) {
+                            serverLevel.sendParticles(
+                                    ParticleTypes.SMOKE,
+                                    event.getPos().getX() + 0.5,
+                                    event.getPos().getY() + 0.5,
+                                    event.getPos().getZ() + 0.5,
+                                    10,
+                                    0.2,
+                                    0.2,
+                                    0.2,
+                                    0.05
+                            );
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+        Level level = (Level) event.getWorld();
+        if (!level.isClientSide) {
+            List<MiaoMiaoEntity> bosses = level.getEntitiesOfClass(
+                    MiaoMiaoEntity.class,
+                    new AABB(event.getPos()).inflate(LIGHTNING_CIRCLE_RADIUS * 2)
+            );
+
+            for (MiaoMiaoEntity boss : bosses) {
+                if (boss.isAlive()) {
+                    double distanceSquared =
+                            Math.pow(event.getPos().getX() + 0.5 - boss.getX(), 2) +
+                                    Math.pow(event.getPos().getZ() + 0.5 - boss.getZ(), 2);
+
+                    if (distanceSquared <= LIGHTNING_CIRCLE_RADIUS * LIGHTNING_CIRCLE_RADIUS) {
+                        event.setCanceled(true);
+
+                        // 显示取消效果
+                        if (level instanceof ServerLevel serverLevel) {
+                            serverLevel.sendParticles(
+                                    ParticleTypes.SMOKE,
+                                    event.getPos().getX() + 0.5,
+                                    event.getPos().getY() + 0.5,
+                                    event.getPos().getZ() + 0.5,
+                                    10,
+                                    0.2,
+                                    0.2,
+                                    0.2,
+                                    0.05
+                            );
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void remove(RemovalReason reason) {
+        playersInBattle.clear();
+        super.remove(reason);
+        }
 }

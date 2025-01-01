@@ -1,6 +1,7 @@
 
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.*;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
@@ -19,6 +20,15 @@ import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.SpectriteWither;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModEntities {
 	public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITIES, ExEnigmaticlegacyMod.MODID);
+
+//	public static final RegistryObject<EntityType<RainbowWitherSkull>> RAINBOW_WITHER_SKULL =
+//			REGISTRY.register("rainbow_wither_skull",
+//					() -> EntityType.Builder.<RainbowWitherSkull>of(RainbowWitherSkull::new, MobCategory.MISC)
+//							.sized(0.3125F, 0.3125F)
+//							.clientTrackingRange(4)
+//							.updateInterval(10)
+//							.fireImmune()
+//							.build(new ResourceLocation("ex_enigmaticlegacy", "rainbow_wither_skull").toString()));
 
 	public static final RegistryObject<EntityType<Xiaoyang010Entity>> XIAOYANG_010 = register("xiaoyang_010", EntityType.Builder.<Xiaoyang010Entity>of(Xiaoyang010Entity::new, MobCategory.CREATURE).setShouldReceiveVelocityUpdates(true)
 			.setTrackingRange(100).setUpdateInterval(3).setCustomClientFactory(Xiaoyang010Entity::new).fireImmune().sized(0.6f, 1.8f));
@@ -71,6 +81,8 @@ public class ModEntities {
 		event.put(XINGYUN2825.get(),Xingyun2825Entity.createAttributes().build());
 		event.put(SPECTRITE_WITHER.get(), SpectriteWither.createAttributes().build());
 		event.put(KIND_MIAO.get(), MiaoMiaoEntity.createAttributes().build());
+
+
 	}
 
 }

@@ -11,7 +11,7 @@ import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.GoldenLaurel;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.GoldenLaurel;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.ItemBlockFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.curio.HolyRing;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
@@ -43,10 +43,13 @@ public class ModItems {
 	public static final RegistryObject<Item> NICKEL_BLOCK = block(ModBlocks.NICKEL_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> AERIALITE_BLOCK = block(ModBlocks.AERIALITE_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 
-	public static final RegistryObject<Item> infinitySpreader = block(ModBlocks.infinitySpreader, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 
+	public static final RegistryObject<Item> infinitySpreader = block(ModBlocks.infinitySpreader, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 
+	public static final RegistryObject<Item> FROST_LOTUS = blockFlower(ModBlocks.FROST_LOTUS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> DARK_NIGHT_GRASS = blockFlower(ModBlocks.DARK_NIGHT_GRASS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> ASTRAL_KILLOP = blockFlower(ModBlocks.ASTRAL_KILLOP, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> KILLING_BERRY = blockFlower(ModBlocks.KILLING_BERRY, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> NIGHTSHADE = blockFlower(ModBlocks.NIGHTSHADE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> DAYBLOOM = blockFlower(ModBlocks.DAYBLOOM, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> BELIEVE = blockFlower(ModBlocks.BELIEVER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
@@ -66,6 +69,7 @@ public class ModItems {
 	public static final RegistryObject<Item> INFINITY_POTATO = block(ModBlocks.INFINITY_POTATO, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> FLOWEY = block(ModBlocks.FLOWEY,ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> WITCH_OPOOD = block(ModBlocks.WITCH_OPOOD,ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> LYCORISRADIATA = block(ModBlocks.LYCORISRADIATA,ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 
 
 
@@ -132,7 +136,6 @@ public class ModItems {
 	public static final RegistryObject<Item> KILLYOU = REGISTRY.register("killyou", KillyouItem::new);
 	public static final RegistryObject<Item> EGG = REGISTRY.register("egg", RainBowEggItem::new);
 	public static final RegistryObject<Item> INFINITY_MATTER = REGISTRY.register("infinity_matter", InfinityMatter::new);
-	/*public static final RegistryObject<Item> LOLIPICKAXE = REGISTRY.register("loli_pickaxe", () -> new LolipickaxeItem());*/
 	public static final RegistryObject<Item> MEMORIZE = REGISTRY.register("memorize", Memorize::new);
 	public static final RegistryObject<Item> MIAOMIAOTOU = REGISTRY.register("miaomiaotou", MiaoMiaoTou::new);
 	public static final RegistryObject<Item> LOPPING_PEARL = REGISTRY.register("lopping_pearl",LoppingPearl::new);
@@ -171,9 +174,8 @@ public class ModItems {
 
 
 
-
-
 	public static final RegistryObject<Item> GOLDEN_LAUREL = REGISTRY.register("golden_laurel", () -> new GoldenLaurel(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(1).rarity(Rarity.RARE)));
+
 	public static final RegistryObject<Item> XIAOYANG_010_SPAWN_EGG = REGISTRY.register("xiaoyang_010_spawn_egg",
 			() -> new ForgeSpawnEggItem(ModEntities.XIAOYANG_010, -1, -1,
 					new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)));

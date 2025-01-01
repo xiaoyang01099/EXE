@@ -1,0 +1,7 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "ex_enigmaticlegacy:blocks/flowers/dark_night_grass",
+    "particle": "ex_enigmaticlegacy:blocks/flowers/dark_night_grass"
+  }
+}

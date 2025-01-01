@@ -1,6 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "ex_enigmaticlegacy:block/fluffy_dandelion" }
+      "model": "ex_enigmaticlegacy:block/fluffy_dandelion"
+    }
   }
 }

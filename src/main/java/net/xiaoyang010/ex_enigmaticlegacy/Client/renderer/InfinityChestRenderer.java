@@ -63,35 +63,39 @@ public class InfinityChestRenderer implements BlockEntityRenderer<InfinityChestE
     }
 
     @Override
-    public void render(InfinityChestEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
+    public void render(InfinityChestEntity blockEntity, float partialTicks, PoseStack poseStack,
+                       MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
         Level level = blockEntity.getLevel();
         boolean hasLevel = level != null;
-        BlockState blockState = hasLevel ? blockEntity.getBlockState() : Blocks.CHEST.defaultBlockState().setValue(InfinityChest.FACING, Direction.SOUTH);
+        BlockState blockState = hasLevel ? blockEntity.getBlockState() :
+                Blocks.CHEST.defaultBlockState().setValue(InfinityChest.FACING, Direction.SOUTH);
         Direction direction = blockState.getValue(InfinityChest.FACING);
 
-        // 对箱子的方向进行旋转和位移处理
         poseStack.pushPose();
-        poseStack.translate(0.5, 0.5, 0.5);
+        poseStack.translate(0.5D, 0.5D, 0.5D);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(-direction.toYRot()));
-        poseStack.translate(-0.5, -0.5, -0.5);
+        poseStack.translate(-0.5D, -0.5D, -0.5D);
 
-        // 获取当前箱子的开合程度
         float openness = blockEntity.getOpenNess(partialTicks);
-        openness = 1.0F - openness;
-        openness = 1.0F - openness * openness * openness;
+        float lidAngle = 1.0F - openness;
+        lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
 
-        // 获取当前动画帧的纹理索引
+        // 渲染动画贴图
         int textureIndex = getAnimationFrame(blockEntity, partialTicks);
-
-        // 获取当前的纹理材质
         Material currentMaterial = INFINITY_CHEST_TEXTURES[textureIndex];
         VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(currentMaterial.texture()));
 
-        // 渲染当前帧
-        renderChest(poseStack, vertexConsumer, this.lid, this.lock, this.bottom, openness, combinedLight, combinedOverlay);
+        // 渲染箱子
+        lid.xRot = -(lidAngle * ((float)Math.PI / 2F));
+        lock.xRot = lid.xRot;
+
+        lid.render(poseStack, vertexConsumer, combinedLight, combinedOverlay);
+        lock.render(poseStack, vertexConsumer, combinedLight, combinedOverlay);
+        bottom.render(poseStack, vertexConsumer, combinedLight, combinedOverlay);
 
         poseStack.popPose();
     }
+
 
     // 渲染箱子各部分
     private void renderChest(PoseStack poseStack, VertexConsumer vertexConsumer, ModelPart lid, ModelPart lock, ModelPart bottom, float openness, int light, int overlay) {

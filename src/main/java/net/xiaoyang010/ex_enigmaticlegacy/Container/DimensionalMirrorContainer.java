@@ -82,15 +82,27 @@ public class DimensionalMirrorContainer extends AbstractContainerMenu {
     }
 
     public boolean hasRequiredItems(ResourceKey<Level> dimension) {
+        // 创造模式不需要消耗物品
+        if (player.getAbilities().instabuild) {
+            return true;
+        }
+
         if (dimension == Level.NETHER) {
             return player.getInventory().countItem(Items.DIAMOND) >= 4;
         } else if (dimension == Level.END) {
             return player.getInventory().countItem(Items.ENDER_PEARL) >= 8;
+        } else if (dimension == Level.OVERWORLD) {
+            return true; // 返回主世界不需要消耗物品
         }
-        return true;
+        return false; // 对于其他维度，默认不允许传送
     }
 
     private void consumeRequiredItems(ResourceKey<Level> dimension) {
+        // 创造模式不消耗物品
+        if (player.getAbilities().instabuild) {
+            return;
+        }
+
         if (dimension == Level.NETHER) {
             player.getInventory().clearOrCountMatchingItems(p -> p.is(Items.DIAMOND), 4, player.inventoryMenu.getCraftSlots());
         } else if (dimension == Level.END) {
@@ -103,26 +115,48 @@ public class DimensionalMirrorContainer extends AbstractContainerMenu {
         if (targetLevel.dimension() == Level.NETHER) {
             pos = new BlockPos(player.getX() / 8.0D, 64, player.getZ() / 8.0D);
         } else if (targetLevel.dimension() == Level.END) {
-            // 末地维度的生成点通常在这些坐标
-            pos = new BlockPos(100, 50, 0);  // 默认的末地生成坐标
-
-            // 或者你也可以使用世界生成点
-            // pos = targetLevel.getSharedSpawnPos();
-
-            // 在这个位置找到最高的方块
-            for (int y = 50; y < 80; y++) {
-                BlockPos checkPos = new BlockPos(100, y, 0);
-                if (targetLevel.getBlockState(checkPos).isAir() &&
-                        targetLevel.getBlockState(checkPos.above()).isAir()) {
-                    pos = checkPos;
-                    break;
-                }
-            }
+            pos = new BlockPos(100, 50, 0);
         } else {
             pos = targetLevel.getSharedSpawnPos();
         }
 
+        // 确保位置是安全的，如果需要则生成平台
+        pos = ensureSafePlatform(targetLevel, pos);
         return pos;
+    }
+
+    private BlockPos ensureSafePlatform(ServerLevel level, BlockPos initialPos) {
+        // 检查脚下是否有方块
+        BlockPos checkPos = initialPos.below();
+        if (level.getBlockState(checkPos).isAir()) {
+            // 获取对应维度的基础方块
+            net.minecraft.world.level.block.Block platformBlock;
+            if (level.dimension() == Level.NETHER) {
+                platformBlock = net.minecraft.world.level.block.Blocks.NETHERRACK;
+            } else if (level.dimension() == Level.END) {
+                platformBlock = net.minecraft.world.level.block.Blocks.END_STONE;
+            } else {
+                platformBlock = net.minecraft.world.level.block.Blocks.STONE;
+            }
+
+            // 生成9x9平台
+            for (int x = -4; x <= 4; x++) {
+                for (int z = -4; z <= 4; z++) {
+                    BlockPos platformPos = checkPos.offset(x, 0, z);
+                    level.setBlock(platformPos, platformBlock.defaultBlockState(), 3);
+                }
+            }
+        }
+
+        // 确保头部有足够空间
+        for (int y = 0; y <= 1; y++) {
+            BlockPos headPos = initialPos.above(y);
+            if (!level.getBlockState(headPos).isAir()) {
+                level.setBlock(headPos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+            }
+        }
+
+        return initialPos;
     }
 
     private void playTeleportEffects(ServerPlayer player) {

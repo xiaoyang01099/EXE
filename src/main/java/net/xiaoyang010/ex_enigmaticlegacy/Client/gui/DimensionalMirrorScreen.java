@@ -19,7 +19,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.TeleportPacket;
 
 public class DimensionalMirrorScreen extends AbstractContainerScreen<DimensionalMirrorContainer> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("exenigmaticlegacy", "textures/gui/dimensional_mirror.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation("ex_enigmaticlegacy", "textures/gui/dimensional_mirror.png");
     private static final int GUI_WIDTH = 176;
     private static final int GUI_HEIGHT = 246;
 

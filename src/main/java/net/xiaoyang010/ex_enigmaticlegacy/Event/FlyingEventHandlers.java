@@ -16,11 +16,11 @@ import net.xiaoyang010.ex_enigmaticlegacy.Item.StarflowerStone;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy", bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy")
 public class FlyingEventHandlers {
     public static List<String> playersWithStone = new ArrayList<>();
     public static final List<String> playersWithNebulaChest = new ArrayList<>();
-
+    public static final List<String> playersWithManaitaArmor = new ArrayList<>();
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
@@ -30,6 +30,7 @@ public class FlyingEventHandlers {
         boolean hasNeutralChest = hasNeutralChest(player);
         MobEffectInstance effect = player.getEffect(ModEffects.FLYING.get());
         boolean flying = effect != null && effect.getAmplifier() >= 0;
+        boolean hasManaitaArmor = isWearingFullArmor(player);
 
         //防止其它模组飞行装备无法使用 参考1.12无尽
         String key = player.getGameProfile().getName()+":"+player.level.isClientSide;
@@ -76,27 +77,32 @@ public class FlyingEventHandlers {
             playersWithNebulaChest.add(key);
         }
 
-        // 检查玩家是否穿戴了整套砧板盔甲
-        if (isWearingFullArmor(player)) {
-            // 给予玩家飞行能力，如果其他物品没有控制飞行能力
-            if (!player.getAbilities().mayfly && !player.isCreative() && !player.getAbilities().flying) {
-                player.getAbilities().mayfly = true;
-                player.onUpdateAbilities(); // 确保同步能力
+        if (playersWithManaitaArmor.contains(key)) {
+            // 检查玩家是否穿戴了整套砧板盔甲
+            if (hasManaitaArmor) {
+                // 给予玩家飞行能力，如果其他物品没有控制飞行能力
+                if (!player.getAbilities().mayfly) {
+                    player.getAbilities().mayfly = true;
+                    player.onUpdateAbilities(); // 确保同步能力
+                }
+                // 给予玩家无限饱食度
+                if (player.getFoodData().getFoodLevel() < 20) {
+                    player.getFoodData().setFoodLevel(20);
+                }
+                if (player.getFoodData().getSaturationLevel() < 5.0F) {
+                    player.getFoodData().setSaturation(5.0F);
+                }
+            }else {
+                if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()){
+                    // 如果没穿整套盔甲且玩家不在创造模式，移除飞行能力
+                    player.getAbilities().mayfly = false;
+                    player.getAbilities().flying = false; // 停止飞行
+                    player.onUpdateAbilities(); // 确保同步能力
+                }
+                playersWithManaitaArmor.remove(key);
             }
-            // 给予玩家无限饱食度
-            if (player.getFoodData().getFoodLevel() < 20) {
-                player.getFoodData().setFoodLevel(20);
-            }
-            if (player.getFoodData().getSaturationLevel() < 5.0F) {
-                player.getFoodData().setSaturation(5.0F);
-            }
-        } else {
-            // 如果没穿整套盔甲且玩家不在创造模式，移除飞行能力
-            if (!player.isCreative() && !player.hasEffect(MobEffects.NIGHT_VISION) && player.getAbilities().mayfly) {
-                player.getAbilities().mayfly = false;
-                player.getAbilities().flying = false; // 停止飞行
-                player.onUpdateAbilities(); // 确保同步能力
-            }
+        } else if (hasManaitaArmor){
+            playersWithManaitaArmor.add(key);
         }
     }
 
@@ -124,16 +130,12 @@ public class FlyingEventHandlers {
     private static void addEffects(Player player) {
         // 夜视效果
         player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, Integer.MAX_VALUE, 255, false, false));
-
         // 饱和效果
         player.addEffect(new MobEffectInstance(MobEffects.SATURATION, Integer.MAX_VALUE, 255, false, false));
-
         // 生命恢复效果
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Integer.MAX_VALUE, 255, false, false));
-
         // 伤害吸收效果
         player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, Integer.MAX_VALUE, 255, false, false));
-
         // 速度效果
         player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, Integer.MAX_VALUE, 4, false, false));
     }

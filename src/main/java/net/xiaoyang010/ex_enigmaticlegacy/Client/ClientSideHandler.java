@@ -30,6 +30,10 @@ public class ClientSideHandler {
         DaybloomBlock.registerRenderLayer();
         NightshadeBlock.registerRenderLayer();
         AstralKillop.registerRenderLayer();
+        KillingBerry.registerRenderLayer();
+        DarkNightGrass.registerRenderLayer();
+        FrostLotusFlower.registerRenderLayer();
+        Lycorisradiata.registerRenderLayer();
     }
 
 

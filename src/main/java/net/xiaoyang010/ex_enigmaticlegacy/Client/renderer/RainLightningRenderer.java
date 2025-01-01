@@ -3,11 +3,13 @@ package net.xiaoyang010.ex_enigmaticlegacy.Client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.resources.ResourceLocation;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.EntityRainBowLightningBlot;
 
@@ -18,12 +20,49 @@ public class RainLightningRenderer extends EntityRenderer<EntityRainBowLightning
         super(p_174286_);
     }
 
+    private static final Vector3f[] RAINBOW_COLORS = {
+            new Vector3f(1.0F, 0.0F, 0.0F),
+            new Vector3f(1.0F, 0.5F, 0.0F),
+            new Vector3f(1.0F, 1.0F, 0.0F),
+            new Vector3f(0.0F, 1.0F, 0.0F),
+            new Vector3f(0.0F, 0.0F, 1.0F),
+            new Vector3f(0.5F, 0.0F, 1.0F)
+    };
+
     public void render(EntityRainBowLightningBlot p_115266_, float p_115267_, float p_115268_, PoseStack p_115269_, MultiBufferSource p_115270_, int p_115271_) {
         float[] afloat = new float[8];
         float[] afloat1 = new float[8];
         float f = 0.0F;
         float f1 = 0.0F;
         Random random = new Random(p_115266_.seed);
+
+        /*for(int j = 0; j < 4; ++j) {
+            for(int y = 0; y < 8; ++y) {
+                if(random.nextFloat() < 0.3F) {
+                    float progress = y / 7.0F;
+                    int colorIndex = (int)(progress * (RAINBOW_COLORS.length - 1));
+                    Vector3f color1 = RAINBOW_COLORS[colorIndex];
+                    Vector3f color2 = RAINBOW_COLORS[Math.min(colorIndex + 1, RAINBOW_COLORS.length - 1)];
+                    float blend = progress * (RAINBOW_COLORS.length - 1) - colorIndex;
+
+                    float r = color1.x() + (color2.x() - color1.x()) * blend;
+                    float g = color1.y() + (color2.y() - color1.y()) * blend;
+                    float b = color1.z() + (color2.z() - color1.z()) * blend;
+
+                    Vector3f finalColor = new Vector3f(r, g, b);
+
+                    float spread = 0.5F;
+                    double x = p_115266_.getX() + (random.nextDouble() - 0.5D) * spread;
+                    double z = p_115266_.getZ() + (random.nextDouble() - 0.5D) * spread;
+
+                    p_115266_.level.addParticle(
+                            new DustParticleOptions(finalColor, 1.0F),
+                            x, p_115266_.getY() + y, z,
+                            0, 0, 0
+                    );
+                }
+            }
+        }*/
 
         for(int i = 7; i >= 0; --i) {
             afloat[i] = f;
@@ -83,7 +122,6 @@ public class RainLightningRenderer extends EntityRenderer<EntityRainBowLightning
                 }
             }
         }
-
     }
 
     private static void quad(Matrix4f p_115273_, VertexConsumer p_115274_, float p_115275_, float p_115276_, int p_115277_, float p_115278_, float p_115279_, float p_115280_, float p_115281_, float p_115282_, float p_115283_, float p_115284_, boolean p_115285_, boolean p_115286_, boolean p_115287_, boolean p_115288_) {
