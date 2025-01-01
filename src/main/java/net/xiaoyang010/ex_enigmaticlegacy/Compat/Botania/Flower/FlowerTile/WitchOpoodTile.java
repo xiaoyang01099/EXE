@@ -1,7 +1,9 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile;
 
+import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -13,14 +15,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.BotaniaForgeClientCapabilities;
 import vazkii.botania.api.subtile.RadiusDescriptor;
+import vazkii.botania.api.subtile.RadiusDescriptor.Rectangle;
 import vazkii.botania.api.subtile.TileEntityGeneratingFlower;
 
 import java.util.ArrayList;
@@ -56,7 +59,9 @@ public class WitchOpoodTile extends TileEntityGeneratingFlower {
 
             for (ItemEntity item : items) {
                 ItemStack stack = item.getItem();
-                List<MobEffectInstance> potions = PotionUtils.getMobEffects(stack);
+                List<MobEffectInstance> potions;
+                if (!ExEnigmaticlegacyMod.isEx) potions = PotionUtils.getMobEffects(stack);
+                else potions = getAllEffects(stack.getOrCreateTag());
                 if (potions.isEmpty()) {
                     continue;
                 }
@@ -95,6 +100,25 @@ public class WitchOpoodTile extends TileEntityGeneratingFlower {
         }
     }
 
+    public static List<MobEffectInstance> getAllEffects(@javax.annotation.Nullable CompoundTag pCompoundTag) {
+        List<MobEffectInstance> $$1 = Lists.newArrayList();
+        $$1.addAll(PotionUtils.getPotion(pCompoundTag).getEffects());
+        getCustomEffects(pCompoundTag, $$1);
+        return $$1;
+    }
+
+    public static void getCustomEffects(@javax.annotation.Nullable CompoundTag pCompoundTag, List<MobEffectInstance> pEffectList) {
+        if (pCompoundTag != null && pCompoundTag.contains("EnigmaticPotion")) {
+            String $$2 = pCompoundTag.getString("EnigmaticPotion");
+
+            MobEffectInstance $$5 = MobEffectInstance.load(pCompoundTag);
+            if ($$5 != null) {
+                pEffectList.add($$5);
+            }
+        }
+
+    }
+
     private int getSlowdownFactor() {
         return 5;
     }
@@ -113,7 +137,7 @@ public class WitchOpoodTile extends TileEntityGeneratingFlower {
 
     @Override
     public RadiusDescriptor getRadius() {
-        return RadiusDescriptor.Rectangle.square(getEffectivePos(), RANGE);
+        return Rectangle.square(getEffectivePos(), RANGE);
     }
 
     @Override

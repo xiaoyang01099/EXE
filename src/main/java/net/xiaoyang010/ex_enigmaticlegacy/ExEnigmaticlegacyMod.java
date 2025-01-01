@@ -13,6 +13,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -47,6 +48,7 @@ public class ExEnigmaticlegacyMod {
 	public static final Logger LOGGER = LogManager.getLogger(ExEnigmaticlegacyMod.class);
 	public static final String MODID = "ex_enigmaticlegacy";
 	private static final String PROTOCOL_VERSION = "1";
+	public static boolean isEx = false;
 	public static final SimpleChannel PACKET_HANDLER = NetworkRegistry.newSimpleChannel(
 			new ResourceLocation(MODID, MODID), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 	private static int messageID = 0;
@@ -69,6 +71,8 @@ public class ExEnigmaticlegacyMod {
 		ModFeatures.REGISTRY.register(bus);
 		ModBiomes.REGISTRY.register(bus);
 		ModEnchantments.REGISTRY.register(bus);
+
+		isEx = ModList.get().isLoaded("enigmaticlegacy");
 
 		MinecraftForge.EVENT_BUS.register(new FlyingEventHandlers());
 		MinecraftForge.EVENT_BUS.register(new ArmorProtectionEvent());
