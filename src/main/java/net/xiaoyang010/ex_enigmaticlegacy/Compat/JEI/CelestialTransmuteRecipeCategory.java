@@ -19,6 +19,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.CelestialTransmuteRecipe;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class CelestialTransmuteRecipeCategory implements IRecipeCategory<Celesti
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CelestialTransmuteRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, CelestialTransmuteRecipe recipe, @NotNull IFocusGroup focuses) {
 
         List<Ingredient> ingredients = recipe.getRecipeItems();
         List<Integer> counts = recipe.getInputCounts();
@@ -64,7 +65,7 @@ public class CelestialTransmuteRecipeCategory implements IRecipeCategory<Celesti
     }
 
     @Override
-    public void draw(CelestialTransmuteRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
+    public void draw(CelestialTransmuteRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull PoseStack stack, double mouseX, double mouseY) {
         // 绘制需求数量
         for (int i = 0; i < recipe.getInputCounts().size(); i++) {
             int count = recipe.getInputCounts().get(i);
@@ -101,6 +102,7 @@ public class CelestialTransmuteRecipeCategory implements IRecipeCategory<Celesti
     }
 
     @Override
+    @NotNull
     public Class<? extends CelestialTransmuteRecipe> getRecipeClass() {
         return CelestialTransmuteRecipe.class;
     }

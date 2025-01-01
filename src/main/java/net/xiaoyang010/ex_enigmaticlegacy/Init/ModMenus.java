@@ -18,7 +18,7 @@ public class ModMenus {
     private static final List<MenuType<?>> REGISTRY = new ArrayList<>();
 
     public static final MenuType<InfinityChestMenu> INFINITE_CHEST_SCREEN = register("infinite_chest_screen",
-            InfinityChestMenu::new);
+            (id, inv, con) -> new InfinityChestMenu(id, inv));
 
     public static final MenuType<PagedChestContainer> PAGED_CHEST = register("paged_chest",
             (windowId, inv, data) -> new PagedChestContainer(windowId, inv,

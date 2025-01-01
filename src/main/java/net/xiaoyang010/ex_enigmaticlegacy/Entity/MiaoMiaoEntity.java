@@ -1,6 +1,5 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Entity;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -9,8 +8,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.ai.WitherSkullAttackGoal;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -45,21 +42,30 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.entity.LightningBolt;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 
 @Mod.EventBusSubscriber
 public class MiaoMiaoEntity extends Monster {
 
-    private boolean battleStarted = false;
-    private final Set<UUID> playersInBattle = new HashSet<>();
+
+    private static final double MAX_TRANSITION_HEIGHT = 5.0D; // 最大上升高度
+    private double transitionStartY; // 记录开始相变时的Y坐标
+    private boolean isTransitionComplete = false; // 标记相变是否完成
+    private List<LightningBolt> transitionLightnings = new ArrayList<>();
+    private int phaseTransitionTicks = 0;
+    private boolean isInvulnerableDuringTransition = false;
+    private int shieldParticlesAngle = 0;
+    private static final int TRANSITION_DURATION = 160; // 8秒
+    private List<LivingEntity> nearbyEntities = new ArrayList<>();
     private boolean isInPhaseTwo = false;
     private static final double RANGED_ATTACK_RADIUS = 5.0D;
-    private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.PINK, ServerBossEvent.BossBarOverlay.PROGRESS);
+    private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.PURPLE, ServerBossEvent.BossBarOverlay.PROGRESS);
     private final List<Vec3> particlePositions = new ArrayList<>();
     private boolean isLightningCircleActive = false;
     private final List<LightningBolt> lightningCircle = new ArrayList<>();
     private static final double LIGHTNING_CIRCLE_RADIUS = 50.0D;
-    private static final int LIGHTNING_CIRCLE_POINTS = 36;
+    private static final int LIGHTNING_CIRCLE_POINTS = 36; // 每10度一个闪电
     private int tickCounter = 0;
     private double circleOriginX;
     private double circleOriginY;
@@ -77,7 +83,7 @@ public class MiaoMiaoEntity extends Monster {
         setCustomName(new TextComponent("miaomiao"));
         setCustomNameVisible(true);
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.KILLYOU.get()));
-        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.MIAOMIAOTOU.get()));
+        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.STARFLOWERSTONE.get()));
         this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.NETHERITE_HELMET));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
@@ -173,16 +179,34 @@ public class MiaoMiaoEntity extends Monster {
 
     private void enterPhaseTwo() {
         isInPhaseTwo = true;
-        // 启用飞行能力
+
+        // 设置飞行能力
         this.setNoGravity(true);
-        // 提高移动速度
+
+        // 提高属性
         this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.5);
+        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.0D); // 提高攻击力
+
+        // 给予额外效果
+        this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 1));
+        this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Integer.MAX_VALUE, 1));
     }
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        // 如果伤害来自闪电，且闪电是过渡期间产生的，直接免疫
+        if (source.getDirectEntity() instanceof LightningBolt lightning &&
+                (isInvulnerableDuringTransition || transitionLightnings.contains(lightning))) {
+            return false;
+        }
+
         // 免疫爆炸和摔落伤害
         if (source.isExplosion() || source == DamageSource.FALL) {
+            return false;
+        }
+
+        if (isInvulnerableDuringTransition) {
+            // 在过渡期间免疫所有伤害
             return false;
         }
 
@@ -225,6 +249,21 @@ public class MiaoMiaoEntity extends Monster {
             }
         }
         return hurt;
+    }
+
+    // 清理资源方法
+    @Override
+    public void remove(RemovalReason reason) {
+        super.remove(reason);
+        // 清理所有过渡期间的闪电
+        if (!this.level.isClientSide) {
+            for (LightningBolt lightning : transitionLightnings) {
+                if (lightning.isAlive()) {
+                    lightning.remove(RemovalReason.DISCARDED);
+                }
+            }
+            transitionLightnings.clear();
+        }
     }
 
     private void summonLightningBurst(LivingEntity target) {
@@ -335,7 +374,7 @@ public class MiaoMiaoEntity extends Monster {
 
             // 添加发射音效
             this.playSound(
-                    ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.wither.shoot")),
+                    ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("")),
                     1.0F,
                     1.0F
             );
@@ -437,39 +476,7 @@ public class MiaoMiaoEntity extends Monster {
 
     public static void init() {
         SpawnPlacements.register(ModEntities.KIND_MIAO.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) -> {
-                    // 基础条件：必须是草方块且亮度足够
-                    if (!(world.getBlockState(pos.below()).getMaterial() == Material.GRASS && world.getRawBrightness(pos, 0) > 8)) {
-                        return false;
-                    }
-
-                    // 获取生成位置的基准高度
-                    int baseY = pos.getY();
-                    int checkRadius = (int)LIGHTNING_CIRCLE_RADIUS;
-
-                    // 检查整个区域是否平整
-                    for (int x = -checkRadius; x <= checkRadius; x++) {
-                        for (int z = -checkRadius; z <= checkRadius; z++) {
-                            // 只检查圆形范围内的方块
-                            if (x * x + z * z > checkRadius * checkRadius) continue;
-
-                            // 获取当前位置方块
-                            int currentY = world.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX() + x, pos.getZ() + z);
-
-                            // 高度差不能超过1个方块
-                            if (Math.abs(currentY - baseY) > 1) {
-                                return false;
-                            }
-
-                            // 检查是否所有方块都是实心的
-                            if (!world.getBlockState(new BlockPos(pos.getX() + x, currentY - 1, pos.getZ() + z)).getMaterial().isSolid()) {
-                                return false;
-                            }
-                        }
-                    }
-
-                    return true;
-                });
+                (entityType, world, reason, pos, random) -> (world.getBlockState(pos.below()).getMaterial() == Material.GRASS && world.getRawBrightness(pos, 0) > 8));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -484,9 +491,280 @@ public class MiaoMiaoEntity extends Monster {
         return builder;
     }
 
+    private void startPhaseTransition() {
+        if (!this.level.isClientSide) {
+
+            if (phaseTransitionTicks > 0) {
+                return;
+            }
+
+            // 记录初始位置
+            this.transitionStartY = this.getY();
+            this.isTransitionComplete = false;
+
+            // 开始相变
+            phaseTransitionTicks = TRANSITION_DURATION;
+            isInvulnerableDuringTransition = true;
+            transitionLightnings.clear();
+
+            // 播放开始音效
+            this.level.playSound(
+                    null,
+                    this.getX(),
+                    this.getY(),
+                    this.getZ(),
+                    ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.wither.spawn")),
+                    SoundSource.HOSTILE,
+                    3.0F,
+                    1.0F
+            );
+
+            // 清除所有附近实体的目标
+            AABB area = this.getBoundingBox().inflate(32.0D);
+            nearbyEntities = this.level.getEntitiesOfClass(LivingEntity.class, area);
+            for (LivingEntity entity : nearbyEntities) {
+                if (entity instanceof Mob) {
+                    ((Mob) entity).setTarget(null);
+                }
+            }
+
+            // 发送地震效果
+            if (this.level instanceof ServerLevel serverLevel) {
+                serverLevel.sendParticles(
+                        ParticleTypes.WITCH,
+                        this.getX(),
+                        this.getY(),
+                        this.getZ(),
+                        10,  // 粒子数量
+                        3.0, // X范围
+                        3.0, // Y范围
+                        3.0, // Z范围
+                        0.5  // 速度
+                );
+            }
+        }
+    }
+
+    private void handlePhaseTransition() {
+        if (!this.level.isClientSide && this.level instanceof ServerLevel serverLevel) {
+            // 无敌状态
+            this.isInvulnerableDuringTransition = true;
+
+            // 计算当前高度相对于起始位置的偏移
+            double currentHeightOffset = this.getY() - this.transitionStartY;
+
+            // 控制上升运动
+            if (currentHeightOffset < MAX_TRANSITION_HEIGHT && !isTransitionComplete) {
+                this.setNoGravity(true);
+                this.setDeltaMovement(0, 0.05, 0);
+            } else {
+                // 达到最大高度后悬停
+                this.setDeltaMovement(0, 0, 0);
+                isTransitionComplete = true;
+            }
+
+            // 旋转的护盾粒子效果
+            spawnShieldParticles(serverLevel);
+
+            // 产生能量波纹
+            if (phaseTransitionTicks % 20 == 0) {
+                spawnEnergyRipple(serverLevel);
+            }
+
+            // 添加闪电效果
+            if (phaseTransitionTicks % 40 == 0) {
+                // 清理旧的闪电
+                transitionLightnings.removeIf(lightning -> !lightning.isAlive());
+
+                for (int i = 0; i < 4; i++) {
+                    double angle = (Math.PI * 2 * i) / 4;
+                    double radius = 3.0;
+                    double x = this.getX() + Math.cos(angle) * radius;
+                    double z = this.getZ() + Math.sin(angle) * radius;
+
+                    LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(this.level);
+                    if (lightning != null) {
+                        lightning.setPos(x, this.getY(), z);
+                        lightning.setVisualOnly(true); // 设置为视觉效果，不造成伤害
+                        serverLevel.addFreshEntity(lightning);
+                        transitionLightnings.add(lightning); // 添加到列表中追踪
+                    }
+                }
+            }
+
+            // 在过渡即将结束时
+            if (phaseTransitionTicks <= 20) {
+                serverLevel.sendParticles(
+                        ParticleTypes.EXPLOSION_EMITTER,
+                        this.getX(),
+                        this.getY(),
+                        this.getZ(),
+                        1, 0, 0, 0, 0
+                );
+
+                if (phaseTransitionTicks <= 0) {
+                    finishPhaseTransition();
+                    return;
+                }
+            }
+
+            phaseTransitionTicks--;
+            shieldParticlesAngle += 10;
+        }
+    }
+
+
+
+
+    private void spawnShieldParticles(ServerLevel serverLevel) {
+        int particleCount = 36; // 每圈的粒子数
+        double radius = 2.0;
+        double yOffset = Math.sin(phaseTransitionTicks * 0.05) * 0.5; // 上下浮动效果
+
+        // 水平环
+        for (int i = 0; i < particleCount; i++) {
+            double angle = ((Math.PI * 2 * i) / particleCount) + Math.toRadians(shieldParticlesAngle);
+            double x = this.getX() + Math.cos(angle) * radius;
+            double z = this.getZ() + Math.sin(angle) * radius;
+
+            serverLevel.sendParticles(
+                    ParticleTypes.SOUL_FIRE_FLAME,
+                    x,
+                    this.getY() + 1 + yOffset,
+                    z,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0.02
+            );
+        }
+
+        // 垂直环
+        for (int i = 0; i < particleCount; i++) {
+            double angle = ((Math.PI * 2 * i) / particleCount) + Math.toRadians(shieldParticlesAngle);
+            double y = this.getY() + Math.cos(angle) * radius;
+            double x = this.getX() + Math.sin(angle) * radius;
+
+            serverLevel.sendParticles(
+                    ParticleTypes.END_ROD,
+                    x,
+                    y + 1,
+                    this.getZ(),
+                    1,
+                    0,
+                    0,
+                    0,
+                    0.02
+            );
+        }
+    }
+
+    private void spawnEnergyRipple(ServerLevel serverLevel) {
+        double baseRadius = 0.5;
+        int particleCount = 36;
+
+        for (int ring = 0; ring < 3; ring++) {
+            double radius = baseRadius + (ring * 0.5);
+            for (int i = 0; i < particleCount; i++) {
+                double angle = ((Math.PI * 2 * i) / particleCount);
+                double x = this.getX() + Math.cos(angle) * radius;
+                double z = this.getZ() + Math.sin(angle) * radius;
+
+                serverLevel.sendParticles(
+                        ParticleTypes.WITCH,
+                        x,
+                        this.getY() + ring * 0.2,
+                        z,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0.02
+                );
+            }
+        }
+    }
+
+    private void finishPhaseTransition() {
+        if (!this.level.isClientSide) {
+            // 移除无敌状态
+            isInvulnerableDuringTransition = false;
+
+            // 重置相关状态
+            phaseTransitionTicks = 0;
+            isTransitionComplete = false;
+
+            // 允许重力，但保持飞行能力
+            this.setNoGravity(false);
+
+            // 正式进入第二阶段
+            enterPhaseTwo();
+
+            for (LightningBolt lightning : transitionLightnings) {
+                if (lightning.isAlive()) {
+                    lightning.remove(RemovalReason.DISCARDED);
+                }
+            }
+            transitionLightnings.clear();
+        }
+
+        // 播放完成音效
+        this.level.playSound(
+                null,
+                this.getX(),
+                this.getY(),
+                this.getZ(),
+                ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("")),
+                SoundSource.HOSTILE,
+                3.0F,
+                1.0F
+        );
+
+        if (this.level instanceof ServerLevel serverLevel) {
+            // 爆炸粒子效果等...
+            for (int i = 0; i < 20; i++) {
+                double offsetX = random.nextGaussian() * 2;
+                double offsetY = random.nextGaussian() * 2;
+                double offsetZ = random.nextGaussian() * 2;
+
+                serverLevel.sendParticles(
+                        ParticleTypes.EXPLOSION_EMITTER,
+                        this.getX() + offsetX,
+                        this.getY() + offsetY,
+                        this.getZ() + offsetZ,
+                        1, 0, 0, 0, 0
+                );
+            }
+        }
+
+        if (this.getTarget() != null) {
+            this.setTarget(this.getTarget());
+        }
+    }
+
     @Override
     public void tick() {
         super.tick();
+
+        // 安全检查：如果实体超出世界高度限制，强制结束过渡
+        if (this.getY() > this.level.getMaxBuildHeight() - 10) {
+            if (phaseTransitionTicks > 0) {
+                finishPhaseTransition();
+            }
+            this.setDeltaMovement(0, 0, 0);
+            this.setPos(this.getX(), this.level.getMaxBuildHeight() - 10, this.getZ());
+        }
+
+
+        if (!isInPhaseTwo && (this.getHealth() / this.getMaxHealth() <= 0.1f)) {
+            startPhaseTransition();
+        }
+
+        // 如果正在进行相变动画
+        if (phaseTransitionTicks > 0) {
+            handlePhaseTransition();
+        }
 
         if (!this.level.isClientSide) {
             // 确保血条始终同步
@@ -755,7 +1033,11 @@ public class MiaoMiaoEntity extends Monster {
                 {1, 0},   // 东
                 {0, 1},   // 北
                 {-1, 0},  // 西
-                {0, -1}   // 南
+                {0, -1},  // 南
+                {1,-1},   // 东南
+                {-1, -1}, //西南
+                {1, 1},  //东北
+                {-1, 1}, //西北
         };
 
         for (double[] dir : directions) {
@@ -800,18 +1082,22 @@ public class MiaoMiaoEntity extends Monster {
 
     private void manageLightningCircle() {
         if (!this.level.isClientSide) {
+
             double bossDistanceFromCenter = Math.sqrt(
                     Math.pow(this.getX() - circleOriginX, 2) +
                             Math.pow(this.getZ() - circleOriginZ, 2)
             );
 
             if (bossDistanceFromCenter > LIGHTNING_CIRCLE_RADIUS - 1.0) {
+                // 计算角度
                 double angle = Math.atan2(this.getZ() - circleOriginZ, this.getX() - circleOriginX);
+                // 将boss推回圈内
                 this.setPos(
                         circleOriginX + Math.cos(angle) * (LIGHTNING_CIRCLE_RADIUS - 1.0),
                         this.getY(),
                         circleOriginZ + Math.sin(angle) * (LIGHTNING_CIRCLE_RADIUS - 1.0)
                 );
+                // 清除水平移动速度
                 this.setDeltaMovement(0, this.getDeltaMovement().y, 0);
             }
 
@@ -819,10 +1105,12 @@ public class MiaoMiaoEntity extends Monster {
                 spawnBeaconBeams(serverLevel);
             }
 
-            if (tickCounter % 5 == 0) {
+            // 更新粒子效果
+            if (tickCounter % 5 == 0) { // 每5tick生成一次粒子
                 spawnBoundaryParticles();
             }
 
+            // 每20tick检查一次玩家
             if (tickCounter % 20 == 0) {
                 AABB checkArea = new AABB(
                         circleOriginX - LIGHTNING_CIRCLE_RADIUS - 10,
@@ -833,88 +1121,50 @@ public class MiaoMiaoEntity extends Monster {
                         circleOriginZ + LIGHTNING_CIRCLE_RADIUS + 10
                 );
 
-                List<Player> players = this.level.getEntitiesOfClass(Player.class, checkArea);
-                double maxRadiusSquared = LIGHTNING_CIRCLE_RADIUS * LIGHTNING_CIRCLE_RADIUS;
 
+                List<Player> players = this.level.getEntitiesOfClass(Player.class, checkArea);
                 for (Player player : players) {
+                    // 计算玩家到圈子中心的距离
                     double playerDistanceSquared = (player.getX() - circleOriginX) * (player.getX() - circleOriginX) +
                             (player.getZ() - circleOriginZ) * (player.getZ() - circleOriginZ);
-                    boolean isInside = playerDistanceSquared <= maxRadiusSquared;
-                    boolean wasInside = playersInBattle.contains(player.getUUID());
+                    double radiusSquared = LIGHTNING_CIRCLE_RADIUS * LIGHTNING_CIRCLE_RADIUS;
 
-                    if (isInside) {
-                        if (!wasInside) {
-                            playersInBattle.add(player.getUUID());
-                        }
+                    if (playerDistanceSquared <= radiusSquared) {
+                        // 在范围内的玩家受到伤害
                         player.hurt(DamageSource.LIGHTNING_BOLT, 10.0F);
                         this.setTarget(player);
-                    } else if (wasInside) {
-                        double angle = Math.atan2(player.getZ() - circleOriginZ, player.getX() - circleOriginX);
-                        player.teleportTo(
-                                circleOriginX + Math.cos(angle) * (LIGHTNING_CIRCLE_RADIUS - 1.0),
-                                player.getY(),
-                                circleOriginZ + Math.sin(angle) * (LIGHTNING_CIRCLE_RADIUS - 1.0)
-                        );
-                        player.hurt(DamageSource.MAGIC, 20.0F);
-
-                        if (this.level instanceof ServerLevel serverLevel) {
-                            serverLevel.sendParticles(
-                                    ParticleTypes.PORTAL,
-                                    player.getX(), player.getY(), player.getZ(),
-                                    20, 0.5, 0.5, 0.5, 0.1
+                    } else {
+                        // 超出范围的玩家
+                        if (player.getAbilities().instabuild) {
+                            // 创造模式玩家直接死亡
+                            player.kill();
+                        } else {
+                            // 将生存模式玩家推回圈内
+                            double angle = Math.atan2(player.getZ() - circleOriginZ, player.getX() - circleOriginX);
+                            player.teleportTo(
+                                    circleOriginX + Math.cos(angle) * (LIGHTNING_CIRCLE_RADIUS - 1.0),
+                                    player.getY(),
+                                    circleOriginZ + Math.sin(angle) * (LIGHTNING_CIRCLE_RADIUS - 1.0)
                             );
-                        }
-                    } else if (isLightningCircleActive && playerDistanceSquared <= (maxRadiusSquared + 25)) {
-                        Vec3 pushDir = new Vec3(
-                                player.getX() - circleOriginX,
-                                0,
-                                player.getZ() - circleOriginZ
-                        ).normalize();
-
-                        player.setDeltaMovement(
-                                pushDir.x * 0.5,
-                                0.2,
-                                pushDir.z * 0.5
-                        );
-
-                        if (!player.getAbilities().instabuild) {
-                            player.hurt(DamageSource.MAGIC, 5.0F);
-                        }
-
-                        if (this.level instanceof ServerLevel serverLevel) {
-                            serverLevel.sendParticles(
-                                    ParticleTypes.CRIT,
-                                    player.getX(), player.getY() + 1, player.getZ(),
-                                    1, 0, 0, 0, 0
-                            );
+                            player.hurt(DamageSource.MAGIC, 20.0F);
                         }
                     }
                 }
 
+                // 清除范围内的其他实体（除了boss自己和凋零骷髅头）
                 List<Entity> entities = this.level.getEntities(this, checkArea);
                 for (Entity entity : entities) {
                     if (entity instanceof WitherSkull || entity == this) {
                         continue;
                     }
                     if (entity instanceof LivingEntity && !(entity instanceof Player)) {
-                        if (entity instanceof Mob) {
-                            double entityDistanceSquared = entity.distanceToSqr(circleOriginX, entity.getY(), circleOriginZ);
-                            if (entityDistanceSquared <= maxRadiusSquared) {
-                                entity.remove(RemovalReason.KILLED);
-                                if (this.level instanceof ServerLevel serverLevel) {
-                                    serverLevel.sendParticles(
-                                            ParticleTypes.LARGE_SMOKE,
-                                            entity.getX(), entity.getY(), entity.getZ(),
-                                            10, 0.2, 0.2, 0.2, 0.05
-                                    );
-                                }
-                            }
-                        }
+                        entity.remove(RemovalReason.KILLED);
                     }
                 }
             }
 
-            if (tickCounter % 40 == 0) {
+            // 维护雷电圈效果
+            if (tickCounter % 40 == 0) { // 每2秒刷新一次雷电
                 for (LightningBolt lightning : lightningCircle) {
                     if (!lightning.isAlive()) {
                         LightningBolt newLightning = EntityType.LIGHTNING_BOLT.create(this.level);
@@ -927,108 +1177,22 @@ public class MiaoMiaoEntity extends Monster {
                 }
             }
 
-            if (tickCounter % 5 == 0) {
+            // 粒子效果显示边界
+            if (tickCounter % 5 == 0) { // 每5tick生成一次粒子
                 for (int i = 0; i < LIGHTNING_CIRCLE_POINTS; i++) {
                     double angle = (2 * Math.PI * i) / LIGHTNING_CIRCLE_POINTS;
                     double xOffset = Math.cos(angle) * LIGHTNING_CIRCLE_RADIUS;
                     double zOffset = Math.sin(angle) * LIGHTNING_CIRCLE_RADIUS;
 
-                    if (this.level instanceof ServerLevel serverLevel) {
-                        serverLevel.sendParticles(
-                                ParticleTypes.SOUL_FIRE_FLAME,
-                                circleOriginX + xOffset,
-                                circleOriginY + 1,
-                                circleOriginZ + zOffset,
-                                1, 0, 0, 0, 0
-                        );
-                    }
+                    ((ServerLevel) this.level).sendParticles(
+                            ParticleTypes.SOUL_FIRE_FLAME,
+                            circleOriginX + xOffset,
+                            circleOriginY + 1,
+                            circleOriginZ + zOffset,
+                            1, 0, 0, 0, 0
+                    );
                 }
             }
         }
     }
-
-    // 添加方块保护事件处理器
-    @SubscribeEvent
-    public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        Level level = (Level) event.getWorld();
-        if (!level.isClientSide) {
-            List<MiaoMiaoEntity> bosses = level.getEntitiesOfClass(
-                    MiaoMiaoEntity.class,
-                    new AABB(event.getPos()).inflate(LIGHTNING_CIRCLE_RADIUS * 2)
-            );
-
-            for (MiaoMiaoEntity boss : bosses) {
-                if (boss.isAlive()) {
-                    double distanceSquared =
-                            Math.pow(event.getPos().getX() + 0.5 - boss.getX(), 2) +
-                                    Math.pow(event.getPos().getZ() + 0.5 - boss.getZ(), 2);
-
-                    if (distanceSquared <= LIGHTNING_CIRCLE_RADIUS * LIGHTNING_CIRCLE_RADIUS) {
-                        event.setCanceled(true);
-
-                        // 显示取消效果
-                        if (level instanceof ServerLevel serverLevel) {
-                            serverLevel.sendParticles(
-                                    ParticleTypes.SMOKE,
-                                    event.getPos().getX() + 0.5,
-                                    event.getPos().getY() + 0.5,
-                                    event.getPos().getZ() + 0.5,
-                                    10,
-                                    0.2,
-                                    0.2,
-                                    0.2,
-                                    0.05
-                            );
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
-        Level level = (Level) event.getWorld();
-        if (!level.isClientSide) {
-            List<MiaoMiaoEntity> bosses = level.getEntitiesOfClass(
-                    MiaoMiaoEntity.class,
-                    new AABB(event.getPos()).inflate(LIGHTNING_CIRCLE_RADIUS * 2)
-            );
-
-            for (MiaoMiaoEntity boss : bosses) {
-                if (boss.isAlive()) {
-                    double distanceSquared =
-                            Math.pow(event.getPos().getX() + 0.5 - boss.getX(), 2) +
-                                    Math.pow(event.getPos().getZ() + 0.5 - boss.getZ(), 2);
-
-                    if (distanceSquared <= LIGHTNING_CIRCLE_RADIUS * LIGHTNING_CIRCLE_RADIUS) {
-                        event.setCanceled(true);
-
-                        // 显示取消效果
-                        if (level instanceof ServerLevel serverLevel) {
-                            serverLevel.sendParticles(
-                                    ParticleTypes.SMOKE,
-                                    event.getPos().getX() + 0.5,
-                                    event.getPos().getY() + 0.5,
-                                    event.getPos().getZ() + 0.5,
-                                    10,
-                                    0.2,
-                                    0.2,
-                                    0.2,
-                                    0.05
-                            );
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void remove(RemovalReason reason) {
-        playersInBattle.clear();
-        super.remove(reason);
-        }
 }

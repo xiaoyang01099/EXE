@@ -1,64 +1,49 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Block;
 
-import io.netty.buffer.Unpooled;
-import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
+import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Containers;
+import net.minecraft.stats.Stat;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.network.NetworkHooks;
-import net.xiaoyang010.ex_enigmaticlegacy.Container.InfinityChestMenu;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.ILidBlock;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.InfinityChestEntity;
 
-import java.util.Collections;
-import java.util.List;
+import javax.annotation.Nullable;
+import java.util.Random;
 
-import static net.minecraft.world.level.block.ChestBlock.getConnectedDirection;
-
-public class InfinityChest extends Block implements EntityBlock, ILidBlock {
-
-    protected static final int AABB_OFFSET = 1;
-    protected static final int AABB_HEIGHT = 14;
-    protected static final VoxelShape NORTH_AABB = Block.box(1.0D, 0.0D, 0.0D, 15.0D, 14.0D, 15.0D);
-    protected static final VoxelShape SOUTH_AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 16.0D);
-    protected static final VoxelShape WEST_AABB = Block.box(0.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
-    protected static final VoxelShape EAST_AABB = Block.box(1.0D, 0.0D, 1.0D, 16.0D, 14.0D, 15.0D);
-    protected static final VoxelShape AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
-
-    ////////////////////////////////////////
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING; // 定义方向属性
-    public static final EnumProperty<ChestType> TYPE = BlockStateProperties.CHEST_TYPE; // 定义箱子类型属性
-    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED; // 定义水浸属性
+public class InfinityChest extends BaseEntityBlock implements SimpleWaterloggedBlock {
+    public static final DirectionProperty FACING;
+    public static final BooleanProperty WATERLOGGED;
+    protected static final VoxelShape SHAPE;
 
     public InfinityChest() {
         super(Properties.of(Material.STONE).sound(SoundType.STONE)
@@ -66,176 +51,120 @@ public class InfinityChest extends Block implements EntityBlock, ILidBlock {
                 .isValidSpawn((state, level, pos, entityType) -> false)
                 .isRedstoneConductor((state, level, pos) -> true)
                 .isViewBlocking((state, level, pos) -> false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
+    }
 
-        this.registerDefaultState(this.stateDefinition.any()
-                .setValue(FACING, Direction.NORTH)
-                .setValue(TYPE, ChestType.SINGLE)
-                .setValue(WATERLOGGED, Boolean.FALSE)); // 设置默认状态
-
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        return SHAPE;
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, TYPE, WATERLOGGED); // 添加状态定义
+    public boolean triggerEvent(BlockState pState, Level pLevel, BlockPos pPos, int pId, int pParam) {
+        BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+        return blockEntity.triggerEvent(pId, pParam);
     }
 
-    @Override
-    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        return 0; // 最大光阻挡
+    public RenderShape getRenderShape(BlockState pState) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
-    @Override
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-        List<ItemStack> dropsOriginal = super.getDrops(state, builder);
-        if (!dropsOriginal.isEmpty())
-            return dropsOriginal;
-        return Collections.singletonList(new ItemStack(this, 1)); // 返回自身
+    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
+        FluidState $$1 = pContext.getLevel().getFluidState(pContext.getClickedPos());
+        return this.defaultBlockState().setValue(FACING, pContext.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED, $$1.getType() == Fluids.WATER);
     }
 
-    @Override
-    public InteractionResult use(BlockState blockstate, Level world, BlockPos pos, Player entity, InteractionHand hand, BlockHitResult hit) {
-        if (entity instanceof ServerPlayer player) {
-            world.playSound(null, pos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 1.0f, 1.0f); // 播放开箱音效
-
-            NetworkHooks.openGui(player, new MenuProvider() {
-                @Override
-                public Component getDisplayName() {
-                    return new TextComponent("Infinity Chest");
-                }
-
-                @Override
-                public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-                    return new InfinityChestMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
-                }
-            }, pos);
+    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+        if (pLevel.isClientSide) {
+            return InteractionResult.SUCCESS;
+        } else {
+            MenuProvider menuprovider = this.getMenuProvider(pState, pLevel, pPos);
+            if (menuprovider != null) {
+                NetworkHooks.openGui((ServerPlayer) pPlayer, menuprovider, pPos);
+                pPlayer.awardStat(this.getOpenChestStat());
+                PiglinAi.angerNearbyPiglins(pPlayer, true);
+            } else {
+                pPlayer.displayClientMessage(new TextComponent("无法打开GUI，MenuProvider为null"), false);
+            }
+            return InteractionResult.CONSUME;
         }
-        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (state.getBlock() != newState.getBlock()) {
+            BlockEntity blockEntity = WorldHelper.getBlockEntity(level, pos);
+            if (blockEntity != null) {
+                blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent((inv) -> {
+                    WorldHelper.dropInventory(inv, level, pos);
+                });
+            }
+
+            super.onRemove(state, level, pos, newState, isMoving);
+        }
     }
 
     @Override
     public MenuProvider getMenuProvider(BlockState state, Level worldIn, BlockPos pos) {
         BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-        return tileEntity instanceof MenuProvider menuProvider ? menuProvider : null;
-    }
-
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new InfinityChestEntity(pos, state); // 创建新方块实体
-    }
-
-    @Override
-    public boolean triggerEvent(BlockState state, Level world, BlockPos pos, int eventID, int eventParam) {
-        super.triggerEvent(state, world, pos, eventID, eventParam);
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        return blockEntity == null ? false : blockEntity.triggerEvent(eventID, eventParam); // 触发事件
-    }
-
-    @Override
-    public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED; // 使用实体方块动画渲染
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof InfinityChestEntity be) {
-                Containers.dropContents(world, pos, be); // 掉落物品
-                world.updateNeighbourForOutputSignal(pos, this); // 更新红石信号
-            }
-            super.onRemove(state, world, pos, newState, isMoving);
+        if (tileEntity instanceof MenuProvider) {
+            return (MenuProvider) tileEntity;
         }
+        return null;
     }
 
-    @Override
-    public boolean hasAnalogOutputSignal(BlockState state) {
-        return true; // 启用红石输出信号
+    protected Stat<ResourceLocation> getOpenChestStat() {
+        return Stats.CUSTOM.get(Stats.OPEN_CHEST);
     }
 
-    @Override
-    public int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos) {
-        BlockEntity tileentity = world.getBlockEntity(pos);
-        if (tileentity instanceof InfinityChestEntity be)
-            return AbstractContainerMenu.getRedstoneSignalFromContainer(be); // 获取红石信号强度
-        else
-            return 0;
+
+    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return new InfinityChestEntity(pPos, pState);
     }
 
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()); // 设置放置方向
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        return pLevel.isClientSide ? createTickerHelper(pBlockEntityType, ModBlockEntities.INFINITY_CHEST.get(), InfinityChestEntity::lidAnimateTick) : null;
     }
 
-    @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
-        return true;}
+    public BlockState rotate(BlockState pState, Rotation pRot) {
+        return pState.setValue(FACING, pRot.rotate(pState.getValue(FACING)));
+    }
 
-    public BlockState updateShape(BlockState p_51555_, Direction p_51556_, BlockState p_51557_, LevelAccessor p_51558_, BlockPos p_51559_, BlockPos p_51560_) {
-        if (p_51555_.getValue(WATERLOGGED)) {
-            p_51558_.scheduleTick(p_51559_, Fluids.WATER, Fluids.WATER.getTickDelay(p_51558_));
+    public BlockState mirror(BlockState pState, Mirror pMirror) {
+        return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
+    }
+
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        pBuilder.add(FACING, WATERLOGGED);
+    }
+
+    public FluidState getFluidState(BlockState pState) {
+        return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
+    }
+
+    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
+        if (pState.getValue(WATERLOGGED)) {
+            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
 
-        if (p_51557_.is(this) && p_51556_.getAxis().isHorizontal()) {
-            ChestType chesttype = p_51557_.getValue(TYPE);
-            if (p_51555_.getValue(TYPE) == ChestType.SINGLE && chesttype != ChestType.SINGLE && p_51555_.getValue(FACING) == p_51557_.getValue(FACING) && getConnectedDirection(p_51557_) == p_51556_.getOpposite()) {
-                return p_51555_.setValue(TYPE, chesttype.getOpposite());
-            }
-        } else if (getConnectedDirection(p_51555_) == p_51556_) {
-            return p_51555_.setValue(TYPE, ChestType.SINGLE);
-        }
-
-        return super.updateShape(p_51555_, p_51556_, p_51557_, p_51558_, p_51559_, p_51560_);
+        return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
     }
 
-    public VoxelShape getShape(BlockState p_51569_, BlockGetter p_51570_, BlockPos p_51571_, CollisionContext p_51572_) {
-        if (p_51569_.getValue(TYPE) == ChestType.SINGLE) {
-            return AABB;
-        } else {
-            switch(getConnectedDirection(p_51569_)) {
-                case NORTH:
-                default:
-                    return NORTH_AABB;
-                case SOUTH:
-                    return SOUTH_AABB;
-                case WEST:
-                    return WEST_AABB;
-                case EAST:
-                    return EAST_AABB;
-            }
-        }
-    }
-    public float getOpenNess(float v) {
-        return 0.0F; // 默认关闭状态
-    }
-
-    public static DoubleBlockCombiner.Combiner<ChestBlockEntity, Float2FloatFunction> opennessCombiner(final InfinityChestEntity chestEntity) {
-        return new DoubleBlockCombiner.Combiner<ChestBlockEntity, Float2FloatFunction>() {
-            @Override
-            public Float2FloatFunction acceptDouble(ChestBlockEntity chest1, ChestBlockEntity chest2) {
-                return (float tick) -> Math.max(chest1.getOpenNess(tick), chest2.getOpenNess(tick)); // 处理双箱子开合状态
-            }
-
-            @Override
-            public Float2FloatFunction acceptSingle(ChestBlockEntity chest) {
-                return chest::getOpenNess;
-            }
-
-            @Override
-            public Float2FloatFunction acceptNone() {
-                return chestEntity::getOpenNess;
-            }
-        };
-    }
-
-    @Override
-    public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
-        ItemStack heldItem = player.getMainHandItem();
-
-        if (heldItem.getItem() instanceof TieredItem) {
-            TieredItem tool = (TieredItem) heldItem.getItem();
-            return tool.getTier().getLevel() >= 2;
-        }
-
+    public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
         return false;
+    }
+
+    public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, Random pRandom) {
+        BlockEntity $$4 = pLevel.getBlockEntity(pPos);
+        if ($$4 instanceof InfinityChestEntity) {
+            ((InfinityChestEntity)$$4).recheckOpen();
+        }
+
+    }
+
+    static {
+        FACING = HorizontalDirectionalBlock.FACING;
+        WATERLOGGED = BlockStateProperties.WATERLOGGED;
+        SHAPE = Block.box(1.0, 0.0, 1.0, 15.0, 14.0, 15.0);
     }
 }

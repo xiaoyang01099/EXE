@@ -5,6 +5,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -12,14 +17,16 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.Block.InfinityChest;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.InfinityChestEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.xiaoyang010.ex_enigmaticlegacy.Block.InfinityChest;
+import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.InfinityChestEntity;
 
 @OnlyIn(Dist.CLIENT)
 public class InfinityChestRenderer implements BlockEntityRenderer<InfinityChestEntity> {
@@ -27,84 +34,59 @@ public class InfinityChestRenderer implements BlockEntityRenderer<InfinityChestE
     private final ModelPart bottom;
     private final ModelPart lock;
 
-    // 定义箱子材质对应的Material数组
-    private static final Material[] INFINITY_CHEST_TEXTURES = new Material[] {
-            new Material(Sheets.CHEST_SHEET, ExEnigmaticlegacyMod.getRL("textures/entity/chest/infinity_chest/0.png")),
-            new Material(Sheets.CHEST_SHEET, ExEnigmaticlegacyMod.getRL("textures/entity/chest/infinity_chest/1.png")),
-            new Material(Sheets.CHEST_SHEET, ExEnigmaticlegacyMod.getRL("textures/entity/chest/infinity_chest/2.png")),
-            new Material(Sheets.CHEST_SHEET, ExEnigmaticlegacyMod.getRL("textures/entity/chest/infinity_chest/3.png")),
-            new Material(Sheets.CHEST_SHEET, ExEnigmaticlegacyMod.getRL("textures/entity/chest/infinity_chest/4.png")),
-            new Material(Sheets.CHEST_SHEET, ExEnigmaticlegacyMod.getRL("textures/entity/chest/infinity_chest/5.png")),
-            new Material(Sheets.CHEST_SHEET, ExEnigmaticlegacyMod.getRL("textures/entity/chest/infinity_chest/6.png")),
-            new Material(Sheets.CHEST_SHEET, ExEnigmaticlegacyMod.getRL("textures/entity/chest/infinity_chest/7.png")),
-            new Material(Sheets.CHEST_SHEET, ExEnigmaticlegacyMod.getRL("textures/entity/chest/infinity_chest/8.png"))
-    };
-
-    // 动画帧顺序，基于mcmeta文件
-    private static final int[] ANIMATION_FRAMES = {
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 8, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0
-    };
-
-    // 每帧持续时间
-    private static final int FRAME_TIME = 2;  // 每帧2个tick
-
-    public InfinityChestRenderer(BlockEntityRendererProvider.Context context) {
-        ModelPart modelPart = context.bakeLayer(ModelLayers.CHEST);
-        this.bottom = modelPart.getChild("bottom");
-        this.lid = modelPart.getChild("lid");
-        this.lock = modelPart.getChild("lock");
+    public InfinityChestRenderer(BlockEntityRendererProvider.Context pContext) {
+        ModelPart modelpart = pContext.bakeLayer(ModelLayers.CHEST);
+        this.bottom = modelpart.getChild("bottom");
+        this.lid = modelpart.getChild("lid");
+        this.lock = modelpart.getChild("lock");
     }
 
-    // 获取当前动画帧的纹理索引
-    private int getAnimationFrame(InfinityChestEntity blockEntity, float partialTicks) {
-        long time = blockEntity.getLevel().getGameTime();
-        int frameIndex = (int) ((time / FRAME_TIME) % ANIMATION_FRAMES.length); // 当前的动画帧索引
-        return ANIMATION_FRAMES[frameIndex];  // 获取对应的纹理帧
+    public static LayerDefinition createSingleBodyLayer() {
+        MeshDefinition meshdefinition = new MeshDefinition();
+        PartDefinition partdefinition = meshdefinition.getRoot();
+        partdefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F), PartPose.ZERO);
+        partdefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F), PartPose.offset(0.0F, 9.0F, 1.0F));
+        partdefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F), PartPose.offset(0.0F, 8.0F, 0.0F));
+        return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
     @Override
-    public void render(InfinityChestEntity blockEntity, float partialTicks, PoseStack poseStack,
-                       MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
-        Level level = blockEntity.getLevel();
-        boolean hasLevel = level != null;
-        BlockState blockState = hasLevel ? blockEntity.getBlockState() :
-                Blocks.CHEST.defaultBlockState().setValue(InfinityChest.FACING, Direction.SOUTH);
-        Direction direction = blockState.getValue(InfinityChest.FACING);
+    public void render(InfinityChestEntity chest, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
+        Level level = chest.getLevel();
+        boolean flag = level != null;
+        BlockState blockstate = flag ? chest.getBlockState() : ModBlocks.INFINITYCHEST.get().defaultBlockState().setValue(InfinityChest.FACING, Direction.SOUTH);
+        Block block = blockstate.getBlock();
+        if (block instanceof InfinityChest) {
+            pPoseStack.pushPose();
+            float f = blockstate.getValue(InfinityChest.FACING).toYRot();
+            pPoseStack.translate(0.5, 0.5, 0.5);
+            pPoseStack.mulPose(Vector3f.YP.rotationDegrees(-f));
+            pPoseStack.translate(-0.5, -0.5, -0.5);
 
-        poseStack.pushPose();
-        poseStack.translate(0.5D, 0.5D, 0.5D);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-direction.toYRot()));
-        poseStack.translate(-0.5D, -0.5D, -0.5D);
+            float openNess = 1.0f - chest.getOpenNess(pPartialTick);
+            openNess = 1.0f - openNess * openNess * openNess;
+            Material material = this.getMaterial(chest);
+            VertexConsumer vertexconsumer = material.buffer(pBufferSource, RenderType::entityCutout);
+            this.render(pPoseStack, vertexconsumer, this.lid, this.lock, this.bottom, openNess, pPackedLight, pPackedOverlay);
 
-        float openness = blockEntity.getOpenNess(partialTicks);
-        float lidAngle = 1.0F - openness;
-        lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
+            pPoseStack.popPose();
+        }
 
-        // 渲染动画贴图
-        int textureIndex = getAnimationFrame(blockEntity, partialTicks);
-        Material currentMaterial = INFINITY_CHEST_TEXTURES[textureIndex];
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(currentMaterial.texture()));
-
-        // 渲染箱子
-        lid.xRot = -(lidAngle * ((float)Math.PI / 2F));
-        lock.xRot = lid.xRot;
-
-        lid.render(poseStack, vertexConsumer, combinedLight, combinedOverlay);
-        lock.render(poseStack, vertexConsumer, combinedLight, combinedOverlay);
-        bottom.render(poseStack, vertexConsumer, combinedLight, combinedOverlay);
-
-        poseStack.popPose();
     }
 
+    private void render(PoseStack pPoseStack, VertexConsumer pConsumer, ModelPart pLidPart, ModelPart pLockPart, ModelPart pBottomPart, float pLidAngle, int pPackedLight, int pPackedOverlay) {
+        pLidPart.xRot = -(pLidAngle * 1.5707964F);
+        pLockPart.xRot = pLidPart.xRot;
+        pLidPart.render(pPoseStack, pConsumer, pPackedLight, pPackedOverlay);
+        pLockPart.render(pPoseStack, pConsumer, pPackedLight, pPackedOverlay);
+        pBottomPart.render(pPoseStack, pConsumer, pPackedLight, pPackedOverlay);
+    }
 
-    // 渲染箱子各部分
-    private void renderChest(PoseStack poseStack, VertexConsumer vertexConsumer, ModelPart lid, ModelPart lock, ModelPart bottom, float openness, int light, int overlay) {
-        lid.xRot = -(openness * (float) Math.PI / 2F);  // 计算盖子的旋转角度
-        lock.xRot = lid.xRot;  // 锁与盖子的旋转角度一致
+    protected Material getMaterial(InfinityChestEntity blockEntity) {
+        return new Material(Sheets.CHEST_SHEET, new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity/chest/" + "infinity_chest"));
+    }
 
-        // 渲染每个部件
-        lid.render(poseStack, vertexConsumer, light, overlay);
-        lock.render(poseStack, vertexConsumer, light, overlay);
-        bottom.render(poseStack, vertexConsumer, light, overlay);
+    private static Material chestMaterial(String pChestName) {
+        return null;
     }
 }
