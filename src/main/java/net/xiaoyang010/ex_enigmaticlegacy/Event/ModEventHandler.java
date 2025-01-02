@@ -32,26 +32,31 @@ public class ModEventHandler {
     }
 
     @SubscribeEvent
-    public static void rightBlock(RightClickBlock event){
+    public static void rightBlock(RightClickBlock event) {
         LivingEntity living = event.getEntityLiving();
         if (living instanceof Player player) {
             BlockHitResult hitVec = event.getHitVec();
             ItemStack stack = event.getItemStack();
-            if (stack.isEmpty()){
+            if (stack.isEmpty()) {
                 BlockPos pos = hitVec.getBlockPos();
                 Level world = player.getLevel();
                 BlockState state = world.getBlockState(pos);
-                if (state.getBlock() instanceof BlockTinyPotato || state.getBlock() instanceof InfinityPotato){
-                    int range = 1;
+
+                // 检查是普通小土豆还是无尽小土豆
+                boolean isInfinityPotato = state.getBlock() instanceof InfinityPotato;
+                boolean isTinyPotato = state.getBlock() instanceof BlockTinyPotato;
+
+                // 如果点击的是其中一种土豆
+                if (isInfinityPotato || isTinyPotato) {
+                    int range = 4;
                     BlockPos pos1 = pos.offset(-range, 0, -range);
                     BlockPos pos2 = pos.offset(range, 1, range);
                     for (BlockPos blockPos : BlockPos.betweenClosed(pos1, pos2)) {
                         BlockEntity entity = world.getBlockEntity(blockPos);
-                        if (entity instanceof BelieverTile believer){
-                            believer.addRightMana();
+                        if (entity instanceof BelieverTile believer) {
+                            believer.addRightMana(isInfinityPotato); // 传递土豆类型
                         }
                     }
-
                 }
             }
         }

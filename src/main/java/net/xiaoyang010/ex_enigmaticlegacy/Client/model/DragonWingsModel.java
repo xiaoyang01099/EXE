@@ -10,6 +10,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class DragonWingsModel extends EntityModel<LivingEntity> {
     private final ModelPart rightWing;
@@ -19,51 +20,20 @@ public class DragonWingsModel extends EntityModel<LivingEntity> {
 
     public DragonWingsModel(ModelPart root) {
         this.rightWing = root.getChild("right_wing");
-        this.rightWingTip = rightWing.getChild("right_wingtip");
+        this.rightWingTip = rightWing.getChild("right_wing_tip");
         this.leftWing = root.getChild("left_wing");
-        this.leftWingTip = leftWing.getChild("left_wingtip");
+        this.leftWingTip = leftWing.getChild("left_wing_tip");
     }
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        // 右翼 - 只修改position
-        PartDefinition rightWing = partdefinition.addOrReplaceChild("right_wing",
-                CubeListBuilder.create()
-                        .texOffs(112, 88)
-                        .addBox(-56.0F, -4.0F, -4.0F, 56.0F, 8.0F, 8.0F)
-                        .texOffs(-56, 88)
-                        .addBox(-56.0F, 0.0F, 2.0F, 56.0F, 0.0F, 56.0F),
-                // 调整基础位置到玩家背后
-                PartPose.offset(-8.0F, 5.0F, 8.0F));
-        // 右翼尖保持不变
-        rightWing.addOrReplaceChild("right_wingtip",
-                CubeListBuilder.create()
-                        .texOffs(112, 136)
-                        .addBox(-56.0F, -2.0F, -2.0F, 56.0F, 4.0F, 4.0F)
-                        .texOffs(-56, 144)
-                        .addBox(-56.0F, 0.0F, 2.0F, 56.0F, 0.0F, 56.0F),
-                PartPose.offset(-56.0F, 0.0F, 0.0F));
+        PartDefinition left = partdefinition.addOrReplaceChild("left_wing", CubeListBuilder.create().mirror().addBox("bone", 0.0F, -4.0F, -4.0F, 56, 8, 8, 112, 88).addBox("skin", 0.0F, 0.0F, 2.0F, 56, 0, 56, -56, 88), PartPose.offset(12.0F, 5.0F, 2.0F));
+        left.addOrReplaceChild("left_wing_tip", CubeListBuilder.create().mirror().addBox("bone", 0.0F, -2.0F, -2.0F, 56, 4, 4, 112, 136).addBox("skin", 0.0F, 0.0F, 2.0F, 56, 0, 56, -56, 144), PartPose.offset(56.0F, 0.0F, 0.0F));
 
-        // 左翼 - 只修改position
-        PartDefinition leftWing = partdefinition.addOrReplaceChild("left_wing",
-                CubeListBuilder.create()
-                        .texOffs(112, 88)
-                        .addBox(0.0F, -4.0F, -4.0F, 56.0F, 8.0F, 8.0F)
-                        .texOffs(-56, 88)
-                        .addBox(0.0F, 0.0F, 2.0F, 56.0F, 0.0F, 56.0F),
-                // 调整基础位置到玩家背后
-                PartPose.offset(8.0F, 5.0F, 8.0F));
-
-        // 左翼尖保持不变
-        leftWing.addOrReplaceChild("left_wingtip",
-                CubeListBuilder.create()
-                        .texOffs(112, 136)
-                        .addBox(0.0F, -2.0F, -2.0F, 56.0F, 4.0F, 4.0F)
-                        .texOffs(-56, 144)
-                        .addBox(0.0F, 0.0F, 2.0F, 56.0F, 0.0F, 56.0F),
-                PartPose.offset(56.0F, 0.0F, 0.0F));
+        PartDefinition right = partdefinition.addOrReplaceChild("right_wing", CubeListBuilder.create().addBox("bone", -56.0F, -4.0F, -4.0F, 56, 8, 8, 112, 88).addBox("skin", -56.0F, 0.0F, 2.0F, 56, 0, 56, -56, 88), PartPose.offset(-12.0F, 5.0F, 2.0F));
+        right.addOrReplaceChild("right_wing_tip", CubeListBuilder.create().addBox("bone", -56.0F, -2.0F, -2.0F, 56, 4, 4, 112, 136).addBox("skin", -56.0F, 0.0F, 2.0F, 56, 0, 56, -56, 144), PartPose.offset(-56.0F, 0.0F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
@@ -71,16 +41,21 @@ public class DragonWingsModel extends EntityModel<LivingEntity> {
     @Override
     public void setupAnim(LivingEntity entity, float limbSwing, float limbSwingAmount,
                           float ageInTicks, float netHeadYaw, float headPitch) {
-        float f = ((float)Math.PI * 2F);
-        float wingAnimation = (float)Math.cos(ageInTicks * 0.1F) * 0.1F;
+        if (entity instanceof Player player){
+            boolean flying = player.getAbilities().flying;
+            boolean fallFlying = player.isFallFlying();
+            if (flying || fallFlying){
+                float wingAnimation = (float)Math.cos(ageInTicks * 0.1F) * 0.1F;
+                // 右翼动画
+                this.rightWing.zRot = 0.125F - wingAnimation;
+                this.rightWingTip.zRot = -((float)(Math.sin(ageInTicks * 0.15F) + 0.5F)) * 0.75F;
 
-        // 右翼动画
-        this.rightWing.zRot = 0.125F - wingAnimation;
-        this.rightWingTip.zRot = -((float)(Math.sin(ageInTicks * 0.15F) + 0.5F)) * 0.75F;
+                // 左翼动画 (镜像右翼)
+                this.leftWing.zRot = -0.125F + wingAnimation;
+                this.leftWingTip.zRot = ((float)(Math.sin(ageInTicks * 0.15F) + 0.5F)) * 0.75F;
+            }
+        }
 
-        // 左翼动画 (镜像右翼)
-        this.leftWing.zRot = -0.125F + wingAnimation;
-        this.leftWingTip.zRot = ((float)(Math.sin(ageInTicks * 0.15F) + 0.5F)) * 0.75F;
     }
 
     @Override

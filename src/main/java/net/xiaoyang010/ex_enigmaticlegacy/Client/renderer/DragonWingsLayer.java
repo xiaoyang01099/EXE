@@ -16,11 +16,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.DragonWingsModel;
-import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.Dragonwings;
+import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.DragonWings;
 
 public class DragonWingsLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
     private static final ResourceLocation TEXTURE =
-            new ResourceLocation("ex_enigmaticlegacy:textures/models/armor/dragonwings_layer.png");
+            new ResourceLocation(ExEnigmaticlegacyMod.MODID,"textures/models/armor/dragon.png");
     private final DragonWingsModel model;
 
     public DragonWingsLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer,
@@ -35,9 +36,9 @@ public class DragonWingsLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
                        AbstractClientPlayer player, float limbSwing, float limbSwingAmount,
                        float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
 
-        if (player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof Dragonwings) {
+        if (player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof DragonWings) {
             poseStack.pushPose();
-            poseStack.translate(.0D, -.05D, .35D);
+            poseStack.translate(.0D, .05D, .35D);
             poseStack.scale(.2F, .2F, .2F);
             poseStack.mulPose(new Quaternion(-Mth.PI / 4, 0, 0, 1.f));
 

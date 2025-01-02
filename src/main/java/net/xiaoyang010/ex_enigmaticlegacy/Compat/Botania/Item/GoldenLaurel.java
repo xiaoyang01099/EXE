@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -29,6 +30,7 @@ import vazkii.botania.api.mana.IManaPool;
 import vazkii.botania.api.mana.IManaReceiver;
 import vazkii.botania.api.subtile.TileEntityFunctionalFlower;
 import vazkii.botania.api.subtile.TileEntityGeneratingFlower;
+import vazkii.botania.common.block.tile.mana.TilePool;
 import vazkii.botania.common.handler.EquipmentHandler;
 import vazkii.botania.common.item.equipment.bauble.ItemBauble;
 
@@ -53,7 +55,28 @@ public class GoldenLaurel extends ItemBauble {
         if (level.isClientSide) {
             spawnDivineParticles(player);
         } else {
-            handleManaAndFlowers(player);
+//            handleManaAndFlowers(player);
+            if (level.getGameTime() %  3 == 0){
+                int range = 5;
+                BlockPos playerPos = player.getOnPos();
+                for (BlockPos pos : BlockPos.betweenClosed(playerPos.offset(-range,0, -range), playerPos.offset(range, 1, range))) {
+
+                    BlockEntity blockEntity = level.getBlockEntity(pos);
+                    if (blockEntity instanceof TilePool tilePool){
+                        if (!tilePool.isFull())
+                            tilePool.receiveMana(1600);
+                    }else if (blockEntity instanceof  TileEntityFunctionalFlower functionalFlower){
+                        if (functionalFlower.getMana() < functionalFlower.getMaxMana()) {
+                            functionalFlower.addMana(1600);
+                        }
+                    }else if (blockEntity instanceof TileEntityGeneratingFlower generatingFlower){
+                        if (generatingFlower.getMana() < generatingFlower.getMaxMana()) {
+                            generatingFlower.addMana(1600);
+//                            generatingFlower.emptyManaIntoCollector();
+                        }
+                    }
+                }
+            }
         }
     }
 

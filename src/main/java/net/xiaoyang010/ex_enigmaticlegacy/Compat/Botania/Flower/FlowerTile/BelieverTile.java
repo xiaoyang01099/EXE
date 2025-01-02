@@ -16,7 +16,8 @@ import javax.annotation.Nullable;
 
 public class BelieverTile extends TileEntityGeneratingFlower {
     private static final String TAG_COOLDOWN = "cooldown";
-    private static final int MANA_PER_POTATO = 1452;
+    private static final int MANA_PER_TINY_POTATO = 1452;    // 普通小土豆产能
+    private static final int MANA_PER_INFINITY_POTATO = 10000;  // 无尽小土豆产能
     private int cooldown = 0;
 
     public BelieverTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -36,10 +37,13 @@ public class BelieverTile extends TileEntityGeneratingFlower {
     }
 
     //右键小土豆增加魔力
-    public void addRightMana() {
+    public void addRightMana(boolean isInfinityPotato) {
         if (cooldown != 0) return;
-        addMana(MANA_PER_POTATO);
-        cooldown = 20 * 10;
+
+        // 根据土豆类型选择产能量
+        int manaToAdd = isInfinityPotato ? MANA_PER_INFINITY_POTATO : MANA_PER_TINY_POTATO;
+        addMana(manaToAdd);
+        cooldown = 20; // 1秒冷却时间
     }
 
     @Override
@@ -75,106 +79,3 @@ public class BelieverTile extends TileEntityGeneratingFlower {
         return 10000;
     }
 }
-
-
-
-
-
-
-
-
-//这边是右键抚摸获得mana但是有bug，没有办法获得
-
-/*public class BelieverTile extends TileEntityGeneratingFlower {
-    private static final int MAX_MANA = 20000;
-    private static final int TINY_POTATO_MANA = 50;
-    private static final int INFINITY_POTATO_MANA = 10000;
-    private static final int RANGE = 5;
-    private static final int PAT_COOLDOWN = 20;
-
-    private int cooldown = 0;
-    private int storedMana = 0;
-
-    public BelieverTile(BlockPos blockPos, BlockState blockState) {
-        super(ModBlockEntities.BELIEVERTILE.get(), blockPos, blockState);
-    }
-
-    @Override
-    public void tickFlower() {
-        super.tickFlower();
-
-        if (!level.isClientSide) {
-            if (cooldown > 0) {
-                cooldown--;
-            }
-
-            if (storedMana > 0) {
-                int manaToAdd = Math.min(storedMana, MAX_MANA - getMana());
-                addMana(manaToAdd);
-                storedMana = Math.max(0, storedMana - manaToAdd);
-            }
-        }
-    }
-
-    public InteractionResult onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!level.isClientSide && cooldown <= 0) {
-            BlockPos flowerPos = getEffectivePos();
-            boolean interacted = false;
-
-            for (BlockPos checkPos : BlockPos.betweenClosed(
-                    flowerPos.offset(-RANGE, -RANGE, -RANGE),
-                    flowerPos.offset(RANGE, RANGE, RANGE))) {
-                BlockState targetState = level.getBlockState(checkPos);
-
-                if (targetState.getBlock() instanceof BlockTinyPotato) {
-                    storedMana += TINY_POTATO_MANA;
-                    // 添加粒子效果
-                    level.addParticle(ParticleTypes.HEART,
-                            checkPos.getX() + 0.5, checkPos.getY() + 0.5, checkPos.getZ() + 0.5,
-                            0, 0.1, 0);
-                    interacted = true;
-                } else if (targetState.getBlock() instanceof InfinityPotato) {
-                    if (player.isCrouching()) {
-                        storedMana += INFINITY_POTATO_MANA * 2;
-                    } else {
-                        storedMana += INFINITY_POTATO_MANA;
-                    }
-                    // 爆炸粒子和音效
-                    level.addParticle(ParticleTypes.EXPLOSION,
-                            checkPos.getX() + 0.5, checkPos.getY() + 0.5, checkPos.getZ() + 0.5,
-                            0, 0.1, 0);
-                    level.playSound(null, checkPos, SoundEvents.GENERIC_EXPLODE,
-                            SoundSource.BLOCKS, 0.5f, 1.0f);
-                    interacted = true;
-                }
-            }
-
-            if (interacted) {
-                cooldown = PAT_COOLDOWN;
-                return InteractionResult.SUCCESS;
-            }
-        }
-        return InteractionResult.PASS;
-    }
-
-    @Override
-    public int getMaxMana() {
-        return MAX_MANA;
-    }
-
-    @Override
-    public int getColor() {
-        return 0xC2B280;
-    }
-
-    @Override
-    public RadiusDescriptor getRadius() {
-        return RadiusDescriptor.Rectangle.square(getEffectivePos(), RANGE);
-    }
-
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap, LazyOptional.of(() -> new GeneratingWandHud(this)).cast());
-    }
-}*/

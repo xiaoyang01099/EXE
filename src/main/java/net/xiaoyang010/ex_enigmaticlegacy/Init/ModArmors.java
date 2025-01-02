@@ -19,7 +19,7 @@ public class ModArmors {
 
     public static final RegistryObject<Item> TERRO_RCROWN = REGISTRY.register("terror_crown", () -> new TerrorCrown(new SMaterial(), EquipmentSlot.HEAD));
 
-    public static final RegistryObject<Item> DRAGON_WINGS = REGISTRY.register("dragon_wings", () -> new Dragonwings(
+    public static final RegistryObject<Item> DRAGON_WINGS = REGISTRY.register("dragon_wings", () -> new DragonWings(
                     new Item.Properties()
                             .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
                             .rarity(Rarity.EPIC)
