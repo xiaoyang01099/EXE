@@ -2,24 +2,15 @@ package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ItemParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeClientCapabilities;
 import vazkii.botania.api.subtile.RadiusDescriptor;
 import vazkii.botania.api.subtile.TileEntityGeneratingFlower;
-import vazkii.botania.common.item.block.ItemBlockTinyPotato;
 
 import javax.annotation.Nullable;
 
@@ -42,36 +33,13 @@ public class BelieverTile extends TileEntityGeneratingFlower {
         if(cooldown > 0) {
             cooldown--;
         }
-
-        for(ItemEntity item : level.getEntitiesOfClass(ItemEntity.class,
-                new AABB(getEffectivePos(), getEffectivePos().offset(1, 1, 1)),
-                entity -> entity.getItem().getItem() instanceof ItemBlockTinyPotato
-                        && entity.getAge() >= getSlowdownFactor())) {
-
-            ItemStack stack = item.getItem();
-            stack.shrink(1);
-            addMana(MANA_PER_POTATO);
-
-            // 播放声音
-            level.playSound(null, getEffectivePos(),
-                    SoundEvents.GENERIC_EAT,
-                    SoundSource.BLOCKS, 0.2F, 0.6F);
-
-            // 生成物品粒子
-            if(level instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(ParticleTypes.WITCH,
-                        item.getX(), item.getY(), item.getZ(),
-                        20,
-                        0.1D, 0.1D, 0.1D,
-                        0.05D
-                );
-            }
-            break;
-        }
     }
 
-    private int getSlowdownFactor() {
-        return 5;
+    //右键小土豆增加魔力
+    public void addRightMana() {
+        if (cooldown != 0) return;
+        addMana(MANA_PER_POTATO);
+        cooldown = 20 * 10;
     }
 
     @Override
