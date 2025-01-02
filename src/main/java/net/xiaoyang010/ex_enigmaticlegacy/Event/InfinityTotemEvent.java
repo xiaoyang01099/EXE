@@ -1,7 +1,11 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Event;
 
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.TickEvent;
@@ -19,11 +23,10 @@ public class InfinityTotemEvent {
 
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
-        if (!(event.getEntityLiving() instanceof Player)) {
+        if (!(event.getEntityLiving() instanceof Player player)) {
             return;
         }
 
-        Player player = (Player) event.getEntityLiving();
         if (player.level.isClientSide) {
             return;
         }
@@ -35,6 +38,11 @@ public class InfinityTotemEvent {
                 event.setCanceled(true);
                 totemJustTriggered = true;
                 invulnerableTimer = INVULNERABLE_DURATION;
+
+                if (player instanceof ServerPlayer serverPlayer) {
+                    serverPlayer.awardStat(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING), 1);
+                    CriteriaTriggers.USED_TOTEM.trigger(serverPlayer, totem);
+                }
                 totemItem.triggerTotemEffect(player, totem, event.getSource());
             }
         }

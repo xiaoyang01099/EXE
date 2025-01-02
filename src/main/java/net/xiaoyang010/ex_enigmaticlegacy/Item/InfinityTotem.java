@@ -1,7 +1,7 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Item;
 
 import morph.avaritia.init.AvaritiaModContent;
-import morph.avaritia.init.AvaritiaTags;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -18,7 +18,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 import org.jetbrains.annotations.NotNull;
@@ -167,7 +166,8 @@ public class InfinityTotem extends Item {
         summonWolves(player);
 
         // 特效
-        player.level.broadcastEntityEvent(player, (byte)35);
+//        player.level.broadcastEntityEvent(player, (byte)35);
+        Minecraft.getInstance().gameRenderer.displayItemActivation(stack);
         player.level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
@@ -181,9 +181,9 @@ public class InfinityTotem extends Item {
             double d1 = random.nextDouble() * 2.0D - 1.0D;
             double d2 = random.nextDouble() * 2.0D - 1.0D;
             if (!(d0 * d0 + d1 * d1 + d2 * d2 > 1.0D)) {
-                double d3 = player.getX() + d0 * 1.0D;
-                double d4 = player.getY() + d1 * 1.0D + random.nextDouble() * 1.0D;
-                double d5 = player.getZ() + d2 * 1.0D;
+                double d3 = player.getX() + d0;
+                double d4 = player.getY() + d1 + random.nextDouble();
+                double d5 = player.getZ() + d2;
                 level.addParticle(ParticleTypes.TOTEM_OF_UNDYING, d3, d4, d5, d0, d1 + 0.2D, d2);
             }
         }
