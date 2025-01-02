@@ -39,7 +39,7 @@ apply plugin: 'maven-publish'
 //mixin
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.18.2-1.0.0-Beta'
+version = '1.18.2-0.0.1-Beta'
 group = 'ex_enigmaticlegacy'
 archivesBaseName = 'EXE'
 
@@ -217,7 +217,7 @@ dependencies {
     //等价交换
     //implementation fg.deobf("curse.maven:projecte-226410:4860857")
     compileOnly fg.deobf("curse.maven:projecte-226410:4860857")
-    runtimeOnly fg.deobf("curse.maven:projecte-226410:4860857")
+//    runtimeOnly fg.deobf("curse.maven:projecte-226410:4860857")
 
     //神秘遗物
     compileOnly fg.deobf("curse.maven:enigmatic-legacy-336184:4074264")
