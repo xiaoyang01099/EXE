@@ -1,6 +1,11 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile;
 
 import com.google.common.collect.Lists;
+import com.integral.enigmaticlegacy.helpers.PotionHelper;
+import com.integral.enigmaticlegacy.items.HastePotion;
+import com.integral.enigmaticlegacy.items.UltimatePotionBase;
+import com.integral.enigmaticlegacy.items.UltimatePotionLingering;
+import com.integral.enigmaticlegacy.items.UltimatePotionSplash;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -11,6 +16,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,8 +66,14 @@ public class WitchOpoodTile extends TileEntityGeneratingFlower {
             for (ItemEntity item : items) {
                 ItemStack stack = item.getItem();
                 List<MobEffectInstance> potions;
-                if (!ExEnigmaticlegacyMod.isEx) potions = PotionUtils.getMobEffects(stack);
-                else potions = getAllEffects(stack.getOrCreateTag());
+                Item stackItem = stack.getItem();
+                //兼容神秘遗物药水
+                if (ExEnigmaticlegacyMod.isEx && ( stackItem instanceof HastePotion || stackItem instanceof UltimatePotionSplash ||
+                        stackItem instanceof UltimatePotionLingering || stackItem instanceof UltimatePotionBase)){
+                    if (stackItem instanceof HastePotion hastePotion) {
+                        potions = hastePotion.effectList;
+                    }else potions = PotionHelper.getEffects(stack);
+                }else potions = PotionUtils.getMobEffects(stack);
                 if (potions.isEmpty()) {
                     continue;
                 }

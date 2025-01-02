@@ -37,7 +37,6 @@ public class DragonWingsModel extends EntityModel<LivingEntity> {
                         .addBox(-56.0F, 0.0F, 2.0F, 56.0F, 0.0F, 56.0F),
                 // 调整基础位置到玩家背后
                 PartPose.offset(-8.0F, 5.0F, 8.0F));
-
         // 右翼尖保持不变
         rightWing.addOrReplaceChild("right_wingtip",
                 CubeListBuilder.create()

@@ -2,20 +2,18 @@ package net.xiaoyang010.ex_enigmaticlegacy.Client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.DragonWingsModel;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.Dragonwings;
@@ -39,7 +37,9 @@ public class DragonWingsLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
 
         if (player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof Dragonwings) {
             poseStack.pushPose();
-            poseStack.translate(0.0D, 0.0D, 0.125D);
+            poseStack.translate(.0D, -.05D, .35D);
+            poseStack.scale(.2F, .2F, .2F);
+            poseStack.mulPose(new Quaternion(-Mth.PI / 4, 0, 0, 1.f));
 
             VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.entityTranslucent(TEXTURE));
             model.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
