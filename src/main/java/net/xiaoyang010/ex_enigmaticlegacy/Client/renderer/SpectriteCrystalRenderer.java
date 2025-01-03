@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -55,6 +56,10 @@ public class SpectriteCrystalRenderer extends EntityRenderer<SpectriteCrystalEnt
 
     public void render(SpectriteCrystalEntity pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
         pMatrixStack.pushPose();
+        int index = Math.min(36, pEntity.frame / 10);
+        Minecraft.getInstance().getEntityRenderDispatcher().textureManager.bindForSetup(
+                new ResourceLocation(ExEnigmaticlegacyMod.MODID,"textures/entity/spectrite_crystal/" + index +".png")
+        );
         float y = getY(pEntity, pPartialTicks);
         float $$7 = ((float)pEntity.time + pPartialTicks) * 3.0F;
         VertexConsumer $$8 = pBuffer.getBuffer(RENDER_TYPE);
@@ -106,7 +111,8 @@ public class SpectriteCrystalRenderer extends EntityRenderer<SpectriteCrystalEnt
     @Override
     @NotNull
     public ResourceLocation getTextureLocation(SpectriteCrystalEntity pEntity) {
-        return END_CRYSTAL_LOCATION;
+        int index = Math.min(36, pEntity.frame / 10);
+        return new ResourceLocation(ExEnigmaticlegacyMod.MODID,"textures/entity/spectrite_crystal/" + index +".png");
     }
 
     public boolean shouldRender(SpectriteCrystalEntity pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
