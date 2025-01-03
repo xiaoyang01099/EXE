@@ -1,28 +1,164 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Entity;
 
-import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustColorTransitionOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Explosion;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion.BlockInteraction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.AABB;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.UUID;
+import javax.annotation.Nullable;
+import java.util.Optional;
 
 
-public class SpectriteCrystalEntity extends Entity {
-    private static final double CRYSTAL_WIDTH = 2.0D;
+public class SpectriteCrystalEntity extends EndCrystal {
+
+    private static final EntityDataAccessor<Optional<BlockPos>> DATA_BEAM_TARGET;
+    private static final EntityDataAccessor<Boolean> DATA_SHOW_BOTTOM;
+    public int time;
+    private Player player;
+
+    public SpectriteCrystalEntity(EntityType<? extends SpectriteCrystalEntity> pEntityType, Level pLevel) {
+        super(pEntityType, pLevel);
+        this.blocksBuilding = true;
+        this.time = this.random.nextInt(100000);
+    }
+
+    public SpectriteCrystalEntity(Level pLevel, double pX, double pY, double pZ) {
+        this(ModEntities.SPECTRITE_CRYSTAL.get(), pLevel);
+        this.setPos(pX, pY, pZ);
+    }
+
+    protected Entity.MovementEmission getMovementEmission() {
+        return MovementEmission.NONE;
+    }
+
+    protected void defineSynchedData() {
+        this.getEntityData().define(DATA_BEAM_TARGET, Optional.empty());
+        this.getEntityData().define(DATA_SHOW_BOTTOM, true);
+    }
+
+    public void tick() {
+        ++this.time;
+        if (this.level instanceof ServerLevel) {
+            BlockPos pos = this.blockPosition();
+            if (((ServerLevel)this.level).dragonFight() != null && this.level.getBlockState(pos).isAir()) {
+                this.level.setBlockAndUpdate(pos, BaseFireBlock.getState(this.level, pos));
+            }
+            int range = 16;  //范围
+            int height = 10; //高度
+            AABB aabb = new AABB(pos.offset(-range, 0, -range), pos.offset(range, height, range));
+            for (Player player : level.getEntitiesOfClass(Player.class, aabb)) {
+                if (player.isAlive() && player.getHealth() < player.getMaxHealth()) {
+                    this.setBeamTarget(player.getOnPos());
+                    this.player = player;
+                } else this.setBeamTarget(null);
+            }
+            if (player == null){
+                this.setBeamTarget(null);
+            }else {
+                if (level.getGameTime() % 5 == 0)
+                    player.heal(0.25f);
+                double sqrt = Math.sqrt(player.getOnPos().distToCenterSqr(pos.getX(), pos.getY(), pos.getZ()));
+                if (sqrt > 16.0d)
+                    this.setBeamTarget(null);
+            }
+        }
+    }
+
+    protected void addAdditionalSaveData(CompoundTag pCompound) {
+        if (this.getBeamTarget() != null) {
+            pCompound.put("BeamTarget", NbtUtils.writeBlockPos(this.getBeamTarget()));
+        }
+
+        pCompound.putBoolean("ShowBottom", this.showsBottom());
+    }
+
+    protected void readAdditionalSaveData(CompoundTag pCompound) {
+        if (pCompound.contains("BeamTarget", 10)) {
+            this.setBeamTarget(NbtUtils.readBlockPos(pCompound.getCompound("BeamTarget")));
+        }
+
+        if (pCompound.contains("ShowBottom", 1)) {
+            this.setShowBottom(pCompound.getBoolean("ShowBottom"));
+        }
+
+    }
+
+    public boolean isPickable() {
+        return true;
+    }
+
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        if (this.isInvulnerableTo(pSource)) {
+            return false;
+        } else {
+            if (!this.isRemoved() && !this.level.isClientSide) {
+                this.remove(RemovalReason.KILLED);
+                if (!pSource.isExplosion()) {
+                    this.level.explode((Entity)null, this.getX(), this.getY(), this.getZ(), 6.0F, BlockInteraction.DESTROY);
+                }
+            }
+
+            return true;
+        }
+    }
+
+    public void kill() {
+        super.kill();
+    }
+
+    public void setBeamTarget(@Nullable BlockPos pBeamTarget) {
+        this.getEntityData().set(DATA_BEAM_TARGET, Optional.ofNullable(pBeamTarget));
+    }
+
+    @Nullable
+    public BlockPos getBeamTarget() {
+        return (BlockPos)((Optional)this.getEntityData().get(DATA_BEAM_TARGET)).orElse(null);
+    }
+
+    public void setShowBottom(boolean pShowBottom) {
+        this.getEntityData().set(DATA_SHOW_BOTTOM, pShowBottom);
+    }
+
+    public boolean showsBottom() {
+        return this.getEntityData().get(DATA_SHOW_BOTTOM);
+    }
+
+    public boolean shouldRenderAtSqrDistance(double pDistance) {
+        return super.shouldRenderAtSqrDistance(pDistance) || this.getBeamTarget() != null;
+    }
+
+    public ItemStack getPickResult() {
+        return new ItemStack(ModItems.SPECTRITE_CRYSTAL.get());
+    }
+
+    public @NotNull Packet<?> getAddEntityPacket() {
+        return new ClientboundAddEntityPacket(this);
+    }
+
+    static {
+        DATA_BEAM_TARGET = SynchedEntityData.defineId(SpectriteCrystalEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
+        DATA_SHOW_BOTTOM = SynchedEntityData.defineId(SpectriteCrystalEntity.class, EntityDataSerializers.BOOLEAN);
+    }
+
+    /*private static final double CRYSTAL_WIDTH = 2.0D;
     private static final double CRYSTAL_HEIGHT = 2.0D;
     private BlockPos beamTarget;
     private int age = 0;
@@ -335,5 +471,5 @@ public class SpectriteCrystalEntity extends Entity {
         }
         d0 *= 64.0D;
         return distance < d0 * d0;
-    }
+    }*/
 }

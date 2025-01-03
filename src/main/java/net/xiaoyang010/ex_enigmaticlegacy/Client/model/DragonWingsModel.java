@@ -42,9 +42,9 @@ public class DragonWingsModel extends EntityModel<LivingEntity> {
     public void setupAnim(LivingEntity entity, float limbSwing, float limbSwingAmount,
                           float ageInTicks, float netHeadYaw, float headPitch) {
         if (entity instanceof Player player){
-            boolean flying = player.getAbilities().flying;
-            boolean fallFlying = player.isFallFlying();
-            if (flying || fallFlying){
+//            boolean flying = player.getAbilities().flying;
+//            boolean fallFlying = player.isFallFlying();
+//            if (flying || fallFlying){
                 float wingAnimation = (float)Math.cos(ageInTicks * 0.1F) * 0.1F;
                 // 右翼动画
                 this.rightWing.zRot = 0.125F - wingAnimation;
@@ -53,7 +53,7 @@ public class DragonWingsModel extends EntityModel<LivingEntity> {
                 // 左翼动画 (镜像右翼)
                 this.leftWing.zRot = -0.125F + wingAnimation;
                 this.leftWingTip.zRot = ((float)(Math.sin(ageInTicks * 0.15F) + 0.5F)) * 0.75F;
-            }
+//            }
         }
 
     }
