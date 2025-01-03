@@ -21,8 +21,10 @@ public class FlyingEffect extends MobEffect {
         LivingEntity living = event.getEntityLiving();
         if (living instanceof Player player) {
             boolean flying = player.getPersistentData().getBoolean(NBT_FLYING);
-            if (flying && !player.level.isClientSide){ //取消玩家摔落
+            boolean nebulaArmor = player.getPersistentData().getBoolean("exe:nebula_armor");
+            if ((flying || nebulaArmor) && !player.level.isClientSide){ //取消玩家摔落
                 player.getPersistentData().remove(NBT_FLYING); //重置标记
+                player.getPersistentData().remove("exe:nebula_armor");
                 event.setDamageMultiplier(0);
             }
         }

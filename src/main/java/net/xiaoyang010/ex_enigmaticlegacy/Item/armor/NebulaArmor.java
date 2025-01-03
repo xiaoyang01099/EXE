@@ -260,6 +260,7 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
                         0, getJump(legs), 0
                 ));
                 player.fallDistance = -getFallBuffer(legs);  // 更新为新的摔落伤害计算
+                player.getPersistentData().putBoolean("exe:nebula_armor", true);
             }
         }
     }

@@ -21,10 +21,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion.BlockInteraction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import org.jetbrains.annotations.NotNull;
+import vazkii.botania.common.block.tile.mana.TilePool;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -36,6 +38,7 @@ public class SpectriteCrystalEntity extends EndCrystal {
     private static final EntityDataAccessor<Boolean> DATA_SHOW_BOTTOM;
     public int time;
     private Player player;
+    private TilePool pool;
     public int frame;
 
     public SpectriteCrystalEntity(EntityType<? extends SpectriteCrystalEntity> pEntityType, Level pLevel) {
@@ -69,18 +72,32 @@ public class SpectriteCrystalEntity extends EndCrystal {
             }
             int range = 16;  //范围
             int height = 10; //高度
+            boolean flag = false;
             AABB aabb = new AABB(pos.offset(-range, 0, -range), pos.offset(range, height, range));
             for (Player player : level.getEntitiesOfClass(Player.class, aabb)) {
-                if (player.isAlive() && player.getHealth() < player.getMaxHealth()) {
+                if (pool != null && pool.getCurrentMana() > 1024 && player.isAlive() && player.getHealth() < player.getMaxHealth()) {
                     this.setBeamTarget(player.getOnPos());
                     this.player = player;
                 } else this.setBeamTarget(null);
             }
-            if (player == null){
+            for (BlockPos blockPos : BlockPos.betweenClosed(pos.offset(-range, 0, -range), pos.offset(range, height, range))) {
+                BlockEntity blockEntity = level.getBlockEntity(blockPos);
+                if (blockEntity instanceof TilePool tilePool){
+                    this.pool = tilePool;
+                }
+            }
+            if (player == null || pool == null){
                 this.setBeamTarget(null);
             }else {
-                if (level.getGameTime() % 5 == 0)
-                    player.heal(0.25f);
+                if (level.getGameTime() % 5 == 0 && pool != null) {
+                    int mana = pool.getCurrentMana();
+                    if (mana > 1024){
+                        if (player.isAlive() && player.getHealth() < player.getMaxHealth()){
+                            pool.receiveMana(-1024);
+                            player.heal(1.f);
+                        }
+                    }else this.setBeamTarget(null);
+                }
                 double sqrt = Math.sqrt(player.getOnPos().distToCenterSqr(pos.getX(), pos.getY(), pos.getZ()));
                 if (sqrt > 16.0d)
                     this.setBeamTarget(null);
