@@ -71,6 +71,38 @@
       }
     ]
   },
+  "capybara_ambient_1": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:capybara_ambient_1",
+        "stream": false
+      }
+    ]
+  },
+  "capybara_ambient_2": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:capybara_ambient_2",
+        "stream": false
+      }
+    ]
+  },
+  "capybara_death": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:capybara_death",
+        "stream": false
+      }
+    ]
+  },
+  "capybara_hurt": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:capybara_hurt",
+        "stream": false
+      }
+    ]
+  },
   "golden_laurel": {
     "sounds": [
       {

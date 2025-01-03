@@ -14,6 +14,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.GoldenLaurel;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.ManaReader;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.PlumedBelt;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.RegenIvy;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.ItemBlockFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.curio.HolyRing;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
@@ -177,6 +178,9 @@ public class ModItems {
 
 
 
+	public static final RegistryObject<Item> CAPYBARA_SPAWN_EGG = REGISTRY.register("capybara_spawn_egg",
+			() -> new ForgeSpawnEggItem(ModEntities.CAPYBARA, 0x8B4513, 0xDEB887,
+					new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)));
 
 	public static final RegistryObject<Item> XIAOYANG_010_SPAWN_EGG = REGISTRY.register("xiaoyang_010_spawn_egg",
 			() -> new ForgeSpawnEggItem(ModEntities.XIAOYANG_010, -1, -1,

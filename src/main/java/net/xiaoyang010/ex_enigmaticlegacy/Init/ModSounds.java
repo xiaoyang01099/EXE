@@ -23,8 +23,18 @@ public class ModSounds {
 	public static final ResourceLocation MEOW_ID = new ResourceLocation("ex_enigmaticlegacy", "meow");
 	public static final ResourceLocation CUTE_ID = new ResourceLocation("ex_enigmaticlegacy", "cute");
 	public static final ResourceLocation HUNT_DOWN_ID = new ResourceLocation("ex_enigmaticlegacy", "hunt_down");
-	public static final ResourceLocation FLOWEY_LAUGH_ID = new ResourceLocation("ex_enigmaticlegacy", "flowey_laugh");
 	public static final ResourceLocation GOLDEN_LAUREL_ID = new ResourceLocation("ex_enigmaticlegacy", "golden_laurel");
+	public static final ResourceLocation FLOWEY_LAUGH_ID = new ResourceLocation("ex_enigmaticlegacy", "flowey_laugh");
+	public static final ResourceLocation CAPYBARA_AMBIENT_1_ID = new ResourceLocation("ex_enigmaticlegacy", "capybara_ambient_1");
+	public static final ResourceLocation CAPYBARA_AMBIENT_2_ID = new ResourceLocation("ex_enigmaticlegacy", "capybara_ambient_2");
+	public static final ResourceLocation CAPYBARA_HURT_ID = new ResourceLocation("ex_enigmaticlegacy", "capybara_hurt");
+	public static final ResourceLocation CAPYBARA_DEATH_ID = new ResourceLocation("ex_enigmaticlegacy", "capybara_death");
+
+	public static final SoundEvent CAPYBARA_AMBIENT_1 = new SoundEvent(CAPYBARA_AMBIENT_1_ID);
+	public static final SoundEvent CAPYBARA_AMBIENT_2 = new SoundEvent(CAPYBARA_AMBIENT_2_ID);
+	public static final SoundEvent CAPYBARA_HURT = new SoundEvent(CAPYBARA_HURT_ID);
+	public static final SoundEvent CAPYBARA_DEATH = new SoundEvent(CAPYBARA_DEATH_ID);
+
 
 	public static final SoundEvent NOTHING = new SoundEvent(NOTHING_ID);
 	public static final SoundEvent WHAT = new SoundEvent(WHAT_ID);
@@ -38,6 +48,10 @@ public class ModSounds {
 	public static final SoundEvent GOLDEN_LAUREL = new SoundEvent(GOLDEN_LAUREL_ID);
 
 	static {
+		REGISTRY.put(CAPYBARA_AMBIENT_1_ID, CAPYBARA_AMBIENT_1);
+		REGISTRY.put(CAPYBARA_AMBIENT_2_ID, CAPYBARA_AMBIENT_2);
+		REGISTRY.put(CAPYBARA_HURT_ID, CAPYBARA_HURT);
+		REGISTRY.put(CAPYBARA_DEATH_ID, CAPYBARA_DEATH);
 		REGISTRY.put(NOTHING_ID, NOTHING);
 		REGISTRY.put(WHAT_ID, WHAT);
 		REGISTRY.put(AAAAA_ID, AAAAA);

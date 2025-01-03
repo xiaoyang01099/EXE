@@ -10,6 +10,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.CapybaraModel;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.DragonWingsModel;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.DragonWingsLayer;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
@@ -31,7 +32,9 @@ public class ModEventBusEvents {
                 ),
                 DragonWingsModel::createBodyLayer
         );
+        event.registerLayerDefinition(CapybaraModel.LAYER_LOCATION, CapybaraModel::createBodyLayer);
     }
+    
 
 
     // 添加渲染层到玩家渲染器

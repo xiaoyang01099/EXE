@@ -1,20 +1,19 @@
 
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.*;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.*;
-import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-/*import net.xiaoyang010.ex_enigmaticlegacy.entity.biological.Sacabambaspis;*/
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.SpectriteWither;
+import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -29,6 +28,13 @@ public class ModEntities {
 //							.updateInterval(10)
 //							.fireImmune()
 //							.build(new ResourceLocation("ex_enigmaticlegacy", "rainbow_wither_skull").toString()));
+
+	public static final RegistryObject<EntityType<CapybaraEntity>> CAPYBARA = REGISTRY.register("capybara",
+			() -> EntityType.Builder.of(CapybaraEntity::new, MobCategory.CREATURE)
+					.sized(0.9F, 1.4F)
+					.clientTrackingRange(10)
+					.build(ExEnigmaticlegacyMod.MODID + ":capybara"));
+
 
 	public static final RegistryObject<EntityType<Xiaoyang010Entity>> XIAOYANG_010 = register("xiaoyang_010", EntityType.Builder.<Xiaoyang010Entity>of(Xiaoyang010Entity::new, MobCategory.CREATURE).setShouldReceiveVelocityUpdates(true)
 			.setTrackingRange(100).setUpdateInterval(3).setCustomClientFactory(Xiaoyang010Entity::new).fireImmune().sized(0.6f, 1.8f));
@@ -81,8 +87,7 @@ public class ModEntities {
 		event.put(XINGYUN2825.get(),Xingyun2825Entity.createAttributes().build());
 		event.put(SPECTRITE_WITHER.get(), SpectriteWither.createAttributes().build());
 		event.put(KIND_MIAO.get(), MiaoMiaoEntity.createAttributes().build());
-
-
+		event.put(CAPYBARA.get(), CapybaraEntity.createAttributes().build());
 	}
 
 }

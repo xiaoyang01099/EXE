@@ -178,14 +178,12 @@ public class Xiaoyang010Entity extends Monster {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		AttributeSupplier.Builder builder = Mob.createMobAttributes();
-		builder = builder.add(Attributes.MOVEMENT_SPEED, 0.3);
-		builder = builder.add(Attributes.MAX_HEALTH, 1024);
-		builder = builder.add(Attributes.ARMOR, 100);
-		builder = builder.add(Attributes.ATTACK_DAMAGE, 300);
-		builder = builder.add(Attributes.FOLLOW_RANGE, 100);
-		builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 100);
-		builder = builder.add(Attributes.ATTACK_KNOCKBACK, 5);
-		return builder;
+		return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.3)
+		.add(Attributes.MAX_HEALTH, 1024)
+		.add(Attributes.ARMOR, 100)
+		.add(Attributes.ATTACK_DAMAGE, 300)
+		.add(Attributes.FOLLOW_RANGE, 100)
+		.add(Attributes.KNOCKBACK_RESISTANCE, 100)
+		.add(Attributes.ATTACK_KNOCKBACK, 5);
 	}
 }

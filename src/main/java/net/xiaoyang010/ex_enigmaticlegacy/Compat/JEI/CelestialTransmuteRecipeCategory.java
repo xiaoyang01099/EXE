@@ -103,7 +103,7 @@ public class CelestialTransmuteRecipeCategory implements IRecipeCategory<Celesti
 
     @Override
     @NotNull
-    public Class<? extends CelestialTransmuteRecipe> getRecipeClass() {
+    public Class<CelestialTransmuteRecipe> getRecipeClass() {
         return CelestialTransmuteRecipe.class;
     }
 }

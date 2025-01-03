@@ -1,6 +1,9 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Entity;
 
+import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustColorTransitionOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
@@ -79,7 +82,9 @@ public class SpectriteCrystalEntity extends EndCrystal {
                 if (sqrt > 16.0d)
                     this.setBeamTarget(null);
             }
+
         }
+        spawnParticles();
     }
 
     protected void addAdditionalSaveData(CompoundTag pCompound) {
@@ -157,6 +162,65 @@ public class SpectriteCrystalEntity extends EndCrystal {
         DATA_BEAM_TARGET = SynchedEntityData.defineId(SpectriteCrystalEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
         DATA_SHOW_BOTTOM = SynchedEntityData.defineId(SpectriteCrystalEntity.class, EntityDataSerializers.BOOLEAN);
     }
+
+    // 修改颜色定义部分：
+    private static final DustColorTransitionOptions RED_PARTICLE = new DustColorTransitionOptions(
+            new Vector3f(1.0F, 0.0F, 0.0F), new Vector3f(1.0F, 0.33F, 0.33F), 1.0F);
+    private static final DustColorTransitionOptions ORANGE_PARTICLE = new DustColorTransitionOptions(
+            new Vector3f(1.0F, 0.5F, 0.0F), new Vector3f(1.0F, 0.67F, 0.0F), 1.0F);
+    private static final DustColorTransitionOptions YELLOW_PARTICLE = new DustColorTransitionOptions(
+            new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.33F), 1.0F);
+    private static final DustColorTransitionOptions GREEN_PARTICLE = new DustColorTransitionOptions(
+            new Vector3f(0.0F, 1.0F, 0.0F), new Vector3f(0.33F, 1.0F, 0.33F), 1.0F);
+    private static final DustColorTransitionOptions BLUE_PARTICLE = new DustColorTransitionOptions(
+            new Vector3f(0.0F, 0.0F, 1.0F), new Vector3f(0.33F, 0.33F, 1.0F), 1.0F);
+    private static final DustColorTransitionOptions INDIGO_PARTICLE = new DustColorTransitionOptions(
+            new Vector3f(0.29F, 0.0F, 0.51F), new Vector3f(0.48F, 0.17F, 0.75F), 1.0F);
+    private static final DustColorTransitionOptions VIOLET_PARTICLE = new DustColorTransitionOptions(
+            new Vector3f(0.58F, 0.0F, 0.83F), new Vector3f(0.67F, 0.33F, 1.0F), 1.0F);
+
+
+    private float particleTime = 0.0F;
+
+    private void spawnParticles() {
+        // 更新粒子时间
+        particleTime += 0.1F;
+
+        // 创建螺旋形彩虹粒子效果
+        double radius = 1.0;
+        for (int i = 0; i < 2; i++) {
+            double angle = particleTime + (Math.PI * 2 * i / 2);
+
+            double x = this.getX() + Math.cos(angle) * radius;
+            double y = this.getY() + Math.sin(particleTime * 0.5) * 0.5 + 0.5;
+            double z = this.getZ() + Math.sin(angle) * radius;
+
+            // 随机选择彩虹颜色过渡效果
+            DustColorTransitionOptions particleOptions = switch (this.random.nextInt(7)) {
+                case 0 -> RED_PARTICLE;
+                case 1 -> ORANGE_PARTICLE;
+                case 2 -> YELLOW_PARTICLE;
+                case 3 -> GREEN_PARTICLE;
+                case 4 -> BLUE_PARTICLE;
+                case 5 -> INDIGO_PARTICLE;
+                default -> VIOLET_PARTICLE;
+            };
+
+            // 生成颜色过渡粒子
+            this.level.addParticle(particleOptions, x, y, z, 0, 0, 0);
+
+
+            // 添加一些星星般的闪光效果
+            if (this.random.nextInt(20) == 0) {
+                this.level.addParticle(ParticleTypes.END_ROD,
+                        x, y, z,
+                        (this.random.nextDouble() - 0.5) * 0.1,
+                        (this.random.nextDouble() - 0.5) * 0.1,
+                        (this.random.nextDouble() - 0.5) * 0.1);
+            }
+        }
+    }
+
 
     /*private static final double CRYSTAL_WIDTH = 2.0D;
     private static final double CRYSTAL_HEIGHT = 2.0D;
