@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "ex_enigmaticlegacy:amethyst_ore",
+    "ex_enigmaticlegacy:bauxite_ore",
+    "ex_enigmaticlegacy:chromite_ore",
+    "ex_enigmaticlegacy:fluorite_ore",
+    "ex_enigmaticlegacy:gypsum_ore",
+    "ex_enigmaticlegacy:lead_ore",
+    "ex_enigmaticlegacy:bronze_ore"
+  ]
+}
