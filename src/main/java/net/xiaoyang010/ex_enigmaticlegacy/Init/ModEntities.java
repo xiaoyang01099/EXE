@@ -35,6 +35,12 @@ public class ModEntities {
 					.clientTrackingRange(10)
 					.build(ExEnigmaticlegacyMod.MODID + ":capybara"));
 
+	public static final RegistryObject<EntityType<SpottedGardenEelEntity>> SPOTTED_GARDEN_EEL = REGISTRY.register("spotted_garden_eel",
+			() -> EntityType.Builder.of(SpottedGardenEelEntity::new, MobCategory.CREATURE)
+					.sized(0.9F, 1.4F)
+					.clientTrackingRange(10)
+					.build(ExEnigmaticlegacyMod.MODID + ":spotted_garden_eel"));
+
 
 	public static final RegistryObject<EntityType<Xiaoyang010Entity>> XIAOYANG_010 = register("xiaoyang_010", EntityType.Builder.<Xiaoyang010Entity>of(Xiaoyang010Entity::new, MobCategory.CREATURE).setShouldReceiveVelocityUpdates(true)
 			.setTrackingRange(100).setUpdateInterval(3).setCustomClientFactory(Xiaoyang010Entity::new).fireImmune().sized(0.6f, 1.8f));
@@ -81,6 +87,7 @@ public class ModEntities {
 			MiaoMiaoEntity.init();
 		});
 	}
+
 	@SubscribeEvent
 	public static void registerAttributes(EntityAttributeCreationEvent event) {
 		event.put(XIAOYANG_010.get(), Xiaoyang010Entity.createAttributes().build());
@@ -88,6 +95,8 @@ public class ModEntities {
 		event.put(SPECTRITE_WITHER.get(), SpectriteWither.createAttributes().build());
 		event.put(KIND_MIAO.get(), MiaoMiaoEntity.createAttributes().build());
 		event.put(CAPYBARA.get(), CapybaraEntity.createAttributes().build());
+		event.put(SPOTTED_GARDEN_EEL.get(), SpottedGardenEelEntity.createAttributes().build());
+
 	}
 
 }

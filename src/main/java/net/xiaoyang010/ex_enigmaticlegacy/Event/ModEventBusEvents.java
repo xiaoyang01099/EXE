@@ -12,7 +12,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.CapybaraModel;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.DragonWingsModel;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.SpottedGardenEelHidingModel;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.SpottedGardenEelModel;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.DragonWingsLayer;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.SpottedGardenEelRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 
@@ -33,8 +36,18 @@ public class ModEventBusEvents {
                 DragonWingsModel::createBodyLayer
         );
         event.registerLayerDefinition(CapybaraModel.LAYER_LOCATION, CapybaraModel::createBodyLayer);
+
+        event.registerLayerDefinition(
+                SpottedGardenEelRenderer.EEL_MODEL_LAYER,
+                SpottedGardenEelModel::createBodyLayer
+        );
+        
+        event.registerLayerDefinition(
+                SpottedGardenEelRenderer.EEL_HIDING_MODEL_LAYER,
+                SpottedGardenEelHidingModel::createBodyLayer
+        );
     }
-    
+
 
 
     // 添加渲染层到玩家渲染器

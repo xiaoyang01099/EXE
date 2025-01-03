@@ -1,12 +1,11 @@
 
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -177,6 +176,13 @@ public class ModItems {
 	public static final RegistryObject<Item> DEEPER_PURPLE_DETERMINATION = REGISTRY.register("deeper_purple_determination", ModDetermination::new);
 
 
+	public static final RegistryObject<Item> SPOTTED_GARDEN_EEL_BUCKET = REGISTRY.register("spotted_garden_eel_bucket",
+			() -> new MobBucketItem(ModEntities.SPOTTED_GARDEN_EEL, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_FISH,
+					new Properties().stacksTo(1)));
+
+	public static final RegistryObject<Item> SPOTTED_GARDEN_EEL_SPAWN_EGG = REGISTRY.register("spotted_garden_eel_spawn_egg",
+			() -> new ForgeSpawnEggItem(ModEntities.SPOTTED_GARDEN_EEL, 0x8BA673 , 0xCCC168,
+					new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)));
 
 	public static final RegistryObject<Item> CAPYBARA_SPAWN_EGG = REGISTRY.register("capybara_spawn_egg",
 			() -> new ForgeSpawnEggItem(ModEntities.CAPYBARA, 0x8B4513, 0xDEB887,

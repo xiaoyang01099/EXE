@@ -19,6 +19,7 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.SPECTRITE_WITHER.get(), SpectriteWitherRenderer::new);
 		event.registerEntityRenderer(ModEntities.KIND_MIAO.get(), MiaoMiaoRenderer::new);
 		event.registerEntityRenderer(ModEntities.CAPYBARA.get(), CapybaraRenderer::new);
+		event.registerEntityRenderer(ModEntities.SPOTTED_GARDEN_EEL.get(), SpottedGardenEelRenderer::new);
 		//event.registerEntityRenderer(ModEntities.RAINBOW_WITHER_SKULL.get(), RainbowWitherSkullRenderer::new);
 	}
 
