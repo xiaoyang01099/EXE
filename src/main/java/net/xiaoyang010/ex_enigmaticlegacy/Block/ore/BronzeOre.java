@@ -9,6 +9,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.OreBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,7 +21,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import java.util.Collections;
 import java.util.List;
 
-public class BronzeOre extends Block {
+public class BronzeOre extends OreBlock {
     public BronzeOre(){
         super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(1f, 2f).requiresCorrectToolForDrops());
     }

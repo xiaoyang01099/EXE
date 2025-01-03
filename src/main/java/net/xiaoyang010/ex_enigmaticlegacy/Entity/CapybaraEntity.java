@@ -163,7 +163,7 @@ public class CapybaraEntity extends TamableAnimal implements MenuProvider {
                     }
                     return InteractionResult.sidedSuccess(this.level.isClientSide);
                 }
-            } else if (!stack.isEmpty()) {
+            } else if (!stack.isEmpty()) { //潜行右键 有物品时 切换站坐状态
                 this.setOrderedToSit(!this.isOrderedToSit());
                 return InteractionResult.sidedSuccess(this.level.isClientSide);
             } else if (inventory != null) {
