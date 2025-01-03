@@ -17,7 +17,6 @@ import net.minecraftforge.common.crafting.ConditionalAdvancement;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.ItemExistsCondition;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.Recipe.RegenIvyRecipe;
 
 import java.util.function.Consumer;
 

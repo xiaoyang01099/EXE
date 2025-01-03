@@ -47,6 +47,7 @@
   "block.ex_enigmaticlegacy.killing_berry": "杀戮莓",
   "block.ex_enigmaticlegacy.dark_night_grass": "暗夜草",
   "block.ex_enigmaticlegacy.frost_lotus": "寒霜莲",
+  "block.ex_enigmaticlegacy.lycorisradiata": "彼岸花",
   "block.ex_enigmaticlegacy.infinity_spreader": "无尽魔力发射器",
 
   "curios.identifier.holy_ring": "戒指",
@@ -66,6 +67,8 @@
   "item.ex_enigmaticlegacy.book.name": "圣典",
   "item.ex_enigmaticlegacy.chaos_core": "混沌之核",
   "item.ex_enigmaticlegacy.claymore": "神祇裂锋",
+  "item.ex_enigmaticlegacy.plumed_belt": "羽毛带",
+  "item.ex_enigmaticlegacy.mana_reader":"魔力读取器",
   "item.ex_enigmaticlegacy.colorful_shadow_shard": "幻彩碎片",
   "item.ex_enigmaticlegacy.crissaegrim": "裂隙之刃",
   "item.ex_enigmaticlegacy.crystal_dagger": "玄冰秘刃",

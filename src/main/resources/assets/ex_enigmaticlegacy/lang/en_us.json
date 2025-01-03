@@ -55,6 +55,7 @@
   "block.ex_enigmaticlegacy.killing_berry": "Killing Berry",
   "block.ex_enigmaticlegacy.dark_night_grass": "Dark Night Grass",
   "block.ex_enigmaticlegacy.frost_lotus": "Frost Lotus",
+  "block.ex_enigmaticlegacy.lycorisradiata": "Lycorisradiata",
 
 
   "curios.identifier.holy_ring": "",
@@ -73,6 +74,8 @@
   "item.ex_enigmaticlegacy.book.name": "Bible",
   "item.ex_enigmaticlegacy.chaos_core": "Chaos Core",
   "item.ex_enigmaticlegacy.claymore": "Claymore",
+  "item.ex_enigmaticlegacy.plumed_belt": "Plumed Belt",
+  "item.ex_enigmaticlegacy.mana_reader":"Manareader",
   "item.ex_enigmaticlegacy.colorful_shadow_shard": "Colorful Shadow Shard",
   "item.ex_enigmaticlegacy.crissaegrim": "Crissaegrim",
   "item.ex_enigmaticlegacy.crystal_dagger": "Crystal Dagger",

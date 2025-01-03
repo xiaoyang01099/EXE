@@ -12,6 +12,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.GoldenLaurel;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.ManaReader;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.PlumedBelt;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.ItemBlockFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.curio.HolyRing;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
@@ -143,6 +145,9 @@ public class ModItems {
 	public static final RegistryObject<Item> HEARTHSTONE = REGISTRY.register("hearth_stone",HearthStone::new);
 	public static final RegistryObject<Item> INFINITY_TOTEM = REGISTRY.register("infinity_totem",InfinityTotem::new);
 	public static final RegistryObject<Item> RADIANT_SACRED_RUBY = REGISTRY.register("radiant_sacred_ruby", RadiantSacredRuby::new);
+	public static final RegistryObject<Item> MANA_READER = REGISTRY.register("mana_reader", () -> new ManaReader(new Properties().rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> PLUMED_BELT = REGISTRY.register("plumed_belt", () -> new PlumedBelt(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> GOLDEN_LAUREL = REGISTRY.register("golden_laurel", () -> new GoldenLaurel(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(1).rarity(Rarity.RARE)));
 
 
 	//材料
@@ -173,19 +178,16 @@ public class ModItems {
 
 
 
-
-	public static final RegistryObject<Item> GOLDEN_LAUREL = REGISTRY.register("golden_laurel", () -> new GoldenLaurel(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(1).rarity(Rarity.RARE)));
-
 	public static final RegistryObject<Item> XIAOYANG_010_SPAWN_EGG = REGISTRY.register("xiaoyang_010_spawn_egg",
 			() -> new ForgeSpawnEggItem(ModEntities.XIAOYANG_010, -1, -1,
-					new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)));
+					new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)));
 
 
 	private static RegistryObject<Item> block(RegistryObject<Block> block, CreativeModeTab tab) {
-		return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
+		return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Properties().tab(tab)));
 	}
 
 	private static RegistryObject<Item> blockFlower(RegistryObject<Block> block, CreativeModeTab tab) {
-		return REGISTRY.register(block.getId().getPath(), () -> new ItemBlockFlower(block.get(), new Item.Properties().tab(tab)));
+		return REGISTRY.register(block.getId().getPath(), () -> new ItemBlockFlower(block.get(), new Properties().tab(tab)));
 	}
 }

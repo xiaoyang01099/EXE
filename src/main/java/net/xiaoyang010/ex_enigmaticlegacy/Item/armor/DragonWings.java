@@ -61,7 +61,7 @@ public class DragonWings extends ElytraItem {
         double d0 = 1.5;
         double d1 = 0.25;
         double d2 = 0.5;
-        double flag = move ? 1.0d : -1.0d;
+        double flag = move ? 1.0d : 0;
         Vec3 vec32 = player.getDeltaMovement();
         player.setDeltaMovement(vec32.add(vec31.x * d1 + (vec31.x * d0 - vec32.x) * d2,
                 vec31.y * d1 + (vec31.y * d0 - vec32.y) * d2,
