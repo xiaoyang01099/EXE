@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.SnowFlower;
 import org.jetbrains.annotations.NotNull;
-import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.BotaniaForgeClientCapabilities;
 import vazkii.botania.api.subtile.RadiusDescriptor;
 import vazkii.botania.api.subtile.TileEntityGeneratingFlower;
@@ -57,9 +57,19 @@ public class FrostLotusFlowerTile extends TileEntityGeneratingFlower {
 
         if (getMana() < getMaxMana()) {
             Biome biome = getLevel().getBiome(getEffectivePos()).value();
-            if (biome.getBaseTemperature() > 0.15f || !biome.getPrecipitation().equals(Biome.Precipitation.SNOW)) {
+
+            boolean isSnowArea = biome.getBaseTemperature() <= 0.15f ||
+                    biome.getPrecipitation().equals(Biome.Precipitation.SNOW) ||
+                    (!SnowFlower.SNOW_FLOWER_POSITIONS.isEmpty() &&
+                            biome.getPrecipitation().equals(Biome.Precipitation.RAIN));
+
+            if (!isSnowArea) {
                 return;
             }
+
+//            if (biome.getBaseTemperature() > 0.15f || !biome.getPrecipitation().equals(Biome.Precipitation.SNOW)) {
+//                return;
+//            }
 
             boolean didAny = false;
             for (int i = 0; i < BLOCKS_PER_TICK; i++) {

@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "refmap": "ex_enigmaticlegacy.refmap.json",
   "mixins": [
+    "BiomeMixin"
   ],
   "client": [
   ],

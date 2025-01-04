@@ -97,13 +97,14 @@ public class OrechidEndiumTile extends SubTileOrechid {
         }
     }
 
+    //获取随机矿物
     private BlockState getOre(){
         List<Block> blocks = new ArrayList<>();
         for (Block block : Registry.BLOCK) {
             if (block instanceof OreBlock)
                 blocks.add(block);
         }
-
+        if (blocks.isEmpty() || level == null) return Blocks.AIR.defaultBlockState();
         return blocks.get(level.random.nextInt(blocks.size())).defaultBlockState();
     }
 
