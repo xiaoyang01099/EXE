@@ -5,10 +5,14 @@ import com.google.common.collect.Multimap;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -17,6 +21,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,13 +32,16 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.ModelArmorNebula;
+import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 import net.xiaoyang010.ex_enigmaticlegacy.api.AdvancedBotanyAPI;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.item.IManaProficiencyArmor;
 import vazkii.botania.api.mana.IManaItem;
+import vazkii.botania.api.mana.IManaPool;
 import vazkii.botania.api.mana.ManaItemHandler;
+import vazkii.botania.client.gui.TooltipHandler;
 import vazkii.botania.common.item.equipment.armor.manasteel.ItemManasteelArmor;
 
 import java.util.ArrayList;
@@ -46,6 +54,8 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
     private static final int MAX_MANA = 250000;
     protected static final float MAX_SPEED = 0.275F;
     public static final List<String> playersWithStepup = new ArrayList<>();
+    public static final List<String> playersWithFeet = new ArrayList<>();
+    public static final String NBT_FALL = ExEnigmaticlegacyMod.MODID + ":nebula_armor";
 
     private static final UUID CHEST_UUID = UUID.fromString("6d88f904-e22f-7cfa-8c66-c0bee4e40289");
     private static final UUID HEAD_UUID = UUID.fromString("cfb111e4-9caa-12bf-6a67-01bccaabe34d");
@@ -56,6 +66,16 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
     public NebulaArmor(EquipmentSlot slot) {
         super(slot, AdvancedBotanyAPI.nebulaArmorMaterial, NEBULA_ARMOR);
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Level world, List<Component> list, TooltipFlag flags) {
+        TooltipHandler.addOnShift(list, () -> {
+            this.addInformationAfterShift(stack, world, list, flags);
+        });
+
+        list.add(new TextComponent("魔力：" + getManaInternal(stack) + "/" + getMaxMana()));
+        list.add(new TextComponent("耐久：" + (stack.getMaxDamage() - stack.getDamageValue()) + "/" + stack.getMaxDamage()));
     }
 
     @Override
@@ -82,6 +102,27 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
             return 0.3f;
         }
         return 0;
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+        if (world.isClientSide() || world.getGameTime() % 5 != 0) return;
+        BlockPos pos = entity.blockPosition();
+        for (BlockPos checkPos : BlockPos.betweenClosed(
+                pos.offset(-2, -2, -2),
+                pos.offset(2, 2, 2))) {
+            BlockEntity be = world.getBlockEntity(checkPos);
+            if (be instanceof IManaPool pool) {
+                int space = getMaxMana() - getManaInternal(stack);
+                if (space > 0 && pool.getCurrentMana() > 0) {
+                    int manaToTransfer = Math.min(25000, Math.min(space, pool.getCurrentMana()));
+                    pool.receiveMana(-manaToTransfer);
+                    addMana(manaToTransfer);
+                    setManaInternal(stack, getManaInternal(stack) + manaToTransfer);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -116,6 +157,7 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
             NebulaArmorHelper.dispatchManaExact(stack, player, 2, true);
         }
     }
+
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
@@ -181,11 +223,11 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
         setManaInternal(new ItemStack(this), getMana() + mana);
     }
 
-    protected int getManaInternal(ItemStack stack) {
+    public static int getManaInternal(ItemStack stack) {
         return stack.getOrCreateTag().getInt(TAG_MANA);
     }
 
-    protected void setManaInternal(ItemStack stack, int mana) {
+    public static void setManaInternal(ItemStack stack, int mana) {
         stack.getOrCreateTag().putInt(TAG_MANA, Math.min(mana, MAX_MANA));
     }
 
@@ -232,10 +274,29 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
         if (event.getEntity() instanceof Player player) {
             String playerStr = player.getGameProfile().getName() + ":" + player.level.isClientSide;
 
+            ItemStack feet = player.getItemBySlot(EquipmentSlot.FEET);
+            boolean isFeet = feet.getItem() == ModArmors.NEBULA_BOOTS.get();
+            if (playersWithFeet.contains(playerStr)){
+                if (isFeet){
+                    if (player.getAbilities().getFlyingSpeed() != .25f) {
+                        player.getAbilities().setFlyingSpeed(.25f);
+                        player.onUpdateAbilities();
+                    }
+                }else {
+                    if (player.getAbilities().getFlyingSpeed() != 0.05f) {
+                        player.getAbilities().setFlyingSpeed(0.05f);
+                        player.onUpdateAbilities();
+                    }
+                    playersWithFeet.remove(playerStr);
+                }
+            }else if (isFeet){
+                playersWithFeet.add(playerStr);
+            }
+
             if (playersWithStepup.contains(playerStr)) {
                 if (NebulaArmorHelper.shouldPlayerHaveStepup(player)) {
                     if (!player.level.isClientSide)
-                        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 5, 2));
+                        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 5, 3));
                     player.maxUpStep = player.isCrouching() ? 1.0F : 1.5F; //上坡高度
                 } else {
                     if (player.maxUpStep > 1.0F)
@@ -260,13 +321,13 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
                         0, getJump(legs), 0
                 ));
                 player.fallDistance = -getFallBuffer(legs);  // 更新为新的摔落伤害计算
-                player.getPersistentData().putBoolean("exe:nebula_armor", true);
+                player.getPersistentData().putBoolean(NBT_FALL, true);
             }
         }
     }
 
     private float getJump(ItemStack stack) {
-        return 0.3F * (1.0F - (float)getDamage(stack) / 1000.0F);
+        return 0.2F * (1.0F - (float)getDamage(stack) / 1000.0F);
     }
 
     private float getFallBuffer(ItemStack stack) {

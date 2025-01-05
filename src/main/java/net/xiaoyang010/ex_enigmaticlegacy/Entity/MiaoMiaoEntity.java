@@ -1,54 +1,48 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Entity;
 
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.WitherSkull;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.ai.WitherSkullAttackGoal;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.entity.projectile.WitherSkull;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.entity.player.Player;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.entity.LightningBolt;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 @Mod.EventBusSubscriber
 public class MiaoMiaoEntity extends Monster {
-
-
     private static final double MAX_TRANSITION_HEIGHT = 5.0D; // 最大上升高度
     private double transitionStartY; // 记录开始相变时的Y坐标
     private boolean isTransitionComplete = false; // 标记相变是否完成
@@ -173,7 +167,7 @@ public class MiaoMiaoEntity extends Monster {
     }
 
     @Override
-    public @NotNull SoundEvent getDeathSound() {
+    public SoundEvent getDeathSound() {
         return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("ex_enigmaticlegacy:meow"));
     }
 
@@ -314,63 +308,25 @@ public class MiaoMiaoEntity extends Monster {
 
     public void shootWitherSkull(LivingEntity target) {
         if (!this.level.isClientSide) {
-            WitherSkull witherSkull = new WitherSkull(EntityType.WITHER_SKULL, this.level) {
-                @Override
-                protected void onHit(@NotNull HitResult result) {
-                    if (!this.level.isClientSide) {
-                        // 创建不破坏方块的爆炸
-                        this.level.explode(
-                                this,                      // 爆炸源实体
-                                this.getX(),              // X 坐标
-                                this.getY(),              // Y 坐标
-                                this.getZ(),              // Z 坐标
-                                1.0F,                     // 爆炸半径
-                                true,                    // 是否生成火焰
-                                Explosion.BlockInteraction.NONE  // 不破坏方块
-                        );
-                    }
-                    super.onHit(result);
-                }
-            };
-            witherSkull.setOwner(this);
+            double d0 = this.getX();
+            double d1 = this.getY();
+            double d2 = this.getZ();
+            double d3 = target.getX() - d0;
+            double d4 = target.getY() + (double)target.getEyeHeight() * 0.5 - d1;
+            double d5 = target.getZ() - d2;
+            WitherSkull witherskull = new WitherSkull(this.level, this, d3, d4, d5);
+            witherskull.setOwner(this);
+            witherskull.setDangerous(true);
 
-            // 计算方向向量
-            double dX = target.getX() - this.getX();
-            double dY = target.getY(0.5D) - witherSkull.getY();
-            double dZ = target.getZ() - this.getZ();
-
-            // 计算距离并归一化方向
-            double distance = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
-            dX = dX / distance;
-            dY = dY / distance;
-            dZ = dZ / distance;
-
-            // 根据阶段调整精确度和速度
-            double spread = isInPhaseTwo ? 0.05D : 0.1D; // 第二阶段更精确
-            float speed = isInPhaseTwo ? 4.0F : 2.0F;    // 第二阶段更快
-            float inaccuracy = isInPhaseTwo ? 0.5F : 1.0F;
-
-            // 添加随机偏移
-            dX += this.random.nextGaussian() * spread;
-            dY += this.random.nextGaussian() * spread;
-            dZ += this.random.nextGaussian() * spread;
-
-            witherSkull.setPos(
-                    this.getX() + dX * 2.0D,
-                    this.getY(0.5D) + 0.5D,
-                    this.getZ() + dZ * 2.0D
-            );
-
-            witherSkull.shoot(dX, dY, dZ, speed, inaccuracy);
+            witherskull.setPosRaw(d0, d1, d2);
+            this.level.addFreshEntity(witherskull);
 
             // 第二阶段增加追踪能力
-            if (isInPhaseTwo) {
-                witherSkull.setDeltaMovement(
-                        witherSkull.getDeltaMovement().multiply(1.5D, 1.5D, 1.5D)
-                );
-            }
-
-            this.level.addFreshEntity(witherSkull);
+//            if (isInPhaseTwo) {
+//                witherSkull.setDeltaMovement(
+//                        witherSkull.getDeltaMovement().multiply(1.5D, 1.5D, 1.5D)
+//                );
+//            }
 
             // 添加发射音效
             this.playSound(
@@ -428,7 +384,7 @@ public class MiaoMiaoEntity extends Monster {
 
             // 随机变向飞行
             if (this.random.nextFloat() < 0.05) { // 5%的概率改变方向
-                this.tickCount += 20; // 快速改变角度
+                this.tickCount += 200; // 快速改变角度
             }
 
             // 如果距离目标太远，加速追击
@@ -561,6 +517,7 @@ public class MiaoMiaoEntity extends Monster {
                 // 达到最大高度后悬停
                 this.setDeltaMovement(0, 0, 0);
                 isTransitionComplete = true;
+//                this.setHealth(this.getHealth() + 11451);
             }
 
             // 旋转的护盾粒子效果
@@ -756,9 +713,11 @@ public class MiaoMiaoEntity extends Monster {
             this.setPos(this.getX(), this.level.getMaxBuildHeight() - 10, this.getZ());
         }
 
+//        if (level.getGameTime() % 20 == 0) shootWitherSkull(Minecraft.getInstance().player);
 
         if (!isInPhaseTwo && (this.getHealth() / this.getMaxHealth() <= 0.1f)) {
             startPhaseTransition();
+            isInPhaseTwo = true;
         }
 
         // 如果正在进行相变动画
@@ -773,6 +732,8 @@ public class MiaoMiaoEntity extends Monster {
 
         if (isInPhaseTwo) {
             maintainPhaseTwo();
+            this.heal(11451);
+            this.isInvulnerableDuringTransition = false;
         }
 
         tickCounter++;

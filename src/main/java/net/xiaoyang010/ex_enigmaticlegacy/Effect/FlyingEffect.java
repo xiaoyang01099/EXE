@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmor;
 
 public class FlyingEffect extends MobEffect {
     public static final String NBT_FLYING = "exe:flying";
@@ -21,10 +22,10 @@ public class FlyingEffect extends MobEffect {
         LivingEntity living = event.getEntityLiving();
         if (living instanceof Player player) {
             boolean flying = player.getPersistentData().getBoolean(NBT_FLYING);
-            boolean nebulaArmor = player.getPersistentData().getBoolean("exe:nebula_armor");
+            boolean nebulaArmor = player.getPersistentData().getBoolean(NebulaArmor.NBT_FALL);
             if ((flying || nebulaArmor) && !player.level.isClientSide){ //取消玩家摔落
                 player.getPersistentData().remove(NBT_FLYING); //重置标记
-                player.getPersistentData().remove("exe:nebula_armor");
+                player.getPersistentData().remove(NebulaArmor.NBT_FALL);
                 event.setDamageMultiplier(0);
             }
         }

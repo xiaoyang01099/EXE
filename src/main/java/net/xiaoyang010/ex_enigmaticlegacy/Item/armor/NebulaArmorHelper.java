@@ -25,6 +25,18 @@ public class NebulaArmorHelper {
         return !armor.isEmpty() && armor.getItem() == ModArmors.NEBULA_BOOTS.get();
     }
 
+    /**
+     * 是否全套
+     */
+    public static boolean hasNebulaArmor(Player player) {
+        ItemStack head = player.getItemBySlot(EquipmentSlot.HEAD);
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
+        ItemStack feet = player.getItemBySlot(EquipmentSlot.FEET);
+        return head.getItem() == ModArmors.NEBULA_HELMET.get() && chest.getItem() == ModArmors.NEBULA_CHESTPLATE.get()
+                && legs.getItem() == ModArmors.NEBULA_LEGGINGS.get() && feet.getItem() == ModArmors.NEBULA_BOOTS.get();
+    }
+
     //回血
     public static void foodToHeal(Player player){
         int food = player.getFoodData().getFoodLevel();

@@ -259,7 +259,11 @@ public class ManaitaArrow extends AbstractArrow {
                     position.x - radius, position.y - radius, position.z - radius,
                     position.x + radius, position.y + radius, position.z + radius
             );
-
+            this.level.getEntitiesOfClass(LivingEntity.class, damageArea).forEach(e -> {
+                if (!(e instanceof Player) && e.isAlive()) {
+                    e.hurt(DamageSource.OUT_OF_WORLD, 10240f);
+                }
+            });
             List<LivingEntity> entities = this.level.getEntitiesOfClass(
                     LivingEntity.class,
                     damageArea,

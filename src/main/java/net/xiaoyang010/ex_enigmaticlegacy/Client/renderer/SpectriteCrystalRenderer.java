@@ -56,7 +56,7 @@ public class SpectriteCrystalRenderer extends EntityRenderer<SpectriteCrystalEnt
 
     public void render(SpectriteCrystalEntity pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
         pMatrixStack.pushPose();
-        int index = Math.min(36, pEntity.frame / 10);
+        int index = Math.min(35, pEntity.frame / 10);
         Minecraft.getInstance().getEntityRenderDispatcher().textureManager.bindForSetup(
                 new ResourceLocation(ExEnigmaticlegacyMod.MODID,"textures/entity/spectrite_crystal/" + index +".png")
         );
@@ -111,7 +111,7 @@ public class SpectriteCrystalRenderer extends EntityRenderer<SpectriteCrystalEnt
     @Override
     @NotNull
     public ResourceLocation getTextureLocation(SpectriteCrystalEntity pEntity) {
-        int index = Math.min(36, pEntity.frame / 10);
+        int index = Math.min(35, pEntity.frame / 10);
         return new ResourceLocation(ExEnigmaticlegacyMod.MODID,"textures/entity/spectrite_crystal/" + index +".png");
     }
 

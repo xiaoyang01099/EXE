@@ -3,6 +3,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Event;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -10,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -18,6 +20,8 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityPotato;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.BelieverTile;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmor;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmorHelper;
 import vazkii.botania.common.block.decor.BlockTinyPotato;
 
 @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID)
@@ -57,6 +61,32 @@ public class ModEventHandler {
                             believer.addRightMana(isInfinityPotato); // 传递土豆类型
                         }
                     }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void playerHurt(LivingHurtEvent event){
+        if (event.getEntityLiving() instanceof Player player){
+            if (NebulaArmorHelper.hasNebulaArmor(player)){
+                float amount = event.getAmount();
+                ItemStack head = player.getItemBySlot(EquipmentSlot.HEAD);
+                ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+                ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
+                ItemStack feet = player.getItemBySlot(EquipmentSlot.FEET);
+                int mana = (int) Math.ceil(amount * 1000.f / 4.f); //应消耗的魔力 = 伤害值 * 1000mana
+                int headMana = NebulaArmor.getManaInternal(head);
+                int chestMana = NebulaArmor.getManaInternal(chest);
+                int legsMana = NebulaArmor.getManaInternal(legs);
+                int feetMana = NebulaArmor.getManaInternal(feet);
+                //第一版 4件魔力都应超过 才减伤
+                if (headMana > mana && chestMana > mana && legsMana > mana && feetMana > mana){
+                    NebulaArmor.setManaInternal(head, headMana - mana);
+                    NebulaArmor.setManaInternal(chest, chestMana - mana);
+                    NebulaArmor.setManaInternal(legs, legsMana - mana);
+                    NebulaArmor.setManaInternal(feet, feetMana - mana);
+                    event.setAmount(0);
                 }
             }
         }
