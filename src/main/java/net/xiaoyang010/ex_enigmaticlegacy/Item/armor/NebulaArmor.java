@@ -2,9 +2,8 @@ package net.xiaoyang010.ex_enigmaticlegacy.Item.armor;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -97,6 +96,11 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
         return attributes;
     }
 
+    @Override
+    public String getArmorTextureAfterInk(ItemStack stack, EquipmentSlot slot) {
+        return ExEnigmaticlegacyMod.MODID + ":textures/models/armor/armor_nebula.png";
+    }
+
     public float getEfficiency(ItemStack stack, Player player) {
         if (this.slot == EquipmentSlot.HEAD) {
             return 0.3f;
@@ -177,18 +181,12 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
             public net.minecraft.client.model.HumanoidModel<?> getArmorModel(LivingEntity entity,
                                                                              ItemStack stack, EquipmentSlot slot, net.minecraft.client.model.HumanoidModel<?> defaultModel) {
 
-                var meshDefinition = HumanoidModel.createMesh(new CubeDeformation(0.1F), 0.0F);
-                var layerDefinition = LayerDefinition.create(meshDefinition, 64, 128);
-                var modelPart = layerDefinition.bakeRoot();
-
-                return new ModelArmorNebula(modelPart, slot);
+                ModelPart modelPart = Minecraft.getInstance().getEntityModels()
+                        .bakeLayer(ModelArmorNebula.LAYER_LOCATION);
+                return new ModelArmorNebula<>(modelPart);
             }
-        });
-    }
 
-    @OnlyIn(Dist.CLIENT)
-    public static LayerDefinition createArmorLayer() {
-        return ModelArmorNebula.createArmorLayer();
+        });
     }
 
     public boolean hasArmorSetItem(Player player, EquipmentSlot slot) {

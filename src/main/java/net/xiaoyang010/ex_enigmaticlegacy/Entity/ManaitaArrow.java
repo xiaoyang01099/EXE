@@ -292,7 +292,7 @@ public class ManaitaArrow extends AbstractArrow {
                     boolean hurt = false;
 
                     /// 造成伤害
-                    if (entity instanceof MiaoMiaoEntity miaoMiao) {
+                    if (entity instanceof CatMewEntity miaoMiao) {
                         miaoMiao.invulnerableTime = 0;  // 直接设置无敌时间为0
                         // 使用玩家攻击伤害源
                         hurt = miaoMiao.hurt(owner instanceof Player ?

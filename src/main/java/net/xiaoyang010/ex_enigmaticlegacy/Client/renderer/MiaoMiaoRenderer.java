@@ -7,10 +7,10 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.KindMiaoModel;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.MiaoMiaoEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.CatMewEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.ModEventBusEvents;
 
-public class MiaoMiaoRenderer extends MobRenderer<MiaoMiaoEntity, KindMiaoModel<MiaoMiaoEntity>> {
+public class MiaoMiaoRenderer extends MobRenderer<CatMewEntity, KindMiaoModel<CatMewEntity>> {
     public MiaoMiaoRenderer(EntityRendererProvider.Context context) {
         super(context, new KindMiaoModel<>(context.bakeLayer(ModEventBusEvents.MIAOMIAO_LAYER)), 0.5f);
         this.addLayer(new HumanoidArmorLayer(this,
@@ -19,7 +19,7 @@ public class MiaoMiaoRenderer extends MobRenderer<MiaoMiaoEntity, KindMiaoModel<
     }
 
     @Override
-    public ResourceLocation getTextureLocation(MiaoMiaoEntity entity) {
+    public ResourceLocation getTextureLocation(CatMewEntity entity) {
         return new ResourceLocation("ex_enigmaticlegacy:textures/entity/miaomiao/kind_miao.png");
     }
 }

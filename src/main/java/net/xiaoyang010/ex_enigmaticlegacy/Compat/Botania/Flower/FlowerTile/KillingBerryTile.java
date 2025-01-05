@@ -15,7 +15,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.MiaoMiaoEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.CatMewEntity;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeClientCapabilities;
 import vazkii.botania.api.subtile.RadiusDescriptor;
@@ -46,7 +46,7 @@ public class KillingBerryTile extends TileEntityGeneratingFlower {
     private static boolean isBossEntity(LivingEntity entity) {
         return entity instanceof EnderDragon ||
                 entity instanceof WitherBoss ||
-                entity instanceof MiaoMiaoEntity;
+                entity instanceof CatMewEntity;
     }
 
     @SubscribeEvent

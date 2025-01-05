@@ -2,12 +2,12 @@ package net.xiaoyang010.ex_enigmaticlegacy.Entity.ai;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.MiaoMiaoEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.CatMewEntity;
 
 import java.util.EnumSet;
 
 public class WitherSkullAttackGoal extends Goal {
-    private final MiaoMiaoEntity mob;
+    private final CatMewEntity mob;
     private LivingEntity target;
     protected int attackTime = -1;
     private final double attackRadius;
@@ -17,7 +17,7 @@ public class WitherSkullAttackGoal extends Goal {
     private boolean strafingBackwards;
     private int strafingTime = -1;
 
-    public WitherSkullAttackGoal(MiaoMiaoEntity mob, double attackRadius, float attackInterval) {
+    public WitherSkullAttackGoal(CatMewEntity mob, double attackRadius, float attackInterval) {
         this.mob = mob;
         this.attackRadius = attackRadius;
         this.attackInterval = attackInterval;
@@ -29,7 +29,8 @@ public class WitherSkullAttackGoal extends Goal {
         LivingEntity livingentity = this.mob.getTarget();
         if (livingentity != null && livingentity.isAlive()) {
             this.target = livingentity;
-            return true;
+            double sqrt = Math.sqrt(this.mob.getOnPos().distToCenterSqr(target.getX(), target.getY(), target.getZ()));
+            return sqrt > attackRadius;
         }
         return false;
     }

@@ -45,8 +45,8 @@ public class ModEntities {
 	public static final RegistryObject<EntityType<Xiaoyang010Entity>> XIAOYANG_010 = register("xiaoyang_010", EntityType.Builder.<Xiaoyang010Entity>of(Xiaoyang010Entity::new, MobCategory.CREATURE).setShouldReceiveVelocityUpdates(true)
 			.setTrackingRange(100).setUpdateInterval(3).setCustomClientFactory(Xiaoyang010Entity::new).fireImmune().sized(0.6f, 1.8f));
 
-	public static final RegistryObject<EntityType<MiaoMiaoEntity>> KIND_MIAO = register("kind_miao", EntityType.Builder.<MiaoMiaoEntity>of(MiaoMiaoEntity::new, MobCategory.CREATURE).setShouldReceiveVelocityUpdates(true)
-			.setTrackingRange(100).setUpdateInterval(3).setCustomClientFactory(MiaoMiaoEntity::new).fireImmune().sized(0.6f, 1.8f));
+	public static final RegistryObject<EntityType<CatMewEntity>> KIND_MIAO = register("kind_miao", EntityType.Builder.<CatMewEntity>of(CatMewEntity::new, MobCategory.CREATURE).setShouldReceiveVelocityUpdates(true)
+			.setTrackingRange(100).setUpdateInterval(3).setCustomClientFactory(CatMewEntity::new).fireImmune().sized(0.6f, 1.8f));
 
 	public static final RegistryObject<EntityType<Xingyun2825Entity>> XINGYUN2825 = register("xingyun_2825", EntityType.Builder.<Xingyun2825Entity>of(Xingyun2825Entity::new, MobCategory.CREATURE).setShouldReceiveVelocityUpdates(true)
 			.setTrackingRange(100).setUpdateInterval(3).setCustomClientFactory(Xingyun2825Entity::new).fireImmune().sized(0.6f, 1.8f));
@@ -84,7 +84,7 @@ public class ModEntities {
 		event.enqueueWork(() -> {
 			Xiaoyang010Entity.init();
 			Xingyun2825Entity.init();
-			MiaoMiaoEntity.init();
+//			CatMewEntity.init();
 		});
 	}
 
@@ -93,7 +93,7 @@ public class ModEntities {
 		event.put(XIAOYANG_010.get(), Xiaoyang010Entity.createAttributes().build());
 		event.put(XINGYUN2825.get(),Xingyun2825Entity.createAttributes().build());
 		event.put(SPECTRITE_WITHER.get(), SpectriteWither.createAttributes().build());
-		event.put(KIND_MIAO.get(), MiaoMiaoEntity.createAttributes().build());
+		event.put(KIND_MIAO.get(), CatMewEntity.createAttributes().build());
 		event.put(CAPYBARA.get(), CapybaraEntity.createAttributes().build());
 		event.put(SPOTTED_GARDEN_EEL.get(), SpottedGardenEelEntity.createAttributes().build());
 

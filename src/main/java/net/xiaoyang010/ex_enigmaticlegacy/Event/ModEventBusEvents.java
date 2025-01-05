@@ -21,13 +21,15 @@ import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 public class ModEventBusEvents {
 
     public static final ModelLayerLocation MIAOMIAO_LAYER = new ModelLayerLocation(
-            new ResourceLocation(ExEnigmaticlegacyMod.MODID, "kind_miao"),
-            "main"
-    );
+            new ResourceLocation(ExEnigmaticlegacyMod.MODID, "kind_miao"), "main");
+
+    public static final ModelLayerLocation NEBULA_ARMOR_LAYER = new ModelLayerLocation(
+            new ResourceLocation(ExEnigmaticlegacyMod.MODID, "armor_nebula"), "main");
 
     @SubscribeEvent
     public static void registerRecipeTypes(final RegistryEvent.Register<RecipeSerializer<?>> event) {
     }
+
 
     @SubscribeEvent
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -48,7 +50,10 @@ public class ModEventBusEvents {
                 SpottedGardenEelRenderer.EEL_HIDING_MODEL_LAYER,
                 SpottedGardenEelHidingModel::createBodyLayer
         );
-        event.registerLayerDefinition(MIAOMIAO_LAYER, KindMiaoModel::createBodyLayer);
+        event.registerLayerDefinition(MIAOMIAO_LAYER, KindMiaoModel::createBodyLayer
+        );
+        event.registerLayerDefinition(ModelArmorNebula.LAYER_LOCATION, ModelArmorNebula::createBodyLayer
+        );
     }
 
 
