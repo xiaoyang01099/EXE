@@ -30,7 +30,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.model.ModelArmorNebula;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.NebulaArmorModel;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
@@ -182,8 +182,8 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
                                                                              ItemStack stack, EquipmentSlot slot, net.minecraft.client.model.HumanoidModel<?> defaultModel) {
 
                 ModelPart modelPart = Minecraft.getInstance().getEntityModels()
-                        .bakeLayer(ModelArmorNebula.LAYER_LOCATION);
-                return new ModelArmorNebula<>(modelPart);
+                        .bakeLayer(NebulaArmorModel.LAYER_LOCATION);
+                return new NebulaArmorModel<>(modelPart);
             }
 
         });
