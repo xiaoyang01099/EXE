@@ -83,7 +83,7 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag isadvanced) {
         int lv = getLevel(stack);
-        components.add(new TextComponent("等级：" + lv));
+        components.add(new TranslatableComponent("info.ex_enigmaticlegacy.space_blade.lv", lv));
         components.add(new TextComponent("魔力：" + getManaTag(stack)));
         TooltipHandler.addOnShift(components, () -> {
             components.add(new TranslatableComponent("ex_enigmaticlegacy.swordInfo.1")
