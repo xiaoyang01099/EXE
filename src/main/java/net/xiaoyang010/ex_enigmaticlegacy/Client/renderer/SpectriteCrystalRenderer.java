@@ -58,7 +58,7 @@ public class SpectriteCrystalRenderer extends EntityRenderer<SpectriteCrystalEnt
         pMatrixStack.pushPose();
         int index = Math.min(35, pEntity.frame / 10);
         Minecraft.getInstance().getEntityRenderDispatcher().textureManager.bindForSetup(
-                new ResourceLocation(ExEnigmaticlegacyMod.MODID,"textures/entity/spectrite_crystal/" + index +".png")
+                new ResourceLocation(ExEnigmaticlegacyMod.MODID,"textures/entity/spectrite_crystal/" + index +"crystalline_stardust_ingot.png")
         );
         float y = getY(pEntity, pPartialTicks);
         float $$7 = ((float)pEntity.time + pPartialTicks) * 3.0F;
@@ -112,7 +112,7 @@ public class SpectriteCrystalRenderer extends EntityRenderer<SpectriteCrystalEnt
     @NotNull
     public ResourceLocation getTextureLocation(SpectriteCrystalEntity pEntity) {
         int index = Math.min(35, pEntity.frame / 10);
-        return new ResourceLocation(ExEnigmaticlegacyMod.MODID,"textures/entity/spectrite_crystal/" + index +".png");
+        return new ResourceLocation(ExEnigmaticlegacyMod.MODID,"textures/entity/spectrite_crystal/" + index +"crystalline_stardust_ingot.png");
     }
 
     public boolean shouldRender(SpectriteCrystalEntity pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {

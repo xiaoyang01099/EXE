@@ -119,6 +119,9 @@ public class ModItems {
 	public static final RegistryObject<Item> SPECTRITE_GEM = REGISTRY.register("spectrite_gem", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> WHITE_DUST = REGISTRY.register("white_dust", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
 	public static final RegistryObject<Item> WOOD_INGOT = REGISTRY.register("wood_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> crystallineStardustIngot = REGISTRY.register("crystalline_stardust_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> starlightCrystallineIngot = REGISTRY.register("starlight_crystalline_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> taintedAstralCrystalIngot = REGISTRY.register("tainted_astral_crystal_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
 
 	public static final RegistryObject<Item> SPECTRITE_CRYSTAL = REGISTRY.register("spectrite_crystal", SpectriteCrystal::new);
 	public static final RegistryObject<Item> BIBLE = REGISTRY.register("bible", Bible::new);

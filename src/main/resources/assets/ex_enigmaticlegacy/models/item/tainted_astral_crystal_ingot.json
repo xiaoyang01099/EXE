@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/res/tainted_astral_crystal_ingot"
+  }
+}

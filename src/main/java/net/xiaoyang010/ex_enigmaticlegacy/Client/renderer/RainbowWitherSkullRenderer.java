@@ -17,7 +17,7 @@ public class RainbowWitherSkullRenderer extends EntityRenderer<RainbowWitherSkul
         // 初始化所有贴图位置
         for (int i = 0; i < 36; i++) {
             TEXTURES[i] = new ResourceLocation("ex_enigmaticlegacy",
-                    "textures/entity/spectrite_wither/spectrite_wither_invulnerable_skull_layer_1/" + i + ".png");
+                    "textures/entity/spectrite_wither/spectrite_wither_invulnerable_skull_layer_1/" + i + "crystalline_stardust_ingot.png");
         }
     }
 

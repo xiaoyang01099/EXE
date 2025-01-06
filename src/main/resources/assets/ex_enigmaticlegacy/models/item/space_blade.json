@@ -1,0 +1,8 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/weapons/space_blade/mithrill_sword_0",
+    "layer1": "ex_enigmaticlegacy:items/weapons/space_blade/mithrill_sword_gem",
+    "layer2": "ex_enigmaticlegacy:items/weapons/space_blade/mithrill_sword_1"
+  }
+}

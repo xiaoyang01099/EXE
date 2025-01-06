@@ -1,10 +1,11 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Item;
 
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
+
 import javax.annotation.Nullable;
 
 public class StarfuelItem extends Item {
@@ -19,6 +20,6 @@ public class StarfuelItem extends Item {
 
     @Override
     public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
-        return 20000;
+        return 114748364;
     }
 }

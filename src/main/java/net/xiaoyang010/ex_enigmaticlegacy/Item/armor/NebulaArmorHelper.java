@@ -37,6 +37,13 @@ public class NebulaArmorHelper {
                 && legs.getItem() == ModArmors.NEBULA_LEGGINGS.get() && feet.getItem() == ModArmors.NEBULA_BOOTS.get();
     }
 
+    /**
+     * 是否是星云甲
+     */
+    public static boolean isNebulaArmor(ItemStack stack) {
+        return stack.getItem() instanceof NebulaArmor;
+    }
+
     //回血
     public static void foodToHeal(Player player){
         int food = player.getFoodData().getFoodLevel();

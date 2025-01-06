@@ -69,25 +69,35 @@ public class ModEventHandler {
     @SubscribeEvent
     public static void playerHurt(LivingHurtEvent event){
         if (event.getEntityLiving() instanceof Player player){
-            if (NebulaArmorHelper.hasNebulaArmor(player)){
-                float amount = event.getAmount();
-                ItemStack head = player.getItemBySlot(EquipmentSlot.HEAD);
-                ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-                ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
-                ItemStack feet = player.getItemBySlot(EquipmentSlot.FEET);
-                int mana = (int) Math.ceil(amount * 1000.f / 4.f); //应消耗的魔力 = 伤害值 * 1000mana
-                int headMana = NebulaArmor.getManaInternal(head);
-                int chestMana = NebulaArmor.getManaInternal(chest);
-                int legsMana = NebulaArmor.getManaInternal(legs);
-                int feetMana = NebulaArmor.getManaInternal(feet);
-                //第一版 4件魔力都应超过 才减伤
-                if (headMana > mana && chestMana > mana && legsMana > mana && feetMana > mana){
-                    NebulaArmor.setManaInternal(head, headMana - mana);
-                    NebulaArmor.setManaInternal(chest, chestMana - mana);
-                    NebulaArmor.setManaInternal(legs, legsMana - mana);
-                    NebulaArmor.setManaInternal(feet, feetMana - mana);
-                    event.setAmount(0);
-                }
+            float amount = event.getAmount();
+            ItemStack head = player.getItemBySlot(EquipmentSlot.HEAD);
+            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+            ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
+            ItemStack feet = player.getItemBySlot(EquipmentSlot.FEET);
+            int mana = (int) Math.ceil(amount * 1000.f / 4.f); //应消耗的魔力 = 伤害值 * 1000mana
+            int headMana = NebulaArmor.getManaInternal(head);
+            int chestMana = NebulaArmor.getManaInternal(chest);
+            int legsMana = NebulaArmor.getManaInternal(legs);
+            int feetMana = NebulaArmor.getManaInternal(feet);
+            //第二版 单件各减25%
+            if (NebulaArmorHelper.isNebulaArmor(head) && headMana > mana){
+                NebulaArmor.setManaInternal(head, headMana - mana);
+                event.setAmount(amount - amount / 4.0f);
+            }
+            if (NebulaArmorHelper.isNebulaArmor(chest) && chestMana > mana){
+                NebulaArmor.setManaInternal(chest, chestMana - mana);
+                event.setAmount(amount - amount / 4.0f);
+            }
+            if (NebulaArmorHelper.isNebulaArmor(legs) && legsMana > mana){
+                NebulaArmor.setManaInternal(legs, legsMana - mana);
+                event.setAmount(amount - amount / 4.0f);
+            }
+            if (NebulaArmorHelper.isNebulaArmor(feet) && feetMana > mana){
+                NebulaArmor.setManaInternal(feet, feetMana - mana);
+                event.setAmount(amount - amount / 4.0f);
+            }
+            if (NebulaArmorHelper.hasNebulaArmor(player) && headMana > mana && chestMana > mana && legsMana > mana && feetMana > mana){
+                event.setAmount(0);
             }
         }
     }

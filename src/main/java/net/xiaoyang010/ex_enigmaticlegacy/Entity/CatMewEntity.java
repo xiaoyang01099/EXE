@@ -1,5 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Entity;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -26,11 +27,13 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.WitherSkull;
+import net.minecraft.world.entity.projectile.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages.SpawnEntity;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -51,6 +54,8 @@ public class CatMewEntity extends Monster {
     private boolean phase = false; //是否处于转变中
     private double catEndY = 0;
     private int shieldParticles = 0;
+    private WorldBorder worldBorder;
+
     public CatMewEntity(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -63,58 +68,37 @@ public class CatMewEntity extends Monster {
     public void tick() {
         super.tick();
 
-        //转变倒计时
-        if (this.phase && phaseTime > 0) {
-            --this.phaseTime;
+        if (tickCount == 1) addWorldBorder();
 
-            if (this.shieldParticles < 360) this.shieldParticles += 10;
-
-            //向上移动
-            double high = Math.abs(this.getY() - catEndY);
-            if (high < phaseUpHeight){
-                this.setDeltaMovement(0, 0.05, 0);
-            }else {
-                // 达到最大高度后悬停
-                this.setDeltaMovement(0, 0, 0);
-            }
-
-            // 旋转的护盾粒子效果
-            spawnShieldParticles();
-
-            // 产生能量波纹
-            if (phaseTime % 20 == 0) {
-                spawnEnergyRipple();
-            }
-        }
-
-        // 检查是否需要进入第二阶段（血量低于30%）
-        if (!this.getEntityData().get(isTwoPhase) && (this.getHealth() / this.getMaxHealth() <= 0.30f)) {
-            this.phase = true; //转变
-            this.catEndY = this.getY(); //记录Y坐标
-            this.setInvulnerable(true); //无敌
-            this.setNoGravity(true); //无重力
+        if (!getIsTwoPhase() && (this.getHealth() / this.getMaxHealth() <= 0.30f))
             starPhase();
-        }
 
-        //转变结束
-        if (phaseTime == 0) {
-            this.getEntityData().set(isTwoPhase, true); //进入二阶段
-            this.setInvulnerable(false); //移除无敌
-            this.phase = false; //移除转变状态
-            this.heal(this.getMaxHealth() - this.getHealth()); //回满血量
-            this.phaseTime = 100;
-            this.setNoGravity(false);
-            this.shieldParticles = 0;
-        }
+        if (phaseTime == 0)
+            endPhase();
 
-        if (getIsTwoPhase()){
+        //转变倒计时
+        if (this.phase && phaseTime > 0)
+            phaseIng();
+
+        if (getIsTwoPhase()){ //二阶段攻击
             maintainPhaseTwo();
-            if (this.level.getGameTime() % 5 == 0 && this.getTarget() != null && this.level.random.nextInt(3) < 1) {
+            if (isAttack(5, 5))
                 shootWitherSkull(this.getTarget());
+            if (isAttack(5, 3))
+                shootWitherFireBall(this.getTarget());
+            if (isAttack(10, 4))
+                shootWitherDragonBall(this.getTarget());
+            if (isAttack(20, 2) && this.getTarget() instanceof Player player){
+                summonLightning(player);
             }
         }else {
-            if (this.level.getGameTime() % 60 == 0 && this.getTarget() != null && this.level.random.nextInt(3) < 1)
-                shootWitherSkull(this.getTarget());
+            if (isAttack(60, 3)) shootWitherSkull(this.getTarget());
+
+            if (isAttack(100, 2)) shootArrow();
+
+            if (isAttack(40, 10) && this.getTarget() instanceof Player player){
+                summonLightning(player);
+            }
         }
     }
 
@@ -141,7 +125,32 @@ public class CatMewEntity extends Monster {
             this.phaseTime = 100;
             this.phase = false;
         }
-        super.die(pDamageSource);
+        if (!getIsTwoPhase()) {
+            starPhase();
+        }
+        else super.die(pDamageSource);
+    }
+
+    @Override
+    public void setHealth(float pHealth) {
+        if (pHealth == 0.0 && !getIsTwoPhase())
+            starPhase();
+        else super.setHealth(pHealth);
+    }
+
+    @Override
+    public void remove(RemovalReason pReason) {
+        if (this.phase){ //转变时被击杀
+            this.phaseTime = 100;
+            this.phase = false;
+        }
+        removeWorldBorder();
+        super.remove(pReason);
+    }
+
+    @Override
+    public void kill() {
+//        super.kill();
     }
 
     @Override
@@ -152,9 +161,7 @@ public class CatMewEntity extends Monster {
     @Override
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean hit) {
         super.dropCustomDeathLoot(source, looting, hit);
-        if (hit){
-            spawnLoot();
-        }
+        spawnLoot();
     }
 
     @Override
@@ -253,6 +260,109 @@ public class CatMewEntity extends Monster {
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    /**
+     * 添加边界
+     */
+    private void addWorldBorder(){
+        if (this.level instanceof  ServerLevel serverLevel){
+            this.worldBorder = serverLevel.getWorldBorder();
+            worldBorder.setCenter(this.getX(), this.getZ());
+            worldBorder.setSize(64);
+            worldBorder.setWarningBlocks(2);
+            worldBorder.setDamagePerBlock(1024);
+        }
+    }
+
+    /**
+     * 移除边界
+     */
+    private void removeWorldBorder(){
+        if (this.level instanceof  ServerLevel serverLevel && this.worldBorder != null){
+            this.worldBorder.setSize(Integer.MAX_VALUE);
+        }
+    }
+
+    /**
+     * 攻击前判定
+     * @param timeTick 间隔
+     * @param chance 概率
+     */
+    private boolean isAttack(int timeTick, int chance){
+        return this.level.getGameTime() % timeTick == 0 && this.getTarget() != null && this.level.random.nextInt(chance) < 1;
+    }
+
+    /**
+     * 转变中逻辑
+     */
+    public void phaseIng(){
+        --this.phaseTime;
+
+        if (this.shieldParticles < 360) this.shieldParticles += 10;
+
+        //向上移动
+        double high = Math.abs(this.getY() - catEndY);
+        if (high < phaseUpHeight){
+            this.setDeltaMovement(0, 0.05, 0);
+        }else {
+            // 达到最大高度后悬停
+            this.setDeltaMovement(0, 0, 0);
+        }
+
+        // 旋转的护盾粒子效果
+        spawnShieldParticles();
+
+        // 产生能量波纹
+        if (phaseTime % 20 == 0) {
+            spawnEnergyRipple();
+        }
+    }
+
+    /**
+     * 转变结束
+     */
+    public void endPhase(){
+        setIsTwoPhase(true); //进入二阶段
+        this.setInvulnerable(false); //移除无敌
+        this.phase = false; //移除转变状态
+        this.heal(this.getMaxHealth() - this.getHealth()); //回满血量
+        this.phaseTime = 100;
+        this.setNoGravity(false);
+        this.shieldParticles = 0;
+    }
+
+    /**
+     * 进入第二阶段（血量低于30%）
+     */
+    public void starPhase(){
+        this.phase = true; //转变
+        this.catEndY = this.getY(); //记录Y坐标
+        this.setInvulnerable(true); //无敌
+        this.setNoGravity(true); //无重力
+        starPhaseEffect();
+    }
+
+    /**
+     * 发射箭矢
+     */
+    private void shootArrow(){
+        AABB aabb = this.getBoundingBox().inflate(8);
+        if (this.level.isClientSide) return;
+
+        for (LivingEntity living : this.level.getEntitiesOfClass(LivingEntity.class, aabb)) {
+            if (living.isAlive() && !(living instanceof CatMewEntity)){
+                BlockPos above = living.getOnPos().above(8);
+                Arrow arrow  = new Arrow(this.level, this);
+                arrow.shoot(0, -1, 0, 3.0f, 1.0f);
+                arrow.setBaseDamage(10d);
+                arrow.setSecondsOnFire(3);
+                arrow.setPierceLevel((byte) 2);
+
+                this.level.addFreshEntity(arrow);
+            }
+        }
+
     }
 
     /**
@@ -383,9 +493,9 @@ public class CatMewEntity extends Monster {
     }
 
     /**
-     * 转变开始
+     * 转变开始效果
      */
-    private void starPhase() {
+    private void starPhaseEffect() {
         // 播放开始音效
         this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 3.0F, 1.0F);
 
@@ -423,16 +533,11 @@ public class CatMewEntity extends Monster {
      */
     public void shootWitherSkull(LivingEntity target) {
         if (!this.level.isClientSide) {
-            double d0 = this.getX();
-            double d1 = this.getY();
-            double d2 = this.getZ();
-            double d3 = target.getX() - d0;
-            double d4 = target.getY() + (double)target.getEyeHeight() * 0.5 - d1;
-            double d5 = target.getZ() - d2;
-            WitherSkull witherskull = new WitherSkull(this.level, this, d3, d4, d5);
+            Vec3 vec3 = getShootVec3(target);
+            WitherSkull witherskull = new WitherSkull(this.level, this, vec3.x, vec3.y, vec3.z);
             witherskull.setOwner(this);
             witherskull.setDangerous(this.level.random.nextInt(3) < 1); //快慢
-            witherskull.setPosRaw(d0, d1, d2);
+            witherskull.setPosRaw(this.getX(), this.getY(), this.getZ());
             this.level.addFreshEntity(witherskull);
 
             // 添加发射音效
@@ -444,6 +549,46 @@ public class CatMewEntity extends Monster {
                 player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1200, 0));
             }
         }
+    }
+
+    /**
+     * 发射火球
+     * @param target 目标
+     */
+    public void shootWitherFireBall(LivingEntity target) {
+        if (!this.level.isClientSide) {
+            Vec3 vec3 = getShootVec3(target);
+            Fireball fireball = new LargeFireball(level, this, vec3.x, vec3.y, vec3.z, 4);
+            this.level.addFreshEntity(fireball);
+            this.playSound(SoundEvents.FIRECHARGE_USE, 1.0F, 1.0F);
+        }
+    }
+
+    /**
+     * 发射龙息
+     * @param target 目标
+     */
+    public void shootWitherDragonBall(LivingEntity target) {
+        if (!this.level.isClientSide) {
+            Vec3 vec3 = getShootVec3(target);
+            DragonFireball dragonFireball = new DragonFireball(level, this, vec3.x, vec3.y, vec3.z);
+            this.level.addFreshEntity(dragonFireball);
+            this.playSound(SoundEvents.ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
+        }
+    }
+
+    /**
+     * 获取发射向量
+     * @param target 目标
+     */
+    private Vec3 getShootVec3(LivingEntity target){
+        double d0 = this.getX();
+        double d1 = this.getY();
+        double d2 = this.getZ();
+        double d3 = target.getX() - d0;
+        double d4 = target.getY() + (double)target.getEyeHeight() * 0.5 - d1;
+        double d5 = target.getZ() - d2;
+        return new Vec3(d3, d4, d5);
     }
 
     /**

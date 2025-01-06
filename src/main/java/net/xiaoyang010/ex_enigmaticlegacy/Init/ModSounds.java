@@ -14,7 +14,7 @@ import java.util.HashMap;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModSounds {
 	public static final Map<ResourceLocation, SoundEvent> REGISTRY = new HashMap<>();
-
+	public static final ResourceLocation BLADE_SPACE_ID = new ResourceLocation("ex_enigmaticlegacy", "blade_space");
 	public static final ResourceLocation NOTHING_ID = new ResourceLocation("ex_enigmaticlegacy", "nothing");
 	public static final ResourceLocation WHAT_ID = new ResourceLocation("ex_enigmaticlegacy", "what");
 	public static final ResourceLocation AAAAA_ID = new ResourceLocation("ex_enigmaticlegacy", "aaaaa");
@@ -34,7 +34,7 @@ public class ModSounds {
 	public static final SoundEvent CAPYBARA_AMBIENT_2 = new SoundEvent(CAPYBARA_AMBIENT_2_ID);
 	public static final SoundEvent CAPYBARA_HURT = new SoundEvent(CAPYBARA_HURT_ID);
 	public static final SoundEvent CAPYBARA_DEATH = new SoundEvent(CAPYBARA_DEATH_ID);
-
+	public static final SoundEvent BLADE_SPACE = new SoundEvent(BLADE_SPACE_ID);
 
 	public static final SoundEvent NOTHING = new SoundEvent(NOTHING_ID);
 	public static final SoundEvent WHAT = new SoundEvent(WHAT_ID);
@@ -48,6 +48,7 @@ public class ModSounds {
 	public static final SoundEvent GOLDEN_LAUREL = new SoundEvent(GOLDEN_LAUREL_ID);
 
 	static {
+		REGISTRY.put(BLADE_SPACE_ID, BLADE_SPACE);
 		REGISTRY.put(CAPYBARA_AMBIENT_1_ID, CAPYBARA_AMBIENT_1);
 		REGISTRY.put(CAPYBARA_AMBIENT_2_ID, CAPYBARA_AMBIENT_2);
 		REGISTRY.put(CAPYBARA_HURT_ID, CAPYBARA_HURT);

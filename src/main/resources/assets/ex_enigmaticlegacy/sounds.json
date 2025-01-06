@@ -110,5 +110,13 @@
         "stream": false
       }
     ]
+  },
+  "blade_space": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:blade_space",
+        "stream": false
+      }
+    ]
   }
 }

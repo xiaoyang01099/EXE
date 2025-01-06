@@ -41,7 +41,6 @@ public class ModEntities {
 					.clientTrackingRange(10)
 					.build(ExEnigmaticlegacyMod.MODID + ":spotted_garden_eel"));
 
-
 	public static final RegistryObject<EntityType<Xiaoyang010Entity>> XIAOYANG_010 = register("xiaoyang_010", EntityType.Builder.<Xiaoyang010Entity>of(Xiaoyang010Entity::new, MobCategory.CREATURE).setShouldReceiveVelocityUpdates(true)
 			.setTrackingRange(100).setUpdateInterval(3).setCustomClientFactory(Xiaoyang010Entity::new).fireImmune().sized(0.6f, 1.8f));
 

@@ -4,6 +4,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.SpaceBlade;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.weapon.*;
 
@@ -24,6 +25,8 @@ public class ModWeapons {
     public static final RegistryObject<Item> ICEFORGED_EXCALIBUR= REGISTRY.register("iceforged_excalibur", IceforgedExcalibur::new);
     public static final RegistryObject<Item> JUDGMENT_OF_AURORA= REGISTRY.register("judgment_of_aurora", JudgmentOfAurora::new);
     public static final RegistryObject<Item> SONG_OF_THE_ABYSS= REGISTRY.register("song_of_the_abyss", SongOfTheAbyss::new);
+    public static final RegistryObject<Item> SPACE_BLADE = REGISTRY.register("space_blade",
+            () -> new SpaceBlade(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 
 
