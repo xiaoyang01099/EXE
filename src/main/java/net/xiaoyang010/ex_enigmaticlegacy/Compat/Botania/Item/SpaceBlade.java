@@ -57,7 +57,7 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
     public void inventoryTick(ItemStack stack, Level world, Entity entity, int slotId, boolean isSelected) {
         if (entity instanceof Player player) {
             BlockPos pos = player.getOnPos();
-            if (getManaTag(stack) >= CREATIVE_MANA[getLevel(stack) + 1]){
+            if (getLevel(stack) < 6 && getManaTag(stack) >= CREATIVE_MANA[getLevel(stack) + 1]){
                 setLevel(stack, getLevel(stack) + 1);
                 world.playSound(player, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
                 if (world.isClientSide) player.displayClientMessage(new TextComponent("魔力达上限！等级提升为:" + getLevel(stack)), false);
@@ -130,7 +130,7 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
         if (player.isCrouching()){
             trySpawnBurst(player);
             setManaTag(stack, getManaTag(stack) - (int) Math.floor((getSwordDamage(stack) * 100)));
-            if (getManaTag(stack) <= CREATIVE_MANA[getLevel(stack)]){
+            if (getLevel(stack) >= 1 && getManaTag(stack) <= CREATIVE_MANA[getLevel(stack)]){
                 setLevel(stack, getLevel(stack) - 1);
                 level.playSound(player, player.getOnPos(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
                 if (level.isClientSide) player.displayClientMessage(new TranslatableComponent("魔力不足！等级掉为:" + getLevel(stack)), false);
