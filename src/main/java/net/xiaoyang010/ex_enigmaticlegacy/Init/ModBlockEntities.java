@@ -15,10 +15,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityGaiaSpreaderTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityPotatoEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.CelestialHTTile;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.InfinityChestEntity;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.PagedChestBlockEntity;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.StarlitSanctumOfMystiqueBlockEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.*;
 
 
 public class ModBlockEntities {
@@ -27,7 +24,7 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<StarlitSanctumOfMystiqueBlockEntity>> STARLIT_SANCTUM_OF_MYSTIQUE = register("starlit_sanctum_of_mystique", ModBlocks.STARLITSANCTUM, StarlitSanctumOfMystiqueBlockEntity::new);
     public static final RegistryObject<BlockEntityType<CelestialHTTile>> CELESTIAL_HOLINESS_TRANSMUTER = register("celestial_holiness_transmuter", ModBlocks.CELESTIAL_HOLINESS_TRANSMUTER, CelestialHTTile::new);
     public static final RegistryObject<BlockEntityType<PagedChestBlockEntity>> PAGED_CHEST = REGISTRY.register("paged_chest", () -> BlockEntityType.Builder.of(PagedChestBlockEntity::new, ModBlocks.PAGED_CHEST.get()).build(null));
-
+    public static final RegistryObject<BlockEntityType<RainbowTableTile>> RAINBOW_TABLE_TILE = REGISTRY.register("rainbow_table_tile", () -> BlockEntityType.Builder.of(RainbowTableTile::new, ModBlocks.RAINBOW_TABLE.get()).build(null));
 
     //botania
     public static final RegistryObject<BlockEntityType<InfinityPotatoEntity>> INFINITY_POTATO = register("infinity_potato", ModBlocks.INFINITY_POTATO, InfinityPotatoEntity::new);

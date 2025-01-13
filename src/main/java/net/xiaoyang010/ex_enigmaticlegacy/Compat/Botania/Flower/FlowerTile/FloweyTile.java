@@ -53,16 +53,11 @@ public class FloweyTile extends TileEntityGeneratingFlower {
 
         emptyManaIntoCollector();
 
-
-
-        // 每5个tick增加魔力
         long gameTime = level.getGameTime();
         if (gameTime % 5 == 0) {
-            addMana(10000); // 添加魔力
+            addMana(10000);
         }
 
-
-        // 阻止周围产能花枯萎
         for (int dx = -RANGE; dx <= RANGE; dx++) {
             for (int dz = -RANGE; dz <= RANGE; dz++) {
                 BlockPos pos = getEffectivePos().offset(dx, 0, dz);
@@ -70,7 +65,7 @@ public class FloweyTile extends TileEntityGeneratingFlower {
                 if (tile instanceof TileEntityGeneratingFlower) {
                     TileEntityGeneratingFlower flower = (TileEntityGeneratingFlower) tile;
                     if (flower.isRemoved()) {
-                        flower.ticksExisted = 0; // 重置枯萎计时
+                        flower.ticksExisted = 0;
                     }
                 }
             }

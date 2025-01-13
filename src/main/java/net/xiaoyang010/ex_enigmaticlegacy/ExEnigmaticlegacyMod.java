@@ -23,6 +23,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.InfinityChestModel;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.InfinityChestRenderer;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.RainbowTableRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityGaiaSpreaderRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityPotatoRender;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.*;
@@ -36,12 +37,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-/*import net.xiaoyang010.ex_enigmaticlegacy.entity.biological.Sacabambaspis;*/
-;
-
-/*import static net.xiaoyang010.ex_enigmaticlegacy.init.ModEntities.SACABAMBASPIS;*/
-
 
 @Mod(ExEnigmaticlegacyMod.MODID)
 public class ExEnigmaticlegacyMod {
@@ -92,7 +87,7 @@ public class ExEnigmaticlegacyMod {
 		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 		/*bus.addListener(this::registerAttributes);*/
 		bus.addListener(this::commonSetup);
-		bus.addListener(this::clientSetup); // 注册客户端设置
+		bus.addListener(this::clientSetup);
 	}
 
     private void registerRecipeTypes() {
@@ -111,9 +106,6 @@ public class ExEnigmaticlegacyMod {
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		// 客户端相关设置...
 	}
-	/*private void registerAttributes(EntityAttributeCreationEvent event) {
-		event.put(SACABAMBASPIS.get(), Sacabambaspis.createAttributes().build());
-	}*/
 
 	private void clientSetup(final FMLClientSetupEvent event) {
 		// 为自定义玻璃设置渲染层
@@ -125,6 +117,7 @@ public class ExEnigmaticlegacyMod {
 		BlockEntityRenderers.register(ModBlockEntities.INFINITY_CHEST.get(), InfinityChestRenderer::new);
 		BlockEntityRenderers.register(ModBlockEntities.INFINITY_POTATO.get(), InfinityPotatoRender::new);
 		BlockEntityRenderers.register(ModBlockEntities.INFINITY_SPREADER.get(), InfinityGaiaSpreaderRenderer::new);
+		BlockEntityRenderers.register(ModBlockEntities.RAINBOW_TABLE_TILE.get(), RainbowTableRenderer::new);
 	}
 
 	@SubscribeEvent

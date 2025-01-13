@@ -37,10 +37,10 @@ public class AsgardFlowerTile extends TileEntityGeneratingFlower {
     public void tickFlower() {
         super.tickFlower();
         if (level != null && level.isClientSide() && level.getGameTime() % 5 == 0 && level.random.nextInt(3) == 0) {
-            aaa(level, getBlockPos(), level.random); //生成时间间隔 每次概率
+            aaa(level, getBlockPos(), level.random);
         }
         if (level == null || level.isClientSide) {
-            return;  // 1.18.2中使用isClientSide代替isRemote
+            return;
         }
 
         double particleChance = 1F - (double) getMana() / (double) getMaxMana() / 3.5F;

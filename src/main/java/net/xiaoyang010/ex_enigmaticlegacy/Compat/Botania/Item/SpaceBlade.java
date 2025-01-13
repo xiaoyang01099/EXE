@@ -36,6 +36,8 @@ import vazkii.botania.api.internal.IManaBurst;
 import vazkii.botania.api.mana.BurstProperties;
 import vazkii.botania.api.mana.ILensEffect;
 import vazkii.botania.api.mana.IManaItem;
+import vazkii.botania.client.fx.SparkleParticleData;
+import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.client.gui.TooltipHandler;
 import vazkii.botania.common.block.tile.mana.TilePool;
 import vazkii.botania.common.entity.EntityManaBurst;
@@ -47,7 +49,8 @@ import java.util.UUID;
 public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
     private static final String NBT_MANA = "Mana";
     private static final String NBT_LEVEL = "Level";
-    private static final int[] CREATIVE_MANA = new int[]{0, 10000, 1000000, 10000000, 100000000, 1000000000, 2147483646}; //各等级最小魔力值
+    private static final String NBT_TICK = "tick";
+    private static final int[] CREATIVE_MANA = new int[]{0, 10000, 1000000, 10000000, 100000000, 1000000000, 2147483646};
 
     public SpaceBlade(Properties properties) {
         super(AdvancedBotanyAPI.MITHRIL_ITEM_TIER, 3, -2.4F, properties);
@@ -57,15 +60,18 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
     public void inventoryTick(ItemStack stack, Level world, Entity entity, int slotId, boolean isSelected) {
         if (entity instanceof Player player) {
             BlockPos pos = player.getOnPos();
-            if (getLevel(stack) < 6 && getManaTag(stack) >= CREATIVE_MANA[getLevel(stack) + 1]){
+            if (getLevel(stack) < 6 && getManaTag(stack) >= CREATIVE_MANA[getLevel(stack) + 1]) {
                 setLevel(stack, getLevel(stack) + 1);
                 world.playSound(player, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
-                if (world.isClientSide) player.displayClientMessage(new TextComponent("魔力达上限！等级提升为:" + getLevel(stack)), false);
+                if (world.isClientSide) {
+                    Component message = new TranslatableComponent("message.mana_full", getLevel(stack));
+                    player.displayClientMessage(message, false);
+                }
             }
 
             for (BlockPos blockPos : BlockPos.betweenClosed(pos.offset(-2, 0, -2), pos.offset(2, 1, 2))) {
                 BlockEntity blockEntity = world.getBlockEntity(blockPos);
-                if (blockEntity instanceof TilePool pool){ //从魔力池补充
+                if (blockEntity instanceof TilePool pool){
                     int mana = pool.getCurrentMana();
                     int manaTag = getManaTag(stack);
                     int level = getLevel(stack);
@@ -77,6 +83,33 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
                 }
             }
 
+            int tick = stack.getOrCreateTag().getInt(NBT_TICK);
+            if (!world.isClientSide) {
+                if (tick > 0) {
+                    stack.getOrCreateTag().putInt(NBT_TICK, tick - 1);
+                }
+            } else if (tick > 26 && isSelected) {
+                for(int i = 0; i < 14; ++i) {
+                    float r = world.random.nextBoolean() ? 0.88235295F : 0.39607844F;
+                    float g = world.random.nextBoolean() ? 0.2627451F : 0.81960785F;
+                    float b = world.random.nextBoolean() ? 0.9411765F : 0.88235295F;
+
+                    SparkleParticleData sparkle = SparkleParticleData.sparkle(
+                            1.8F * (float)(Math.random() - 0.5F),
+                            r + (float)(Math.random() / 4.0F - 0.125F),
+                            g + (float)(Math.random() / 4.0F - 0.125F),
+                            b + (float)(Math.random() / 4.0F - 0.125F),
+                            3
+                    );
+
+                    world.addParticle(sparkle,
+                            entity.getX() + (Math.random() - 0.5F),
+                            entity.getY() + (Math.random() - 0.5F) * 2.0F - 0.5F,
+                            entity.getZ() + (Math.random() - 0.5F),
+                            0, 0, 0
+                    );
+                }
+            }
         }
     }
 
@@ -84,7 +117,8 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag isadvanced) {
         int lv = getLevel(stack);
         components.add(new TranslatableComponent("info.ex_enigmaticlegacy.space_blade.lv", lv));
-        components.add(new TextComponent("魔力：" + getManaTag(stack)));
+        components.add(new TranslatableComponent("info.ex_enigmaticlegacy.space_blade.mana", getManaTag(stack)));
+
         TooltipHandler.addOnShift(components, () -> {
             components.add(new TranslatableComponent("ex_enigmaticlegacy.swordInfo.1")
                     .withStyle(lv >= 1 ? ChatFormatting.GREEN : ChatFormatting.GRAY));
@@ -110,6 +144,7 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (attacker instanceof Player player && !player.level.isClientSide) {
+            // 范围攻击逻辑
             if (getLevel(stack) >= 3) {
                 float size = getLevel(stack) >= 4 ? (getLevel(stack) >= 5 ? 3.5F : 2.5F) : 1.5F;
                 AABB aabb = target.getBoundingBox().inflate(size, 1.7F, size);
@@ -120,6 +155,10 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
                     }
                 }
             }
+            if (getLevel(stack) >= 1 && getManaTag(stack) >= 120) {
+                trySpawnBurst(player, 1);
+                setManaTag(stack, getManaTag(stack) - 120);
+            }
         }
         return super.hurtEnemy(stack, target, attacker);
     }
@@ -127,17 +166,82 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.isCrouching()){
-            trySpawnBurst(player);
-            setManaTag(stack, getManaTag(stack) - (int) Math.floor((getSwordDamage(stack) * 100)));
-            if (getLevel(stack) >= 1 && getManaTag(stack) <= CREATIVE_MANA[getLevel(stack)]){
-                setLevel(stack, getLevel(stack) - 1);
-                level.playSound(player, player.getOnPos(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
-                if (level.isClientSide) player.displayClientMessage(new TranslatableComponent("魔力不足！等级掉为:" + getLevel(stack)), false);
+        if (player.isCrouching()) {
+            trySpawnBurst(player, 1);
+            int manaCost = (int) Math.floor((getSwordDamage(stack) * 100));
+            if (getManaTag(stack) >= manaCost * 8) {
+                for (int i = 0; i < 8; i++) {
+                    float angle = i * 45F;
+                    trySpawnDirectionalBurst(player, angle);
+                }
+                setManaTag(stack, getManaTag(stack) - manaCost);
             }
 
-        }else {
+            if (getLevel(stack) >= 1 && getManaTag(stack) <= CREATIVE_MANA[getLevel(stack)]) {
+                setLevel(stack, getLevel(stack) - 1);
+                level.playSound(player, player.getOnPos(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
+                if (level.isClientSide) {
+                    player.displayClientMessage(new TranslatableComponent("message.insufficient_mana", getLevel(stack)), false);
+                }
+            }
+        } else {
             Vec3 scale = player.getLookAngle().scale(3.0d);
+            Vec3 startPos = player.position();
+            Vec3 endPos = startPos.add(scale);
+            stack.getOrCreateTag().putInt(NBT_TICK, 36);
+
+            if (level.isClientSide) {
+                int particleCount = 15;
+                for (int i = 0; i < particleCount; i++) {
+                    double progress = i / (double) particleCount;
+                    double x = startPos.x + (endPos.x - startPos.x) * progress;
+                    double y = startPos.y + (endPos.y - startPos.y) * progress;
+                    double z = startPos.z + (endPos.z - startPos.z) * progress;
+
+
+                    for (int j = 0; j < 8; j++) {
+                        float r = level.random.nextBoolean() ? 0.88235295F : 0.39607844F;
+                        float g = level.random.nextBoolean() ? 0.2627451F : 0.81960785F;
+                        float b = level.random.nextBoolean() ? 0.9411765F : 0.88235295F;
+
+                        double offsetX = (Math.random() - 0.5F) * 0.3;
+                        double offsetY = (Math.random() - 0.5F) * 0.3;
+                        double offsetZ = (Math.random() - 0.5F) * 0.3;
+
+                        float colorVariation = (float) (Math.random() / 4.0F - 0.125F);
+                        r += colorVariation;
+                        g += colorVariation;
+                        b += colorVariation;
+
+                        SparkleParticleData sparkle = SparkleParticleData.sparkle(
+                                1.8F * (float) (Math.random() - 0.5F),
+                                r, g, b,
+                                3
+                        );
+                        level.addParticle(sparkle,
+                                x + offsetX,
+                                y + 1.0 + offsetY,
+                                z + offsetZ,
+                                0, 0, 0
+                        );
+
+                        WispParticleData wisp = WispParticleData.wisp(
+                                0.3f * (float)(Math.random() + 0.5f),
+                                r, g, b,
+                                1.0f
+                        );
+                        level.addParticle(wisp,
+                                x + offsetX,
+                                y + 1.0 + offsetY,
+                                z + offsetZ,
+                                (Math.random() - 0.5D) * 0.02D,
+                                (Math.random() - 0.5D) * 0.01D,
+                                (Math.random() - 0.5D) * 0.02D
+                        );
+                    }
+                }
+            }
+
             level.playSound(player, player.getOnPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0f, 1.0f);
             player.setDeltaMovement(scale);
 
@@ -146,16 +250,64 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
         return InteractionResultHolder.success(stack);
     }
 
+    @Override
+    public void onUseTick(Level level, LivingEntity living, ItemStack stack, int remainingUseDuration) {
+        if (living instanceof Player player && !level.isClientSide &&
+                player.getAttackStrengthScale(0.0F) == 1.0F && getLevel(stack) >= 1 && getManaTag(stack) >= 120) {
+            trySpawnBurst(player, 1);
+            setManaTag(stack, getManaTag(stack) - 120);
+        }
+    }
+
+    @Override
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+        if (entity instanceof Player player && !entity.level.isClientSide &&
+                getLevel(stack) >= 1 && getManaTag(stack) >= 120) {
+            trySpawnBurst(player, 1);
+            setManaTag(stack, getManaTag(stack) - 120);
+            return false;
+        }
+        return false;
+    }
+
     /**
      * 发射魔力光束
      */
-    public static void trySpawnBurst(Player player) {
-        EntityManaBurst burst = getBurst(player, player.getMainHandItem());
+    public static void trySpawnBurst(Player player, int count) {
+        for (int i = 0; i < count; i++) {
+            EntityManaBurst burst = getBurst(player, player.getMainHandItem());
+            player.level.addFreshEntity(burst);
+            player.getMainHandItem().hurtAndBreak(1, player, (p) -> {
+                p.broadcastBreakEvent(InteractionHand.MAIN_HAND);
+            });
+            player.level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.terraBlade, SoundSource.PLAYERS, 1.0F, 1.0F);
+        }
+    }
+
+    public static void trySpawnDirectionalBurst(Player player, float angle) {
+        EntityManaBurst burst = getDirectionalBurst(player, player.getMainHandItem(), angle);
         player.level.addFreshEntity(burst);
-        player.getMainHandItem().hurtAndBreak(1, player, (p) -> {
-            p.broadcastBreakEvent(InteractionHand.MAIN_HAND);
-        });
-        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.terraBlade, SoundSource.PLAYERS, 1.0F, 1.0F);
+        player.level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                ModSounds.terraBlade, SoundSource.PLAYERS, 1.0F, 1.0F);
+    }
+
+    public static EntityManaBurst getDirectionalBurst(Player player, ItemStack stack, float angle) {
+        EntityManaBurst burst = new EntityManaBurst(player);
+
+        double rad = Math.toRadians(angle);
+        double dx = Math.cos(rad);
+        double dz = Math.sin(rad);
+
+        float motionModifier = 7.0F;
+        burst.setColor(2165484);
+        burst.setMana(1024);
+        burst.setStartingMana(1024);
+        burst.setMinManaLoss(40);
+        burst.setManaLossPerTick(4.0F);
+        burst.setGravity(0.0F);
+        burst.setDeltaMovement(dx * motionModifier, 0, dz * motionModifier);
+        burst.setSourceLens(stack.copy());
+        return burst;
     }
 
     public static EntityManaBurst getBurst(Player player, ItemStack stack) {
@@ -285,9 +437,9 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
                         if (!burst.isFake() && !entity.level.isClientSide) {
                             DamageSource source = DamageSource.MAGIC;
                             if (thrower instanceof Player player) {
-                                source = DamageSource.playerAttack(player);
+                                source = DamageSource.playerAttack(player).bypassArmor().bypassInvul();
                             } else if (thrower instanceof LivingEntity livingEntity) {
-                                source = DamageSource.mobAttack(livingEntity);
+                                source = DamageSource.mobAttack(livingEntity).bypassArmor().bypassInvul();
                             }
 
                             living.hurt(source, damage);

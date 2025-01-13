@@ -2,6 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -40,14 +41,14 @@ public class RainBowEggItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> p_41423_, TooltipFlag p_41424_) {
-        p_41423_.add(Component.nullToEmpty("PS:打不过可以左键清除"));
-        super.appendHoverText(p_41421_, p_41422_, p_41423_, p_41424_);
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        tooltip.add(new TranslatableComponent("tooltip.unknown_crystal.clear_tip"));
+        super.appendHoverText(stack, level, tooltip, flag);
     }
 
     @Override
-    public Component getName(ItemStack p_41458_) {
-        return Component.nullToEmpty("未知水晶");
+    public Component getName(ItemStack stack) {
+        return new TranslatableComponent("item.unknown_crystal.name");
     }
 
     @Override

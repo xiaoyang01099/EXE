@@ -16,7 +16,7 @@ import vazkii.botania.common.item.equipment.bauble.ItemBauble;
 public class PlumedBelt extends ItemBauble {
 
     public PlumedBelt(Properties rarity) {
-        super(new Properties().stacksTo(1).tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM));
+        super(new Properties().stacksTo(1).tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA));
     }
 
     @Override
@@ -29,7 +29,6 @@ public class PlumedBelt extends ItemBauble {
     @SubscribeEvent
     public static void onPlayerAttacked(LivingAttackEvent event) {
         if (event.getEntity() instanceof Player player) {
-            // 检查玩家是否装备了羽带
             boolean hasPlumeBelt = CuriosApi.getCuriosHelper()
                     .findCurios(player, stack -> stack.getItem() instanceof PlumedBelt)
                     .stream()

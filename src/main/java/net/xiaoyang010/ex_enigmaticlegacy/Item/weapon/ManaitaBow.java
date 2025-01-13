@@ -5,6 +5,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -120,8 +121,10 @@ public class ManaitaBow extends BowItem {
         boolean currentMode = tag.getBoolean(TAG_ARROW_MODE);
         tag.putBoolean(TAG_ARROW_MODE, !currentMode);
 
-        String message = !currentMode ? "切换为: 砧板箭模式" : "切换为: 无尽箭模式";
-        player.displayClientMessage(new TextComponent(message), true);
+        String translationKey = !currentMode ?
+                "message.arrow_mode.chopping_block" :
+                "message.arrow_mode.infinite";
+        player.displayClientMessage(new TranslatableComponent(translationKey), true);
 
         player.level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.0F);
@@ -135,11 +138,16 @@ public class ManaitaBow extends BowItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
-        String mode = isManaMode(stack) ? "砧板箭模式" : "无尽箭模式";
-        tooltip.add(new TextComponent("当前模式: " + mode));
-        tooltip.add(new TextComponent("Shift+右键切换箭矢模式"));
-        tooltip.add(new TextComponent("§k砧板箭模式: 无需蓄力,伤害无限§r"));
-        tooltip.add(new TextComponent("§b无尽箭模式: 需要蓄力,箭矢会自动追踪"));
+
+        String modeKey = isManaMode(stack) ?
+                "tooltip.bow.mode.chopping_block" :
+                "tooltip.bow.mode.infinite";
+
+        tooltip.add(new TranslatableComponent("tooltip.bow.mode.current",
+                new TranslatableComponent(modeKey)));
+        tooltip.add(new TranslatableComponent("tooltip.bow.mode.switch"));
+        tooltip.add(new TranslatableComponent("tooltip.bow.mode.chopping_block.desc"));
+        tooltip.add(new TranslatableComponent("tooltip.bow.mode.infinite.desc"));
     }
 
     @Override

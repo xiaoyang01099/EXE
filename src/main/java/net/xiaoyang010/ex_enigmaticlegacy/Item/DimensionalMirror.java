@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -37,13 +38,12 @@ public class DimensionalMirror extends Item {
         ItemStack itemstack = player.getItemInHand(hand);
 
         if (!level.isClientSide) {
-            // 播放星星粒子效果
             spawnStarParticles((ServerPlayer) player);
 
             NetworkHooks.openGui((ServerPlayer) player, new MenuProvider() {
                 @Override
                 public Component getDisplayName() {
-                    return new TextComponent("维度传送镜");
+                    return new TranslatableComponent("item.dimension.mirror");
                 }
 
                 @Override
@@ -57,27 +57,25 @@ public class DimensionalMirror extends Item {
     }
 
     private void spawnStarParticles(ServerPlayer player) {
-        // 生成旋转的星星粒子
-        double radius = 1.0;  // 粒子环绕半径
-        int particleCount = 20;  // 每圈的粒子数量
+        double radius = 1.0;
+        int particleCount = 20;
 
         for (int i = 0; i < particleCount; i++) {
             double angle = (2 * Math.PI * i) / particleCount;
             double x = player.getX() + radius * Math.cos(angle);
             double z = player.getZ() + radius * Math.sin(angle);
 
-            // 在玩家周围生成星星粒子
-            player.getLevel().sendParticles(ParticleTypes.END_ROD,  // 使用末地烛粒子（看起来像星星）
+
+            player.getLevel().sendParticles(ParticleTypes.END_ROD,
                     x,
                     player.getY() + 1.0,
                     z,
-                    1,  // 每个位置生成1个粒子
-                    0, 0.05, 0,  // 粒子的运动速度
-                    0.02  // 粒子的速度
+                    1,
+                    0, 0.05, 0,
+                    0.02
             );
 
-            // 额外添加一些随机的星星粒子
-            player.getLevel().sendParticles(ParticleTypes.ENCHANT,  // 附魔台的粒子效果
+            player.getLevel().sendParticles(ParticleTypes.ENCHANT,
                     player.getX() + (player.getLevel().getRandom().nextDouble() - 0.5) * 2,
                     player.getY() + player.getLevel().getRandom().nextDouble() * 2,
                     player.getZ() + (player.getLevel().getRandom().nextDouble() - 0.5) * 2,
@@ -90,7 +88,8 @@ public class DimensionalMirror extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(new TextComponent("右键打开传送界面").withStyle(ChatFormatting.AQUA));
+        tooltip.add(new TranslatableComponent("tooltip.dimension.mirror.usage")
+                .withStyle(ChatFormatting.AQUA));
         super.appendHoverText(stack, level, tooltip, flag);
     }
 }

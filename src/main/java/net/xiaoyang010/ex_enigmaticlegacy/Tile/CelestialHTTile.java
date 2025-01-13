@@ -91,7 +91,6 @@ public class CelestialHTTile extends RandomizableContainerBlockEntity implements
 		return new CelestialHTMenu(id, player, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.getBlockPos()), data);
 	}
 
-	// 实现 MenuProvider 接口的方法
 	@Override
 	public Component getDisplayName() {
 		return new TextComponent("Celestial Holiness Transmuter");
@@ -121,26 +120,22 @@ public class CelestialHTTile extends RandomizableContainerBlockEntity implements
 		if (!isInput) return;
 
 		Optional<CelestialTransmuteRecipe> recipes = level.getRecipeManager().getRecipeFor(ModRecipes.CHT_TYPE, tile, level);
-		//有配方
 		recipes.ifPresent(recipe -> {
 			ItemStack resultItem = recipe.getResultItem();
 			if (resultItem.isEmpty()) return;
 
-			// 检查输出槽
 			if (result.isEmpty() || (resultItem.getItem() == result.getItem()
 					&& result.getCount() + resultItem.getCount() <= result.getMaxStackSize())) {
 
 				tile.data.set(0, tile.data.get(0) + 1);
 				if (tile.data.get(0) <= 200) {
 					setChanged(level, pos, state);
-					return; //时间限制
+					return;
 				}
 
-				// 检查并消耗材料
 				boolean hasEnoughItems = true;
 				NonNullList<ItemStack> tempInputs = NonNullList.withSize(4, ItemStack.EMPTY);
 
-				// 复制当前物品状态
 				for (int i = 0; i < 4; i++) {
 					tempInputs.set(i, tile.getItem(i + 1).copy());
 					int required = recipe.getInputCounts().get(i);
@@ -151,14 +146,12 @@ public class CelestialHTTile extends RandomizableContainerBlockEntity implements
 				}
 
 				if (hasEnoughItems) {
-					// 实际消耗物品
 					for (int i = 0; i < 4; i++) {
 						int required = recipe.getInputCounts().get(i);
 						ItemStack currentItem = tile.getItem(i + 1);
 						currentItem.setCount(currentItem.getCount() - required);
 					}
 
-					// 添加输出物品
 					if (result.isEmpty()) {
 						tile.setItem(0, resultItem.copy());
 					} else {

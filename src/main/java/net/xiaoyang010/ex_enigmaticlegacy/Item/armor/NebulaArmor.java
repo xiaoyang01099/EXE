@@ -2,11 +2,13 @@ package net.xiaoyang010.ex_enigmaticlegacy.Item.armor;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -72,9 +74,15 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
         TooltipHandler.addOnShift(list, () -> {
             this.addInformationAfterShift(stack, world, list, flags);
         });
+            list.add(new TranslatableComponent("item.info.mana",
+                    getManaInternal(stack),
+                    getMaxMana())
+                    .withStyle(ChatFormatting.AQUA));
 
-        list.add(new TextComponent("魔力：" + getManaInternal(stack) + "/" + getMaxMana()));
-        list.add(new TextComponent("耐久：" + (stack.getMaxDamage() - stack.getDamageValue()) + "/" + stack.getMaxDamage()));
+            list.add(new TranslatableComponent("item.info.durability",
+                    stack.getMaxDamage() - stack.getDamageValue(),
+                    stack.getMaxDamage())
+                    .withStyle(ChatFormatting.GREEN));
     }
 
     @Override

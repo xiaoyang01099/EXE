@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,7 +24,7 @@ public class DimensionalMirrorScreen extends AbstractContainerScreen<Dimensional
     private static final int GUI_WIDTH = 176;
     private static final int GUI_HEIGHT = 246;
 
-    private ResourceKey<Level> selectedDimension = null;  // 记录选中的维度
+    private ResourceKey<Level> selectedDimension = null;
 
     public DimensionalMirrorScreen(DimensionalMirrorContainer container, Inventory inventory, Component title) {
         super(container, inventory, title);
@@ -41,25 +42,29 @@ public class DimensionalMirrorScreen extends AbstractContainerScreen<Dimensional
         int y = (height - imageHeight) / 2;
         this.blit(matrixStack, x, y, 0, 0, imageWidth, imageHeight);
 
-        // 绘制维度按钮
         drawDimensionButtons(matrixStack, x, y, mouseX, mouseY);
 
-        // 绘制确认按钮
         drawConfirmButton(matrixStack, x, y, mouseX, mouseY);
     }
 
     private void drawDimensionButtons(PoseStack matrixStack, int x, int y, int mouseX, int mouseY) {
         // 主世界按钮
         boolean isOverworldSelected = selectedDimension == Level.OVERWORLD;
-        drawButton(matrixStack, x + 30, y + 20, "主世界", Items.GRASS_BLOCK, isOverworldSelected);
+        drawButton(matrixStack, x + 30, y + 20,
+                new TranslatableComponent("gui.dimension.overworld").getString(),
+                Items.GRASS_BLOCK, isOverworldSelected);
 
         // 地狱按钮
         boolean isNetherSelected = selectedDimension == Level.NETHER;
-        drawButton(matrixStack, x + 30, y + 50, "地狱 (需要4颗钻石)", Items.NETHERRACK, isNetherSelected);
+        drawButton(matrixStack, x + 30, y + 50,
+                new TranslatableComponent("gui.dimension.nether").getString(),
+                Items.NETHERRACK, isNetherSelected);
 
         // 末地按钮
         boolean isEndSelected = selectedDimension == Level.END;
-        drawButton(matrixStack, x + 30, y + 80, "末地 (需要8颗末影珍珠)", Items.END_STONE, isEndSelected);
+        drawButton(matrixStack, x + 30, y + 80,
+                new TranslatableComponent("gui.dimension.end").getString(),
+                Items.END_STONE, isEndSelected);
     }
 
     private void drawButton(PoseStack matrixStack, int x, int y, String text, Item icon, boolean selected) {
@@ -68,7 +73,6 @@ public class DimensionalMirrorScreen extends AbstractContainerScreen<Dimensional
         font.draw(matrixStack, text, x + 24, y + 6, selected ? 0xFFFFAA : 0xFFFFFF);
 
         if (selected) {
-            // 绘制选中标记
             fill(matrixStack, x - 2, y, x, y + 20, 0xFF00FF00);
         }
     }
@@ -78,7 +82,10 @@ public class DimensionalMirrorScreen extends AbstractContainerScreen<Dimensional
         int buttonColor = canTeleport ? 0xFF375537 : 0xFF553737;
 
         fill(matrixStack, x + 30, y + 110, x + 146, y + 130, buttonColor);
-        font.draw(matrixStack, "确认传送", x + 70, y + 116, canTeleport ? 0xFFFFFF : 0xAAAAAA);
+        font.draw(matrixStack,
+                new TranslatableComponent("gui.dimension.teleport.confirm").getString(),
+                x + 70, y + 116,
+                canTeleport ? 0xFFFFFF : 0xAAAAAA);
     }
 
     @Override
@@ -86,7 +93,6 @@ public class DimensionalMirrorScreen extends AbstractContainerScreen<Dimensional
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        // 检查维度按钮点击
         if (isInButton(mouseX, mouseY, x + 30, y + 20)) {
             selectedDimension = Level.OVERWORLD;
             return true;
@@ -100,7 +106,6 @@ public class DimensionalMirrorScreen extends AbstractContainerScreen<Dimensional
 
         if (isInButton(mouseX, mouseY, x + 30, y + 110)) {
             if (selectedDimension != null && menu.hasRequiredItems(selectedDimension)) {
-                // 发送网络包到服务端
                 NetworkHandler.CHANNEL.sendToServer(new TeleportPacket(selectedDimension));
                 selectedDimension = null;
             }
@@ -121,7 +126,6 @@ public class DimensionalMirrorScreen extends AbstractContainerScreen<Dimensional
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
 
-        // 绘制物品需求提示
         if (selectedDimension != null) {
             int x = (width - imageWidth) / 2;
             int y = (height - imageHeight) / 2;
@@ -129,7 +133,7 @@ public class DimensionalMirrorScreen extends AbstractContainerScreen<Dimensional
                     mouseX >= x + 30 && mouseX <= x + 146) {
                 if (!menu.hasRequiredItems(selectedDimension)) {
                     renderTooltip(matrixStack,
-                            new TextComponent("缺少所需物品"), // 1.18.2 使用 TextComponent
+                            new TranslatableComponent("gui.dimension.teleport.missing_items"),
                             mouseX, mouseY);
                 }
             }

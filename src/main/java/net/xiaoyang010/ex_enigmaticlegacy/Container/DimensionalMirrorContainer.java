@@ -26,24 +26,21 @@ public class DimensionalMirrorContainer extends AbstractContainerMenu {
         super(ModMenus.DIMENSIONAL_MIRROR, containerId);
         this.player = player;
 
-        // 添加消耗物品槽位
         this.addSlot(new Slot(itemHandler, 0, 80, 35));
 
-        // 添加玩家背包槽位
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
                 this.addSlot(new Slot(inventory, col + row * 9 + 9,
-                        8 + col * 18,    // X坐标保持不变
-                        166 + row * 18   // Y坐标从84改为166，将背包往下移
+                        8 + col * 18,
+                        166 + row * 18
                 ));
             }
         }
 
-        // 添加玩家快捷栏槽位
         for (int col = 0; col < 9; ++col) {
             this.addSlot(new Slot(inventory, col,
-                    8 + col * 18,     // X坐标保持不变
-                    224              // Y坐标从142改为224，将快捷栏往下移
+                    8 + col * 18,
+                    224
             ));
         }
     }
@@ -53,18 +50,13 @@ public class DimensionalMirrorContainer extends AbstractContainerMenu {
         return true;
     }
 
-    // 处理维度传送逻辑
     public void teleportToDimension(ResourceKey<Level> dimension) {
         if (!player.level.isClientSide) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
             ServerLevel targetLevel = serverPlayer.getServer().getLevel(dimension);
 
-            // 检查消耗品是否足够
             if (hasRequiredItems(dimension)) {
-                // 消耗物品
                 consumeRequiredItems(dimension);
-
-                // 执行传送
                 if (targetLevel != null) {
                     BlockPos targetPos = findSafeSpawnLocation(targetLevel, serverPlayer);
                     serverPlayer.teleportTo(targetLevel,
@@ -74,7 +66,6 @@ public class DimensionalMirrorContainer extends AbstractContainerMenu {
                             serverPlayer.getYRot(),
                             serverPlayer.getXRot());
 
-                    // 播放效果
                     playTeleportEffects(serverPlayer);
                 }
             }
@@ -82,7 +73,6 @@ public class DimensionalMirrorContainer extends AbstractContainerMenu {
     }
 
     public boolean hasRequiredItems(ResourceKey<Level> dimension) {
-        // 创造模式不需要消耗物品
         if (player.getAbilities().instabuild) {
             return true;
         }
@@ -92,13 +82,12 @@ public class DimensionalMirrorContainer extends AbstractContainerMenu {
         } else if (dimension == Level.END) {
             return player.getInventory().countItem(Items.ENDER_PEARL) >= 8;
         } else if (dimension == Level.OVERWORLD) {
-            return true; // 返回主世界不需要消耗物品
+            return true;
         }
-        return false; // 对于其他维度，默认不允许传送
+        return false;
     }
 
     private void consumeRequiredItems(ResourceKey<Level> dimension) {
-        // 创造模式不消耗物品
         if (player.getAbilities().instabuild) {
             return;
         }
@@ -120,16 +109,13 @@ public class DimensionalMirrorContainer extends AbstractContainerMenu {
             pos = targetLevel.getSharedSpawnPos();
         }
 
-        // 确保位置是安全的，如果需要则生成平台
         pos = ensureSafePlatform(targetLevel, pos);
         return pos;
     }
 
     private BlockPos ensureSafePlatform(ServerLevel level, BlockPos initialPos) {
-        // 检查脚下是否有方块
         BlockPos checkPos = initialPos.below();
         if (level.getBlockState(checkPos).isAir()) {
-            // 获取对应维度的基础方块
             net.minecraft.world.level.block.Block platformBlock;
             if (level.dimension() == Level.NETHER) {
                 platformBlock = net.minecraft.world.level.block.Blocks.NETHERRACK;
@@ -139,7 +125,6 @@ public class DimensionalMirrorContainer extends AbstractContainerMenu {
                 platformBlock = net.minecraft.world.level.block.Blocks.STONE;
             }
 
-            // 生成9x9平台
             for (int x = -4; x <= 4; x++) {
                 for (int z = -4; z <= 4; z++) {
                     BlockPos platformPos = checkPos.offset(x, 0, z);
@@ -148,7 +133,6 @@ public class DimensionalMirrorContainer extends AbstractContainerMenu {
             }
         }
 
-        // 确保头部有足够空间
         for (int y = 0; y <= 1; y++) {
             BlockPos headPos = initialPos.above(y);
             if (!level.getBlockState(headPos).isAir()) {

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "ex_enigmaticlegacy:items/res/crystalline_stardust_ingot"
+    "layer0": "ex_enigmaticlegacy:items/ingots/crystalline_stardust_ingot"
   }
 }

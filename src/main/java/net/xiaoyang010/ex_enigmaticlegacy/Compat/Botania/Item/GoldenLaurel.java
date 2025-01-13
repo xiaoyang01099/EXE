@@ -171,7 +171,6 @@ public class GoldenLaurel extends ItemBauble {
             double y = playerY + yOffset;
             double z = playerZ + Math.sin(decorAngle) * decorRadius;
 
-            // 使用龙息粒子
             level.addParticle(ParticleTypes.DRAGON_BREATH,
                     x, y, z,
                     0, 0.01, 0);
@@ -230,7 +229,7 @@ public class GoldenLaurel extends ItemBauble {
 
                 Level world = player.level;
                 world.playSound(null, player.getX(), player.getY(), player.getZ(),
-                        ModSounds.GOLDEN_LAUREL, // 使用正确的音效
+                        ModSounds.GOLDEN_LAUREL,
                         SoundSource.PLAYERS, 1.0F, 1.0F);
 
                 fillManaInRange(player);
@@ -252,7 +251,6 @@ public class GoldenLaurel extends ItemBauble {
         Level world = player.level;
         BlockPos playerPos = player.blockPosition();
 
-        // 生成金色粒子效果
         if (world instanceof ServerLevel serverLevel) {
             for (int i = 0; i < 50; i++) {
                 double x = player.getX() + (world.random.nextDouble() - 0.5D) * EFFECT_RANGE * 2;
@@ -273,18 +271,15 @@ public class GoldenLaurel extends ItemBauble {
             }
         }
 
-        // 填充范围内的魔力
         for (BlockPos pos : BlockPos.betweenClosed(
                 playerPos.offset(-EFFECT_RANGE, -EFFECT_RANGE, -EFFECT_RANGE),
                 playerPos.offset(EFFECT_RANGE, EFFECT_RANGE, EFFECT_RANGE))) {
 
-            // 填充其他可接收魔力的方块
             if (world.getBlockEntity(pos) instanceof IManaReceiver manaReceiver) {
                 if (manaReceiver instanceof TileEntityFunctionalFlower functionalFlower) {
                     int maxMana = functionalFlower.getMaxMana();
                     functionalFlower.addMana(maxMana);
                 } else if (manaReceiver instanceof IManaPool pool) {
-                    // 多次添加确保填满
                     for (int i = 0; i < 5; i++) {
                         pool.receiveMana(1000000);
                     }
@@ -310,26 +305,22 @@ public class GoldenLaurel extends ItemBauble {
                 entity -> entity != player);
 
         for (LivingEntity entity : entities) {
-            // 计算击退方向
             double dx = entity.getX() - player.getX();
             double dz = entity.getZ() - player.getZ();
             double distance = Math.sqrt(dx * dx + dz * dz);
 
             if (distance != 0) {
-                // 标准化方向向量并添加向上的分量
                 double strength = 15.0;
                 entity.setDeltaMovement(
                         (dx / distance) * strength,
-                        1.0, // 向上的力
+                        1.0,
                         (dz / distance) * strength
                 );
 
-                // 防止摔落伤害
                 entity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 100, 0));
             }
         }
 
-        // 播放击退音效
         world.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.2F);
     }
@@ -338,7 +329,6 @@ public class GoldenLaurel extends ItemBauble {
     @Override
     public void onEquipped(ItemStack stack, LivingEntity entity) {
         super.onEquipped(stack, entity);
-        // 装备时显示提示信息
         if (entity instanceof Player player) {
             player.sendMessage(
                     new TranslatableComponent("message.ex_enigmaticlegacy.laurel_blessing")
@@ -352,7 +342,7 @@ public class GoldenLaurel extends ItemBauble {
     public void appendHoverText(ItemStack stack, @Nullable Level world,
                                 List<Component> tooltip, TooltipFlag flags) {
         super.appendHoverText(stack, world, tooltip, flags);
-        // 添加物品提示信息
+
         tooltip.add(new TranslatableComponent("item.ex_enigmaticlegacy.golden_laurel.desc1")
                 .withStyle(ChatFormatting.GRAY));
         tooltip.add(new TranslatableComponent("item.ex_enigmaticlegacy.golden_laurel.desc2")

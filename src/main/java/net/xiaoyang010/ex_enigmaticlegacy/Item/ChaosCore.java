@@ -2,6 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Item;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -23,12 +24,7 @@ public class ChaosCore extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-        // 使用TranslatableComponent 进行本地化
-        //tooltip.add(new TranslatableComponent("item.ex_enigmaticlegacy.chaos_core.tooltip"));
-
-        //TextComponent 添加非本地化的字符串
-        tooltip.add(new TextComponent("诞生于深渊的神秘物质，拥有超越常识的力量"));
-
+        tooltip.add(new TranslatableComponent("item.ex_enigmaticlegacy.chaos_core.tooltip"));
         super.appendHoverText(stack, world, tooltip, flag);
     }
 }

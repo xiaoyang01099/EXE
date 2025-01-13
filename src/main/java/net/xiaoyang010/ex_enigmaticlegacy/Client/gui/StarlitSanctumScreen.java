@@ -31,7 +31,7 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
         this.imageHeight = 166;
     }
 
-    private static final ResourceLocation texture = new ResourceLocation("w:textures/screens/starlit.png");
+    private static final ResourceLocation texture = new ResourceLocation("ex_enigmaticlegacy:textures/gui/container/starlit.png");
 
     @Override
     public void render(PoseStack ms, int mouseX, int mouseY, float partialTicks) {

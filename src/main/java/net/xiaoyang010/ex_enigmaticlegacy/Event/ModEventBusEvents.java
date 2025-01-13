@@ -34,34 +34,27 @@ public class ModEventBusEvents {
     @SubscribeEvent
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(
-                new ModelLayerLocation(
-                        new ResourceLocation(ExEnigmaticlegacyMod.MODID, "dragonwings_layer"),
-                        "main"
-                ),
+                new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "dragonwings_layer"), "main"),
                 DragonWingsModel::createBodyLayer
         );
-        event.registerLayerDefinition(CapybaraModel.LAYER_LOCATION, CapybaraModel::createBodyLayer);
-
-        event.registerLayerDefinition(
-                SpottedGardenEelRenderer.EEL_MODEL_LAYER,
-                SpottedGardenEelModel::createBodyLayer
+        event.registerLayerDefinition(CapybaraModel.LAYER_LOCATION, CapybaraModel::createBodyLayer
         );
-        event.registerLayerDefinition(
-                SpottedGardenEelRenderer.EEL_HIDING_MODEL_LAYER,
-                SpottedGardenEelHidingModel::createBodyLayer
+        event.registerLayerDefinition(SpottedGardenEelRenderer.EEL_MODEL_LAYER, SpottedGardenEelModel::createBodyLayer
+        );
+        event.registerLayerDefinition(SpottedGardenEelRenderer.EEL_HIDING_MODEL_LAYER, SpottedGardenEelHidingModel::createBodyLayer
         );
         event.registerLayerDefinition(MIAOMIAO_LAYER, KindMiaoModel::createBodyLayer
         );
         event.registerLayerDefinition(ModelArmorNebula.LAYER_LOCATION, NebulaArmorModel::createBodyLayer
         );
+        event.registerLayerDefinition(RainbowTableModel.LAYER_LOCATION, RainbowTableModel::createBodyLayer
+        );
     }
 
 
 
-    // 添加渲染层到玩家渲染器
     @SubscribeEvent
     public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
-        // 为所有已知的玩家皮肤类型添加龙翼层
         for (String skinName : event.getSkins()) {
             PlayerRenderer playerRenderer = event.getSkin(skinName);
             if (playerRenderer != null) {

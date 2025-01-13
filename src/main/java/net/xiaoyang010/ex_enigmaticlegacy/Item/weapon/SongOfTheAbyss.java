@@ -2,6 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Item.weapon;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
@@ -41,6 +42,6 @@ public class SongOfTheAbyss extends SwordItem {
         super.appendHoverText(stack, level, tooltip, flag);
 
         // 添加伤害说明
-        tooltip.add(new TextComponent("§6每次攻击扣除目标当前生命值的30%"));
+        tooltip.add(new TranslatableComponent("tooltip.damage.percent_health"));
     }
 }

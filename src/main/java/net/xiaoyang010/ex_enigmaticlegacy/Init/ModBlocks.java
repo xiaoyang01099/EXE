@@ -51,8 +51,7 @@ public class ModBlocks {
 
 	public static final RegistryObject<Block> INFINITY_POTATO = REGISTRY.register("infinity_potato", InfinityPotato::new);
 	private static final BlockBehaviour.StateArgumentPredicate<EntityType<?>> NO_SPAWN = (state, world, pos, et) -> false;
-	public static final RegistryObject<Block> infinitySpreader = REGISTRY.register("infinity_spreader", () ->
-			new InfinityGaiaSpreader(VariantE.INFINITY, Properties.copy(Blocks.BIRCH_WOOD).isValidSpawn(NO_SPAWN)));
+	public static final RegistryObject<Block> infinitySpreader = REGISTRY.register("infinity_spreader", () -> new InfinityGaiaSpreader(VariantE.INFINITY, Properties.copy(Blocks.BIRCH_WOOD).isValidSpawn(NO_SPAWN)));
 
 
 
@@ -73,8 +72,7 @@ public class ModBlocks {
 	public static final RegistryObject<Block> DECAY_BLOCK = REGISTRY.register("decay_block", DecayBlock::new);
 	public static final RegistryObject<Block> ARCANE_ICE_CHUNK = REGISTRY.register("arcane_ice_chunk", ArcaneIceChunk::new);
 	public static final RegistryObject<Block> PAGED_CHEST = REGISTRY.register("paged_chest", () -> new PagedChestBlock(Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD)));
-
-
+	public static final RegistryObject<Block> RAINBOW_TABLE = REGISTRY.register("rainbow_table", () -> new RainbowTable(BlockBehaviour.Properties.of(Material.METAL).strength(3.5F).requiresCorrectToolForDrops().noOcclusion()));
 
 
 	//矿物

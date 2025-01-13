@@ -107,6 +107,13 @@ public class ModItems {
 	public static final RegistryObject<Item> INFINITYDROP = REGISTRY.register("infinitydrop", () -> new ModIngot(INGOT_PROPERTIES.fireResistant().rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> LAVA_INGOT = REGISTRY.register("lava_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
 	public static final RegistryObject<Item> MANA_NETHER_STAR = REGISTRY.register("mana_nether_star", () -> new ModIngot(INGOT_PROPERTIES.fireResistant().rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> MITHRILL = REGISTRY.register("mithrill", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> MITHRILL_NUGGET = REGISTRY.register("mithrill_nugget", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> NEBULA_FRAMGMENT = REGISTRY.register("nebula_fragment", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> PIECE_OF_NEBULA = REGISTRY.register("piece_of_nebula", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> MAT_INSCRIBED_INGOT = REGISTRY.register("mat_inscribed_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> DRAGONCRYTAL = REGISTRY.register("dragoncrystal", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+
 
 	public static final RegistryObject<Item> NATUREINGOT = REGISTRY.register("natureingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> NICKEL_INGOT = REGISTRY.register("nickel_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
@@ -119,9 +126,9 @@ public class ModItems {
 	public static final RegistryObject<Item> SPECTRITE_GEM = REGISTRY.register("spectrite_gem", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> WHITE_DUST = REGISTRY.register("white_dust", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
 	public static final RegistryObject<Item> WOOD_INGOT = REGISTRY.register("wood_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
-	public static final RegistryObject<Item> crystallineStardustIngot = REGISTRY.register("crystalline_stardust_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
-	public static final RegistryObject<Item> starlightCrystallineIngot = REGISTRY.register("starlight_crystalline_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
-	public static final RegistryObject<Item> taintedAstralCrystalIngot = REGISTRY.register("tainted_astral_crystal_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
+	public static final RegistryObject<Item> Crystalline_Stardust_Ingot = REGISTRY.register("crystalline_stardust_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> Starlight_Crystalline_Ingot = REGISTRY.register("starlight_crystalline_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> Tainted_Astral_Crystal_Ingot = REGISTRY.register("tainted_astral_crystal_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
 
 	public static final RegistryObject<Item> SPECTRITE_CRYSTAL = REGISTRY.register("spectrite_crystal", SpectriteCrystal::new);
 	public static final RegistryObject<Item> BIBLE = REGISTRY.register("bible", Bible::new);
@@ -149,8 +156,8 @@ public class ModItems {
 	public static final RegistryObject<Item> INFINITY_TOTEM = REGISTRY.register("infinity_totem",InfinityTotem::new);
 	public static final RegistryObject<Item> RADIANT_SACRED_RUBY = REGISTRY.register("radiant_sacred_ruby", RadiantSacredRuby::new);
 	public static final RegistryObject<Item> MANA_READER = REGISTRY.register("mana_reader", () -> new ManaReader(new Properties().rarity(Rarity.RARE)));
-	public static final RegistryObject<Item> PLUMED_BELT = REGISTRY.register("plumed_belt", () -> new PlumedBelt(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).rarity(Rarity.RARE)));
-	public static final RegistryObject<Item> GOLDEN_LAUREL = REGISTRY.register("golden_laurel", () -> new GoldenLaurel(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(1).rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> PLUMED_BELT = REGISTRY.register("plumed_belt", () -> new PlumedBelt(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> GOLDEN_LAUREL = REGISTRY.register("golden_laurel", () -> new GoldenLaurel(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).rarity(ModRarities.MIRACLE)));
 
 
 	//材料

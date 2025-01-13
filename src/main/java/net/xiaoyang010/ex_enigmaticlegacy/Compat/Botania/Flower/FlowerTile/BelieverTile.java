@@ -2,7 +2,9 @@ package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -36,11 +38,9 @@ public class BelieverTile extends TileEntityGeneratingFlower {
         }
     }
 
-    //右键小土豆增加魔力
     public void addRightMana(boolean isInfinityPotato) {
         if (cooldown != 0) return;
 
-        // 根据土豆类型选择产能量
         int manaToAdd = isInfinityPotato ? MANA_PER_INFINITY_POTATO : MANA_PER_TINY_POTATO;
         addMana(manaToAdd);
         cooldown = 20; // 1秒冷却时间

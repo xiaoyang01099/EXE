@@ -18,11 +18,11 @@ import vazkii.botania.api.subtile.TileEntityFunctionalFlower;
 
 public class GenEnergydandronTile extends TileEntityFunctionalFlower {
 
-    private static final int COST = 2000; // 每次施法消耗的魔力
-    private static final int MAX_MANA = 6000; // 最大魔力储存
-    private static final int COOLDOWN = 60; // 冷却时间（ticks）
-    private static final int RANGE_X = 5; // x轴检测范围
-    private static final int RANGE_Y = 4; // y轴检测范围
+    private static final int COST = 2000;
+    private static final int MAX_MANA = 6000;
+    private static final int COOLDOWN = 60;
+    private static final int RANGE_X = 5;
+    private static final int RANGE_Y = 4;
 
     private int cooldownTime = 0;
 
@@ -49,18 +49,14 @@ public class GenEnergydandronTile extends TileEntityFunctionalFlower {
             return;
         }
 
-        // 检查是否有足够的魔力
         if (getMana() >= COST) {
-            boolean shouldStrike = true; // 可以根据需求添加额外条件
-
+            boolean shouldStrike = true;
             if (shouldStrike) {
-                // 在四个方向生成闪电
+
                 strikeAround();
 
-                // 消耗魔力
                 addMana(-COST);
 
-                // 设置冷却时间
                 cooldownTime = COOLDOWN;
             }
         }
@@ -74,7 +70,6 @@ public class GenEnergydandronTile extends TileEntityFunctionalFlower {
     private void strikeAround() {
         BlockPos pos = getBlockPos();
 
-        // 上下左右四个方向的位置
         BlockPos[] positions = {
                 pos.north(),
                 pos.south(),
@@ -82,7 +77,6 @@ public class GenEnergydandronTile extends TileEntityFunctionalFlower {
                 pos.west()
         };
 
-        // 在每个位置生成闪电
         for (BlockPos strikePos : positions) {
             LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(getLevel());
             if (lightning != null) {
@@ -110,7 +104,7 @@ public class GenEnergydandronTile extends TileEntityFunctionalFlower {
 
     @Override
     public int getBindingRadius() {
-        return Math.max(RANGE_X, RANGE_Y); // 返回最大范围值，确保可以检测到指定范围内的魔力池
+        return Math.max(RANGE_X, RANGE_Y);
     }
 
     @NotNull
@@ -124,16 +118,12 @@ public class GenEnergydandronTile extends TileEntityFunctionalFlower {
     public BlockPos findClosestTarget() {
         IManaNetwork network = BotaniaAPI.instance().getManaNetworkInstance();
 
-        // 获取当前花的位置
         BlockPos pos = getBlockPos();
 
-        // 在指定范围内搜索最近的魔力池
         var closestPool = network.getClosestPool(pos, getLevel(), Math.max(RANGE_X, RANGE_Y));
 
-        // 如果找到魔力池，检查是否在我们想要的范围内
         if (closestPool != null) {
             BlockPos poolPos = closestPool.getManaReceiverPos();
-            // 检查是否在指定的矩形范围内
             int dx = Math.abs(poolPos.getX() - pos.getX());
             int dy = Math.abs(poolPos.getY() - pos.getY());
             int dz = Math.abs(poolPos.getZ() - pos.getZ());

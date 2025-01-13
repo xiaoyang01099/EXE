@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -60,7 +61,7 @@ public class HearthStone extends Item {
             // 执行传送
             if (targetLevel != null) {
                 // 添加传送前的粒子效果
-                ((ServerLevel)level).sendParticles(ParticleTypes.PORTAL,
+                ((ServerLevel) level).sendParticles(ParticleTypes.PORTAL,
                         player.getX(),
                         player.getY() + 1.0D,
                         player.getZ(),
@@ -113,7 +114,7 @@ public class HearthStone extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(new TextComponent("右键使用返回重生点或主世界")
+        tooltip.add(new TranslatableComponent("tooltip.return_item.usage")
                 .withStyle(ChatFormatting.AQUA));
         super.appendHoverText(stack, level, tooltip, flag);
     }

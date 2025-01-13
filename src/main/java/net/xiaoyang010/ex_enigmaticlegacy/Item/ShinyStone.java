@@ -2,6 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Item;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +31,7 @@ public class ShinyStone extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
 
-        tooltip.add(new TextComponent("日夜循环控制器"));
+        tooltip.add(new TranslatableComponent("item.daynight.controller"));
 
         super.appendHoverText(stack, world, tooltip, flag);
     }
