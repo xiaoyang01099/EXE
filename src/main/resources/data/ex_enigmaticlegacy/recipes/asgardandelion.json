@@ -1,0 +1,40 @@
+{
+  "type": "avaritia:extreme_shaped",
+  "result": {
+    "item": "ex_enigmaticlegacy:asgardandelion"
+  },
+  "pattern": [
+    "   AEA   ",
+    "  EAEAE  ",
+    "  AEBEA  ",
+    "  EAEAE  ",
+    "   AEA   ",
+    " CCFDFCC ",
+    "CGGCDCGGC",
+    " CCFDFCC ",
+    "    D    "
+  ],
+  "key": {
+    "A": {
+      "item": "avaritia:infinity_ingot"
+    },
+    "B": {
+      "item": "avaritia:infinity_catalyst"
+    },
+    "C": {
+      "item": "avaritia:neutron_nugget"
+    },
+    "D": {
+      "item": "avaritia:neutronium_ingot"
+    },
+    "E": {
+      "item": "ex_enigmaticlegacy:natureingot"
+    },
+    "F": {
+      "item": "ex_enigmaticlegacy:mana_nether_star"
+    },
+    "G": {
+      "item": "ex_enigmaticlegacy:astral_pile"
+    }
+  }
+}

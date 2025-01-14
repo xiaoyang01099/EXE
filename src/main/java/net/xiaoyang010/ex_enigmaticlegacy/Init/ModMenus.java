@@ -1,9 +1,12 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,6 +35,13 @@ public class ModMenus {
 
     public static final MenuType<DimensionalMirrorContainer> DIMENSIONAL_MIRROR = register("dimensional_mirror",
             (windowId, inv, data) -> new DimensionalMirrorContainer(windowId, inv, inv.player));
+
+    public static final MenuType<RainbowTableContainer> RAINBOW_TABLE_CONTAINER = register("rainbow_table",
+            (windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                BlockEntity blockEntity = inv.player.level.getBlockEntity(pos);
+                return new RainbowTableContainer(null, windowId, inv, blockEntity, pos);
+            });
 
     private static <T extends AbstractContainerMenu> MenuType<T> register(String registryname, IContainerFactory<T> containerFactory) {
         MenuType<T> menuType = new MenuType<T>(containerFactory);

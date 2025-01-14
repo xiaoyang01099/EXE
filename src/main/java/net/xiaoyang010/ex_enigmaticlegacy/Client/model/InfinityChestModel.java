@@ -6,7 +6,6 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-
 import net.minecraft.client.renderer.RenderType;
 
 public class InfinityChestModel extends Model {
@@ -21,27 +20,32 @@ public class InfinityChestModel extends Model {
         this.lock = root.getChild("lock");
     }
 
-    // 创建模型层，确保尺寸与 JSON 中定义相匹配
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        // lock部分，从 [7, 7, 0] 到 [9, 11, 1]，大小为 2x4x1
-        partdefinition.addOrReplaceChild("lock",
-                CubeListBuilder.create().texOffs(32, 0).addBox(7.0F, 7.0F, 0.0F, 2.0F, 4.0F, 1.0F),
-                PartPose.offset(0.0F, 0.0F, 0.0F)); // 偏移量为 0，直接使用原始位置
+        PartDefinition baseGroup = partdefinition.addOrReplaceChild("base", CubeListBuilder.create(),
+                PartPose.offset(0.0F, 16.0F, 0.0F));
 
-        // lid部分，从 [1, 10, 1] 到 [15, 15, 15]，大小为 14x5x14
-        partdefinition.addOrReplaceChild("lid",
-                CubeListBuilder.create().texOffs(0, 0).addBox(1.0F, 10.0F, 1.0F, 14.0F, 5.0F, 14.0F),
-                PartPose.offset(0.0F, 0.0F, 0.0F)); // 偏移量为 0
+        baseGroup.addOrReplaceChild("base",
+                CubeListBuilder.create()
+                        .texOffs(0, 19)
+                        .addBox(-7.0F, -2.0F, -7.0F, 14.0F, 10.0F, 14.0F),
+                PartPose.offset(0.0F, 0.0F, 0.0F));
 
-        // base部分，从 [1, 0, 1] 到 [15, 10, 15]，大小为 14x10x14
-        partdefinition.addOrReplaceChild("base",
-                CubeListBuilder.create().texOffs(0, 19).addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F),
-                PartPose.offset(0.0F, 0.0F, 0.0F)); // 偏移量为 0
+        baseGroup.addOrReplaceChild("lid",
+                CubeListBuilder.create()
+                        .texOffs(0, 0)
+                        .addBox(-7.0F, -7.0F, -7.0F, 14.0F, 5.0F, 14.0F),
+                PartPose.offset(0.0F, 0.0F, 0.0F));
 
-        return LayerDefinition.create(meshdefinition, 64, 64); // 确保纹理大小足够
+        baseGroup.addOrReplaceChild("lock",
+                CubeListBuilder.create()
+                        .texOffs(0, 0)
+                        .addBox(-1.0F, -3.0F, -8.0F, 2.0F, 4.0F, 1.0F),
+                PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
     @Override

@@ -1,0 +1,25 @@
+{
+    "type": "ex_enigmaticlegacy:rainbow_table",
+    "ingredients": [
+      {
+        "item": "minecraft:diamond",
+        "count": 2
+      },
+      {
+        "item": "minecraft:emerald",
+        "count": 1
+      },
+      {
+        "item": "minecraft:gold_ingot",
+        "count": 4
+      },
+      {
+        "item": "minecraft:iron_ingot",
+        "count": 1
+      }
+    ],
+    "output": {
+      "item": "minecraft:nether_star",
+      "count": 2
+    }
+  }

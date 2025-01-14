@@ -19,6 +19,7 @@ public class ModScreens {
             MenuScreens.register(ModMenus.CELESTIAL_HOLINESS_TRANSMUTE, CelestialHTScreen::new);
             MenuScreens.register(ModMenus.DIMENSIONAL_MIRROR, DimensionalMirrorScreen::new);
             MenuScreens.register(ModMenus.PAGED_CHEST, PagedChestScreen::new);
+            MenuScreens.register(ModMenus.RAINBOW_TABLE_CONTAINER, RainbowTableScreen::new);
         });
     }
 }
