@@ -50,6 +50,7 @@ public class RainbowTableTile extends BlockEntity implements MenuProvider, Conta
             return slot != 4;
         }
     };
+    private static final int SHRINK_MANA = 100000;
 
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
 
@@ -70,17 +71,17 @@ public class RainbowTableTile extends BlockEntity implements MenuProvider, Conta
         if (entity instanceof IManaPool manaPool) {
             int mana = manaPool.getCurrentMana();
             if (level.getGameTime() % 20 == 0){
-                if (mana >= 100000){
-                    manaPool.receiveMana(-100000);
-                    tile.receiveMana(100000);
+                if (mana >= SHRINK_MANA){
+                    manaPool.receiveMana(-SHRINK_MANA);
+                    tile.receiveMana(SHRINK_MANA);
                     tile.setChanged();
                 }
             }
 
-            tile.receiveMana(-1000);
+            tile.receiveMana(-10000); //tick消耗
 
             Optional<RainbowTableRecipe> recipeFor = level.getRecipeManager().getRecipeFor(ModRecipes.RAINBOW_TABLE_TYPE, tile, level);
-            if (recipeFor.isPresent() && tile.getCurrentMana() >= 100000) {
+            if (recipeFor.isPresent() && tile.getCurrentMana() >= SHRINK_MANA) {
                 tile.data.set(0, tile.data.get(0) + 1);
                 ItemStack resultItem = recipeFor.get().getResultItem();
                 ItemStack out = tile.itemHandler.getStackInSlot(4);
@@ -91,7 +92,7 @@ public class RainbowTableTile extends BlockEntity implements MenuProvider, Conta
                     }
                     tile.itemHandler.setStackInSlot(4, resultItem);
                     tile.data.set(0, 0);
-                    manaPool.receiveMana(-10000);
+                    manaPool.receiveMana(-SHRINK_MANA);
                 }else {
                     if (ItemStack.isSame(out, resultItem) && out.getCount() + resultItem.getCount() <= out.getMaxStackSize()  && tile.data.get(0) >= 40) {
                         NonNullList<Integer> list = recipeFor.get().getInputCounts();
@@ -101,7 +102,7 @@ public class RainbowTableTile extends BlockEntity implements MenuProvider, Conta
                         out.setCount(out.getCount() + resultItem.getCount());
                         tile.itemHandler.setStackInSlot(4, out);
                         tile.data.set(0, 0);
-                        manaPool.receiveMana(-10000);
+                        manaPool.receiveMana(-SHRINK_MANA);
                     }
                 }
             }
@@ -170,7 +171,7 @@ public class RainbowTableTile extends BlockEntity implements MenuProvider, Conta
 
     @Override
     public boolean stillValid(Player player) {
-        return getCurrentMana() >= 100000;
+        return getCurrentMana() >= SHRINK_MANA;
     }
 
     @Override
@@ -225,7 +226,7 @@ public class RainbowTableTile extends BlockEntity implements MenuProvider, Conta
 
     @Override
     public boolean isFull() {
-        return this.data.get(1) == Integer.MAX_VALUE;
+        return this.data.get(1) == 500000;
     }
 
     @Override
