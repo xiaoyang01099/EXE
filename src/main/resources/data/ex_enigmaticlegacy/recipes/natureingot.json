@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:celestial_transmute",
+  "inputs": [
+    {
+      "item": "minecraft:acacia_sapling",
+      "count": 64
+    },
+    {
+      "item": "avaritia:infinity_block",
+      "count": 1
+    },
+    {
+      "item": "avaritia:infinity_catalyst",
+      "count": 5
+    },
+    {
+      "item": "ex_enigmaticlegacy:custom_ingot",
+      "count": 2
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:natureingot",
+    "count": 1
+  }
+}

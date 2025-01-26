@@ -39,6 +39,11 @@ import net.minecraftforge.network.PlayMessages.SpawnEntity;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
+import vazkii.botania.common.block.tile.ModTiles;
+import vazkii.botania.common.block.tile.mana.TileSpreader;
+import vazkii.botania.common.entity.EntityManaBurst;
+import vazkii.botania.common.entity.EntityPixie;
+import vazkii.botania.common.handler.ModSounds;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -82,6 +87,20 @@ public class CatMewEntity extends Monster {
 
         if (getIsTwoPhase()){ //二阶段攻击
             maintainPhaseTwo();
+            if (isAttack(10, 4)) {
+                shootManaBurst();
+            }
+            if (isAttack(40, 4)) {
+                manaBurstStorm();
+            }
+            if (isAttack(60, 3)) {
+                manaPrison();
+            }
+            if(isAttack(20,2)){summonPixies();}
+            if (isAttack(5,5)){summonWisp();}
+            if (isAttack(20, 3)) {
+                manaBurst();
+            }
             if (isAttack(5, 5))
                 shootWitherSkull(this.getTarget());
             if (isAttack(5, 3))
@@ -92,13 +111,279 @@ public class CatMewEntity extends Monster {
                 summonLightning(player);
             }
         }else {
+            if (isAttack(50,5)){summonWisp();}
             if (isAttack(60, 3)) shootWitherSkull(this.getTarget());
-
+            if (isAttack(30, 5)) {shootManaBurst();}
             if (isAttack(100, 2)) shootArrow();
 
             if (isAttack(40, 10) && this.getTarget() instanceof Player player){
                 summonLightning(player);
             }
+        }
+    }
+
+    private void shootManaBurst() {
+        if (!this.level.isClientSide) {
+            LivingEntity target = this.getTarget();
+            if (target != null) {
+                // 获取射击方向
+                Vec3 targetPos = target.position().add(0, target.getBbHeight() * 0.5, 0);
+                Vec3 shooterPos = this.position();
+                Vec3 diff = targetPos.subtract(shooterPos);
+
+                // 创建魔力射弹
+                EntityManaBurst burst = new EntityManaBurst(this.level, this.blockPosition(),
+                        (float) Math.atan2(diff.x, diff.z) * 180F / (float)Math.PI,  // rotationX
+                        (float) Math.atan2(diff.y, Math.sqrt(diff.x * diff.x + diff.z * diff.z)) * 180F / (float)Math.PI, // rotationY
+                        false);
+
+                // 设置发射参数
+                burst.setColor(0x20FF20); // 绿色
+                burst.setMana(120);
+                burst.setStartingMana(120);
+                burst.setMinManaLoss(40);
+                burst.setManaLossPerTick(4F);
+                burst.setGravity(0F);
+
+                // 设置基础速度
+                Vec3 velocity = diff.normalize().scale(0.5);
+
+                // 添加随机偏移
+                velocity = velocity.add(
+                        this.random.nextGaussian() * 0.02,
+                        this.random.nextGaussian() * 0.02,
+                        this.random.nextGaussian() * 0.02
+                );
+
+                burst.setDeltaMovement(velocity);
+
+                // 发射
+                this.level.addFreshEntity(burst);
+
+                // 播放声音
+                this.level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                        SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 1.0F, 1.0F);
+            }
+        }
+    }
+
+    private void manaBurst() {
+        if (!this.level.isClientSide && this.level instanceof ServerLevel serverLevel) {
+            // 创建爆发效果
+            AABB box = this.getBoundingBox().inflate(6.0);
+            for (LivingEntity target : this.level.getEntitiesOfClass(LivingEntity.class, box)) {
+                if (target != this) {
+                    target.hurt(DamageSource.indirectMagic(this, this), 8.0f);
+
+                    // 添加负面效果
+                    if (target instanceof Player) {
+                        target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 1));
+                        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 1));
+                    }
+                }
+            }
+
+            for (int i = 0; i < 360; i += 8) {
+                double rad = Math.toRadians(i);
+                double x = this.getX() + Math.cos(rad) * 3;
+                double z = this.getZ() + Math.sin(rad) * 3;
+                serverLevel.sendParticles(
+                        ParticleTypes.END_ROD,
+                        x, this.getY() + 1, z,
+                        1, 0, 0, 0, 0.1
+                );
+            }
+
+            this.level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                    SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 1.0F, 1.0F);
+        }
+    }
+
+    private void manaBurstStorm() {
+        if (!this.level.isClientSide) {
+            this.level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                    ModSounds.gaiaTrap, SoundSource.HOSTILE, 1.0F, 1.0F);
+
+            int burstCount = 12;
+            for (int i = 0; i < burstCount; i++) {
+                double angle = (Math.PI * 2 * i) / burstCount;
+                Vec3 direction = new Vec3(Math.cos(angle), 0.2, Math.sin(angle));
+
+                EntityManaBurst burst = new EntityManaBurst(this.level, this.blockPosition(),
+                        (float) Math.toDegrees(angle), 20f, false);
+
+                burst.setColor(0xFF00FF);
+                burst.setMana(200);
+                burst.setStartingMana(200);
+                burst.setGravity(0F);
+                burst.setDeltaMovement(direction.normalize().scale(0.5));
+
+                this.level.addFreshEntity(burst);
+            }
+        }
+    }
+
+    private void manaPrison() {
+        if (!this.level.isClientSide && this.getTarget() != null) {
+            LivingEntity target = this.getTarget();
+            Vec3 targetPos = target.position();
+
+            this.level.playSound(null, targetPos.x, targetPos.y, targetPos.z,
+                    ModSounds.gaiaTrap, SoundSource.HOSTILE, 1.0F, 1.0F);
+
+            int pillars = 8;
+            double radius = 3.0;
+            for (int i = 0; i < pillars; i++) {
+                double angle = (Math.PI * 2 * i) / pillars;
+                double x = targetPos.x + Math.cos(angle) * radius;
+                double z = targetPos.z + Math.sin(angle) * radius;
+
+                if (this.level instanceof ServerLevel serverLevel) {
+                    for (int y = 0; y < 5; y++) {
+                        serverLevel.sendParticles(
+                                ParticleTypes.END_ROD,
+                                x, targetPos.y + y, z,
+                                5, 0.1, 0.1, 0.1, 0.02
+                        );
+                    }
+                }
+            }
+
+            target.hurt(DamageSource.MAGIC, 6.0F);
+            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2));
+        }
+    }
+
+    private void summonPixies() {
+        if (!this.level.isClientSide) {
+            // 获取当前目标
+            LivingEntity target = this.getTarget();
+            if (target == null) return;
+
+            // 召唤开始音效
+            this.level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                    ModSounds.babylonSpawn, SoundSource.HOSTILE, 1.0F, 1.0F);
+
+            // 生成3-5个精灵
+            int pixieCount = this.random.nextInt(7) + 3;
+            for (int i = 0; i < pixieCount; i++) {
+                EntityPixie pixie = new EntityPixie(this.level);
+
+                // 设置生成位置（以Boss为中心的圆形区域）
+                double angle = (Math.PI * 2 * i) / pixieCount;
+                double radius = 2.0;
+                double x = this.getX() + Math.cos(angle) * radius;
+                double y = this.getY() + 2;
+                double z = this.getZ() + Math.sin(angle) * radius;
+                pixie.moveTo(x, y, z);
+
+                // 设置精灵属性
+                int pixieType = this.random.nextInt(2); // 0=普通精灵, 1=黑暗精灵
+                float damage = getIsTwoPhase() ? 12.0f : 6.0f; // 二阶段伤害更高
+                pixie.setProps(target, this, pixieType, damage);
+
+                // 随机添加负面效果
+                if (this.random.nextInt(3) == 0) { // 33%几率附加效果
+                    MobEffectInstance effect = null;
+                    switch(this.random.nextInt(5)) {
+                        case 0:
+                            effect = new MobEffectInstance(MobEffects.WEAKNESS, 100, 1);
+                            break;
+                        case 1:
+                            effect = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 1);
+                            break;
+                        case 2:
+                            effect = new MobEffectInstance(MobEffects.WITHER, 100, 1);
+                            break;
+                        case 3:
+                            effect = new MobEffectInstance(MobEffects.POISON, 100, 1);
+                            break;
+                        case 4:
+                            effect = new MobEffectInstance(MobEffects.CONFUSION, 100, 0);
+                            break;
+                    }
+                    if (effect != null) {
+                        pixie.setApplyPotionEffect(effect);
+                    }
+                }
+
+                // 生成精灵时播放攻击音效
+                this.level.playSound(null, x, y, z,
+                        ModSounds.babylonAttack, SoundSource.HOSTILE, 0.6F, 0.8F + this.random.nextFloat() * 0.4F);
+
+                // 生成精灵
+                this.level.addFreshEntity(pixie);
+            }
+
+            // 每个精灵生成后的间隔
+            if (getIsTwoPhase()) {
+                // 二阶段时额外召唤一波精灵
+                if (this.random.nextInt(3) == 0) { // 33%概率
+                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                            ModSounds.gaiaTrap, SoundSource.HOSTILE, 1.0F, 1.0F);
+
+                    for (int i = 0; i < 2; i++) {
+                        EntityPixie pixie = new EntityPixie(this.level);
+                        pixie.moveTo(this.getX(), this.getY() + 2, this.getZ());
+                        pixie.setProps(target, this, 1, 15.0f); // 召唤黑暗精灵，更高伤害
+                        pixie.setApplyPotionEffect(new MobEffectInstance(MobEffects.BLINDNESS, 60, 0));
+                        this.level.addFreshEntity(pixie);
+                    }
+                }
+            }
+        }
+    }
+
+    private void summonWisp() {
+        if (!this.level.isClientSide && this.level instanceof ServerLevel serverLevel) {
+            // 生成多个魔力光团
+            for (int i = 0; i < this.random.nextInt(3) + 2; i++) {
+                double angle = this.random.nextDouble() * Math.PI * 2;
+                double radius = 5.0; // 增大生成半径
+                double x = this.getX() + Math.cos(angle) * radius;
+                double y = this.getY() + 2;
+                double z = this.getZ() + Math.sin(angle) * radius;
+
+                // 发送魔力粒子效果，增加粒子范围和数量
+                serverLevel.sendParticles(
+                        ParticleTypes.END_ROD,
+                        x, y, z,
+                        30,  // 增加粒子数量
+                        0.3, 0.3, 0.3,  // 增大扩散范围
+                        0.05
+                );
+
+                // 增大伤害范围
+                AABB box = new AABB(x - 3, y - 3, z - 3, x + 3, y + 3, z + 3); // 6x6x6 的伤害范围
+                for(LivingEntity target : this.level.getEntitiesOfClass(LivingEntity.class, box)) {
+                    if(target != this) {
+                        target.hurt(DamageSource.indirectMagic(this, this), 4.0f);
+                        // 增加debuff持续时间
+                        target.addEffect(new MobEffectInstance(MobEffects.WITHER, 200, 1));
+                        target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 1));
+                        // 添加额外减速效果
+                        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 1));
+                    }
+                }
+
+                // 添加额外的视觉效果
+                for(int j = 0; j < 8; j++) {
+                    double particleAngle = j * Math.PI / 4;
+                    double px = x + Math.cos(particleAngle) * 2;
+                    double pz = z + Math.sin(particleAngle) * 2;
+                    serverLevel.sendParticles(
+                            ParticleTypes.END_ROD,
+                            px, y, pz,
+                            1,
+                            0, 0, 0,
+                            0.05
+                    );
+                }
+            }
+
+            // 播放音效
+            this.level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                    SoundEvents.ENDER_DRAGON_FLAP, SoundSource.HOSTILE, 1.0F, 1.0F);
         }
     }
 
@@ -112,11 +397,13 @@ public class CatMewEntity extends Monster {
 
     @Override
     public boolean hurt(DamageSource source, float pAmount) {
+        float cappedDamage = Math.min(pAmount, 5000f);
+
         Entity sourceDirectEntity = source.getDirectEntity();
         if (sourceDirectEntity instanceof LightningBolt){
             return false;
         }
-        return super.hurt(source, pAmount);
+        return super.hurt(source, cappedDamage);
     }
 
     @Override

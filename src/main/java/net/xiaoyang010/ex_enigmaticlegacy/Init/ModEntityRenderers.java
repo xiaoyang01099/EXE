@@ -1,5 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,6 +21,7 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.KIND_MIAO.get(), MiaoMiaoRenderer::new);
 		event.registerEntityRenderer(ModEntities.CAPYBARA.get(), CapybaraRenderer::new);
 		event.registerEntityRenderer(ModEntities.SPOTTED_GARDEN_EEL.get(), SpottedGardenEelRenderer::new);
+		event.registerEntityRenderer(ModEntities.CLONE_ENTITY.get(), CloneEntityRenderer::new);
 		//event.registerEntityRenderer(ModEntities.RAINBOW_WITHER_SKULL.get(), RainbowWitherSkullRenderer::new);
 	}
 

@@ -29,11 +29,13 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.RainbowTableRecipe;
+import vazkii.botania.api.mana.IManaPool;
+import vazkii.botania.api.mana.IManaReceiver;
 
 import java.util.Optional;
 
-public class RainbowTableTile extends BlockEntity implements MenuProvider, Container {
-    private ContainerData time = new SimpleContainerData(1);
+public class RainbowTableTile extends BlockEntity implements MenuProvider, Container, IManaReceiver {
+    private ContainerData data = new SimpleContainerData(2);
     private final ItemStackHandler itemHandler = new ItemStackHandler(5) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -55,8 +57,8 @@ public class RainbowTableTile extends BlockEntity implements MenuProvider, Conta
         super(ModBlockEntities.RAINBOW_TABLE_TILE.get(), pos, state);
     }
 
-    public ContainerData getTime() {
-        return time;
+    public ContainerData getDate() {
+        return data;
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, RainbowTableTile tile) {
@@ -64,32 +66,46 @@ public class RainbowTableTile extends BlockEntity implements MenuProvider, Conta
             return;
         }
 
-
-        Optional<RainbowTableRecipe> recipeFor = level.getRecipeManager().getRecipeFor(ModRecipes.RAINBOW_TABLE_TYPE, tile, level);
-        if (recipeFor.isPresent()) {
-            tile.time.set(0, tile.time.get(0) + 1);
-            ItemStack resultItem = recipeFor.get().getResultItem();
-            ItemStack out = tile.itemHandler.getStackInSlot(4);
-            if (out.isEmpty() && tile.time.get(0) >= 40) {
-                NonNullList<Integer> list = recipeFor.get().getInputCounts();
-                for (int i = 0; i < 4; i++) {
-                    tile.itemHandler.extractItem(i, list.get(i), false);
+        BlockEntity entity = level.getBlockEntity(pos.below());
+        if (entity instanceof IManaPool manaPool) {
+            int mana = manaPool.getCurrentMana();
+            if (level.getGameTime() % 20 == 0){
+                if (mana >= 100000){
+                    manaPool.receiveMana(-100000);
+                    tile.receiveMana(100000);
+                    tile.setChanged();
                 }
-                tile.itemHandler.setStackInSlot(4, resultItem);
-                tile.time.set(0, 0);
-            }else {
-                if (ItemStack.isSame(out, resultItem) && out.getCount() + resultItem.getCount() <= out.getMaxStackSize()  && tile.time.get(0) >= 40) {
+            }
+
+            tile.receiveMana(-1000);
+
+            Optional<RainbowTableRecipe> recipeFor = level.getRecipeManager().getRecipeFor(ModRecipes.RAINBOW_TABLE_TYPE, tile, level);
+            if (recipeFor.isPresent() && tile.getCurrentMana() >= 100000) {
+                tile.data.set(0, tile.data.get(0) + 1);
+                ItemStack resultItem = recipeFor.get().getResultItem();
+                ItemStack out = tile.itemHandler.getStackInSlot(4);
+                if (out.isEmpty() && tile.data.get(0) >= 40) {
                     NonNullList<Integer> list = recipeFor.get().getInputCounts();
                     for (int i = 0; i < 4; i++) {
                         tile.itemHandler.extractItem(i, list.get(i), false);
                     }
-                    out.setCount(out.getCount() + resultItem.getCount());
-                    tile.itemHandler.setStackInSlot(4, out);
-                    tile.time.set(0, 0);
+                    tile.itemHandler.setStackInSlot(4, resultItem);
+                    tile.data.set(0, 0);
+                    manaPool.receiveMana(-10000);
+                }else {
+                    if (ItemStack.isSame(out, resultItem) && out.getCount() + resultItem.getCount() <= out.getMaxStackSize()  && tile.data.get(0) >= 40) {
+                        NonNullList<Integer> list = recipeFor.get().getInputCounts();
+                        for (int i = 0; i < 4; i++) {
+                            tile.itemHandler.extractItem(i, list.get(i), false);
+                        }
+                        out.setCount(out.getCount() + resultItem.getCount());
+                        tile.itemHandler.setStackInSlot(4, out);
+                        tile.data.set(0, 0);
+                        manaPool.receiveMana(-10000);
+                    }
                 }
             }
         }
-
     }
 
     @Override
@@ -154,7 +170,7 @@ public class RainbowTableTile extends BlockEntity implements MenuProvider, Conta
 
     @Override
     public boolean stillValid(Player player) {
-        return true;
+        return getCurrentMana() >= 100000;
     }
 
     @Override
@@ -190,5 +206,35 @@ public class RainbowTableTile extends BlockEntity implements MenuProvider, Conta
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
         return new RainbowTableContainer(ModMenus.RAINBOW_TABLE_CONTAINER,
                 containerId, inventory, this, worldPosition);
+    }
+
+    @Override
+    public Level getManaReceiverLevel() {
+        return null;
+    }
+
+    @Override
+    public BlockPos getManaReceiverPos() {
+        return null;
+    }
+
+    @Override
+    public int getCurrentMana() {
+        return this.data.get(1);
+    }
+
+    @Override
+    public boolean isFull() {
+        return this.data.get(1) == Integer.MAX_VALUE;
+    }
+
+    @Override
+    public void receiveMana(int i) {
+        this.data.set(1, this.data.get(1) + i);
+    }
+
+    @Override
+    public boolean canReceiveManaFromBursts() {
+        return true;
     }
 }

@@ -24,16 +24,11 @@ public class SongOfTheAbyss extends SwordItem {
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (!target.level.isClientSide) {
-            // 获取目标实体的当前生命值
-            float currentHealth = target.getHealth();
-            // 计算30%当前生命值的伤害
-            float damage = currentHealth * 0.30f;
 
-            // 直接设置生命值而不是造成伤害
+            float currentHealth = target.getHealth();
+            float damage = currentHealth * 0.30f;
             target.setHealth(currentHealth - damage);
         }
-
-        // 调用父类的hurtEnemy方法以保持原有的其他效果
         return super.hurtEnemy(stack, target, attacker);
     }
 
@@ -41,7 +36,6 @@ public class SongOfTheAbyss extends SwordItem {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
 
-        // 添加伤害说明
         tooltip.add(new TranslatableComponent("tooltip.damage.percent_health"));
     }
 }

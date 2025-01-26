@@ -1,6 +1,7 @@
 
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -28,6 +29,11 @@ public class ModEntities {
 //							.updateInterval(10)
 //							.fireImmune()
 //							.build(new ResourceLocation("ex_enigmaticlegacy", "rainbow_wither_skull").toString()));
+
+	public static final RegistryObject<EntityType<CloneEntity>> CLONE_ENTITY = REGISTRY.register("clone_entity",
+			() -> EntityType.Builder.of(CloneEntity::new, MobCategory.MONSTER)
+					.sized(0.6f, 1.8f) // 设置碰撞箱大小
+					.build(new ResourceLocation("ex_enigmaticlegacy", "clone_entity").toString()));
 
 	public static final RegistryObject<EntityType<CapybaraEntity>> CAPYBARA = REGISTRY.register("capybara",
 			() -> EntityType.Builder.of(CapybaraEntity::new, MobCategory.CREATURE)
@@ -95,7 +101,7 @@ public class ModEntities {
 		event.put(KIND_MIAO.get(), CatMewEntity.createAttributes().build());
 		event.put(CAPYBARA.get(), CapybaraEntity.createAttributes().build());
 		event.put(SPOTTED_GARDEN_EEL.get(), SpottedGardenEelEntity.createAttributes().build());
-
+		event.put(CLONE_ENTITY.get(), CloneEntity.createAttributes().build());
 	}
 
 }

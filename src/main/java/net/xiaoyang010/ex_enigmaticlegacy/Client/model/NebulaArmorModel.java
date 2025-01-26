@@ -1,7 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Client.model;// Made with Blockbench 4.11.2
-// Exported for Minecraft version 1.17 or later with Mojang mappings
-// Paste this class into your mod and generate all required imports
-
+package net.xiaoyang010.ex_enigmaticlegacy.Client.model;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;

@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:celestial_transmute",
+  "inputs": [
+    {
+      "item": "minecraft:blue_ice",
+      "count": 64
+    },
+    {
+      "item": "avaritia:infinity_catalyst",
+      "count": 1
+    },
+    {
+      "item": "avaritia:neutron_nugget",
+      "count": 5
+    },
+    {
+      "item": "ex_enigmaticlegacy:custom_ingot",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:ice_ingot",
+    "count": 1
+  }
+}

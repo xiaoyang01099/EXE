@@ -10,7 +10,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.SnowFlower;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeClientCapabilities;
 import vazkii.botania.api.subtile.RadiusDescriptor;
@@ -60,7 +59,7 @@ public class FrostLotusFlowerTile extends TileEntityGeneratingFlower {
 
             boolean isSnowArea = biome.getBaseTemperature() <= 0.15f ||
                     biome.getPrecipitation().equals(Biome.Precipitation.SNOW) ||
-                    (!SnowFlower.SNOW_FLOWER_POSITIONS.isEmpty() &&
+                    (!FrostBlossomTile.SNOW_FLOWER_POSITIONS.isEmpty() &&
                             biome.getPrecipitation().equals(Biome.Precipitation.RAIN));
 
             if (!isSnowArea) {

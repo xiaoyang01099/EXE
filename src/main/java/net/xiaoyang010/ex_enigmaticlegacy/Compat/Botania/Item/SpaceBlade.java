@@ -13,6 +13,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,6 +53,7 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
     private static final String NBT_LEVEL = "Level";
     private static final String NBT_TICK = "tick";
     private static final int[] CREATIVE_MANA = new int[]{0, 10000, 1000000, 10000000, 100000000, 1000000000, 2147483646};
+    private static final int MAX_MANA = 2147483646;
 
     public SpaceBlade(Properties properties) {
         super(AdvancedBotanyAPI.MITHRIL_ITEM_TIER, 3, -2.4F, properties);
@@ -76,9 +79,12 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
                     int manaTag = getManaTag(stack);
                     int level = getLevel(stack);
                     int addMana = 1024 * (level + 1);
-                    if (mana > addMana){
-                        setManaTag(stack, manaTag + addMana);
-                        pool.receiveMana(-addMana);
+                    if (mana > addMana && manaTag < MAX_MANA) {
+                        int actualAddMana = Math.min(addMana, MAX_MANA - manaTag);
+                        if (actualAddMana > 0) {
+                            setManaTag(stack, manaTag + actualAddMana);
+                            pool.receiveMana(-actualAddMana);
+                        }
                     }
                 }
             }
@@ -155,6 +161,28 @@ public class SpaceBlade extends SwordItem implements IManaItem, ILensEffect {
                     }
                 }
             }
+
+            if (getLevel(stack) >= 5) {
+                // 随机元素效果
+                float chance = 0.3f + (getLevel(stack) * 0.1f);
+                if (player.level.random.nextFloat() < chance) {
+                    switch (player.level.random.nextInt(4)) {
+                        case 0: // 火焰
+                            target.setSecondsOnFire(5);
+                            break;
+                        case 1: // 凋零
+                            target.addEffect(new MobEffectInstance(MobEffects.WITHER, 1000));
+                            break;
+                        case 2: // 虚弱
+                            target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1000));
+                            break;
+                        case 3: // 缓慢
+                            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1000));
+                            break;
+                    }
+                }
+            }
+
             if (getLevel(stack) >= 1 && getManaTag(stack) >= 120) {
                 trySpawnBurst(player, 1);
                 setManaTag(stack, getManaTag(stack) - 120);

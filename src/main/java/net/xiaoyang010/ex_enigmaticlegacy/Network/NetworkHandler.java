@@ -1,7 +1,7 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Network;
 
-
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;

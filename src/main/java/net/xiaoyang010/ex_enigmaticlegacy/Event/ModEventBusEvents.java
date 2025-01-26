@@ -45,7 +45,7 @@ public class ModEventBusEvents {
         );
         event.registerLayerDefinition(MIAOMIAO_LAYER, KindMiaoModel::createBodyLayer
         );
-        event.registerLayerDefinition(ModelArmorNebula.LAYER_LOCATION, NebulaArmorModel::createBodyLayer
+        event.registerLayerDefinition(NebulaArmorModel.LAYER_LOCATION, NebulaArmorModel::createBodyLayer
         );
         event.registerLayerDefinition(RainbowTableModel.LAYER_LOCATION, RainbowTableModel::createBodyLayer
         );

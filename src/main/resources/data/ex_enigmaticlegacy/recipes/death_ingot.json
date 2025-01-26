@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:celestial_transmute",
+  "inputs": [
+    {
+      "item": "ex_enigmaticlegacy:dead_substance",
+      "count": 15
+    },
+    {
+      "item": "minecraft:crying_obsidian",
+      "count": 64
+    },
+    {
+      "item": "avaritia:infinity_catalyst",
+      "count": 1
+    },
+    {
+      "item": "ex_enigmaticlegacy:custom_ingot",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:death_ingot",
+    "count": 1
+  }
+}

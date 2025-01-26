@@ -54,6 +54,7 @@ public class ClientSideHandler {
         DarkNightGrass.registerRenderLayer();
         FrostLotusFlower.registerRenderLayer();
         Lycorisradiata.registerRenderLayer();
+        FrostBlossomBlock.registerRenderLayer();
     }
 
 

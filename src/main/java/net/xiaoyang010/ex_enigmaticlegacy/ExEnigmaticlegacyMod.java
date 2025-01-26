@@ -68,7 +68,7 @@ public class ExEnigmaticlegacyMod {
 		ModEnchantments.REGISTRY.register(bus);
 
 		isEx = ModList.get().isLoaded("enigmaticlegacy");
-
+		MinecraftForge.EVENT_BUS.register(new DropItemsHandler());
 		MinecraftForge.EVENT_BUS.register(new FlyingEventHandlers());
 		MinecraftForge.EVENT_BUS.register(new ArmorProtectionEvent());
 		MinecraftForge.EVENT_BUS.register(new OmegaCoreEffectHandler());

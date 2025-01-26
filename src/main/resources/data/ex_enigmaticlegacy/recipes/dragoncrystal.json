@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:celestial_transmute",
+  "inputs": [
+    {
+      "item": "minecraft:dragon_egg",
+      "count": 1
+    },
+    {
+      "item": "minecraft:dragon_head",
+      "count": 6
+    },
+    {
+      "item": "avaritia:infinity_catalyst",
+      "count": 8
+    },
+    {
+      "item": "ex_enigmaticlegacy:custom_ingot",
+      "count": 4
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:dragoncrystal",
+    "count": 1
+  }
+}

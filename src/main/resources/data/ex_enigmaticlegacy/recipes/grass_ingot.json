@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:celestial_transmute",
+  "inputs": [
+    {
+      "item": "minecraft:amethyst_cluster",
+      "count": 64
+    },
+    {
+      "item": "minecraft:grass_block",
+      "count": 64
+    },
+    {
+      "item": "avaritia:infinity_catalyst",
+      "count": 1
+    },
+    {
+      "item": "ex_enigmaticlegacy:custom_ingot",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:grass_ingot",
+    "count": 1
+  }
+}

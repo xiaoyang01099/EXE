@@ -1,5 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Effect;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 

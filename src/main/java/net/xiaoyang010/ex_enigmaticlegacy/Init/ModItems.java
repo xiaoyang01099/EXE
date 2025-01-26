@@ -47,6 +47,7 @@ public class ModItems {
 	public static final RegistryObject<Item> RAINBOW_TABLE = block(ModBlocks.RAINBOW_TABLE, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
 
 	public static final RegistryObject<Item> infinitySpreader = block(ModBlocks.infinitySpreader, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> FROST_BLOSSOM = block(ModBlocks.FROST_BLOSSOM, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> FROST_LOTUS = blockFlower(ModBlocks.FROST_LOTUS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> DARK_NIGHT_GRASS = blockFlower(ModBlocks.DARK_NIGHT_GRASS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> ASTRAL_KILLOP = blockFlower(ModBlocks.ASTRAL_KILLOP, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
@@ -65,7 +66,7 @@ public class ModItems {
 	public static final RegistryObject<Item> EVILBLOCK = block(ModBlocks.EVILBLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> ICHEST = block(ModBlocks.INFINITYCHEST, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
 	public static final RegistryObject<Item> SOARLEANDER = block(ModBlocks.SOARLEANDER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> STARLITSANCTUM = block(ModBlocks.STARLITSANCTUM, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
+	//public static final RegistryObject<Item> STARLITSANCTUM = block(ModBlocks.STARLITSANCTUM, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
 	public static final RegistryObject<Item> COBBLE_STONE = block(ModBlocks.COBBLE_STONE, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
 	public static final RegistryObject<Item> INFINITY_POTATO = block(ModBlocks.INFINITY_POTATO, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> FLOWEY = block(ModBlocks.FLOWEY,ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
@@ -77,6 +78,8 @@ public class ModItems {
 	//31个物品通用属性
 	private static final Properties INGOT_PROPERTIES = new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_MINERAL).stacksTo(64);
 
+	public static final RegistryObject<Item> FROST_ENCHANTRESS = REGISTRY.register("frost_enchantress", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> DEAD_SUBSTANCE = REGISTRY.register("dead_substance", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
 	public static final RegistryObject<Item> AMETHYST_INGOT = REGISTRY.register("amethyst_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
 	public static final RegistryObject<Item> BAUXITE_INGOT = REGISTRY.register("bauxite_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));
 	public static final RegistryObject<Item> BRONZE_INGOT = REGISTRY.register("bronze_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.RARE)));

@@ -7,7 +7,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.OmegaCore;
 
@@ -15,7 +14,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Item.OmegaCore;
 public class TimeStopEffectHandler {
 
     // 处理时停状态
-    @SubscribeEvent
+    //@SubscribeEvent
     public static void onLivingUpdate(LivingUpdateEvent event) {
         LivingEntity entity = event.getEntityLiving();
         Level level = entity.level; // 获取当前实体的世界
@@ -32,6 +31,7 @@ public class TimeStopEffectHandler {
                     event.setCanceled(true); // 暂停其他玩家
                 }
             } else {
+                //entity.canUpdate = false;
                 // 暂停所有非玩家实体的更新
                 event.setCanceled(true);
             }
@@ -39,7 +39,7 @@ public class TimeStopEffectHandler {
     }
 
     // 处理每tick更新，更新时停计时器
-    @SubscribeEvent
+   // @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             OmegaCore.updateTimeStop(); // 更新时停计时器
@@ -47,7 +47,7 @@ public class TimeStopEffectHandler {
     }
 
     // 防止时停状态下的生物反击
-    @SubscribeEvent
+    //@SubscribeEvent
     public static void onLivingAttack(LivingAttackEvent event) {
         LivingEntity target = event.getEntityLiving();
         Level level = target.level; // 获取当前实体的世界

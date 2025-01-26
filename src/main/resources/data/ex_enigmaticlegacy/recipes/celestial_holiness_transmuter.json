@@ -1,0 +1,49 @@
+{
+  "type": "avaritia:extreme_shaped",
+  "result": {
+    "item": "ex_enigmaticlegacy:celestial_holiness_transmuter"
+  },
+  "pattern": [
+    "RQQQQQQQR",
+    "TCC   CCY",
+    "TC     CY",
+    "T  AXA  Y",
+    "T  NWN  Y",
+    "T  AEA  Y",
+    "TC     CY",
+    "TCC   CCY",
+    "RQQQQQQQR"
+  ],
+  "key": {
+    "N": {
+      "item": "avaritia:infinity_catalyst"
+    },
+    "C": {
+      "item": "avaritia:infinity_ingot"
+    },
+    "X": {
+      "item": "avaritia:endest_pearl"
+    },
+    "Q": {
+      "item": "avaritia:crystal_matrix_block"
+    },
+    "W": {
+      "item": "avaritia:extreme_crafting_table"
+    },
+    "E": {
+      "item": "avaritia:compressor"
+    },
+    "R": {
+      "item": "avaritia:infinity_block"
+    },
+    "T": {
+      "item": "ex_enigmaticlegacy:evilblock"
+    },
+    "Y": {
+      "item": "botania:dragonstone_block"
+    },
+    "A": {
+      "item": "enigmaticlegacy:etherium_block"
+    }
+  }
+}

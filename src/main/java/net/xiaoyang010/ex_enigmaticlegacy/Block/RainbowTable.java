@@ -33,7 +33,7 @@ public class RainbowTable extends BaseEntityBlock {
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return Block.box(2.0, 2.0, 2.0, 14.0, 20.0, 14.0);
+        return Block.box(2.0, 0.0, 2.0, 14.0, 20.0, 14.0);
     }
 
     @Override
@@ -49,7 +49,15 @@ public class RainbowTable extends BaseEntityBlock {
         if (!level.isClientSide) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof RainbowTableTile) {
-                NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) blockEntity, pos);
+//                BlockPos below = pos.below();
+//                BlockEntity pool = level.getBlockEntity(below);
+//                if (pool instanceof IManaPool manaPool){
+//                    int mana = manaPool.getCurrentMana();
+//                    if (mana >= 100000)
+                        NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) blockEntity, pos);
+//                    else player.displayClientMessage(new TextComponent("魔力不足！！！"), true);
+//                } else player.displayClientMessage(new TextComponent("无魔力供给方块！！！"), true);
+
             }
             return InteractionResult.CONSUME;
         }

@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:celestial_transmute",
+  "inputs": [
+    {
+      "item": "minecraft:emerald",
+      "count": 32
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 64
+    },
+    {
+      "item": "ex_enigmaticlegacy:opal_ingot",
+      "count": 20
+    },
+    {
+      "item": "ex_enigmaticlegacy:custom_ingot",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:opally",
+    "count": 1
+  }
+}

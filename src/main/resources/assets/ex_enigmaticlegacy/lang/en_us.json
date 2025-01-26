@@ -56,6 +56,7 @@
   "block.ex_enigmaticlegacy.dark_night_grass": "Dark Night Grass",
   "block.ex_enigmaticlegacy.frost_lotus": "Frost Lotus",
   "block.ex_enigmaticlegacy.lycorisradiata": "Lycorisradiata",
+  "block.ex_enigmaticlegacy.frost_blossom": "Frost Blossom",
 
 
   "curios.identifier.holy_ring": "",
@@ -69,6 +70,7 @@
   "info.ex_enigmaticlegacy.book": "In the depths of a forgotten ruin, there is a legend about the books left behind by the gods. 'Some call it the Endless Book', while others call it the 'Eternal Forbidden Book'. It is said that the book floats in the endless void, and the words disappear like stars, and anyone who tries to open it will be bound by an unknown power, and according to legend, the book hides the secret treasures of countless ancient gods",
   "info.ex_enigmaticlegacy.book.subtitle": "It Is A Book Left Behind By The Gods",
   "item.ex_enigmaticlegacy.astral_ingot": "Astral Ingot",
+  "item.ex_enigmaticlegacy.frost_enchantress": "Frost Enchantress",
   "item.ex_enigmaticlegacy.astral_nugget": "Astral Nugget",
   "item.ex_enigmaticlegacy.astral_pile": "Astral Pile",
   "item.ex_enigmaticlegacy.bedrock_breaker": "Bedrock Breaker",
@@ -184,7 +186,8 @@
   "item.ex_enigmaticlegacy.piece_of_nebula": "Piece of Nebula",
   "item.ex_enigmaticlegacy.mat_inscribed_ingot": "Mat Inscribed Ingot",
   "item.ex_enigmaticlegacy.dragoncrystal": "Dragoncrystal",
-
+  "item.ex_enigmaticlegacy.dead_substance": "Dead Substance",
+  "item.ex_enigmaticlegacy.natural_thousand_blades": "Natural Thousand Blades",
   "item.ex_enigmaticlegacy.green_determination": "Green Soul",
   "item.ex_enigmaticlegacy.red_determination": "Determination",
   "item.ex_enigmaticlegacy.blue_determination": "Blue Soul",
@@ -210,6 +213,18 @@
   "subtitles.meow": "",
   "subtitles.nothing": "",
 
+
+
+
+  "ex_enigmaticlegacy.swordInfo.3": "Third Ability Unlocked",
+  "ex_enigmaticlegacy.swordInfo.4": "Fourth Ability Unlocked",
+  "ex_enigmaticlegacy.swordInfo.5": "Fifth Ability Unlocked",
+  "info.ex_enigmaticlegacy.natural_thousand_blades.bloom_active": "Bloom Active",
+  "info.ex_enigmaticlegacy.natural_thousand_blades.mana":"Mana：%s",
+  "info.ex_enigmaticlegacy.natural_thousand_blades.lv": "Level: %s",
+  "item.ex_enigmaticlegacy.dead_substance.desc":"Only death can earn the medal of the brave, \nwhich is also a badge of luck",
+  "item.ex_enigmaticlegacy.astral_pile.desc": "Contains the power of stardust, \nif you want to obtain it, you must first have a carrier and condense it, \nbut the price of time is also important",
+  "gui.ex_enigmaticlegacy.category.rainbow_table": "Rainbow Table",
   "item.info.mana": "Mana: %s/%s",
   "item.info.durability": "Durability: %s/%s",
   "tooltip.shift": "Hold Shift for Details",
@@ -245,7 +260,7 @@
   "text.ex_enigmaticlegacy.manaita_sword.damage": "Damage",
   "text.ex_enigmaticlegacy.manaita_sword.speed": "1.6 speed",
   "screen.ex_enigmaticlegacy.celestia_ht.name": "Celestia",
-  "enchantment.ex_enigmaticlegacy.wither": "Withering",
+  "enchantment.botania.wither": "Withering",
   "enchantment.ex_enigmaticlegacy.wither.desc": "Inflicts wither effect on hit enemies",
   "message.insufficient_mana": "Insufficient mana! Level dropped to: %s",
   "message.insufficient_mana.title": "Insufficient Mana",

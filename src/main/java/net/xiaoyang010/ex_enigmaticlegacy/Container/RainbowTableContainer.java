@@ -54,14 +54,22 @@ public class RainbowTableContainer extends AbstractContainerMenu implements Supp
                     142));
         }
 
-        this.addDataSlots(this.blockEntity.getTime());
+        this.addDataSlots(this.blockEntity.getDate());
     }
 
     @OnlyIn(Dist.CLIENT)
     public int getTime() {
-        return (int) Math.floor(this.blockEntity.getTime().get(0) / 40d * 35d);
+        return (int) Math.floor(this.blockEntity.getDate().get(0) / 40d * 35d);
     }
 
+    @Override
+    public void broadcastChanges() {
+        int mana = this.blockEntity.getCurrentMana();
+        if (mana < 100000) {
+
+        }
+        super.broadcastChanges();
+    }
 
     @Override
     public Map<Integer, Slot> get() {
@@ -70,7 +78,7 @@ public class RainbowTableContainer extends AbstractContainerMenu implements Supp
 
     @Override
     public boolean stillValid(Player player) {
-        return stillValid(this.access, player, blockEntity.getBlockState().getBlock());
+        return this.blockEntity.stillValid(player);
     }
 
     @Override

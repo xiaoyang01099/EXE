@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Future.FunctionalFlower;
+package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class SnowFlower extends TileEntityFunctionalFlower {
+public class FrostBlossomTile extends TileEntityFunctionalFlower {
     private static final int MANA_COST = 5000;
     private static final int MAX_MANA = 100000;
     private static final int COOLDOWN_TIME = 20;
@@ -27,12 +27,12 @@ public class SnowFlower extends TileEntityFunctionalFlower {
 
     public static Set<BlockPos> SNOW_FLOWER_POSITIONS = new HashSet<>();
 
-    public SnowFlower(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public FrostBlossomTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-    public static class FunctionalWandHud extends TileEntityFunctionalFlower.FunctionalWandHud<SnowFlower> {
-        public FunctionalWandHud(SnowFlower flower) {
+    public static class FunctionalWandHud extends TileEntityFunctionalFlower.FunctionalWandHud<FrostBlossomTile> {
+        public FunctionalWandHud(FrostBlossomTile flower) {
             super(flower);
         }
     }

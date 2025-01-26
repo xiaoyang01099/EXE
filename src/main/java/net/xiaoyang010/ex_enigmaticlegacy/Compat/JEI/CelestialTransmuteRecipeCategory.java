@@ -25,8 +25,7 @@ import java.util.List;
 
 public class CelestialTransmuteRecipeCategory implements IRecipeCategory<CelestialTransmuteRecipe> {
     public static final ResourceLocation UID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "celestial_transmute");
-    public static final ResourceLocation TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID,
-            "textures/gui/celestial_holiness_transmute_jei.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "textures/gui/celestial_holiness_transmute_jei.png");
 
     private final IDrawable background;
     private final IDrawable icon;

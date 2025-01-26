@@ -1,0 +1,28 @@
+{
+  "type": "avaritia:extreme_shaped",
+  "result": {
+    "item": "ex_enigmaticlegacy:infinity_potato"
+  },
+  "pattern": [
+    "AAAAAAAAA",
+    "AAAAAAAAA",
+    "AAACACAAA",
+    "AAAAAAAAA",
+    "AACABACAA",
+    "AAACCCAAA",
+    "AAAAAAAAA",
+    "AAAAAAAAA",
+    "AAAAAAAAA"
+  ],
+  "key": {
+    "A": {
+      "item": "botania:tiny_potato"
+    },
+    "B": {
+      "item": "avaritia:infinity_catalyst"
+    },
+    "C": {
+      "item": "minecraft:diamond"
+    }
+  }
+}

@@ -38,13 +38,12 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<DarkNightGrassTile>> DARK_NIGHT_GRASS_TILE = REGISTRY.register("dark_night_grass_tile", () -> BlockEntityType.Builder.of((pos, state) -> new DarkNightGrassTile(ModBlockEntities.DARK_NIGHT_GRASS_TILE.get(), pos, state), ModBlocks.DARK_NIGHT_GRASS.get()).build(null));
     public static final RegistryObject<BlockEntityType<FrostLotusFlowerTile>> FROST_LOTUS_TILE = REGISTRY.register("frost_lotus_tile", () -> BlockEntityType.Builder.of((pos, state) -> new FrostLotusFlowerTile(ModBlockEntities.FROST_LOTUS_TILE.get(), pos, state), ModBlocks.FROST_LOTUS.get()).build(null));
     public static final RegistryObject<BlockEntityType<LycorisradiataTile>> LYCORISRADIATA_TILE = REGISTRY.register("lycorisradiata_tile", () -> BlockEntityType.Builder.of((pos, state) -> new LycorisradiataTile(ModBlockEntities.LYCORISRADIATA_TILE.get(), pos, state), ModBlocks.LYCORISRADIATA.get()).build(null));
-
+    public static final RegistryObject<BlockEntityType<FrostBlossomTile>> FROST_BLOSSOM_TILE = REGISTRY.register("frost_blossom_tile", () -> BlockEntityType.Builder.of((pos, state) -> new FrostBlossomTile(ModBlockEntities.FROST_BLOSSOM_TILE.get(), pos, state), ModBlocks.FROST_BLOSSOM.get()).build(null));
 
 
 
 
     public static final RegistryObject<BlockEntityType<DaybloomBlockTile>> DAYBLOOM_TILE = register("daybloom_tile", ModBlocks.DAYBLOOM, DaybloomBlockTile::new);
-    /*public static final RegistryObject<BlockEntityType<BelieverTile>> BELIEVERTILE = register("believertile", ModBlocks.BELIEVER, BelieverTile::new);*/
     public static final RegistryObject<BlockEntityType<OrechidEndiumTile>> ORECHIDENDIUMTILE = register("orechidendiumtile", ModBlocks.ORECHIDENDIUM, OrechidEndiumTile::new);
     public static final RegistryObject<BlockEntityType<SoarleanderTile>> SOARLEANDERTILE = register("soarleander", ModBlocks.SOARLEANDER, SoarleanderTile::new);
     public static final RegistryObject<BlockEntityType<AsgardFlowerTile>> ASGARDANDELIONTILE = register("asgardandeliontile", ModBlocks.ASGARDANDELION, AsgardFlowerTile::new);

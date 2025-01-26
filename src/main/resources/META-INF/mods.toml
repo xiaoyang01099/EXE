@@ -5,7 +5,7 @@ license="null"
 [[mods]]
 modId="ex_enigmaticlegacy"
 version="1.18.2-0.0.1"
-displayName="神秘遗物EX"
+displayName="EXEnigmaticlegacy"
 credits="xiaoyang010"
 displayURL="https://space.bilibili.com/176266911"
 authors="xiaoyang010"
@@ -19,6 +19,15 @@ description = '''正在努力变强，我会加油哒！'''
     ordering="NONE"
     side="BOTH"
 
+
+[[dependencies.ex_enigmaticlegacy]]
+    modId="avaritia"
+    mandatory=true
+    versionRange="[1.18.2-4.0,)"
+    ordering="AFTER"
+    side="BOTH"
+
+
 [[dependencies.ex_enigmaticlegacy]]
     modId="curios"
     mandatory=true
@@ -30,6 +39,13 @@ description = '''正在努力变强，我会加油哒！'''
     modId="botania"
     mandatory=true
     versionRange="[1.18.2-435,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.ex_enigmaticlegacy]]
+    modId="attributefix"
+    mandatory=false
+    versionRange="[1.18.2-14.0.4,)"
     ordering="AFTER"
     side="BOTH"
 

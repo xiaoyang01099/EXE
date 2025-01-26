@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:rainbow_table",
+  "ingredients": [
+    {
+      "item": "ex_enigmaticlegacy:infinitydrop",
+      "count": 10
+    },
+    {
+      "item": "ex_enigmaticlegacy:white_dust",
+      "count": 64
+    },
+    {
+      "item": "avaritia:infinity_catalyst",
+      "count": 5
+    },
+    {
+      "item": "ex_enigmaticlegacy:blocknature",
+      "count": 1
+    }
+  ],
+  "output": {
+    "item": "ex_enigmaticlegacy:rainbowmanaita",
+    "count": 2
+  }
+}
