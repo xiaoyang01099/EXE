@@ -39,6 +39,7 @@ public class ModItems {
 	public static final RegistryObject<Item> BRONZE_ORE = block(ModBlocks.BRONZE_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> OPAL_ORE = block(ModBlocks.OPAL_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 
+	public static final RegistryObject<Item> PAGED_CHEST = block(ModBlocks.PAGED_CHEST, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
 	public static final RegistryObject<Item> ARCANE_ICE_CHUNK = block(ModBlocks.ARCANE_ICE_CHUNK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> DECAY_BLOCK = block(ModBlocks.DECAY_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> IRIDIUM_BLOCK = block(ModBlocks.IRIDIUM_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);

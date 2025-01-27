@@ -62,13 +62,9 @@ public class RainbowTableContainer extends AbstractContainerMenu implements Supp
         return (int) Math.floor(this.blockEntity.getDate().get(0) / 40d * 35d);
     }
 
-    @Override
-    public void broadcastChanges() {
-        int mana = this.blockEntity.getCurrentMana();
-        if (mana < 100000) {
-
-        }
-        super.broadcastChanges();
+    @OnlyIn(Dist.CLIENT)
+    public int getMana(){
+        return (int) Math.floor((double) this.blockEntity.getDate().get(1) / RainbowTableTile.MAX_MANA * 85d);
     }
 
     @Override

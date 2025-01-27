@@ -49,15 +49,7 @@ public class RainbowTable extends BaseEntityBlock {
         if (!level.isClientSide) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof RainbowTableTile) {
-//                BlockPos below = pos.below();
-//                BlockEntity pool = level.getBlockEntity(below);
-//                if (pool instanceof IManaPool manaPool){
-//                    int mana = manaPool.getCurrentMana();
-//                    if (mana >= 100000)
-                        NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) blockEntity, pos);
-//                    else player.displayClientMessage(new TextComponent("魔力不足！！！"), true);
-//                } else player.displayClientMessage(new TextComponent("无魔力供给方块！！！"), true);
-
+                NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) blockEntity, pos);
             }
             return InteractionResult.CONSUME;
         }

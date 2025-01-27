@@ -1,13 +1,13 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Item.armor;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -20,9 +20,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -65,7 +63,7 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
     private static final Properties NEBULA_ARMOR = new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).durability(1000).rarity(AdvancedBotanyAPI.rarityNebula);
 
     public NebulaArmor(EquipmentSlot slot) {
-        super(slot, AdvancedBotanyAPI.nebulaArmorMaterial, NEBULA_ARMOR);
+        super(slot, ArmorMaterials.NETHERITE, NEBULA_ARMOR);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -87,21 +85,32 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
+        Multimap<Attribute, AttributeModifier> attributes = getDefaultAttributeModifiers(slot);
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 
+        builder.putAll(attributes);
         if (slot == EquipmentSlot.CHEST) {
-            attributes.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(CHEST_UUID, "Nebula Chest modifier",
+            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(CHEST_UUID, "Nebula Chest modifier",
                     1.0F - (float) getDamage(stack) / 1000.0F, AttributeModifier.Operation.ADDITION));
         }else if (slot == EquipmentSlot.HEAD && stack.getItem() == ModArmors.NEBULA_HELMET_REVEAL.get()) {
-            attributes.put(Attributes.MAX_HEALTH, new AttributeModifier(HEAD_REVEAL_UUID, "Nebula Helm Reveal modifier",
+            builder.put(Attributes.MAX_HEALTH, new AttributeModifier(HEAD_REVEAL_UUID, "Nebula Helm Reveal modifier",
                     20.0F * (1.0F - (float)getDamage(stack) / 1000.0F), AttributeModifier.Operation.ADDITION));
         }else if (slot == EquipmentSlot.HEAD && stack.getItem() == ModArmors.NEBULA_HELMET.get()) {
-            attributes.put(Attributes.MAX_HEALTH, new AttributeModifier(HEAD_UUID, "Nebula Helm modifier",
+            builder.put(Attributes.MAX_HEALTH, new AttributeModifier(HEAD_UUID, "Nebula Helm modifier",
                     20.0F * (1.0F - (float)getDamage(stack) / 1000.0F), AttributeModifier.Operation.ADDITION));
         }
 
 
-        return attributes;
+        return builder.build();
+    }
+
+    @Override
+    public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> stacks) {
+        if (this.allowdedIn(tab)){
+            ItemStack stack = new ItemStack(this);
+            stack.getOrCreateTag().putBoolean("Unbreakable",true);
+            stacks.add(stack);
+        }
     }
 
     @Override

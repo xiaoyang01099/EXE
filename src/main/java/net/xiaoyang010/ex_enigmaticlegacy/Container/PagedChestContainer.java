@@ -8,15 +8,13 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
-import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
-import net.xiaoyang010.ex_enigmaticlegacy.Network.PageChestPacket;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.PagedSlot;
 
 public class PagedChestContainer extends AbstractContainerMenu {
     private final Container container;
     private static final int PAGES = 5;
     private static final int SLOTS_PER_PAGE = 117;
-    private final ContainerData pageData;
+    private static ContainerData pageData;
 
     public PagedChestContainer(int windowId, Inventory playerInventory, Container container) {
         super(ModMenus.PAGED_CHEST, windowId);
@@ -49,7 +47,7 @@ public class PagedChestContainer extends AbstractContainerMenu {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 13; col++) {
                 int index = col + (row * 13);
-                this.addSlot(new PagedSlot(container, index, 12 + col * 18, 8 + row * 18, 0));
+                this.addSlot(new PagedSlot(container,this, index, 12 + col * 18, 8 + row * 18));
             }
         }
 
@@ -72,20 +70,25 @@ public class PagedChestContainer extends AbstractContainerMenu {
     private void updateSlots() {
         for (int i = 0; i < SLOTS_PER_PAGE; i++) {
             if (this.slots.get(i) instanceof PagedSlot pagedSlot) {
-                pagedSlot.setPage(pageData.get(0));
+                //pagedSlot.setPage(pageData.get(0));
+                pagedSlot.setChanged();
             }
         }
     }
 
     public void nextPage() {
-        if (getCurrentPage() < PAGES - 1) {
-            NetworkHandler.CHANNEL.sendToServer(new PageChestPacket(getCurrentPage() + 1));
+        if (getCurrentPage() < (PAGES-1)) {
+            //updateSlots();
+            // NetworkHandler.CHANNEL.sendToServer(new PageChestPacket(getCurrentPage() + 1));
+            pageData.set(0,getCurrentPage()+1);
         }
     }
 
     public void previousPage() {
         if (getCurrentPage() > 0) {
-            NetworkHandler.CHANNEL.sendToServer(new PageChestPacket(getCurrentPage() - 1));
+            //updateSlots();
+            // NetworkHandler.CHANNEL.sendToServer(new PageChestPacket(getCurrentPage() - 1));
+            pageData.set(0,getCurrentPage()-1);
         }
     }
 
@@ -105,7 +108,6 @@ public class PagedChestContainer extends AbstractContainerMenu {
     public boolean stillValid(Player player) {
         return container.stillValid(player);
     }
-
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
@@ -135,5 +137,9 @@ public class PagedChestContainer extends AbstractContainerMenu {
         }
 
         return itemstack;
+    }
+
+    public Container getContainer() {
+        return container;
     }
 }

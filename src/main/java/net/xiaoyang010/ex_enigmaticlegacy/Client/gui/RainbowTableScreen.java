@@ -32,6 +32,11 @@ public class RainbowTableScreen extends AbstractContainerScreen<RainbowTableCont
             this.blit(ms, this.leftPos + 99, this.topPos + 51, 176, 0, time, 5);
         }
 
+        int mana = this.menu.getMana();
+        if (mana > 0) {
+            this.blit(ms, this.leftPos + 40, this.topPos + 74, 0, 183, mana, 5);
+        }
+
         RenderSystem.disableBlend();
     }
 
