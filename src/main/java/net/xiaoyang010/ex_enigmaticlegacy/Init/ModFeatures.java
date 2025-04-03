@@ -33,6 +33,8 @@ public class ModFeatures {
     public static final RegistryObject<Feature<?>> LEAD;
     public static final RegistryObject<Feature<?>> BRONZE;
     public static final RegistryObject<Feature<?>> OPAL;
+    public static final RegistryObject<Feature<?>> SPECTRITE;
+
 
 
     public ModFeatures() {
@@ -77,6 +79,7 @@ public class ModFeatures {
         LEAD = register("lead_ore", LeadOreFeature::feature, new ModFeatureRegistration(GenerationStep.Decoration.UNDERGROUND_ORES, LeadOreFeature.GENERATE_BIOMES, LeadOreFeature::placedFeature));
         BRONZE = register("bronze_ore", BronzeOreFeature::feature, new ModFeatureRegistration(GenerationStep.Decoration.UNDERGROUND_ORES, BronzeOreFeature.GENERATE_BIOMES, BronzeOreFeature::placedFeature));
         OPAL = register("opal_ore", OpalOreFeature::feature, new ModFeatureRegistration(GenerationStep.Decoration.UNDERGROUND_ORES, OpalOreFeature.GENERATE_BIOMES, OpalOreFeature::placedFeature));
+        SPECTRITE = register("spectrite_ore", SpectriteOreFeature::feature, new ModFeatureRegistration(GenerationStep.Decoration.UNDERGROUND_ORES, SpectriteOreFeature.GENERATE_BIOMES, SpectriteOreFeature::placedFeature));
 
     }
 }

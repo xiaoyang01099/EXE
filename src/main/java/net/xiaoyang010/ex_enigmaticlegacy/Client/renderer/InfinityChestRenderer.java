@@ -25,7 +25,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.InfinityChest;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.InfinityChestEntity;
 
 @OnlyIn(Dist.CLIENT)
@@ -41,20 +41,11 @@ public class InfinityChestRenderer implements BlockEntityRenderer<InfinityChestE
         this.lock = modelpart.getChild("lock");
     }
 
-    public static LayerDefinition createSingleBodyLayer() {
-        MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
-        partdefinition.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F), PartPose.ZERO);
-        partdefinition.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F), PartPose.offset(0.0F, 9.0F, 1.0F));
-        partdefinition.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F), PartPose.offset(0.0F, 8.0F, 0.0F));
-        return LayerDefinition.create(meshdefinition, 64, 64);
-    }
-
     @Override
     public void render(InfinityChestEntity chest, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
         Level level = chest.getLevel();
         boolean flag = level != null;
-        BlockState blockstate = flag ? chest.getBlockState() : ModBlocks.INFINITYCHEST.get().defaultBlockState().setValue(InfinityChest.FACING, Direction.SOUTH);
+        BlockState blockstate = flag ? chest.getBlockState() : ModBlockss.INFINITYCHEST.get().defaultBlockState().setValue(InfinityChest.FACING, Direction.SOUTH);
         Block block = blockstate.getBlock();
         if (block instanceof InfinityChest) {
             pPoseStack.pushPose();
@@ -77,9 +68,12 @@ public class InfinityChestRenderer implements BlockEntityRenderer<InfinityChestE
     private void render(PoseStack pPoseStack, VertexConsumer pConsumer, ModelPart pLidPart, ModelPart pLockPart, ModelPart pBottomPart, float pLidAngle, int pPackedLight, int pPackedOverlay) {
         pLidPart.xRot = -(pLidAngle * 1.5707964F);
         pLockPart.xRot = pLidPart.xRot;
-        pLidPart.render(pPoseStack, pConsumer, pPackedLight, pPackedOverlay);
-        pLockPart.render(pPoseStack, pConsumer, pPackedLight, pPackedOverlay);
         pBottomPart.render(pPoseStack, pConsumer, pPackedLight, pPackedOverlay);
+        pLockPart.render(pPoseStack, pConsumer, pPackedLight, pPackedOverlay);
+        pPoseStack.pushPose();
+        pPoseStack.translate(0.0D, 0.06D, 0.0D);
+        pLidPart.render(pPoseStack, pConsumer, pPackedLight, pPackedOverlay);
+        pPoseStack.popPose();
     }
 
     protected Material getMaterial(InfinityChestEntity blockEntity) {

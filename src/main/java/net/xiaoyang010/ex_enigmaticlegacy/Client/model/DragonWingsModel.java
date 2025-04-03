@@ -3,16 +3,19 @@ package net.xiaoyang010.ex_enigmaticlegacy.Client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 public class DragonWingsModel extends EntityModel<LivingEntity> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("ex_enigmaticlegacy", "dragonwings_layer"), "main");
     private final ModelPart rightWing;
     private final ModelPart rightWingTip;
     private final ModelPart leftWing;
@@ -42,18 +45,13 @@ public class DragonWingsModel extends EntityModel<LivingEntity> {
     public void setupAnim(LivingEntity entity, float limbSwing, float limbSwingAmount,
                           float ageInTicks, float netHeadYaw, float headPitch) {
         if (entity instanceof Player player){
-//            boolean flying = player.getAbilities().flying;
-//            boolean fallFlying = player.isFallFlying();
-//            if (flying || fallFlying){
+
                 float wingAnimation = (float)Math.cos(ageInTicks * 0.1F) * 0.1F;
-                // 右翼动画
                 this.rightWing.zRot = 0.125F - wingAnimation;
                 this.rightWingTip.zRot = -((float)(Math.sin(ageInTicks * 0.15F) + 0.5F)) * 0.75F;
 
-                // 左翼动画 (镜像右翼)
                 this.leftWing.zRot = -0.125F + wingAnimation;
                 this.leftWingTip.zRot = ((float)(Math.sin(ageInTicks * 0.15F) + 0.5F)) * 0.75F;
-//            }
         }
 
     }
@@ -61,9 +59,7 @@ public class DragonWingsModel extends EntityModel<LivingEntity> {
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight,
                                int packedOverlay, float red, float green, float blue, float alpha) {
-        // 在渲染时稍微调整整体位置
         poseStack.pushPose();
-        // 向后移动一点点以确保翅膀从背部延伸
         poseStack.translate(0, 0, 0.2);
 
         rightWing.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

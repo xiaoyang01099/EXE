@@ -1,11 +1,10 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.*;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.AquaSword;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.NaturalThousandBlades;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.SpaceBlade;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
@@ -30,5 +29,6 @@ public class ModWeapons {
     public static final RegistryObject<Item> SONG_OF_THE_ABYSS = REGISTRY.register("song_of_the_abyss", SongOfTheAbyss::new);
     public static final RegistryObject<Item> SPACE_BLADE = REGISTRY.register("space_blade", () -> new SpaceBlade(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
     public static final RegistryObject<Item> NATURAL_THOUSAND_BLADES = REGISTRY.register("natural_thousand_blades", () -> new NaturalThousandBlades(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+    public static final RegistryObject<Item> AQUA_SWORD = REGISTRY.register("aqua_sword", () -> new AquaSword(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 }

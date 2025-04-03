@@ -46,7 +46,7 @@ public class InfinityGaiaSpreader extends BlockModWaterloggable implements Entit
     public final VariantE variant;
 
     public InfinityGaiaSpreader(VariantE v, BlockBehaviour.Properties builder) {
-        super(builder);
+        super(builder.requiresCorrectToolForDrops());
         this.registerDefaultState((BlockState)this.defaultBlockState().setValue(BotaniaStateProps.HAS_SCAFFOLDING, false));
         this.variant = v;
     }

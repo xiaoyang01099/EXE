@@ -15,7 +15,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 
 import java.util.function.Supplier;
 
@@ -30,7 +30,7 @@ public class FrostLotusFlower extends FlowerBlock {
 
     @OnlyIn(Dist.CLIENT)
     public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.FROST_LOTUS.get(),
+        ItemBlockRenderTypes.setRenderLayer(ModBlockss.FROST_LOTUS.get(),
                 renderType -> renderType == RenderType.cutout());
     }
 
@@ -44,6 +44,6 @@ public class FrostLotusFlower extends FlowerBlock {
 
         // 允许在水中或特定方块上生存
         return hasWater || soil.is(Blocks.DIRT) || soil.is(Blocks.GRASS_BLOCK)
-                || soil.is(ModBlocks.BLOCKNATURE.get());
+                || soil.is(ModBlockss.BLOCKNATURE.get());
     }
 }

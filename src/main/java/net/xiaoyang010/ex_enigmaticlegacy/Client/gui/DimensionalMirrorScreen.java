@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +16,7 @@ import net.minecraft.world.level.Level;
 
 import net.xiaoyang010.ex_enigmaticlegacy.Container.DimensionalMirrorContainer;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
-import net.xiaoyang010.ex_enigmaticlegacy.Network.TeleportPacket;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.TeleportPacket;
 
 public class DimensionalMirrorScreen extends AbstractContainerScreen<DimensionalMirrorContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation("ex_enigmaticlegacy", "textures/gui/dimensional_mirror.png");

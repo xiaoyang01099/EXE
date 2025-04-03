@@ -13,7 +13,6 @@ import net.minecraft.resources.ResourceLocation;
 public class ModelNidavellirForge extends Model {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
             new ResourceLocation("ex_enigmaticlegacy", "nidavellir_forge"), "main");
-
     private final ModelPart bottomAnvil;
     private final ModelPart topAnvil;
 
@@ -48,23 +47,8 @@ public class ModelNidavellirForge extends Model {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight,
-                               int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         bottomAnvil.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         topAnvil.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-    }
-
-    public void renderBottom(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay) {
-        bottomAnvil.render(poseStack, vertexConsumer, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
-    }
-
-    public void renderTop(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay) {
-        topAnvil.render(poseStack, vertexConsumer, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
-    }
-
-    public void setRotationAngle(ModelPart modelPart, float x, float y, float z) {
-        modelPart.xRot = x;
-        modelPart.yRot = y;
-        modelPart.zRot = z;
     }
 }

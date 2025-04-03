@@ -24,8 +24,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTestType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
-import net.xiaoyang010.ex_enigmaticlegacy.World.teleporter.MinersHeavenOldTeleporter;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 
 import java.util.List;
 import java.util.Random;
@@ -40,7 +39,7 @@ public class IridiumFeature extends OreFeature {
 
     public static Feature<?> feature() {
         FEATURE = new IridiumFeature();
-        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:iridium_ore", FEATURE, new OreConfiguration(IridiumFeature.IridiumFeatureRuleTest.INSTANCE, ((Block) ModBlocks.IRIDIUM_ORE.get()).defaultBlockState(), 6));
+        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:iridium_ore", FEATURE, new OreConfiguration(IridiumFeature.IridiumFeatureRuleTest.INSTANCE, ((Block) ModBlockss.IRIDIUM_ORE.get()).defaultBlockState(), 6));
         PLACED_FEATURE = PlacementUtils.register("ex_enigmaticlegacy:iridium_ore", CONFIGURED_FEATURE, List.of(CountPlacement.of(3), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-30), VerticalAnchor.absolute(60)), BiomeFilter.biome()));
         return FEATURE;
     }

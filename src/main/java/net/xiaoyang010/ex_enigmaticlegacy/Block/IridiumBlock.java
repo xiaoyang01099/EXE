@@ -7,6 +7,10 @@ import net.minecraft.world.level.material.Material;
 
 public class IridiumBlock extends Block {
     public IridiumBlock() {
-        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(2f, 10f));
+        super(BlockBehaviour
+                .Properties.of(Material.STONE)
+                .sound(SoundType.STONE)
+                .strength(2f, 10f)
+                .requiresCorrectToolForDrops());
     }
 }

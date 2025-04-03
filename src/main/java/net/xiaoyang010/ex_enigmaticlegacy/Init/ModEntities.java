@@ -13,7 +13,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.*;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.SpectriteWither;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.SpectriteWither;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 
@@ -30,9 +30,29 @@ public class ModEntities {
 //							.fireImmune()
 //							.build(new ResourceLocation("ex_enigmaticlegacy", "rainbow_wither_skull").toString()));
 
+	public static final RegistryObject<EntityType<RideablePearlEntity>> RIDEABLE_PEARL_ENTITY =
+			REGISTRY.register("rideable_pearl_entity",
+					() -> EntityType.Builder.<RideablePearlEntity>of(RideablePearlEntity::new, MobCategory.MISC)
+							.sized(0.25F, 0.25F)
+							.clientTrackingRange(4)
+							.updateInterval(10)
+							.build(new ResourceLocation("ex_enigmaticlegacy", "rideable_pearl_entity").toString()));
+
+	public static final RegistryObject<EntityType<SeaSerpent>> SEA_SERPENT = REGISTRY.register("sea_serpent",
+			() -> EntityType.Builder.of(SeaSerpent::new, MobCategory.WATER_CREATURE)
+					.sized(1.1F, 1.1F)
+					.clientTrackingRange(80)
+					.updateInterval(3)
+					.build(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "sea_serpent").toString()));
+
+	public static final RegistryObject<EntityType<SacabambaspisEntity>> SACABAMBASPIS = REGISTRY.register("sacabambaspis",
+			() -> EntityType.Builder.of(SacabambaspisEntity::new, MobCategory.WATER_AMBIENT)
+					.sized(0.6F, 0.5F)
+					.build(new ResourceLocation("ex_enigmaticlegacy","sacabambaspis").toString()));
+
 	public static final RegistryObject<EntityType<CloneEntity>> CLONE_ENTITY = REGISTRY.register("clone_entity",
 			() -> EntityType.Builder.of(CloneEntity::new, MobCategory.MONSTER)
-					.sized(0.6f, 1.8f) // 设置碰撞箱大小
+					.sized(0.6f, 1.8f)
 					.build(new ResourceLocation("ex_enigmaticlegacy", "clone_entity").toString()));
 
 	public static final RegistryObject<EntityType<CapybaraEntity>> CAPYBARA = REGISTRY.register("capybara",
@@ -89,7 +109,6 @@ public class ModEntities {
 		event.enqueueWork(() -> {
 			Xiaoyang010Entity.init();
 			Xingyun2825Entity.init();
-//			CatMewEntity.init();
 		});
 	}
 
@@ -102,6 +121,8 @@ public class ModEntities {
 		event.put(CAPYBARA.get(), CapybaraEntity.createAttributes().build());
 		event.put(SPOTTED_GARDEN_EEL.get(), SpottedGardenEelEntity.createAttributes().build());
 		event.put(CLONE_ENTITY.get(), CloneEntity.createAttributes().build());
+		event.put(SEA_SERPENT.get(), SeaSerpent.createAttributes().build());
+		event.put(SACABAMBASPIS.get(), SacabambaspisEntity.createAttributes().build());
 	}
 
 }

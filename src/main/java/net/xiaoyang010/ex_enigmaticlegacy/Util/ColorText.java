@@ -11,8 +11,6 @@ public class ColorText {
     public static int bc ;
     private static final ChatFormatting[] color ={ChatFormatting.RED,ChatFormatting.GOLD,ChatFormatting.YELLOW,ChatFormatting.GREEN,ChatFormatting.AQUA,ChatFormatting.LIGHT_PURPLE,ChatFormatting.BLUE};
 
-//你可以更改大括号里面的内容来改变颜色 注意其他的没弄明白千万不要乱改!
-
     public static String formatting(String input, ChatFormatting[] colours, double delay) {
         StringBuilder sb = new StringBuilder(input.length() * 5);
         if (delay <= 0.0D)

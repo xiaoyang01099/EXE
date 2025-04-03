@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -30,6 +31,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.ModelArmorNebula;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.model.ModelArmorWildHunt;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.NebulaArmorModel;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
@@ -43,9 +46,7 @@ import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.client.gui.TooltipHandler;
 import vazkii.botania.common.item.equipment.armor.manasteel.ItemManasteelArmor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaProficiencyArmor {
@@ -115,7 +116,7 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
 
     @Override
     public String getArmorTextureAfterInk(ItemStack stack, EquipmentSlot slot) {
-        return ExEnigmaticlegacyMod.MODID + ":textures/models/armor/armor_nebula.png";
+        return ExEnigmaticlegacyMod.MODID + ":textures/models/armor/nebula_armor.png";
     }
 
     public float getEfficiency(ItemStack stack, Player player) {
@@ -197,12 +198,29 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
             @OnlyIn(Dist.CLIENT)
             public net.minecraft.client.model.HumanoidModel<?> getArmorModel(LivingEntity entity,
                                                                              ItemStack stack, EquipmentSlot slot, net.minecraft.client.model.HumanoidModel<?> defaultModel) {
-
                 ModelPart modelPart = Minecraft.getInstance().getEntityModels()
-                        .bakeLayer(NebulaArmorModel.LAYER_LOCATION);
-                return new NebulaArmorModel<>(modelPart);
-            }
+                        .bakeLayer(ModelArmorNebula.LAYER_LOCATION);
 
+                HumanoidModel<?> armorModel;
+
+                if (slot == EquipmentSlot.FEET) {
+                    armorModel = new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+                            Map.of("right_leg", new ModelArmorNebula<>(modelPart, slot).rightBoot,
+                                    "left_leg", new ModelArmorNebula<>(modelPart, slot).leftBoot,
+                                    "head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
+                                    "hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
+                                    "body", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
+                                    "right_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
+                                    "left_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()))));
+                } else {
+                    armorModel = new ModelArmorNebula<>(modelPart, slot);
+                }
+
+                armorModel.crouching = entity.isShiftKeyDown();
+                armorModel.riding = defaultModel.riding;
+                armorModel.young = entity.isBaby();
+                return armorModel;
+            }
         });
     }
 

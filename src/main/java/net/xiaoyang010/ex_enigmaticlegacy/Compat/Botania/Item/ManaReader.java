@@ -18,7 +18,7 @@ public class ManaReader extends Item {
 
     public ManaReader(Properties rarity) {
         super(new Properties()
-                .tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
+                .tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)
                 .stacksTo(1));
     }
 

@@ -36,11 +36,9 @@ public class LeadOre extends OreBlock {
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-        // 检查是否使用了有加成的工具，例如精准采集
         if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, builder.getParameter(LootContextParams.TOOL)) > 0) {
             return Collections.singletonList(new ItemStack(this));
         } else {
-            // 自定义掉落物，例如掉落矿石碎片
             return List.of(new ItemStack(ModItems.LEAD_INGOT.get(), 2 + RANDOM.nextInt(2)));
         }
     }

@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
 
 import java.util.Random;
@@ -54,7 +54,7 @@ public class EndlessCakeBlock extends CakeBlock {
 
     private InteractionResult consumeCake(Level world, BlockPos pos, BlockState state, Player player) {
         player.awardStat(Stats.EAT_CAKE_SLICE);
-        player.getFoodData().eat(99, 99F); // 增加饱食度，不受饱食度限制
+        player.getFoodData().eat(99, 99F);
         world.playSound(null, pos, SoundEvents.GENERIC_EAT, SoundSource.PLAYERS, 1.0F, 1.0F);
 
         MobEffect[] effects = new MobEffect[]{
@@ -75,14 +75,15 @@ public class EndlessCakeBlock extends CakeBlock {
                 MobEffects.SLOW_FALLING,
                 MobEffects.CONDUIT_POWER,
                 MobEffects.HERO_OF_THE_VILLAGE,
-                MobEffects.LUCK
+                MobEffects.LUCK,
+                ModEffects.CREEPER_FRIENDLY.get(),
+                MobEffects.DOLPHINS_GRACE
         };
 
         Random random = new Random();
-        boolean giveFlight = random.nextInt(100) < 10; // 10% 概率给飞行能力
+        boolean giveFlight = random.nextInt(100) < 10;
 
         if (giveFlight && player.isCreative()) {
-            // 如果玩家在创造模式，不做飞行操作，创造模式自带飞行
             if (world.isClientSide())
                 player.sendMessage(new TranslatableComponent("info.ex_enigmaticlegacy.flying.error"), player.getUUID());
         } else if (giveFlight) {
@@ -91,9 +92,8 @@ public class EndlessCakeBlock extends CakeBlock {
             if (!world.isClientSide)
                 player.addEffect(new MobEffectInstance(ModEffects.FLYING.get(), 24000, 0));
         } else {
-            // 随机给予增益效果
             MobEffect randomEffect = effects[random.nextInt(effects.length)];
-            MobEffectInstance effectInstance = new MobEffectInstance(randomEffect, 24000, 9); // 20分钟，等级9
+            MobEffectInstance effectInstance = new MobEffectInstance(randomEffect, 24000, 9);
             if (!world.isClientSide)
                 player.addEffect(effectInstance);
         }
@@ -108,7 +108,6 @@ public class EndlessCakeBlock extends CakeBlock {
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
-        // 返回该方块的掉落物为自身
-        return new ItemStack(ModBlocks.ENDLESS_CAKE.get());
+        return new ItemStack(ModBlockss.ENDLESS_CAKE.get());
     }
 }

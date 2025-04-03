@@ -7,6 +7,6 @@ import net.minecraft.world.level.material.Material;
 
 public class ArcaneIceChunk extends Block {
     public ArcaneIceChunk() {
-        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(5f, 10f));
+        super(BlockBehaviour.Properties.of(Material.ICE).sound(SoundType.GLASS).strength(5f, 10f).requiresCorrectToolForDrops());
     }
 }

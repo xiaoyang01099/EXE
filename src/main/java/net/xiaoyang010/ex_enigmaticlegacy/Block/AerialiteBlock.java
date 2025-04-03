@@ -7,6 +7,6 @@ import net.minecraft.world.level.material.Material;
 
 public class AerialiteBlock extends Block {
     public AerialiteBlock() {
-        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(2f, 10f));
+        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(2f, 10f).requiresCorrectToolForDrops());
     }
 }

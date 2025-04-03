@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "ex_enigmaticlegacy:end_ore"
+    "ex_enigmaticlegacy:end_ore",
+    "ex_enigmaticlegacy:cobble_stone",
+    "ex_enigmaticlegacy:arcane_ice_chunk"
   ]
 }

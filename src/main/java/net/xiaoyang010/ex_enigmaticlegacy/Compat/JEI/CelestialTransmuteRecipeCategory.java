@@ -11,13 +11,12 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.CelestialTransmuteRecipe;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +33,7 @@ public class CelestialTransmuteRecipeCategory implements IRecipeCategory<Celesti
     public CelestialTransmuteRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE,0,0,176,88);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK,
-                new ItemStack(ModBlocks.CELESTIAL_HOLINESS_TRANSMUTER.get()));
+                new ItemStack(ModBlockss.CELESTIAL_HOLINESS_TRANSMUTER.get()));
         this.title = new TranslatableComponent("gui." + ExEnigmaticlegacyMod.MODID + ".category.celestial_transmute");
     }
 
@@ -99,7 +98,7 @@ public class CelestialTransmuteRecipeCategory implements IRecipeCategory<Celesti
 
     @Override
     @NotNull
-    public Class<? extends CelestialTransmuteRecipe> getRecipeClass() {
+    public Class<? extends CelestialTransmuteRecipe>getRecipeClass() {
         return CelestialTransmuteRecipe.class;
     }
 }

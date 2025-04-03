@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 
 import java.util.List;
@@ -50,7 +50,7 @@ public class PrismaticRadianceBlockHandler {
             ItemStack stack = event.getItemStack();
 
             // 正确获取方块的 Item 实例进行比较
-            if (stack.getItem() == ModBlocks.PRISMATICRADIANCEBLOCK.get().asItem()) {
+            if (stack.getItem() == ModBlockss.PRISMATICRADIANCEBLOCK.get().asItem()) {
                 boolean hasPrismaticRadianceBlock = player.getPersistentData().getBoolean("hasPrismaticRadianceBlock");
 
                 List<Either<FormattedText, TooltipComponent>> tooltipComponents = event.getTooltipElements();

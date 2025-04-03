@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
@@ -12,6 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.IContainerFactory;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.SpectriteChestTile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,14 @@ public class ModMenus {
                 BlockPos pos = data.readBlockPos();
                 BlockEntity blockEntity = inv.player.level.getBlockEntity(pos);
                 return new RainbowTableContainer(null, windowId, inv, blockEntity, pos);
+            });
+
+    public static final MenuType<SpectriteChestContainer> SPECTRITE_CHEST_CONTAINER = register("spectrite_chest",
+            (windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                Level level = inv.player.level;
+                return new SpectriteChestContainer(windowId, inv,
+                        (SpectriteChestTile)level.getBlockEntity(pos));
             });
 
     private static <T extends AbstractContainerMenu> MenuType<T> register(String registryname, IContainerFactory<T> containerFactory) {

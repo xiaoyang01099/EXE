@@ -14,7 +14,7 @@ public class DamageReductionEventHandler {
         MobEffectInstance effect = entity.getEffect(ModEffects.DAMAGE_REDUCTION.get());
 
         if (effect != null) {
-            event.setAmount(event.getAmount() * 0.01F);  // 减少99%伤害
+            event.setAmount(event.getAmount() * 0.01F);
         }
     }
 }

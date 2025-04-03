@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.SpectriteWither;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.SpectriteWither;
 
 public class SpectriteWitherRenderer extends LivingEntityRenderer<SpectriteWither, WitherBossModel<SpectriteWither>> {
 

@@ -22,7 +22,8 @@ public class EvilBlock extends Block {
     public EvilBlock() {
         super(BlockBehaviour.Properties.of(Material.STONE)
                 .sound(SoundType.STONE)
-                .strength(3f, 10f));
+                .strength(3f, 10f)
+                .requiresCorrectToolForDrops());
     }
 
     @Override
@@ -33,14 +34,6 @@ public class EvilBlock extends Block {
     @Override
     public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return 15;
-    }
-
-    @Override
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-        List<ItemStack> dropsOriginal = super.getDrops(state, builder);
-        if (!dropsOriginal.isEmpty())
-            return dropsOriginal;
-        return Collections.singletonList(new ItemStack(this, 1));
     }
 
     @Override

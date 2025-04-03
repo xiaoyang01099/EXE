@@ -9,6 +9,7 @@ public class DecayBlock extends Block {
     public DecayBlock() {
         super(BlockBehaviour.Properties.of(Material.STONE)
                 .sound(SoundType.STONE)
-                .strength(3f, 10f));
+                .strength(3f, 10f)
+                .requiresCorrectToolForDrops());
     }
 }

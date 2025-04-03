@@ -24,7 +24,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTestType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 
 import java.util.List;
 import java.util.Random;
@@ -40,7 +40,7 @@ public class EndOreFeature extends OreFeature {
     public static Feature<?> feature() {
         FEATURE = new EndOreFeature();
         CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:end_ore", FEATURE, new OreConfiguration(
-                EndOreFeatureRuleTest.INSTANCE, ((Block) ModBlocks.END_ORE.get()).defaultBlockState(), 6));
+                EndOreFeatureRuleTest.INSTANCE, ((Block) ModBlockss.END_ORE.get()).defaultBlockState(), 6));
         PLACED_FEATURE = PlacementUtils.register("ex_enigmaticlegacy:end_ore", CONFIGURED_FEATURE, List.of(
                 CountPlacement.of(3),
                 InSquarePlacement.spread(),

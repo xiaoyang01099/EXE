@@ -35,10 +35,7 @@ public class NebulaRod extends Item implements IManaItem {
     private static final int MANA_PER_USE = 5000;
 
     public NebulaRod(Properties properties) {
-        super(properties
-                .durability(100)
-                .setNoRepair()
-                .stacksTo(1));
+        super(properties.durability(100).setNoRepair().fireResistant());
     }
 
     @Override

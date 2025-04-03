@@ -12,28 +12,48 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.FluffyDandelionBlock;
+import net.xiaoyang010.ex_enigmaticlegacy.Block.custom.CustomSaplingBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.AsgardandelionParticle;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.DandelionFluffParticle;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.InfinityChestRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.*;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModParticleTypes;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSideHandler {
+
     public static final ResourceLocation INFINITY_CHEST_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity/chest/infinity_chest");
     public static final ModelLayerLocation INFINITY_CHEST = new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "infinity_chest"), "main");
+    public static final ResourceLocation SPECTRITE_CHEST_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity/chest/spectrite_chest");
+    public static final ModelLayerLocation SPECTRITE_CHEST = new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "spectrite_chest"), "main");
+    public static final ResourceLocation SPECTRITE_CHEST_LEFT_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity/chest/spectrite_chest_left");
+    public static final ModelLayerLocation SPECTRITE_CHEST_LEFT_DOUBLE = new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "spectrite_chest_left"), "main");
+    public static final ResourceLocation SPECTRITE_CHEST_RIGHT_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity/chest/spectrite_chest_right");
+    public static final ModelLayerLocation SPECTRITE_CHEST_RIGHT_DOUBLE = new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "spectrite_chest_right"), "main");
+
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event){
         if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
             event.addSprite(INFINITY_CHEST_TEXTURE);
         }
+
+        if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
+            event.addSprite(SPECTRITE_CHEST_TEXTURE);
+        }
+
+        if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
+            event.addSprite(SPECTRITE_CHEST_LEFT_TEXTURE);
+        }
+
+        if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
+            event.addSprite(SPECTRITE_CHEST_RIGHT_TEXTURE);
+        }
+
     }
 
     @SubscribeEvent
     public static void layerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(INFINITY_CHEST, InfinityChestRenderer::createSingleBodyLayer);
     }
 
     //花朵方块注册渲染器
@@ -55,6 +75,7 @@ public class ClientSideHandler {
         FrostLotusFlower.registerRenderLayer();
         Lycorisradiata.registerRenderLayer();
         FrostBlossomBlock.registerRenderLayer();
+        CustomSaplingBlock.registerRenderLayer();
     }
 
 

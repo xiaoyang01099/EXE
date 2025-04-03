@@ -29,7 +29,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import vazkii.botania.api.internal.VanillaPacketDispatcher;
 import vazkii.botania.common.ModStats;
 
@@ -66,7 +66,7 @@ public class InfinityPotatoEntity extends BlockEntity implements Container, Worl
             int index = facing.get3DDataValue();
 
             // 检查是否拿着无限土豆物品
-            if (!level.isClientSide && !heldItem.isEmpty() && heldItem.getItem() == ModBlocks.INFINITY_POTATO.get().asItem()) {
+            if (!level.isClientSide && !heldItem.isEmpty() && heldItem.getItem() == ModBlockss.INFINITY_POTATO.get().asItem()) {
                 player.sendMessage(new TextComponent("Don't touch my son!"), Util.NIL_UUID);
                 return;
             }

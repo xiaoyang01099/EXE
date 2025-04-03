@@ -25,21 +25,23 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.CelestialHTTile;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class CelestialHolinessTransmuter extends BaseEntityBlock {
 	public CelestialHolinessTransmuter() {
-		super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(5f, 10f).requiresCorrectToolForDrops());
+		super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(3f, 10f).requiresCorrectToolForDrops());
 	}
 
 	@Override
@@ -47,20 +49,6 @@ public class CelestialHolinessTransmuter extends BaseEntityBlock {
 		return 10;
 	}
 
-	@Override
-	public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
-		if (player.getInventory().getSelected().getItem() instanceof PickaxeItem)
-			return true;
-		return false;
-	}
-
-	@Override
-	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-		List<ItemStack> dropsOriginal = super.getDrops(state, builder);
-		if (!dropsOriginal.isEmpty())
-			return dropsOriginal;
-		return Collections.singletonList(new ItemStack(this, 1));
-	}
 
 	// 添加右键点击事件
 	@Override
@@ -98,7 +86,7 @@ public class CelestialHolinessTransmuter extends BaseEntityBlock {
 
 	@OnlyIn(Dist.CLIENT)
 	public static void registerRenderLayer() {
-		ItemBlockRenderTypes.setRenderLayer(ModBlocks.CELESTIAL_HOLINESS_TRANSMUTER.get(), renderType -> renderType == RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(ModBlockss.CELESTIAL_HOLINESS_TRANSMUTER.get(), renderType -> renderType == RenderType.cutout());
 	}
 
 	@Override
@@ -132,7 +120,7 @@ public class CelestialHolinessTransmuter extends BaseEntityBlock {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-		return createTicker(pLevel, pBlockEntityType, ModBlockEntities.CELESTIAL_HOLINESS_TRANSMUTER.get());
+		return createTicker(pLevel, pBlockEntityType, ModBlockEntities.CELESTIAL_HOLINESS_TRANSMUTER_TILE.get());
 	}
 
 	@javax.annotation.Nullable

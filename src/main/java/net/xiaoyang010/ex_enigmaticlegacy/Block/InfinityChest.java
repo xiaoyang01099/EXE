@@ -46,6 +46,7 @@ public class InfinityChest extends BaseEntityBlock implements SimpleWaterloggedB
     public InfinityChest() {
         super(Properties.of(Material.STONE).sound(SoundType.STONE)
                 .strength(1f, 10f)
+                .requiresCorrectToolForDrops()
                 .isValidSpawn((state, level, pos, entityType) -> false)
                 .isRedstoneConductor((state, level, pos) -> true)
                 .isViewBlocking((state, level, pos) -> false));
@@ -162,6 +163,6 @@ public class InfinityChest extends BaseEntityBlock implements SimpleWaterloggedB
     static {
         FACING = HorizontalDirectionalBlock.FACING;
         WATERLOGGED = BlockStateProperties.WATERLOGGED;
-        SHAPE = Block.box(1.0, 0.0, 1.0, 15.0, 14.0, 15.0);
+        SHAPE = Block.box(1.0, 0.0, 1.0, 15.0, 15.0, 15.0);
     }
 }

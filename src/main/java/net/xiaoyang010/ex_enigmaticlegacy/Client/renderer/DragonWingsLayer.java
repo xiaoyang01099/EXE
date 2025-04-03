@@ -15,8 +15,10 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.DragonWingsModel;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.DragonWings;
 
 public class DragonWingsLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
@@ -31,12 +33,24 @@ public class DragonWingsLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
                 new ModelLayerLocation(new ResourceLocation("ex_enigmaticlegacy", "dragonwings_layer"), "main")));
     }
 
+    private boolean isWearingFullDragonSet(AbstractClientPlayer player) {
+        return player.getItemBySlot(EquipmentSlot.FEET).getItem() == ModArmors.dragonArmorBoots.get() &&
+                player.getItemBySlot(EquipmentSlot.LEGS).getItem() == ModArmors.dragonArmorLegs.get() &&
+                player.getItemBySlot(EquipmentSlot.CHEST).getItem() == ModArmors.dragonArmorChest.get() &&
+                player.getItemBySlot(EquipmentSlot.HEAD).getItem() == ModArmors.dragonArmorHelm.get();
+    }
+
+    private boolean shouldRenderWings(AbstractClientPlayer player) {
+        Item chestItem = player.getItemBySlot(EquipmentSlot.CHEST).getItem();
+        return chestItem instanceof DragonWings || isWearingFullDragonSet(player);
+    }
+
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight,
                        AbstractClientPlayer player, float limbSwing, float limbSwingAmount,
                        float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
 
-        if (player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof DragonWings) {
+        if (shouldRenderWings(player)) {
             poseStack.pushPose();
             poseStack.translate(.0D, .05D, .35D);
             poseStack.scale(.2F, .2F, .2F);

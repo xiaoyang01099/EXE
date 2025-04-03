@@ -15,7 +15,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.RainbowTableScreen;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHTMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.RainbowTableContainer;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.CelestialTransmuteRecipe;
@@ -76,9 +76,9 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.CELESTIAL_HOLINESS_TRANSMUTER.get()),
+        registration.addRecipeCatalyst(new ItemStack(ModBlockss.CELESTIAL_HOLINESS_TRANSMUTER.get()),
                 CelestialTransmuteRecipe.TYPE_ID);
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.RAINBOW_TABLE.get()),
+        registration.addRecipeCatalyst(new ItemStack(ModBlockss.RAINBOW_TABLE.get()),
                 RainbowTableRecipe.TYPE_ID);
     }
 

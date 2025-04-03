@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.RainbowTableRecipe;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class RainbowTableCategory implements IRecipeCategory<RainbowTableRecipe>
 
     public RainbowTableCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE,0,0,176,83);
-        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.RAINBOW_TABLE.get()));
+        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlockss.RAINBOW_TABLE.get()));
         this.title = new TranslatableComponent("gui." + ExEnigmaticlegacyMod.MODID + ".category.rainbow_table");
     }
 

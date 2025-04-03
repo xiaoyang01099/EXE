@@ -1,10 +1,14 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Network;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.*;
+
+import java.util.Optional;
 
 public class NetworkHandler {
     private static final String PROTOCOL_VERSION = "1";
@@ -32,5 +36,29 @@ public class NetworkHandler {
                 PageChestPacket::decode,
                 PageChestPacket::handle
         );
+        CHANNEL.registerMessage(
+                packetId++,
+                JumpPacket.class,
+                JumpPacket::encode,
+                JumpPacket::new,
+                JumpPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_SERVER)
+        );
+        CHANNEL.registerMessage(
+                packetId++,
+                CloudJumpParticlePacket.class,
+                CloudJumpParticlePacket::encode,
+                CloudJumpParticlePacket::decode,
+                CloudJumpParticlePacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
+    }
+
+    public static void sendToServer(Object packet) {
+        CHANNEL.sendToServer(packet);
+    }
+
+    public static void sendToPlayer(ServerPlayer player, Object packet) {
+        CHANNEL.sendTo(packet, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
     }
 }

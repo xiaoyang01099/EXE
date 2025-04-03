@@ -118,5 +118,13 @@
         "stream": false
       }
     ]
+  },
+  "aqua_sword": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:aqua_sword",
+        "stream": false
+      }
+    ]
   }
 }

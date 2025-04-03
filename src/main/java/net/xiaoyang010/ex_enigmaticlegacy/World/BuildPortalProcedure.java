@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.core.BlockPos;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 
 import javax.annotation.Nullable;
@@ -43,8 +43,8 @@ public class BuildPortalProcedure {
 				.getItem()) {
 			if (blockstate.getBlock() == Blocks.QUARTZ_BLOCK) {
 				if ((world.getBlockState(new BlockPos(x, y + 3, z))).getBlock() == Blocks.QUARTZ_BLOCK) {
-					world.setBlock(new BlockPos(x, y + 1, z), ModBlocks.MINERS_HEAVEN_PORTAL.get().defaultBlockState(), 3);
-					world.setBlock(new BlockPos(x, y + 2, z), ModBlocks.MINERS_HEAVEN_PORTAL.get().defaultBlockState(), 3);
+					world.setBlock(new BlockPos(x, y + 1, z), ModBlockss.MINERS_HEAVEN_PORTAL.get().defaultBlockState(), 3);
+					world.setBlock(new BlockPos(x, y + 2, z), ModBlockss.MINERS_HEAVEN_PORTAL.get().defaultBlockState(), 3);
 				}
 			}
 		}

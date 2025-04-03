@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 
 public class FrostBlossomBlock extends FlowerBlock {
     public FrostBlossomBlock() {
@@ -26,12 +26,12 @@ public class FrostBlossomBlock extends FlowerBlock {
 
     @OnlyIn(Dist.CLIENT)
     public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.FROST_BLOSSOM.get(), renderType -> renderType == RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlockss.FROST_BLOSSOM.get(), renderType -> renderType == RenderType.cutout());
     }
 
     @Override
     public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
         BlockState soil = worldIn.getBlockState(pos.below());
-        return soil.is(ModBlocks.BLOCKNATURE.get()) || soil.is(Blocks.END_STONE_BRICKS) || soil.is(Blocks.END_STONE);
+        return soil.is(ModBlockss.BLOCKNATURE.get()) || soil.is(Blocks.END_STONE_BRICKS) || soil.is(Blocks.END_STONE);
     }
 }

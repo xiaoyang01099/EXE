@@ -20,7 +20,7 @@ public class ModFoods {
 
     public static final RegistryObject<Item> ENDLESS_CAKE = ITEMS.register("endless_cake", () ->
             new EndlessCake(
-                    ModBlocks.ENDLESS_CAKE.get(),
+                    ModBlockss.ENDLESS_CAKE.get(),
                     new Item.Properties()
                     .stacksTo(1)
                     .rarity(ModRarities.MIRACLE)

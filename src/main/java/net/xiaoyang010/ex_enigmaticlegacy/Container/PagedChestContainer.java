@@ -20,7 +20,6 @@ public class PagedChestContainer extends AbstractContainerMenu {
         super(ModMenus.PAGED_CHEST, windowId);
         this.container = container;
 
-        // 初始化页面数据
         this.pageData = new ContainerData() {
             private int page;
 
@@ -43,7 +42,6 @@ public class PagedChestContainer extends AbstractContainerMenu {
             }
         };
 
-        // 添加箱子槽位（第一页）
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 13; col++) {
                 int index = col + (row * 13);
@@ -51,7 +49,6 @@ public class PagedChestContainer extends AbstractContainerMenu {
             }
         }
 
-        // 添加玩家物品栏槽位
         int playerInvY = 174;
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
@@ -59,7 +56,6 @@ public class PagedChestContainer extends AbstractContainerMenu {
             }
         }
 
-        // 添加玩家快捷栏槽位
         for (int col = 0; col < 9; col++) {
             this.addSlot(new Slot(playerInventory, col, 48 + col * 18, 232));
         }
@@ -70,7 +66,6 @@ public class PagedChestContainer extends AbstractContainerMenu {
     private void updateSlots() {
         for (int i = 0; i < SLOTS_PER_PAGE; i++) {
             if (this.slots.get(i) instanceof PagedSlot pagedSlot) {
-                //pagedSlot.setPage(pageData.get(0));
                 pagedSlot.setChanged();
             }
         }
@@ -78,16 +73,12 @@ public class PagedChestContainer extends AbstractContainerMenu {
 
     public void nextPage() {
         if (getCurrentPage() < (PAGES-1)) {
-            //updateSlots();
-            // NetworkHandler.CHANNEL.sendToServer(new PageChestPacket(getCurrentPage() + 1));
             pageData.set(0,getCurrentPage()+1);
         }
     }
 
     public void previousPage() {
         if (getCurrentPage() > 0) {
-            //updateSlots();
-            // NetworkHandler.CHANNEL.sendToServer(new PageChestPacket(getCurrentPage() - 1));
             pageData.set(0,getCurrentPage()-1);
         }
     }
@@ -118,12 +109,10 @@ public class PagedChestContainer extends AbstractContainerMenu {
             itemstack = stackInSlot.copy();
 
             if (index < SLOTS_PER_PAGE) {
-                // 从箱子到玩家物品栏
                 if (!this.moveItemStackTo(stackInSlot, SLOTS_PER_PAGE, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else {
-                // 从玩家物品栏到箱子
                 if (!this.moveItemStackTo(stackInSlot, 0, SLOTS_PER_PAGE, false)) {
                     return ItemStack.EMPTY;
                 }

@@ -30,7 +30,7 @@ public class CelestialHTTile extends RandomizableContainerBlockEntity implements
 	private ChtMenuData data = new ChtMenuData();
 
 	public CelestialHTTile(BlockPos position, BlockState state) {
-		super(ModBlockEntities.CELESTIAL_HOLINESS_TRANSMUTER.get(), position, state);
+		super(ModBlockEntities.CELESTIAL_HOLINESS_TRANSMUTER_TILE.get(), position, state);
 	}
 
 	@Override

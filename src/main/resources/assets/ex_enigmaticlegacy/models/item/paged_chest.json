@@ -1,5 +1,5 @@
 {
-  "parent": "ex_enigmaticlegacy:block/paged_chest",
+  "parent": "ex_enigmaticlegacy:block/paged_chest_item",
   "display": {
     "thirdperson": {
       "rotation": [

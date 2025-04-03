@@ -1,5 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.api.distmarker.Dist;
 
@@ -43,7 +44,7 @@ public class ModTabs {
 		TAB_EXENIGMATICLEGACY_MINERAL = new CreativeModeTab("ex_enigmaticlegacy_mineral") {
 			@Override
 			public ItemStack makeIcon() {
-				return new ItemStack(ModItems.PRISMATICRADIANCEINGOT.get());
+				return new ItemStack(ModItems.FROST_ENCHANTRESS.get());
 			}
 
 			@OnlyIn(Dist.CLIENT)
@@ -55,7 +56,7 @@ public class ModTabs {
 		TAB_EXENIGMATICLEGACY_BLOCK = new CreativeModeTab("ex_enigmaticlegacy_block") {
 			@Override
 			public ItemStack makeIcon() {
-				return new ItemStack(ModBlocks.EVILBLOCK.get());
+				return new ItemStack(ModBlockss.EVILBLOCK.get());
 			}
 
 			@OnlyIn(Dist.CLIENT)
@@ -79,13 +80,13 @@ public class ModTabs {
 		TAB_EXENIGMATICLEGACY_BOTANIA = new CreativeModeTab("ex_enigmaticlegacy_botania") {
 			@Override
 			public ItemStack makeIcon() {
-				return new ItemStack(ModBlocks.INFINITY_POTATO.get());
+				return new ItemStack(ModBlockss.INFINITY_POTATO.get());
 			}
 
 			@OnlyIn(Dist.CLIENT)
 			public boolean hasSearchBar() {
 				return false;
 			}
-		};
+		}.setBackgroundImage(new ResourceLocation("ex_enigmaticlegacy", "textures/gui/container/creative_inventory/tab_botania.png"));
 	}
 }

@@ -24,7 +24,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTestType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlocks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 
 import java.util.List;
 import java.util.Random;
@@ -39,7 +39,7 @@ public class AmethystOreFeature extends OreFeature {
 
     public static Feature<?> feature() {
         FEATURE = new AmethystOreFeature();
-        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:amethyst_ore", FEATURE, new OreConfiguration(AmethystOreFeature.AmethystOreFeatureRuleTest.INSTANCE, ((Block) ModBlocks.AMETHYST_ORE.get()).defaultBlockState(), 6));
+        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:amethyst_ore", FEATURE, new OreConfiguration(AmethystOreFeature.AmethystOreFeatureRuleTest.INSTANCE, ((Block) ModBlockss.AMETHYST_ORE.get()).defaultBlockState(), 6));
         PLACED_FEATURE = PlacementUtils.register("ex_enigmaticlegacy:amethyst_ore", CONFIGURED_FEATURE, List.of(CountPlacement.of(2), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-30), VerticalAnchor.absolute(60)), BiomeFilter.biome()));
         return FEATURE;
     }
