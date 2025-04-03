@@ -1,0 +1,31 @@
+{
+  "replace": false,
+  "values": [
+    "ex_enigmaticlegacy:spectrite_crystal",
+    "ex_enigmaticlegacy:spectrite_ingot",
+    "ex_enigmaticlegacy:spectrite_dust",
+    "ex_enigmaticlegacy:spectrite_star",
+    "ex_enigmaticlegacy:spectrite_gem",
+    "ex_enigmaticlegacy:crystalline_stardust_ingot",
+    "ex_enigmaticlegacy:starlight_crystalline_ingot",
+    "ex_enigmaticlegacy:tainted_astral_crystal_ingot",
+    "ex_enigmaticlegacy:prismaticradianceingot",
+    "ex_enigmaticlegacy:natureingot",
+    "ex_enigmaticlegacy:colorful_shadow_shard",
+    "ex_enigmaticlegacy:frost_enchantress",
+    "ex_enigmaticlegacy:mana_nether_star",
+    "ex_enigmaticlegacy:matter_amorphous_max",
+    "ex_enigmaticlegacy:matter_corporeal_max",
+    "ex_enigmaticlegacy:matter_dark_max",
+    "ex_enigmaticlegacy:matter_essentia_max",
+    "ex_enigmaticlegacy:matter_kinetic_max",
+    "ex_enigmaticlegacy:matter_omni_max",
+    "ex_enigmaticlegacy:matter_proto_max",
+    "ex_enigmaticlegacy:matter_temporal_max",
+    "ex_enigmaticlegacy:matter_void_max",
+    "ex_enigmaticlegacy:rainbowmanaita",
+    "ex_enigmaticlegacy:starflowerstone",
+    "ex_enigmaticlegacy:radiant_sacred_ruby"
+
+  ]
+}

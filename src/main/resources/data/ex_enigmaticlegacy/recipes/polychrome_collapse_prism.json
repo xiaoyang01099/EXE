@@ -1,0 +1,41 @@
+{
+  "type": "ex_enigmaticlegacy:polychrome",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "botania:terrasteel_ingot"
+      },
+      "count": 2
+    },
+    {
+      "ingredient": {
+        "item": "botania:mana_pearl"
+      },
+      "count": 4
+    },
+    {
+      "ingredient": {
+        "item": "botania:mana_diamond"
+      },
+      "count": 3
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:nether_star"
+      },
+      "count": 1
+    },
+    {
+      "ingredient": {
+        "item": "botania:rune_mana"
+      },
+      "count": 2
+    }
+  ],
+  "output": {
+    "item": "ex_enigmaticlegacy:custom_sapling",
+    "count": 1
+  },
+  "mana": 500000,
+  "processTime": 600
+}

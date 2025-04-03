@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:neutron_singularity"
+  },
+  "cost": 4700,
+  "ingredients": [
+    {
+      "item": "avaritia:neutronium_block"
+    }
+  ]
+}

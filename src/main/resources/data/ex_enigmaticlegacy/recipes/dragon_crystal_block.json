@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NNN",
+    "NNN",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "ex_enigmaticlegacy:dragoncrystal"
+    }
+  },
+  "result": {
+    "item": "ex_enigmaticlegacy:dragon_crystal_block",
+    "count": 1
+  }
+}

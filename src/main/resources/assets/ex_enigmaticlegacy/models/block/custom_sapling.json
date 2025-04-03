@@ -1,0 +1,7 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "ex_enigmaticlegacy:items/res/custom_sapling",
+    "particle": "ex_enigmaticlegacy:items/res/custom_sapling"
+  }
+}

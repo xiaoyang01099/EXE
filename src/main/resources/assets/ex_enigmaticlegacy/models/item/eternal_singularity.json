@@ -1,0 +1,12 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/singularity/eternal_singularity",
+    "layer1": "ex_enigmaticlegacy:items/singularity/eternal_singularity2",
+    "mask" : "ex_enigmaticlegacy:items/singularity/eternal_singularity_mask"
+  },
+  "loader": "avaritia:cosmic",
+  "cosmic": {
+    "mask": "#mask"
+  }
+}

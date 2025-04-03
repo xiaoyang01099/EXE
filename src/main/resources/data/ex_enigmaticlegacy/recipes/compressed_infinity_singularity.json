@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:compressed_infinity_singularity"
+  },
+  "cost": 300,
+  "ingredients": [
+    {
+      "item": "avaritia:infinity_block"
+    }
+  ]
+}

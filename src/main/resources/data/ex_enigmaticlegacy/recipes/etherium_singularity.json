@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:etherium_singularity"
+  },
+  "cost": 500,
+  "ingredients": [
+    {
+      "item": "enigmaticlegacy:etherium_block"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:yuanshi_singularity"
+  },
+  "cost": 520,
+  "ingredients": [
+    {
+      "item": "primogemcraft:yuanshi"
+    }
+  ]
+}

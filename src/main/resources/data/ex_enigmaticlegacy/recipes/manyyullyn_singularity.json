@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:manyyullyn_singularity"
+  },
+  "cost": 400,
+  "ingredients": [
+    {
+      "item": "tconstruct:manyullyn_block"
+    }
+  ]
+}

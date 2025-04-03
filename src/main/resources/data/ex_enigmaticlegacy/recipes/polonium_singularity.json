@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:polonium_singularity"
+  },
+  "cost": 200,
+  "ingredients": [
+    {
+      "item": "nuclearscience:polonium210"
+    }
+  ]
+}

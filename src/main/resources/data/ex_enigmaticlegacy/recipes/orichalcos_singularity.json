@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:orichalcos_singularity"
+  },
+  "cost": 400,
+  "ingredients": [
+    {
+      "item": "extrabotany:block_orichalcos"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/singularity/crystal_matrix_singularity_3",
+    "layer1": "ex_enigmaticlegacy:items/singularity/crystal_matrix_singularity_3_overlay",
+    "halo": "avaritia:item/halo"
+  },
+  "loader": "avaritia:halo",
+  "halo": {
+    "texture": "#halo",
+    "color": -96777216,
+    "size": 7,
+    "pulse": true
+  }
+}

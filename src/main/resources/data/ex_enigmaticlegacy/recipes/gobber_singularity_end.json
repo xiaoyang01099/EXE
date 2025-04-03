@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:gobber_singularity_end"
+  },
+  "cost": 500,
+  "ingredients": [
+    {
+      "item": "gobber2:gobber2_block_end"
+    }
+  ]
+}

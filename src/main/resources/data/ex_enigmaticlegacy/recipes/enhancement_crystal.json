@@ -1,0 +1,28 @@
+{
+  "type": "avaritia:extreme_shaped",
+  "result": {
+    "item": "ex_enigmaticlegacy:enhancement_crystal"
+  },
+  "pattern": [
+    "   W     ",
+    "  WEW    ",
+    " WEEEW   ",
+    " WQEQW   ",
+    " WEQEW   ",
+    " WQEQW   ",
+    " WEEEW   ",
+    "  WEW    ",
+    "   W     "
+  ],
+  "key": {
+    "Q": {
+      "item": "avaritia:infinity_catalyst"
+    },
+    "W": {
+      "item": "avaritia:neutronium_ingot"
+    },
+    "E": {
+      "item": "avaritia:crystal_matrix_ingot"
+    }
+  }
+}

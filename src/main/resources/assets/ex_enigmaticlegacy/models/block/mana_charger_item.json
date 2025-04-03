@@ -1,0 +1,123 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"texture_size": [32, 32],
+	"textures": {
+		"texture": "ex_enigmaticlegacy:entity/mana_charger",
+		"particle": "botania:block/livingrock"
+	},
+	"elements": [
+		{
+			"name": "base_middle",
+			"from": [5.5, 4, 5.5],
+			"to": [10.5, 8, 10.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [6, 6, 8]},
+			"faces": {
+				"north": {"uv": [2.5, 7, 5, 9], "rotation": 180, "texture": "#texture"},
+				"east": {"uv": [0, 7, 2.5, 9], "rotation": 180, "texture": "#texture"},
+				"south": {"uv": [7.5, 7, 10, 9], "rotation": 180, "texture": "#texture"},
+				"west": {"uv": [5, 7, 7.5, 9], "rotation": 180, "texture": "#texture"},
+				"up": {"uv": [5, 7, 2.5, 4.5], "texture": "#texture"},
+				"down": {"uv": [7.5, 4.5, 5, 7], "texture": "#texture"}
+			}
+		},
+		{
+			"name": "base_top",
+			"from": [4.5, 8, 4.5],
+			"to": [11.5, 10, 11.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [6, 6, 8]},
+			"faces": {
+				"north": {"uv": [3.5, 3.5, 7, 4.5], "texture": "#texture"},
+				"east": {"uv": [0, 3.5, 3.5, 4.5], "texture": "#texture"},
+				"south": {"uv": [10.5, 3.5, 14, 4.5], "texture": "#texture"},
+				"west": {"uv": [7, 3.5, 10.5, 4.5], "texture": "#texture"},
+				"up": {"uv": [7, 3.5, 3.5, 0], "texture": "#texture"},
+				"down": {"uv": [10.5, 0, 7, 3.5], "texture": "#texture"}
+			}
+		},
+		{
+			"name": "base_bottom",
+			"from": [6.5, 1, 6.5],
+			"to": [9.5, 4, 9.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [6, 6, 8]},
+			"faces": {
+				"north": {"uv": [11.5, 6, 13, 7.5], "rotation": 180, "texture": "#texture"},
+				"east": {"uv": [10, 6, 11.5, 7.5], "rotation": 180, "texture": "#texture"},
+				"south": {"uv": [14.5, 6, 16, 7.5], "rotation": 180, "texture": "#texture"},
+				"west": {"uv": [13, 6, 14.5, 7.5], "rotation": 180, "texture": "#texture"},
+				"up": {"uv": [13, 6, 11.5, 4.5], "texture": "#texture"},
+				"down": {"uv": [14.5, 4.5, 13, 6], "texture": "#texture"}
+			}
+		},
+		{
+			"name": "plate_1",
+			"from": [3, 0, 8],
+			"to": [7, 1, 12],
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [5, 1, 10]},
+			"faces": {
+				"north": {"uv": [2, 11, 4, 11.5], "texture": "#texture"},
+				"east": {"uv": [0, 11, 2, 11.5], "texture": "#texture"},
+				"south": {"uv": [6, 11, 8, 11.5], "texture": "#texture"},
+				"west": {"uv": [4, 11, 6, 11.5], "texture": "#texture"},
+				"up": {"uv": [4, 11, 2, 9], "texture": "#texture"},
+				"down": {"uv": [6, 9, 4, 11], "texture": "#texture"}
+			}
+		},
+		{
+			"name": "plate_2",
+			"from": [9, 1.5, 9],
+			"to": [13, 2.5, 13],
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [11, 2, 11]},
+			"faces": {
+				"north": {"uv": [2, 11, 4, 11.5], "texture": "#texture"},
+				"east": {"uv": [0, 11, 2, 11.5], "texture": "#texture"},
+				"south": {"uv": [6, 11, 8, 11.5], "texture": "#texture"},
+				"west": {"uv": [4, 11, 6, 11.5], "texture": "#texture"},
+				"up": {"uv": [4, 11, 2, 9], "texture": "#texture"},
+				"down": {"uv": [6, 9, 4, 11], "texture": "#texture"}
+			}
+		},
+		{
+			"name": "plate_3",
+			"from": [9, 1, 4],
+			"to": [13, 2, 8],
+			"rotation": {"angle": 45, "axis": "y", "origin": [11, 2, 6]},
+			"faces": {
+				"north": {"uv": [2, 11, 4, 11.5], "texture": "#texture"},
+				"east": {"uv": [0, 11, 2, 11.5], "texture": "#texture"},
+				"south": {"uv": [6, 11, 8, 11.5], "texture": "#texture"},
+				"west": {"uv": [4, 11, 6, 11.5], "texture": "#texture"},
+				"up": {"uv": [4, 11, 2, 9], "texture": "#texture"},
+				"down": {"uv": [6, 9, 4, 11], "texture": "#texture"}
+			}
+		},
+		{
+			"name": "plate_4",
+			"from": [4, 0.5, 3],
+			"to": [8, 1.5, 7],
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [6, 1, 5]},
+			"faces": {
+				"north": {"uv": [2, 11, 4, 11.5], "texture": "#texture"},
+				"east": {"uv": [0, 11, 2, 11.5], "texture": "#texture"},
+				"south": {"uv": [6, 11, 8, 11.5], "texture": "#texture"},
+				"west": {"uv": [4, 11, 6, 11.5], "texture": "#texture"},
+				"up": {"uv": [4, 11, 2, 9], "texture": "#texture"},
+				"down": {"uv": [6, 9, 4, 11], "texture": "#texture"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "charger_base",
+			"origin": [8, 6, 8],
+			"color": 0,
+			"children": [0, 1, 2]
+		},
+		{
+			"name": "charger_plate",
+			"origin": [0, 0, 0],
+			"color": 0,
+			"children": [3, 4, 5, 6]
+		}
+	]
+}

@@ -1,0 +1,15 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/singularity/yuanshi_singularity_0",
+    "layer1": "ex_enigmaticlegacy:items/singularity/yuanshi_singularity_0_overlay",
+    "halo": "avaritia:item/halo"
+  },
+  "loader": "avaritia:halo",
+  "halo": {
+    "texture": "#halo",
+    "color": -46777216,
+    "size": 5,
+    "pulse": true
+  }
+}

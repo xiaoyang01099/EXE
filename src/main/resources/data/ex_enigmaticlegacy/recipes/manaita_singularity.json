@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:manaita_singularity"
+  },
+  "cost": 40000,
+  "ingredients": [
+    {
+      "item": "clickmanaita:clickmanaita_block_emerald"
+    }
+  ]
+}

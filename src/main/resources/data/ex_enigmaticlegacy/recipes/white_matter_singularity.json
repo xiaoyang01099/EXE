@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:white_matter_singularity"
+  },
+  "cost": 1000,
+  "ingredients": [
+    {
+      "item": "projectexpansion:white_matter_block"
+    }
+  ]
+}

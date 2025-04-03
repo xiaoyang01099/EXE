@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:crystal_matrix_singularity"
+  },
+  "cost": 500,
+  "ingredients": [
+    {
+      "item": "avaritia:crystal_matrix_block"
+    }
+  ]
+}

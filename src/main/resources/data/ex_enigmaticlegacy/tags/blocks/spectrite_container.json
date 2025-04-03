@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    "ex_enigmaticlegacy:spectrite_chest",
+    "ex_enigmaticlegacy:celestial_holiness_transmuter",
+    "ex_enigmaticlegacy:rainbow_table",
+    "ex_enigmaticlegacy:cobble_stone",
+    "botania:runic_altar",
+    "botania:apothecary_default",
+    "avaritia:compressor",
+    "avaritia:extreme_crafting_table",
+    "minecraft:crafting_table",
+    "minecraft:enchanting_table",
+    "minecraft:anvil",
+    "minecraft:chipped_anvil",
+    "minecraft:damaged_anvil",
+    "minecraft:furnace"
+
+
+
+  ]
+}

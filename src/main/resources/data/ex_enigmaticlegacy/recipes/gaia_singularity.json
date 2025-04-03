@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:gaia_singularity"
+  },
+  "cost": 400,
+  "ingredients": [
+    {
+      "item": "ex_enigmaticlegacy:gaia_block"
+    }
+  ]
+}

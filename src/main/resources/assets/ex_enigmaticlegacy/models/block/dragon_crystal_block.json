@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "ex_enigmaticlegacy:blocks/dragon_crystal_block",
+    "particle": "ex_enigmaticlegacy:blocks/dragon_crystal_block"
+  }
+}

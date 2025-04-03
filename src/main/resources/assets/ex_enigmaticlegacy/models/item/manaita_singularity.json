@@ -1,0 +1,15 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/singularity/manaita_singularity",
+    "layer1": "ex_enigmaticlegacy:items/singularity/manaita_singularity_overlay",
+    "halo": "avaritia:item/halo"
+  },
+  "loader": "avaritia:halo",
+  "halo": {
+    "texture": "#halo",
+    "color": -16777216,
+    "size": 7,
+    "pulse": true
+  }
+}

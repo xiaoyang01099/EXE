@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:wooden_singularity"
+  },
+  "cost": 999999,
+  "ingredients": [
+    {
+      "tag": "minecraft:logs"
+    }
+  ]
+}
