@@ -5,16 +5,8 @@
   "minVersion": "0.8",
   "refmap": "ex_enigmaticlegacy.refmap.json",
   "mixins": [
-    "BiomeMixin",
-    "HopperBlockEntityMixin",
-    "TimeStop$EntityMixin",
-    "TimeStop$LivingMixin",
-    "TimeStop$ServerLevelMixin",
-    "WitherBossMixin"
   ],
   "client": [
-    "TimeStop$ClientMixin",
-    "TimeStop$GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

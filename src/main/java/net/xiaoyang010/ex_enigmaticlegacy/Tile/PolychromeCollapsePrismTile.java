@@ -1,336 +1,257 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Tile;
 
-import com.google.common.base.Predicates;
-import com.google.common.base.Suppliers;
-
 import morph.avaritia.init.AvaritiaModContent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-
-import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
-
-import net.xiaoyang010.ex_enigmaticlegacy.Recipe.IPolychromeRecipe;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.PrismRenderPacket;
 import org.jetbrains.annotations.NotNull;
-import vazkii.botania.api.internal.VanillaPacketDispatcher;
-import vazkii.botania.api.mana.IManaPool;
-import vazkii.botania.api.mana.IManaReceiver;
-import vazkii.botania.api.mana.spark.IManaSpark;
-import vazkii.botania.api.mana.spark.ISparkAttachable;
-import vazkii.botania.api.mana.spark.SparkHelper;
 import vazkii.botania.common.block.ModBlocks;
-import vazkii.botania.common.block.tile.TileMod;
-import vazkii.botania.common.handler.ModSounds;
-import vazkii.botania.network.EffectType;
-import vazkii.botania.network.clientbound.PacketBotaniaEffect;
-import vazkii.botania.xplat.IXplatAbstractions;
-import vazkii.patchouli.api.IMultiblock;
-import vazkii.patchouli.api.PatchouliAPI;
-
-import javax.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
-public class PolychromeCollapsePrismTile extends TileMod implements ISparkAttachable, IManaReceiver {
-    public static final Supplier<IMultiblock> MULTIBLOCK = Suppliers.memoize(() -> PatchouliAPI.get().makeMultiblock(
-            new String[][] {
-                    // 第一层 - 底部基础结构（棋盘格模式）
-                    {
-                            "_______________",
-                            "_______________",
-                            "_______________",
-                            "__ZL__K_K__LZ__",
-                            "_______________",
-                            "_______X_______",
-                            "___K_______K___",
-                            "_____X_Q_X_____",
-                            "___K_______K___",
-                            "_______X_______",
-                            "_______________",
-                            "__ZL__K_K___LZ_",
-                            "_______________",
-                            "_______________",
-                            "_______________"
-
-                    },
-                    // 第二层 - 顶部结构
-                    {
-                            "_______W_______",
-                            "______DED______",
-                            "_____JEREJ_____",
-                            "____JEYTYEJ____",
-                            "___JEYTUTYEJ___",
-                            "__JEYUOIOUYEJ__",
-                            "_FEYTOAPAOTYEH_",
-                            "WERTUIP0PIUTREW",
-                            "_FEYTOAPAOTYEH_",
-                            "__JEYUOIOUYEJ__",
-                            "___JEYTUTYEJ___",
-                            "____JEYTYEJ____",
-                            "_____JEREJ_____",
-                            "______GEG______",
-                            "_______W_______"
-                    }
-            },
-            'Q', ModBlockss.POLYCHROME_COLLAPSE_PRISM.get(),
-            'W', ModBlocks.manasteelBlock,
-            'E', ModBlockss.INFINITYGlASS.get(),
-            'R', Blocks.GLOWSTONE,
-            'T', AvaritiaModContent.NEUTRONIUM_STORAGE_BLOCK.get(),
-            'U', ModBlockss.DRAGON_CRYSTALS_BLOCK.get(),
-            'I', ModBlockss.ARCANE_ICE_CHUNK.get(),
-            'O', AvaritiaModContent.CRYSTAL_MATRIX_STORAGE_BLOCK.get(),
-            'P', ModBlockss.GAIA_BLOCK.get(),
-            'A', ModBlockss.MITHRILL_BLOCK.get(),
-            '0', ModBlockss.BLOCKNATURE.get(),
-            'D', ModBlocks.terrasteelBlock,
-            'F', ModBlocks.elementiumBlock,
-            'G', ModBlocks.manaDiamondBlock,
-            'H', ModBlocks.dragonstoneBlock,
-            'J', ModBlockss.DECAY_BLOCK.get(),
-            'K', ModBlockss.INFINITY_POTATO.get(),
-            'L', ModBlockss.infinitySpreader.get(),
-            'Z', ModBlockss.ASGARDANDELION.get(),
-            'X', ModBlocks.creativePool,
-            'Y', "#botania:terra_plate_base"
-            ));
-
-    private static final String TAG_MANA = "mana";
-    private static final String TAG_PROGRESS = "progress";
-    private static final int MAX_MANA = 1000000;
-
-    private int mana;
-    private int progress;
+public class PolychromeCollapsePrismTile extends BlockEntity implements Container {
+    private final NonNullList<ItemStack> ITEMS = NonNullList.withSize(5, ItemStack.EMPTY);
+    private static final List<Block> ALTAR_BLOCKS = new ArrayList<>();
+    //祭坛方块
+    static {
+        ALTAR_BLOCKS.add(ModBlockss.DRAGON_CRYSTALS_BLOCK.get());
+        ALTAR_BLOCKS.add(AvaritiaModContent.CRYSTAL_MATRIX_STORAGE_BLOCK.get());
+        ALTAR_BLOCKS.add(ModBlockss.ARCANE_ICE_CHUNK.get());
+        ALTAR_BLOCKS.add(AvaritiaModContent.CRYSTAL_MATRIX_STORAGE_BLOCK.get());
+        ALTAR_BLOCKS.add(ModBlockss.DRAGON_CRYSTALS_BLOCK.get());
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(ModBlocks.creativePool);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(AvaritiaModContent.CRYSTAL_MATRIX_STORAGE_BLOCK.get());
+        ALTAR_BLOCKS.add(ModBlockss.MITHRILL_BLOCK.get());
+        ALTAR_BLOCKS.add(ModBlockss.GAIA_BLOCK.get());
+        ALTAR_BLOCKS.add(ModBlockss.MITHRILL_BLOCK.get());
+        ALTAR_BLOCKS.add(AvaritiaModContent.CRYSTAL_MATRIX_STORAGE_BLOCK.get());
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(ModBlockss.ARCANE_ICE_CHUNK.get());
+        ALTAR_BLOCKS.add(ModBlockss.GAIA_BLOCK.get());
+        ALTAR_BLOCKS.add(AvaritiaModContent.NEUTRONIUM_STORAGE_BLOCK.get());
+        ALTAR_BLOCKS.add(ModBlockss.GAIA_BLOCK.get());
+        ALTAR_BLOCKS.add(ModBlockss.ARCANE_ICE_CHUNK.get());
+        ALTAR_BLOCKS.add(ModBlocks.creativePool);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(ModBlockss.POLYCHROME_COLLAPSE_PRISM.get());
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(ModBlocks.creativePool);
+        ALTAR_BLOCKS.add(AvaritiaModContent.CRYSTAL_MATRIX_STORAGE_BLOCK.get());
+        ALTAR_BLOCKS.add(ModBlockss.MITHRILL_BLOCK.get());
+        ALTAR_BLOCKS.add(ModBlockss.GAIA_BLOCK.get());
+        ALTAR_BLOCKS.add(ModBlockss.MITHRILL_BLOCK.get());
+        ALTAR_BLOCKS.add(AvaritiaModContent.CRYSTAL_MATRIX_STORAGE_BLOCK.get());
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(ModBlockss.DRAGON_CRYSTALS_BLOCK.get());
+        ALTAR_BLOCKS.add(AvaritiaModContent.CRYSTAL_MATRIX_STORAGE_BLOCK.get());
+        ALTAR_BLOCKS.add(ModBlockss.ARCANE_ICE_CHUNK.get());
+        ALTAR_BLOCKS.add(AvaritiaModContent.CRYSTAL_MATRIX_STORAGE_BLOCK.get());
+        ALTAR_BLOCKS.add(ModBlockss.DRAGON_CRYSTALS_BLOCK.get());
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(ModBlocks.creativePool);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+        ALTAR_BLOCKS.add(Blocks.AIR);
+    }
 
     public PolychromeCollapsePrismTile(@NotNull BlockEntityType<PolychromeCollapsePrismTile> polychromeCollapsePrismTileBlockEntityType, BlockPos pos, BlockState state) {
         super(ModBlockEntities.POLYCHROME_COLLAPSE_PRISM_TILE.get(), pos, state);
     }
 
-    public static void serverTick(Level level, BlockPos worldPosition, BlockState state, PolychromeCollapsePrismTile self) {
-        boolean removeMana = true;
+    public static void serverTick(Level level, BlockPos pos, BlockState state, PolychromeCollapsePrismTile tile) {
+        BlockPos below = pos.below();
+        BlockPos south = below.south();
+        BlockPos north = below.north();
+        BlockPos west = below.west();
+        BlockPos east = below.east();
 
-        if (self.hasValidPlatform()) {
-            List<ItemStack> items = self.getItems();
-            SimpleContainer inv = self.getInventory();
+        BlockState blockB = level.getBlockState(below);
+        BlockState blockS = level.getBlockState(south);
+        BlockState blockN = level.getBlockState(north);
+        BlockState blockW = level.getBlockState(west);
+        BlockState blockE = level.getBlockState(east);
 
-            IPolychromeRecipe recipe = self.getCurrentRecipe(inv);
-            if (recipe != null) {
-                removeMana = false;
-                IManaSpark spark = self.getAttachedSpark();
-                if (spark != null) {
-                    SparkHelper.getSparksAround(level, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, spark.getNetwork())
-                            .filter(otherSpark -> spark != otherSpark && otherSpark.getAttachedManaReceiver() instanceof IManaPool)
-                            .forEach(os -> os.registerTransfer(spark));
-                }
-                if (self.mana > 0) {
-                    VanillaPacketDispatcher.dispatchTEToNearbyPlayers(self);
-                    int proportion = Float.floatToIntBits(self.getCompletion());
-                    // 发送效果包
-                    IXplatAbstractions.INSTANCE.sendToNear(level, worldPosition,
-                            new PacketBotaniaEffect(EffectType.TERRA_PLATE, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), proportion));
+        if (level.getGameTime() % 10 != 0) return;
 
-                    // 增加进度
-                    self.progress += 1;
-                    if (self.progress >= 100) {
-                        self.progress = 0;
-                        // 每100 ticks触发特殊效果
-                        self.triggerSpecialEffect();
-                    }
-                }
 
-                if (self.mana >= recipe.getMana()) {
-                    ItemStack result = recipe.assemble(inv);
-                    for (ItemStack item : items) {
-                        item.setCount(0);
-                    }
-                    ItemEntity item = new ItemEntity(level, worldPosition.getX() + 0.5, worldPosition.getY() + 0.2, worldPosition.getZ() + 0.5, result);
-                    item.setDeltaMovement(Vec3.ZERO);
-                    level.addFreshEntity(item);
-                    level.playSound(null, item.getX(), item.getY(), item.getZ(), ModSounds.manaPoolCraft, SoundSource.BLOCKS, 1F, 1F);
-                    self.mana = 0;
-                    level.updateNeighbourForOutputSignal(worldPosition, state.getBlock());
-                    VanillaPacketDispatcher.dispatchTEToNearbyPlayers(self);
-                }
+        if (tile.isRecipeAltarBlock(tile.getAltarBlocks(pos))) {
+            ItemStack stack1 = tile.getItem(0);
+            ItemStack stack2 = tile.getItem(1);
+            if (stack1.is(Items.EMERALD) && stack2.is(Items.DIAMOND)) {
+                ItemStack out = new ItemStack(ModItems.INGOT_ANIMATION.get());
+                tile.removeItemNoUpdate(0);
+                tile.removeItemNoUpdate(1);
+                tile.setItem(4, out);
+                setChanged(level, pos, state);
+                NetworkHandler.CHANNEL.sendToServer(new PrismRenderPacket(pos, tile.getITEMS()));
+                tile.triggerEvent(1, 0);
             }
         }
-
-        if (removeMana) {
-            self.receiveMana(-1000);
-        }
     }
 
-    private void triggerSpecialEffect() {
-        // 触发特殊效果，如粒子，声音，临时增益等
-        if (level != null && !level.isClientSide) {
-            // 发送特殊效果包给客户端
-            IXplatAbstractions.INSTANCE.sendToNear(level, worldPosition,
-                    new PacketBotaniaEffect(EffectType.TERRA_PLATE, worldPosition.getX(), worldPosition.getY() + 2, worldPosition.getZ(), 0));
-        }
-    }
+    /**
+     * 获取祭坛核心方块周围方块
+     */
+    public List<Block> getAltarBlocks(BlockPos pos){
+        if (level == null) return new ArrayList<>();
+        Iterable<BlockPos> blockPos = BlockPos.betweenClosed(pos.offset(-2, -1, -2), pos.offset(2, 0, 2));
 
-    private List<ItemStack> getItems() {
-        List<ItemEntity> itemEntities = level.getEntitiesOfClass(ItemEntity.class, new AABB(worldPosition, worldPosition.offset(1, 1, 1)), Entity::isAlive);
-        List<ItemStack> stacks = new ArrayList<>();
-        for (ItemEntity entity : itemEntities) {
-            if (!entity.getItem().isEmpty()) {
-                stacks.add(entity.getItem());
-            }
-        }
-        return stacks;
-    }
-
-    private SimpleContainer getInventory() {
-        List<ItemStack> items = getItems();
-        return new SimpleContainer(flattenStacks(items));
-    }
-
-    private static ItemStack[] flattenStacks(List<ItemStack> items) {
-        ItemStack[] stacks;
-        int i = 0;
-        for (ItemStack item : items) {
-            i += item.getCount();
-        }
-        if (i > 64) {
-            return new ItemStack[0];
+        List<Block> blockList = new ArrayList<>();
+        for (BlockPos blockPo : blockPos) {
+            Block block = level.getBlockState(blockPo).getBlock();
+            blockList.add(block);
         }
 
-        stacks = new ItemStack[i];
-        int j = 0;
-        for (ItemStack item : items) {
-            if (item.getCount() > 1) {
-                ItemStack temp = item.copy();
-                temp.setCount(1);
-                for (int count = 0; count < item.getCount(); count++) {
-                    stacks[j] = temp.copy();
-                    j++;
-                }
-            } else {
-                stacks[j] = item;
-                j++;
-            }
+        return blockList;
+    }
+
+    /**
+     * 对比祭坛方块
+     * @param blockList 实际取得的
+     */
+    public boolean isRecipeAltarBlock(List<Block> blockList) {
+        for (int i = 0; i < blockList.size(); i++) {
+            Block block = blockList.get(i);
+            Block block1 = ALTAR_BLOCKS.get(i);
+            if (block == block1) continue;
+            else return false;
         }
-        return stacks;
-    }
-
-    @Nullable
-    private IPolychromeRecipe getCurrentRecipe(SimpleContainer items) {
-        if (items.isEmpty()) {
-            return null;
-        }
-        return level.getRecipeManager().getRecipeFor(ModRecipes.POLYCHROME_TYPE, items, level).orElse(null);
-    }
-
-    private boolean hasValidPlatform() {
-        return MULTIBLOCK.get().validate(level, getBlockPos().below()) != null;
-    }
-
-    @Override
-    public void writePacketNBT(CompoundTag cmp) {
-        cmp.putInt(TAG_MANA, mana);
-        cmp.putInt(TAG_PROGRESS, progress);
-    }
-
-    @Override
-    public void readPacketNBT(CompoundTag cmp) {
-        mana = cmp.getInt(TAG_MANA);
-        progress = cmp.getInt(TAG_PROGRESS);
-    }
-
-    @Override
-    public Level getManaReceiverLevel() {
-        return getLevel();
-    }
-
-    @Override
-    public BlockPos getManaReceiverPos() {
-        return getBlockPos();
-    }
-
-    @Override
-    public int getCurrentMana() {
-        return mana;
-    }
-
-    @Override
-    public boolean isFull() {
-        IPolychromeRecipe recipe = getCurrentRecipe(getInventory());
-        return recipe == null || getCurrentMana() >= recipe.getMana();
-    }
-
-    @Override
-    public void receiveMana(int mana) {
-        this.mana = Math.max(0, this.mana + mana);
-        level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
-    }
-
-    @Override
-    public boolean canReceiveManaFromBursts() {
-        return isActive();
-    }
-
-    private boolean isActive() {
-        return getCurrentRecipe(getInventory()) != null && hasValidPlatform();
-    }
-
-    @Override
-    public boolean canAttachSpark(ItemStack stack) {
         return true;
     }
 
     @Override
-    public IManaSpark getAttachedSpark() {
-        List<Entity> sparks = level.getEntitiesOfClass(Entity.class, new AABB(worldPosition.above(), worldPosition.above().offset(1, 1, 1)), Predicates.instanceOf(IManaSpark.class));
-        if (sparks.size() == 1) {
-            Entity e = sparks.get(0);
-            return (IManaSpark) e;
+    public boolean triggerEvent(int pId, int pType) {
+        if (pId == 1 && level != null) {
+            BlockPos pos = getBlockPos();
+            for (int i = 0; i < 50; i++) {
+                level.addAlwaysVisibleParticle(ParticleTypes.LAVA, pos.getX(), pos.getY() + 0.5, pos.getZ(), 0.01, 0.05, 0.01);
+            }
+            level.playSound((Player) null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1.0f, 3.0f);
+        }
+        return super.triggerEvent(pId, pType);
+    }
+
+    /**
+     * 添加物品
+     * @param item
+     * @return
+     */
+    public boolean addItem(ItemStack item) {
+        for (int i = 0; i < ITEMS.size() - 1; i++) {
+            if (ITEMS.get(i).isEmpty()){
+                ITEMS.set(i, item);
+                NetworkHandler.CHANNEL.sendToServer(new PrismRenderPacket(getBlockPos(), ITEMS));
+                return true;
+            }
         }
 
-        return null;
+        return false;
+    }
+
+    public NonNullList<ItemStack> getITEMS() {
+        return ITEMS;
     }
 
     @Override
-    public void attachSpark(IManaSpark spark) {
+    public int getContainerSize() {
+        return ITEMS.size();
     }
 
     @Override
-    public boolean areIncomingTranfersDone() {
-        return !isActive();
+    public boolean isEmpty() {
+        return ITEMS.isEmpty();
     }
 
     @Override
-    public int getAvailableSpaceForMana() {
-        IPolychromeRecipe recipe = getCurrentRecipe(getInventory());
-        return recipe == null ? 0 : Math.max(0, recipe.getMana() - getCurrentMana());
+    public ItemStack getItem(int i) {
+        return ITEMS.get(i);
     }
 
-    public float getCompletion() {
-        IPolychromeRecipe recipe = getCurrentRecipe(getInventory());
-        if (recipe == null) {
-            return 0;
-        }
-        return ((float) getCurrentMana()) / recipe.getMana();
+    @Override
+    public ItemStack removeItem(int i, int i1) {
+        return ContainerHelper.removeItem(ITEMS, i, i1);
     }
 
-    public int getComparatorLevel() {
-        int val = (int) (getCompletion() * 15.0);
-        if (getCurrentMana() > 0) {
-            val = Math.max(val, 1);
-        }
-        return val;
+    @Override
+    public ItemStack removeItemNoUpdate(int i) {
+        return ContainerHelper.takeItem(ITEMS, i);
+    }
+
+    @Override
+    public void setItem(int index, ItemStack stack) {
+        ITEMS.set(index, stack);
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        return false;
+    }
+
+    @Override
+    public void clearContent() {
+        ITEMS.clear();
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        load(pkt.getTag());
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveAdditional(tag);
+        return tag;
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag pTag) {
+        ContainerHelper.saveAllItems(pTag, ITEMS);
+        super.saveAdditional(pTag);
+    }
+
+    @Override
+    public void load(CompoundTag pTag) {
+        ContainerHelper.loadAllItems(pTag, ITEMS);
+        super.load(pTag);
     }
 }

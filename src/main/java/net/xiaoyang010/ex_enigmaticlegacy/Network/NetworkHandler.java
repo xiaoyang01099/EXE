@@ -52,6 +52,14 @@ public class NetworkHandler {
                 CloudJumpParticlePacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
+        CHANNEL.registerMessage(
+                packetId++,
+                PrismRenderPacket.class,
+                PrismRenderPacket::encode,
+                PrismRenderPacket::new,
+                PrismRenderPacket::handler,
+                Optional.of(NetworkDirection.PLAY_TO_SERVER)
+        );
     }
 
     public static void sendToServer(Object packet) {
