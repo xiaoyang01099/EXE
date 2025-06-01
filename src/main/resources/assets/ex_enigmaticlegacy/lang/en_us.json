@@ -66,9 +66,14 @@
   "block.ex_enigmaticlegacy.dragon_crystal_block":"Dragon Crystals Block",
   "block.ex_enigmaticlegacy.spectrite_chest": "Spectrite Chest",
   "block.ex_enigmaticlegacy.mana_crystal": "Mana Crystal",
-  "block.ex_enigmaticlegacy.mana_charger": "Mana Charger",
+  "block.ex_enigmaticlegacy.mana_charger": "Mana Charger(WIP)",
   "block.ex_enigmaticlegacy.spectrite_ore": "Spectrite Ore",
-  "block.ex_enigmaticlegacy.polychrome_collapse_prism": "Polychrome Collapse Prism",
+  "block.ex_enigmaticlegacy.polychrome_collapse_prism": "Polychrome Collapse Prism(WIP)",
+  "block.ex_enigmaticlegacy.deconstruction_table": "Deconstruction Table(WIP)",
+
+  "button.recipe.previous": "Previous",
+  "button.recipe.next": "Next",
+  "container.deconstruction": "Deconstruction Table",
 
   "curios.identifier.holy_ring": "",
   "curios.modifiers.holy_ring": "",
@@ -158,6 +163,21 @@
   "item.ex_enigmaticlegacy.opal_ingot": "Opal Ingot",
   "item.ex_enigmaticlegacy.bronze_ingot": "Bronze Ingot",
   "item.ex_enigmaticlegacy.opally": "Opally",
+  "item.ex_enigmaticlegacy.infinitas_vortex": "Infinitas Vortex",
+
+
+  "item.ex_enigmaticlegacy.radiance_rune": "Radiance Rune",
+  "item.ex_enigmaticlegacy.stellar_rune": "Stellar Rune",
+  "item.ex_enigmaticlegacy.shadowy_rune": "Shadowy Rune",
+  "item.ex_enigmaticlegacy.illusory_world_spirit_sovereign_rune": "Illusory World Spirit Sovereign Rune",
+  "item.ex_enigmaticlegacy.mystical_sacred_pact_rune": "Mystical Sacred Pact Rune",
+  "item.ex_enigmaticlegacy.stellar_vault_divine_revelation_rune": "Stellar Vault Divine Revelation Rune",
+  "item.ex_enigmaticlegacy.serene_mysterious_heavenly_decree_rune": "Serene Mysterious Heavenly Decree Rune",
+  "item.ex_enigmaticlegacy.holy_blood_crystal_rune": "Holy Blood Crystal Rune",
+  "item.ex_enigmaticlegacy.verdant_leaf_spiritual_rhyme_rune": "Verdant Leaf Spiritual Rhyme Rune",
+  "item.ex_enigmaticlegacy.dream_feather_blue_butterfly_rune": "Dream Feather Blue Butterfly Rune",
+  "item.ex_enigmaticlegacy.mysterious_purple_wisteria_spirit_rune": "Mysterious Purple Wisteria Spirit Rune",
+
 
   "block.ex_enigmaticlegacy.mithrill_block": "Mithrill Block",
   "block.ex_enigmaticlegacy.nidavellir_forge": "Nidavellir Forge",
@@ -244,6 +264,7 @@
   "item.ex_enigmaticlegacy.etherium_singularity": "Etherium Singularity",
   "item.ex_enigmaticlegacy.compressed_infinity_singularity": "Compressed Infinity Singularity",
   "item.ex_enigmaticlegacy.evil_singularity": "Evil Singularity",
+  "item.ex_enigmaticlegacy.flower_finder_wand": "Floral Essence Wand",
 
   "itemGroup.ex_enigmaticlegacy": "§1EXENIGMATICLEGACY_ITEM",
   "itemGroup.ex_enigmaticlegacy_block": "§5EXENIGMATICLEGACY_BLOCK",
@@ -252,14 +273,24 @@
   "itemGroup.ex_enigmaticlegacy_mineral": "§7EXENIGMATICLEGACY_MINERAL",
   "itemGroup.ex_enigmaticlegacy_weapon": "§bEXENIGMATICLEGACY_WEAPON_ARMOR",
 
+  "item.ex_enigmaticlegacy.flower_finder_wand.tooltip.1": "§aHarnesses the power of nature's essence.",
+  "item.ex_enigmaticlegacy.flower_finder_wand.tooltip.2": "§eRight-click to heal yourself.",
+  "item.ex_enigmaticlegacy.flower_finder_wand.tooltip.3": "§eShift+Right-click for area healing effect.",
+  "item.ex_enigmaticlegacy.flower_finder_wand.tooltip.4": "§eSprint+Right-click to shoot a nature bolt. Hold Sneak to charge a powerful shot!",
+  "item.ex_enigmaticlegacy.flower_finder_wand.no_mana": "§cNot enough mana!",
+  "item.ex_enigmaticlegacy.flower_finder_wand.full_health": "§aYou are already at full health.",
+  "item.ex_enigmaticlegacy.flower_finder_wand.no_targets": "§cNo valid targets in range.",
+  "item.ex_enigmaticlegacy.flower_finder_wand.charge_more": "§eCharge longer for a powerful shot!",
+  "entity.ex_enigmaticlegacy.nature_bolt": "Nature Bolt",
+
   "effect.ex_enigmaticlegacy.flying": "Flying",
   "effect.ex_enigmaticlegacy.damage_reduction": "Damage Reduction",
   "effect.ex_enigmaticlegacy.emesis": "Emesis",
   "effect.ex_enigmaticlegacy.creeper_friendly": "Creeper Friendly",
   "effect.ex_enigmaticlegacy.drowning": "Drowning",
 
-
-
+  "item.ex_enigmaticlegacy.infinitas_vortex.tooltip": "§kMYSTERIOUS§r §dYou bring the miracle back to the End§r",
+  "item.ex_enigmaticlegacy.infinitas_vortex.tooltip_detailed": "Grants immense magical abilities and unlimited mana.",
 
   "subtitles.aaaaa": "",
   "subtitles.kill": "",
@@ -267,6 +298,12 @@
   "subtitles.hunt_down": "",
   "subtitles.meow": "",
   "subtitles.nothing": "",
+
+  "item.iceandfire.petrify_wand": "Wand of Petrification",
+  "item.iceandfire.petrify_wand.desc": "Transforms living beings into stone using botanical energy",
+  "item.iceandfire.petrify_wand.mana": "Mana: %s/%s",
+  "tooltip.iceandfire.petrify_wand.no_mana": "Insufficient Mana!",
+
 
   "tooltip.ex_enigmaticlegacy.wild_hunt_armor.desc5": "§5Master of the Undead",
   "tooltip.ex_enigmaticlegacy.wild_hunt_armor.desc6": "§5When wearing a full set of armor, all undead mobs become friendly creatures",

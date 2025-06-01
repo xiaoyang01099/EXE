@@ -60,6 +60,13 @@ public class NetworkHandler {
                 PrismRenderPacket::handler,
                 Optional.of(NetworkDirection.PLAY_TO_SERVER)
         );
+        CHANNEL.registerMessage(
+                packetId++,
+                PacketIndex.class,
+                PacketIndex::encode,
+                PacketIndex::decode,
+                PacketIndex::handle
+        );
     }
 
     public static void sendToServer(Object packet) {

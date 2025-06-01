@@ -23,6 +23,8 @@ public class ModScreens {
             MenuScreens.register(ModMenus.PAGED_CHEST, PagedChestScreen::new);
             MenuScreens.register(ModMenus.RAINBOW_TABLE_CONTAINER, RainbowTableScreen::new);
             MenuScreens.register(ModMenus.SPECTRITE_CHEST_CONTAINER, ContainerScreen::new);
+            MenuScreens.register(ModMenus.DECON_TABLE_MENU, DeconTableScreen::new);
+
         });
     }
 }

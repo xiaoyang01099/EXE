@@ -1,11 +1,14 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.api.distmarker.Dist;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.NatureBoltEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.SacabambaspisEntity;
 
 
@@ -26,6 +29,7 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.SEA_SERPENT.get(), SeaSerpentRender::new);
 		event.registerEntityRenderer(ModEntities.SACABAMBASPIS.get(), SacabambaspisRender::new);
 		event.registerEntityRenderer(ModEntities.RIDEABLE_PEARL_ENTITY.get(), (context) -> new ThrownItemRenderer<>(context, 1.0F, true));
+		event.registerEntityRenderer(ModEntities.NATURE_BOLT.get(), (context) -> new ThrownItemRenderer<>(context, 1.0F, true));
 		//event.registerEntityRenderer(ModEntities.RAINBOW_WITHER_SKULL.get(), RainbowWitherSkullRenderer::new);
 	}
 

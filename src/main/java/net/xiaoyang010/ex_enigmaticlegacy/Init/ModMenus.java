@@ -35,8 +35,12 @@ public class ModMenus {
     public static final MenuType<CelestialHTMenu> CELESTIAL_HOLINESS_TRANSMUTE = register("celestial_holiness_transmute",
             CelestialHTMenu::new);
 
+    public static final MenuType<DeconTableMenu> DECON_TABLE_MENU = register("deconstruction_table", DeconTableMenu::new);
+
     public static final MenuType<DimensionalMirrorContainer> DIMENSIONAL_MIRROR = register("dimensional_mirror",
             (windowId, inv, data) -> new DimensionalMirrorContainer(windowId, inv, inv.player));
+
+
 
     public static final MenuType<RainbowTableContainer> RAINBOW_TABLE_CONTAINER = register("rainbow_table",
             (windowId, inv, data) -> {

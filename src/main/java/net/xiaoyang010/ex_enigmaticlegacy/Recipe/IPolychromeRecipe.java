@@ -13,12 +13,10 @@ public interface IPolychromeRecipe extends Recipe<Container> {
      * 获取完成合成所需的魔力
      */
     int getMana();
-
+    int getProcessTime();
     /**
      * 获取完成这个合成所需的时间（以tick为单位）
-     */
-    default int getProcessTime() {
-        return 200;
+
     }
 
     /**
@@ -41,4 +39,6 @@ public interface IPolychromeRecipe extends Recipe<Container> {
     default void onCraftingComplete() {
         // 默认无操作
     }
+
+    int getManaUsage();
 }

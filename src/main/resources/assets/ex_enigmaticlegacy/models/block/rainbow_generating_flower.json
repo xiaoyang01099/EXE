@@ -1,0 +1,7 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "ex_enigmaticlegacy:blocks/flowers/rainbow_generating_flower",
+    "particle": "ex_enigmaticlegacy:blocks/flowers/rainbow_generating_flower"
+  }
+}

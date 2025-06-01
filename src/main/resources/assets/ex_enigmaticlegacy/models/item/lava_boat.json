@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "ex_enigmaticlegacy:items/res/lava_boat"
-  }
-}

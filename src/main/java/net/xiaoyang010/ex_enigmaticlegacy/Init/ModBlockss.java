@@ -46,6 +46,19 @@ public class ModBlockss {
 	public static final RegistryObject<Block> FROST_LOTUS = REGISTRY.register("frost_lotus", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.FROST_LOTUS_TILE::get));
 	public static final RegistryObject<Block> LYCORISRADIATA = REGISTRY.register("lycorisradiata", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.LYCORISRADIATA_TILE::get));
 	public static final RegistryObject<Block> FROST_BLOSSOM = REGISTRY.register("frost_blossom", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.FROST_BLOSSOM_TILE::get));
+	public static final RegistryObject<Block> MINGXIANLAN = REGISTRY.register("mingxianlan", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.MINGXIANLAN_TILE::get));
+	public static final RegistryObject<Block> RAINBOW_GENERATING_FLOWER = REGISTRY.register("rainbow_generating_flower", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.RAINBOW_GENERATING_FLOWER_TILE::get));
+	public static final RegistryObject<Block> BLAZING_ORCHID = REGISTRY.register("blazing_orchid", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.BLAZING_ORCHID_TILE::get));
+	public static final RegistryObject<Block> STREET_LIGHT = REGISTRY.register("street_light", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.STREET_LIGHT_TILE::get));
+	public static final RegistryObject<Block> VACUITY = REGISTRY.register("vacuity", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.VACUITY_TILE::get));
+	public static final RegistryObject<Block> YU_SHOU_CLOVER = REGISTRY.register("yu_shou_clover", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.YU_SHOU_CLOVER_TILE::get));
+	public static final RegistryObject<Block> CURSET_THISTLE = REGISTRY.register("curse_thistle", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.CURSET_THISTLE_TILE::get));
+	public static final RegistryObject<Block> ALCHEMY_SUNFLOWER = REGISTRY.register("alchemy_sunflower", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ALCHEMY_SUNFLOWER_TILE::get));
+	public static final RegistryObject<Block> ALCHEMY_AZALEA = REGISTRY.register("alchemy_azalea", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ALCHEMY_AZALEA_TILE::get));
+
+
+
+
 
 	private static final BlockBehaviour.StateArgumentPredicate<EntityType<?>> NO_SPAWN = (state, world, pos, et) -> false;
 	public static final RegistryObject<Block> infinitySpreader = REGISTRY.register("infinity_spreader", () -> new InfinityGaiaSpreader(VariantE.INFINITY, Properties.copy(Blocks.BIRCH_WOOD).isValidSpawn(NO_SPAWN)));
@@ -81,6 +94,7 @@ public class ModBlockss {
 	public static final RegistryObject<Block> GAIA_BLOCK = REGISTRY.register("gaia_block", GaiaBlock::new);
 	public static final RegistryObject<Block> MITHRILL_BLOCK = REGISTRY.register("mithrill_block", MithrillBlock::new);
 	public static final RegistryObject<Block> DRAGON_CRYSTALS_BLOCK = REGISTRY.register("dragon_crystal_block", DragonCrystalBlock::new);
+	public static final RegistryObject<Block> DECON_TABLE = REGISTRY.register("deconstruction_table", DeconTableBlock::new);
 
 
 

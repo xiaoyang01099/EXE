@@ -4,14 +4,21 @@ import com.integral.enigmaticlegacy.proxy.CommonProxy;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
@@ -23,17 +30,20 @@ import net.xiaoyang010.ex_enigmaticlegacy.Event.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.OmegaCore;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
+import net.xiaoyang010.ex_enigmaticlegacy.Util.DeconstructionManager;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.TooltipColorEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Mod(ExEnigmaticlegacyMod.MODID)
 public class ExEnigmaticlegacyMod {
-	public static final Logger LOGGER = LogManager.getLogger(ExEnigmaticlegacyMod.class);
+	public static final Logger LOGGER = LogManager.getLogger();
 	public static final String MODID = "ex_enigmaticlegacy";
 	private static final String PROTOCOL_VERSION = "1";
 	public static boolean isEx = false;
@@ -77,7 +87,6 @@ public class ExEnigmaticlegacyMod {
 		MinecraftForge.EVENT_BUS.register(new AnvilRepairHandler());
 		MinecraftForge.EVENT_BUS.register(new WildHuntArmorEventHandler());
 
-
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 		bus.addListener(this::commonSetup);
@@ -94,7 +103,6 @@ public class ExEnigmaticlegacyMod {
 	}
 
 	private void clientSetup(final FMLClientSetupEvent event) {
-		// 为自定义玻璃设置渲染层
 		ItemBlockRenderTypes.setRenderLayer(ModBlockss.INFINITYGlASS.get(), RenderType.translucent());
 		ItemBlockRenderTypes.setRenderLayer(ModBlockss.PAGED_CHEST.get(), RenderType.cutoutMipped());
 		event.enqueueWork(() ->{

@@ -10,8 +10,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.PolychromeCollapsePrismTile;
 import vazkii.botania.client.core.handler.ClientTickHandler;
@@ -48,6 +50,14 @@ public class PolychromeCollapsePrismRenderer implements BlockEntityRenderer<Poly
     @Override
     public void render(@Nonnull PolychromeCollapsePrismTile prism, float partialTicks, PoseStack ms,
                        MultiBufferSource buffers, int light, int overlay) {
+
+        NonNullList<ItemStack> inputs = NonNullList.withSize(4, ItemStack.EMPTY);
+        for (int i = 0; i < 4; i++){
+            ItemStack stack = prism.getItem(i);
+            if (!stack.isEmpty())
+                inputs.set(i, stack);
+        }
+
         Minecraft mc = Minecraft.getInstance();
 
         double tick = System.currentTimeMillis() / 800.0D;
@@ -56,28 +66,28 @@ public class PolychromeCollapsePrismRenderer implements BlockEntityRenderer<Poly
         ms.translate(0.0D, Math.sin(tick % (2 * Math.PI)) * 0.065D, 0.0D);
         ms.mulPose(Vector3f.YP.rotationDegrees((float) ((tick * 40.0D) % 360)));
         ms.translate(0, 1, 0);
-        mc.getItemRenderer().renderStatic(prism.getItem(0), TransformType.GROUND, light, overlay, ms, buffers, 0);
+        mc.getItemRenderer().renderStatic(inputs.get(0), TransformType.GROUND, light, overlay, ms, buffers, 0);
         ms.popPose();
 
         ms.pushPose();
         ms.translate(0, 1, 1);
         ms.translate(0.0D, Math.sin(tick % (2 * Math.PI)) * 0.065D, 0.0D);
         ms.mulPose(Vector3f.YP.rotationDegrees((float) ((tick * 40.0D) % 360)));
-        mc.getItemRenderer().renderStatic(prism.getItem(1), TransformType.GROUND, light, overlay, ms, buffers, 0);
+        mc.getItemRenderer().renderStatic(inputs.get(1), TransformType.GROUND, light, overlay, ms, buffers, 0);
         ms.popPose();
 
         ms.pushPose();
         ms.translate(1, 1, 0);
         ms.translate(0.0D, Math.sin(tick % (2 * Math.PI)) * 0.065D, 0.0D);
         ms.mulPose(Vector3f.YP.rotationDegrees((float) ((tick * 40.0D) % 360)));
-        mc.getItemRenderer().renderStatic(prism.getItem(2), TransformType.GROUND, light, overlay, ms, buffers, 0);
+        mc.getItemRenderer().renderStatic(inputs.get(2), TransformType.GROUND, light, overlay, ms, buffers, 0);
         ms.popPose();
 
         ms.pushPose();
         ms.translate(1, 1, 1);
         ms.translate(0.0D, Math.sin(tick % (2 * Math.PI)) * 0.065D, 0.0D);
         ms.mulPose(Vector3f.YP.rotationDegrees((float) ((tick * 40.0D) % 360)));
-        mc.getItemRenderer().renderStatic(prism.getItem(3), TransformType.GROUND, light, overlay, ms, buffers, 0);
+        mc.getItemRenderer().renderStatic(inputs.get(3), TransformType.GROUND, light, overlay, ms, buffers, 0);
         ms.popPose();
 
         //渲染输出

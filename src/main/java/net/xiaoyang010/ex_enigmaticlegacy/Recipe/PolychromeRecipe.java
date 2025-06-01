@@ -26,8 +26,6 @@ public class PolychromeRecipe implements IPolychromeRecipe {
     private final int mana;
     private final int processTime;
     public static final ResourceLocation TYPE_ID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "polychrome");
-
-    // 内部类，用于存储材料及其数量
     public static class IngredientWithCount {
         private final Ingredient ingredient;
         private final int count;
@@ -56,6 +54,10 @@ public class PolychromeRecipe implements IPolychromeRecipe {
         this.inputs = inputs;
         this.mana = mana;
         this.processTime = processTime;
+    }
+
+    public int getManaUsage() {
+        return this.mana;
     }
 
     @Override
@@ -125,6 +127,7 @@ public class PolychromeRecipe implements IPolychromeRecipe {
     public static class Type implements RecipeType<PolychromeRecipe> {
         public static final PolychromeRecipe.Type INSTANCE = new PolychromeRecipe.Type();
         public static final String ID = "polychrome";
+
         public Type() {}
 
         @Override

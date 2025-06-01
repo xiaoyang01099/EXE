@@ -57,6 +57,7 @@ public class PolychromeCollapsePrism extends BlockModWaterloggable implements En
                 ItemStack out = prismTile.getItem(4);
                 if (!out.isEmpty()){ //优先取出输出
                     prismTile.setItem(4, ItemStack.EMPTY);
+//                    NetworkHandler.CHANNEL.sendToServer(new PrismRenderPacket(pos, ItemStack.EMPTY));
                     player.addItem(out);
                     return InteractionResult.SUCCESS;
                 }
@@ -72,7 +73,7 @@ public class PolychromeCollapsePrism extends BlockModWaterloggable implements En
             }else { //非潜行放入
                 if (!itemInHand.isEmpty()) {
                     if (prismTile.getItem(4).isEmpty()){
-                        ItemStack stack = new ItemStack(itemInHand.getItem(), 1); //限制放入一个
+                        ItemStack stack = new ItemStack(itemInHand.getItem(), 1);
                         if (prismTile.addItem(stack)){
                             itemInHand.shrink(1);
                             return InteractionResult.SUCCESS;

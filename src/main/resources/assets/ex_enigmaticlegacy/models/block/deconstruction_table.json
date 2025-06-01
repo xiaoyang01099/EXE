@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "ex_enigmaticlegacy:blocks/stonecrafting/cobble_stone",
+    "up": "ex_enigmaticlegacy:blocks/decontable/decon_top",
+    "north": "ex_enigmaticlegacy:blocks/decontable/decon_side",
+    "east": "ex_enigmaticlegacy:blocks/decontable/decon_side",
+    "south": "ex_enigmaticlegacy:blocks/decontable/decon_side",
+    "west": "ex_enigmaticlegacy:blocks/decontable/decon_side",
+    "particle": "ex_enigmaticlegacy:blocks/stonecrafting/cobble_stone"
+  }
+}

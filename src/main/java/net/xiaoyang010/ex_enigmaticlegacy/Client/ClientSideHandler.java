@@ -15,7 +15,10 @@ import net.xiaoyang010.ex_enigmaticlegacy.Block.FluffyDandelionBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.custom.CustomSaplingBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.AsgardandelionParticle;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.DandelionFluffParticle;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Generating.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Functional.AlchemyAzaleaTile;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Functional.CurseThistleTile;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModParticleTypes;
 
@@ -76,6 +79,15 @@ public class ClientSideHandler {
         Lycorisradiata.registerRenderLayer();
         FrostBlossomBlock.registerRenderLayer();
         CustomSaplingBlock.registerRenderLayer();
+        MingXianLanBlock.registerRenderLayer();
+        RainbowGeneratingFlowerBlock.registerRenderLayer();
+        BlazingOrchidFlowerBlock.registerRenderLayer();
+        StreetLightFlowerBlock.registerRenderLayer();
+        Vacuity.registerRenderLayer();
+        YushouClover.registerRenderLayer();
+        CurseThistle.registerRenderLayer();
+        AlchemySunflower.registerRenderLayer();
+        AlchemyAzalea.registerRenderLayer();
     }
 
 

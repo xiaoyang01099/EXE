@@ -5,6 +5,8 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.PetrifyingWand;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Spell.InfinitasVortex;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.InfinityMatter;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModAmorphous;
@@ -34,9 +36,31 @@ public class ModIntegrationItems {
             PROJECTE_ITEMS.put("matter_temporal_max", register("matter_temporal_max", ModAmorphous::new));
             PROJECTE_ITEMS.put("matter_void_max", register("matter_void_max", ModAmorphous::new));
 
+
         }
         INTEGRATION_ITEMS.put("projecte", PROJECTE_ITEMS);
     }
+
+    private static final Map<String, RegistryObject<Item>> SPELLBOOKS_ITEM = new HashMap<>();
+    static {
+        if(ModList.get().isLoaded("irons_spellbooks")) {
+
+            SPELLBOOKS_ITEM.put("infinitas_vortex", register("infinitas_vortex", InfinitasVortex::new));
+
+        }
+        INTEGRATION_ITEMS.put("irons_spellbooks", SPELLBOOKS_ITEM);
+    }
+
+    private static final Map<String, RegistryObject<Item>> ICE_AND_FIRE_ITEM = new HashMap<>();
+    static {
+        if(ModList.get().isLoaded("iceandfire")) {
+
+            ICE_AND_FIRE_ITEM.put("petrifying_wand", register("petrifying_wand", PetrifyingWand::new));
+
+        }
+        INTEGRATION_ITEMS.put("iceandfire", ICE_AND_FIRE_ITEM);
+    }
+
 
     // 通用注册方法
     private static RegistryObject<Item> register(String name, Supplier<Item> item) {
@@ -61,10 +85,5 @@ public class ModIntegrationItems {
             return modItems.get(itemName).get();
         }
         return null;
-    }
-
-    // 直接获取无尽物质的便捷方法
-    public static Item getInfinityMatter() {
-        return getItem("projecte", "infinity_matter");
     }
 }

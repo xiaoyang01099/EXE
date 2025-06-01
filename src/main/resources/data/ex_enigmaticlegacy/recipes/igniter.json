@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "PQP",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:diamond"
+    },
+    "Q": {
+      "item": "minecraft:flint_and_steel"
+    }
+  },
+   "result": {
+     "item": "ex_enigmaticlegacy:igniter",
+     "count": 1
+  }
+}
