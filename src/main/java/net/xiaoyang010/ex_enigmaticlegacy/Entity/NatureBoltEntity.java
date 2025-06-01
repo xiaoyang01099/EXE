@@ -155,11 +155,8 @@ public class NatureBoltEntity extends ThrowableProjectile implements ItemSupplie
                     if (living == owner) continue; //不攻击自己
                     // 造成伤害
                     living.hurt(DamageSource.MAGIC, damage);
+                    applyEffectsToTarget(living);
                 }
-
-
-                // 应用效果
-                applyEffectsToTarget(livingTarget);
             }
         }
     }
@@ -169,9 +166,7 @@ public class NatureBoltEntity extends ThrowableProjectile implements ItemSupplie
         target.addEffect(new MobEffectInstance(MobEffects.WITHER, 1200, 5));
         target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1200, 5));
 
-        if (target.isInvertedHealAndHarm()) {
-            target.addEffect(new MobEffectInstance(ModEffects.DROWNING.get(), 1200, 5));
-        }
+        target.addEffect(new MobEffectInstance(ModEffects.DROWNING.get(), 1200, 5));
 
         // 额外粒子效果
         if (level instanceof ServerLevel) {

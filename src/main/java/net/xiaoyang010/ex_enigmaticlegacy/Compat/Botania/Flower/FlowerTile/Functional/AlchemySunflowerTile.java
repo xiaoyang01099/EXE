@@ -73,12 +73,12 @@ public class AlchemySunflowerTile extends TileEntityFunctionalFlower {
         if (level == null || level.isClientSide) {
             return;
         }
-
-        // 更新强化模式状态
-        updateEnhancedMode();
-
-        // 自动检查是否可以激活强化模式
-        checkAutoEnhancement();
+//
+//        // 更新强化模式状态
+//        updateEnhancedMode();
+//
+//        // 自动检查是否可以激活强化模式
+//        checkAutoEnhancement();
 
         // 执行EMC生成
         if (ticksExisted % 20 == 0) { // 每秒执行一次
@@ -142,7 +142,8 @@ public class AlchemySunflowerTile extends TileEntityFunctionalFlower {
      * 生成EMC
      */
     private void generateEMC() {
-        int manaCostPerSecond = enhancedMode ? ENHANCED_MANA_COST_PER_TICK : BASE_MANA_COST_PER_TICK;
+        boolean flag = getMana() > 180000;
+        int manaCostPerSecond = flag ? ENHANCED_MANA_COST_PER_TICK : BASE_MANA_COST_PER_TICK;
 
         if (getMana() < manaCostPerSecond) {
             return;
@@ -152,19 +153,8 @@ public class AlchemySunflowerTile extends TileEntityFunctionalFlower {
         addMana(-manaCostPerSecond);
 
         // 计算产生的EMC
-        int ratio = enhancedMode ? ENHANCED_MANA_TO_EMC_RATIO : MANA_TO_EMC_RATIO;
-        double emcGenerated = (double) manaCostPerSecond / ratio;
-
-        // 累积EMC
-        accumulatedEmc += (long)(emcGenerated * 1000); // 乘以1000保持精度
-
-        // 检查是否可以分发EMC
-        if (accumulatedEmc >= 1000) { // 达到1 EMC
-            long emcToDistribute = accumulatedEmc / 1000;
-            accumulatedEmc %= 1000;
-
-            distributeEMC(emcToDistribute);
-        }
+        int ratio = flag ? 8000 : 2000;
+        distributeEMC(ratio);
     }
 
     /**

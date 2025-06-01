@@ -104,8 +104,7 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
      */
     private void generateEMC(int tick) {
         int day = Math.min(tick / 360, 100) + 1;
-        int i = day == 1 ? 1 : 2;
-        int emcPerSecond = Math.min(8000 * i * day, 1000000);  //EMC
+        int emcPerSecond = Math.min(8000 * (int)Math.pow(2, day), 1000000);  //EMC
 
         int manaCost = Math.toIntExact(emcPerSecond * MANA_COST_PER_EMC);
         if (getMana() < manaCost) {
@@ -200,7 +199,7 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
 
     @Override
     public int getMaxMana() {
-        return Math.min(50000 + ticksExisted / 360 * 5000, 1000000);
+        return 1000000;
     }
 
     @Override

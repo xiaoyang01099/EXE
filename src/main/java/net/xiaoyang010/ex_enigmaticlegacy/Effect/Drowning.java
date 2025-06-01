@@ -71,15 +71,7 @@ public class Drowning extends MobEffect {
         LivingEntity entity = event.getEntityLiving();
 
         if (entity.hasEffect(ModEffects.DROWNING.get())) {
-            UUID entityId = entity.getUUID();
-            Integer cooldown = healCooldowns.get(entityId);
-
-            if (cooldown != null && cooldown > 0) {
-                event.setCanceled(true);
-                return;
-            }
-
-            healCooldowns.put(entityId, HEAL_COOLDOWN_TICKS);
+            event.setCanceled(true);
         }
     }
 
