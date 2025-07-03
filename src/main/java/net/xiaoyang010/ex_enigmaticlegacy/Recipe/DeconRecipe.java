@@ -1,20 +1,15 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Recipe;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.common.crafting.IShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 
 public class DeconRecipe {
-    private static final Map<Item, List<ItemStack>> deconCache = new HashMap<>();
     private ItemStack result;
     private ItemStack[] ingredients;
     public boolean shapeless;
@@ -35,9 +30,11 @@ public class DeconRecipe {
         this.size = recipe.getIngredients().size();
         this.width = this.size;
         this.height = 1;
-        if (recipe instanceof IShapedRecipe) {
-            this.width = ((IShapedRecipe<?>)recipe).getRecipeWidth();
-            this.height = ((IShapedRecipe<?>)recipe).getRecipeHeight();
+
+        if (recipe instanceof ShapedRecipe) {
+            ShapedRecipe shapedRecipe = (ShapedRecipe) recipe;
+            this.width = shapedRecipe.getWidth();
+            this.height = shapedRecipe.getHeight();
         }
 
         this.result = recipe.getResultItem();
@@ -59,7 +56,7 @@ public class DeconRecipe {
             } catch (ArrayIndexOutOfBoundsException var6) {
             }
 
-            if (!stack.isEmpty()) {
+            if (stack != null) {
                 toReturn[i] = stack.copy();
             }
         }
@@ -80,7 +77,7 @@ public class DeconRecipe {
             ItemStack[] out = new ItemStack[in.length];
 
             for(int i = 0; i < in.length; ++i) {
-                out[i] = in[i] != null && !in[i].isEmpty() ? in[i].copy() : ItemStack.EMPTY;
+                out[i] = in[i] != null ? in[i].copy() : ItemStack.EMPTY;
             }
 
             return out;
@@ -96,22 +93,15 @@ public class DeconRecipe {
             ItemStack[] clean = new ItemStack[dirty.length];
 
             for(int i = 0; i < clean.length; ++i) {
-                if (dirty[i] != null && !dirty[i].isEmpty()) {
+                if (dirty[i] != null && dirty[i] != ItemStack.EMPTY) {
                     clean[i] = new ItemStack(dirty[i].getItem(), 1);
-                    if (dirty[i].isDamageableItem()) {
-                        int damage = dirty[i].getDamageValue();
-                        if (damage == 32767) {
-                            clean[i].setDamageValue(0);
-                        } else {
-                            clean[i].setDamageValue(damage);
-                        }
+                    clean[i].setDamageValue(dirty[i].getDamageValue());
+                    if (clean[i].getDamageValue() == 32767) {
+                        clean[i].setDamageValue(0);
                     }
 
-                    Item remainingItem = dirty[i].getItem().getCraftingRemainingItem();
-                    if (remainingItem != null && remainingItem != Items.AIR) {
+                    if (dirty[i].getItem().getCraftingRemainingItem() != null) {
                         clean[i] = ItemStack.EMPTY;
-                    } else {
-                        clean[i] = clean[i];
                     }
                 }
             }
@@ -130,20 +120,16 @@ public class DeconRecipe {
                         list.add((ItemStack)o);
                     } else if (o instanceof List) {
                         List<?> l = (List<?>)o;
-                        if (!l.isEmpty()) {
-                            Object o1 = l.get(0);
-                            if (o1 instanceof ItemStack) {
-                                ItemStack stack = (ItemStack)o1;
-                                list.add(stack.copy());
-                            }
-                        }
+                        Object o1 = l.get(0);
+                        ItemStack stack = (ItemStack)o1;
+                        list.add(stack.copy());
                     }
                 } else {
                     list.add(null);
                 }
             }
 
-            return list.toArray(new ItemStack[0]);
+            return list.toArray(new ItemStack[list.size()]);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

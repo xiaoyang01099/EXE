@@ -68,7 +68,6 @@ public class HolyRing extends Item implements ICurioItem {
         // 添加飞行能力
         if (entity instanceof Player player) {
             player.getAbilities().mayfly = true;
-//            player.getAbilities().flying = true;
             player.onUpdateAbilities();
         }
     }

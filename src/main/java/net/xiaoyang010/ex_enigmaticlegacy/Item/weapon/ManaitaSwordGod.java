@@ -29,6 +29,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Entity.Xingyun2825Entity;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.ColorText;
+import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -36,19 +37,15 @@ import java.util.List;
 public class ManaitaSwordGod extends SwordItem {
 
     public ManaitaSwordGod() {
-        super(Tiers.NETHERITE, 10, -2.4F, new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR));
+        super(EXEAPI.MIRACLE_ITEM_TIER, 10, -2.4F, new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR));
     }
 
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (!target.level.isClientSide) { // 确保代码在服务器端执行
-            // 使用自定义的 DamageSource 直接杀死目标，忽略所有防护和模式
             target.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
-
-            // 强制将目标的生命值设为0，确保目标死亡
             target.setHealth(0.0F);
 
-            // 如果目标是玩家，清空其食物值和经验值
             if (target instanceof Player player) {
                 player.getFoodData().setFoodLevel(0);
                 player.experienceLevel = 0;

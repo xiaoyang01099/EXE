@@ -40,6 +40,79 @@ public class ModItems {
 	public static final RegistryObject<Item> SPECTRITE_ORE = block(ModBlockss.SPECTRITE_ORE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 
 
+
+
+
+	//扩展花
+	public static final RegistryObject<Item> CURSET_THISTLE = blockFlower(ModBlockss.CURSET_THISTLE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> YU_SHOU_CLOVER = blockFlower(ModBlockss.YU_SHOU_CLOVER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> VACUITY = blockFlower(ModBlockss.VACUITY, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> STREET_LIGHT = blockFlower(ModBlockss.STREET_LIGHT, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> BLAZING_ORCHID = blockFlower(ModBlockss.BLAZING_ORCHID, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> RAINBOW_GENERATING_FLOWER = blockFlower(ModBlockss.RAINBOW_GENERATING_FLOWER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> MINGXIANLAN = blockFlower(ModBlockss.MINGXIANLAN, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> FROST_BLOSSOM = blockFlower(ModBlockss.FROST_BLOSSOM, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> FROST_LOTUS = blockFlower(ModBlockss.FROST_LOTUS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> DARK_NIGHT_GRASS = blockFlower(ModBlockss.DARK_NIGHT_GRASS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> ASTRAL_KILLOP = blockFlower(ModBlockss.ASTRAL_KILLOP, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> KILLING_BERRY = blockFlower(ModBlockss.KILLING_BERRY, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> NIGHTSHADE = blockFlower(ModBlockss.NIGHTSHADE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> DAYBLOOM = blockFlower(ModBlockss.DAYBLOOM, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> BELIEVE = blockFlower(ModBlockss.BELIEVER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> GENENERGYDANDRON = blockFlower(ModBlockss.GENENERGYDANDRON, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> PRISMATICRADIANCEBLOCK = blockFlower(ModBlockss.PRISMATICRADIANCEBLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> ORECHIDENDIUM = blockFlower(ModBlockss.ORECHIDENDIUM, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> BLOCKNATURE = blockFlower(ModBlockss.BLOCKNATURE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> ASGARDANDELION = blockFlower(ModBlockss.ASGARDANDELION, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> FLOWEY = blockFlower(ModBlockss.FLOWEY,ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> WITCH_OPOOD = blockFlower(ModBlockss.WITCH_OPOOD,ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> LYCORISRADIATA = blockFlower(ModBlockss.LYCORISRADIATA,ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> SOARLEANDER = blockFlower(ModBlockss.SOARLEANDER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> ENDER_LAVENDER = blockFlower(ModBlockss.ENDER_LAVENDER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> AUREA_AMICITIA_CARNATION = blockFlower(ModBlockss.AUREA_AMICITIA_CARNATION, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> CATNIP = blockFlower(ModBlockss.CATNIP, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> MUSICAL_ORCHID = blockFlower(ModBlockss.MUSICAL_ORCHID, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> DICTARIUS = blockFlower(ModBlockss.DICTARIUS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> ANCIENT_ALPHIRINE = blockFlower(ModBlockss.ANCIENT_ALPHIRINE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+//	public static final RegistryObject<Item> TRINARY_SYNTHESIS = blockFlower(ModBlockss.TRINARY_SYNTHESIS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+//	public static final RegistryObject<Item> GEAR_FLOWER = blockFlower(ModBlockss.GEAR_FLOWER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> EVIL_FORGE = blockFlower(ModBlockss.EVIL_FORGE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> ETHERIUM_FORGE = blockFlower(ModBlockss.ETHERIUM_FORGE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> ARDENT_AZARCISSUS = blockFlower(ModBlockss.ARDENT_AZARCISSUS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+
+
+
+
+
+
+
+
+	//扩展浮空花
+
+
+
+
+
+
+
+	//其他方块物品
+	public static final RegistryObject<Item> MANA_CRYSTAL = block(ModBlockss.MANA_CRYSTAL, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> MANA_CHARGER = block(ModBlockss.MANA_CHARGER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> infinitySpreader = block(ModBlockss.infinitySpreader, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> FLUFFY_DANDELION = block(ModBlockss.FLUFFY_DANDELION, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
+	public static final RegistryObject<Item> CELESTIAL_HOLINESS_TRANSMUTER = block(ModBlockss.CELESTIAL_HOLINESS_TRANSMUTER, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
+	public static final RegistryObject<Item> INFINITYGLASS = block(ModBlockss.INFINITYGlASS, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> EVILBLOCK = block(ModBlockss.EVILBLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> ICHEST = block(ModBlockss.INFINITYCHEST, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
+	public static final RegistryObject<Item> COBBLE_STONE = block(ModBlockss.COBBLE_STONE, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
+	public static final RegistryObject<Item> INFINITY_POTATO = block(ModBlockss.INFINITY_POTATO, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> CUSTOM_SAPLING = block(ModBlockss.CUSTOM_SAPLING, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
+	public static final RegistryObject<Item> SPECTRITE_CHEST = block(ModBlockss.SPECTRITE_CHEST, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
+	public static final RegistryObject<Item> DRAGON_CRYSTALS_BLOCK = block(ModBlockss.DRAGON_CRYSTALS_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
+	public static final RegistryObject<Item> POLYCHROME_COLLAPSE_PRISM = block(ModBlockss.POLYCHROME_COLLAPSE_PRISM, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> MANA_CONTAINER = block(ModBlockss.MANA_CONTAINER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> DILUTED_CONTAINER = block(ModBlockss.DILUTED_CONTAINER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> CREATIVE_CONTAINER = block(ModBlockss.CREATIVE_CONTAINER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> MITHRILL_BLOCK = block(ModBlockss.MITHRILL_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> NIDAVELLIR_FORGE = block(ModBlockss.NIDAVELLIR_FORGE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> GAIA_BLOCK = block(ModBlockss.GAIA_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
@@ -50,57 +123,13 @@ public class ModItems {
 	public static final RegistryObject<Item> NICKEL_BLOCK = block(ModBlockss.NICKEL_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> AERIALITE_BLOCK = block(ModBlockss.AERIALITE_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 	public static final RegistryObject<Item> RAINBOW_TABLE = block(ModBlockss.RAINBOW_TABLE, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
-
-
-
-
-
-
-
-
-	public static final RegistryObject<Item> ALCHEMY_AZALEA = blockFlower(ModBlockss.ALCHEMY_AZALEA, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> ALCHEMY_SUNFLOWER = blockFlower(ModBlockss.ALCHEMY_SUNFLOWER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> CURSET_THISTLE = blockFlower(ModBlockss.CURSET_THISTLE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> YU_SHOU_CLOVER = blockFlower(ModBlockss.YU_SHOU_CLOVER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> VACUITY = blockFlower(ModBlockss.VACUITY, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> STREET_LIGHT = blockFlower(ModBlockss.STREET_LIGHT, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> BLAZING_ORCHID = blockFlower(ModBlockss.BLAZING_ORCHID, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> RAINBOW_GENERATING_FLOWER = blockFlower(ModBlockss.RAINBOW_GENERATING_FLOWER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> MINGXIANLAN = blockFlower(ModBlockss.MINGXIANLAN, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> MANA_CRYSTAL = block(ModBlockss.MANA_CRYSTAL, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> MANA_CHARGER = block(ModBlockss.MANA_CHARGER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> infinitySpreader = block(ModBlockss.infinitySpreader, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> FROST_BLOSSOM = block(ModBlockss.FROST_BLOSSOM, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> FROST_LOTUS = blockFlower(ModBlockss.FROST_LOTUS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> DARK_NIGHT_GRASS = blockFlower(ModBlockss.DARK_NIGHT_GRASS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> ASTRAL_KILLOP = blockFlower(ModBlockss.ASTRAL_KILLOP, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> KILLING_BERRY = blockFlower(ModBlockss.KILLING_BERRY, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> NIGHTSHADE = blockFlower(ModBlockss.NIGHTSHADE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> DAYBLOOM = blockFlower(ModBlockss.DAYBLOOM, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> BELIEVE = blockFlower(ModBlockss.BELIEVER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> GENENERGYDANDRON = block(ModBlockss.GENENERGYDANDRON, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> FLUFFY_DANDELION = block(ModBlockss.FLUFFY_DANDELION, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
-	public static final RegistryObject<Item> CELESTIAL_HOLINESS_TRANSMUTER = block(ModBlockss.CELESTIAL_HOLINESS_TRANSMUTER, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
-	public static final RegistryObject<Item> PRISMATICRADIANCEBLOCK = block(ModBlockss.PRISMATICRADIANCEBLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
-	public static final RegistryObject<Item> ORECHIDENDIUM = block(ModBlockss.ORECHIDENDIUM, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> INFINITYGLASS = block(ModBlockss.INFINITYGlASS, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
-	public static final RegistryObject<Item> BLOCKNATURE = block(ModBlockss.BLOCKNATURE, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
-	public static final RegistryObject<Item> ASGARDANDELION = blockFlower(ModBlockss.ASGARDANDELION, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> EVILBLOCK = block(ModBlockss.EVILBLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
-	public static final RegistryObject<Item> ICHEST = block(ModBlockss.INFINITYCHEST, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
-	public static final RegistryObject<Item> SOARLEANDER = block(ModBlockss.SOARLEANDER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	//public static final RegistryObject<Item> STARLITSANCTUM = block(ModBlocks.STARLITSANCTUM, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
-	public static final RegistryObject<Item> COBBLE_STONE = block(ModBlockss.COBBLE_STONE, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
-	public static final RegistryObject<Item> INFINITY_POTATO = block(ModBlockss.INFINITY_POTATO, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> FLOWEY = block(ModBlockss.FLOWEY,ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> WITCH_OPOOD = block(ModBlockss.WITCH_OPOOD,ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> LYCORISRADIATA = block(ModBlockss.LYCORISRADIATA,ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
-	public static final RegistryObject<Item> CUSTOM_SAPLING = block(ModBlockss.CUSTOM_SAPLING, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
-	public static final RegistryObject<Item> SPECTRITE_CHEST = block(ModBlockss.SPECTRITE_CHEST, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
-	public static final RegistryObject<Item> DRAGON_CRYSTALS_BLOCK = block(ModBlockss.DRAGON_CRYSTALS_BLOCK, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
-	public static final RegistryObject<Item> POLYCHROME_COLLAPSE_PRISM = block(ModBlockss.POLYCHROME_COLLAPSE_PRISM, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> DECON_TABLE_ITEM = block(ModBlockss.DECON_TABLE, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
+	public static final RegistryObject<Item> FULL_ALTAR = block(ModBlockss.FULL_ALTAR, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> GAME_BOARD = block(ModBlockss.GAME_BOARD, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> BOARD_FATE = block(ModBlockss.BOARD_FATE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> TERRA_FARMLAND = block(ModBlockss.TERRA_FARMLAND, ModTabs.TAB_EXENIGMATICLEGACY_BLOCK);
 
+	//public static final RegistryObject<Item> STARLITSANCTUM = block(ModBlocks.STARLITSANCTUM, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
 
 
 
@@ -147,7 +176,6 @@ public class ModItems {
 	public static final RegistryObject<Item> PIECE_OF_NEBULA = REGISTRY.register("piece_of_nebula", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> MAT_INSCRIBED_INGOT = REGISTRY.register("mat_inscribed_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> DRAGONCRYTAL = REGISTRY.register("dragoncrystal", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
-
 	public static final RegistryObject<Item> FOCUS_INFUSION = REGISTRY.register("focus_infusion", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> NATUREINGOT = REGISTRY.register("natureingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> NICKEL_INGOT = REGISTRY.register("nickel_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
@@ -159,16 +187,24 @@ public class ModItems {
 	public static final RegistryObject<Item> SPECTRITE_GEM = REGISTRY.register("spectrite_gem", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> WHITE_DUST = REGISTRY.register("white_dust", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
 	public static final RegistryObject<Item> WOOD_INGOT = REGISTRY.register("wood_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.COMMON)));
-	public static final RegistryObject<Item> Crystalline_Stardust_Ingot = REGISTRY.register("crystalline_stardust_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
-	public static final RegistryObject<Item> Starlight_Crystalline_Ingot = REGISTRY.register("starlight_crystalline_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
-	public static final RegistryObject<Item> Tainted_Astral_Crystal_Ingot = REGISTRY.register("tainted_astral_crystal_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> CRYSTALLINE_STARDUST_INGOT = REGISTRY.register("crystalline_stardust_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> STARLIGHT_CRYSTALLINE_INGOT = REGISTRY.register("starlight_crystalline_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> TAINTED_ASTRAL_CRYSTAL_INGOT = REGISTRY.register("tainted_astral_crystal_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> NEBULA_INGOT = REGISTRY.register("nebula_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> NEBULA_STAR = REGISTRY.register("nebula_star", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> NEBULA_NUGGET = REGISTRY.register("nebula_nugget", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> PIECE_OF_WILD_HUNT = REGISTRY.register("piece_of_wild_hunt", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> WILD_HUNT_NUGGET = REGISTRY.register("wild_hunt_nugget", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> WILD_HUNT_FRAGMENT = REGISTRY.register("wild_hunt_fragment", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> WILD_HUNT_INGOT = REGISTRY.register("wild_hunt_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> WILD_HUNT_STAR = REGISTRY.register("wild_hunt_star", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
 
-	//其他
+	//其他物品注册
 	public static final RegistryObject<Item> SPECTRITE_CRYSTAL = REGISTRY.register("spectrite_crystal", SpectriteCrystal::new);
 	public static final RegistryObject<Item> BIBLE = REGISTRY.register("bible", Bible::new);
 	public static final RegistryObject<Item> IGNITER = REGISTRY.register("igniter", Igniter::new);
 	public static final RegistryObject<Item> BEDROCK_BREAKER = REGISTRY.register("bedrock_breaker", BedrockBreaker::new);
-	public static final RegistryObject<Item> IVYREGEN = REGISTRY.register("ivyregen", RegenIvy::new);
+	public static final RegistryObject<Item> MANA_IVY_REGEN = REGISTRY.register("mana_ivy_regen", ManaIvyRegen::new);
 	public static final RegistryObject<Item> WEATHERSTONE = REGISTRY.register("weather_stone", WeatherStone::new);
 	public static final RegistryObject<Item> DIMENSIONALMIRROR = REGISTRY.register("dimensional_mirror", DimensionalMirror::new);
 	public static final RegistryObject<Item> NEBULOUSCORE = REGISTRY.register("nebulous_core", NebulousCore::new);
@@ -192,6 +228,8 @@ public class ModItems {
 	public static final RegistryObject<Item> PLUMED_BELT = REGISTRY.register("plumed_belt", () -> new PlumedBelt(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> GOLDEN_LAUREL = REGISTRY.register("golden_laurel", () -> new GoldenLaurel(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).rarity(ModRarities.MIRACLE)));
 	public static final RegistryObject<Item> FLOWER_FINDER_WAND = REGISTRY.register("flower_finder_wand",FlowerFinderWand::new);
+	public static final RegistryObject<Item> IVY_REGEN = REGISTRY.register("ivy_regen", () -> new IvyRegen(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+
 
 	//奇点
 	public static final RegistryObject<Item> ETERNAL_SINGULARITY = REGISTRY.register("eternal_singularity", ModSingularity::new);
@@ -240,13 +278,23 @@ public class ModItems {
 	public static final RegistryObject<Item> DreamFeatherBlueButterflyRune = REGISTRY.register("dream_feather_blue_butterfly_rune", ModRunes::new);
 	public static final RegistryObject<Item> MysteriousPurpleWisteriaSpiritRune = REGISTRY.register("mysterious_purple_wisteria_spirit_rune", ModRunes::new);
 
+	public static final RegistryObject<Item> MANA_FLOWER = REGISTRY.register("mana_flower",
+			() -> new ManaFlower(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
+	public static final RegistryObject<Item> SPRAWL_ROD = REGISTRY.register("sprawl_rod",
+			() -> new SprawlRod(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
+	public static final RegistryObject<Item> MITHRILL_MULTI_TOOL = REGISTRY.register("mithrill_multi_tool",
+			() -> new MithrillMultiTool(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+
+	public static final RegistryObject<Item> TERRA_SHOVEL = REGISTRY.register("terra_shovel",
+			() -> new TerraShovel(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+
+	public static final RegistryObject<Item> TERRA_HOE = REGISTRY.register("terra_hoe",
+			() -> new TerraHoe(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 	public static final RegistryObject<Item> RIDEABLE_PEARL = REGISTRY.register("rideable_pearl",
-			() -> new RideablePearl(new Item.Properties()
-					.tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
-					.durability(30)));
+			() -> new RideablePearl(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).durability(30)));
 
 	public static final RegistryObject<Item> SPOTTED_GARDEN_EEL_BUCKET = REGISTRY.register("spotted_garden_eel_bucket",
 			() -> new MobBucketItem(ModEntities.SPOTTED_GARDEN_EEL, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_FISH,
@@ -280,11 +328,28 @@ public class ModItems {
 			() -> new NebulaRod(new Item.Properties()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
+	public static final RegistryObject<Item> MITHRILL_RING = REGISTRY.register("mithrill_ring",
+			() -> new MithrillRing(new Item.Properties()
+					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+
+	public static final RegistryObject<Item> NEBULA_RING = REGISTRY.register("nebula_ring",
+			() -> new NebulaRing(new Item.Properties()
+					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+
+	public static final RegistryObject<Item> ADVANCED_SPARK = REGISTRY.register("advanced_spark",
+			() -> new ItemAdvancedSpark(new Item.Properties()
+					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+
+	public static final RegistryObject<Item> TALISMAN_HIDDEN_RICHES = REGISTRY.register("talisman_hidden_riches",
+				() -> new TalismanHiddenRiches(new Item.Properties()
+					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+
+
 	private static RegistryObject<Item> block(RegistryObject<Block> block, CreativeModeTab tab) {
 		return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Properties().tab(tab)));
 	}
 
-	private static RegistryObject<Item> blockFlower(RegistryObject<Block> block, CreativeModeTab tab) {
+	public static RegistryObject<Item> blockFlower(RegistryObject<Block> block, CreativeModeTab tab) {
 		return REGISTRY.register(block.getId().getPath(), () -> new ItemBlockFlower(block.get(), new Properties().tab(tab)));
 	}
 }

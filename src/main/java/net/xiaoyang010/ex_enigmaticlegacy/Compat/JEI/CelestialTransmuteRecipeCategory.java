@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class CelestialTransmuteRecipeCategory implements IRecipeCategory<CelestialTransmuteRecipe> {
     public static final ResourceLocation UID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "celestial_transmute");
     public static final ResourceLocation TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "textures/gui/celestial_holiness_transmute_jei.png");
@@ -98,7 +99,7 @@ public class CelestialTransmuteRecipeCategory implements IRecipeCategory<Celesti
 
     @Override
     @NotNull
-    public Class<? extends CelestialTransmuteRecipe>getRecipeClass() {
+    public Class<? extends CelestialTransmuteRecipe> getRecipeClass() {
         return CelestialTransmuteRecipe.class;
     }
 }

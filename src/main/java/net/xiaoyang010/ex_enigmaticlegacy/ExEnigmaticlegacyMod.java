@@ -4,39 +4,34 @@ import com.integral.enigmaticlegacy.proxy.CommonProxy;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.MithrillMultiTool;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.TerraShovel;
+import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.*;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityGaiaSpreaderRenderer;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityPotatoRender;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.render.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
-import net.xiaoyang010.ex_enigmaticlegacy.Item.OmegaCore;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
-import net.xiaoyang010.ex_enigmaticlegacy.Util.DeconstructionManager;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.TooltipColorEvent;
+import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -53,6 +48,7 @@ public class ExEnigmaticlegacyMod {
 
 	public ExEnigmaticlegacyMod() {
 		ModTabs.load();
+		isEx = ModList.get().isLoaded("enigmaticlegacy");
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		ModBlockss.REGISTRY.register(bus);
 		ModItems.REGISTRY.register(bus);
@@ -70,44 +66,89 @@ public class ExEnigmaticlegacyMod {
 		ModBiomes.REGISTRY.register(bus);
 		ModEnchantments.REGISTRY.register(bus);
 		ModIntegrationItems.REGISTRY.register(bus);
+		ConfigHandler.register();
 
-		isEx = ModList.get().isLoaded("enigmaticlegacy");
-		MinecraftForge.EVENT_BUS.register(new DropItemsHandler());
-		MinecraftForge.EVENT_BUS.register(new FlyingEventHandlers());
-		MinecraftForge.EVENT_BUS.register(new ArmorProtectionEvent());
+
+
+		ModIntegrationFlowers.BLOCK_REGISTRY.register(bus);
+		ModIntegrationFlowers.BLOCK_ENTITY_REGISTRY.register(bus);
+		ModIntegrationFlowers.BLOCK_ITEM_REGISTRY.register(bus);
+		//AvaritiaShaders.init();
+
 		MinecraftForge.EVENT_BUS.register(new OmegaCoreEffectHandler());
-		MinecraftForge.EVENT_BUS.register(new TimeStopEffectHandler());
-		MinecraftForge.EVENT_BUS.register(new OmegaCore.TimeStopHandler());
-		MinecraftForge.EVENT_BUS.register(new DamageReductionEventHandler());
-		MinecraftForge.EVENT_BUS.register(new CreeperBehaviorHandler());
-		MinecraftForge.EVENT_BUS.register(new BedrockBreakEventHandler());
 		MinecraftForge.EVENT_BUS.register(new TooltipColorEvent());
-		MinecraftForge.EVENT_BUS.register(new InfinityTotemEvent());
-		MinecraftForge.EVENT_BUS.register(new WolfHandlerEvent());
-		MinecraftForge.EVENT_BUS.register(new AnvilRepairHandler());
-		MinecraftForge.EVENT_BUS.register(new WildHuntArmorEventHandler());
+		MinecraftForge.EVENT_BUS.register(new SpectatorModeHandler());
 
+
+		//ModelLoaderRegistry.registerLoader(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "cosmic"), new CosmicModelLoader());
+
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 		bus.addListener(this::commonSetup);
 		bus.addListener(this::clientSetup);
+		bus.addListener(this::onCommonSetup);
+		bus.addListener(this::kpo);
 	}
 
 	public static CommonProxy proxy;
 
+	public void onCommonSetup(FMLCommonSetupEvent event) {
+	}
+
 	private void commonSetup(final FMLCommonSetupEvent event) {
+	}
+
+	private void doClientStuff(final FMLClientSetupEvent event) {
+		event.enqueueWork(() -> {
+			ItemProperties.register(ModWeapons.TERRA_BOW.get(),
+					new ResourceLocation("pull"),
+					(stack, level, entity, seed) -> {
+						if (entity == null) return 0.0F;
+						return entity.getUseItem() != stack ? 0.0F :
+								(float)(stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F;
+					});
+
+			ItemProperties.register(ModWeapons.TERRA_BOW.get(),
+					new ResourceLocation("pulling"),
+					(stack, level, entity, seed) ->
+							entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
+
+			ItemProperties.register(
+					ModItems.MITHRILL_MULTI_TOOL.get(),
+					new ResourceLocation("ex_enigmaticlegacy", "enabled"),
+					(stack, world, entity, seed) -> MithrillMultiTool.isEnabled(stack) ? 1.0F : 0.0F
+			);
+
+			ItemProperties.register(
+					ModItems.TERRA_SHOVEL.get(),
+					new ResourceLocation("ex_enigmaticlegacy", "enabled"),
+					(stack, world, entity, seed) -> TerraShovel.isEnabled(stack) ? 1.0F : 0.0F
+			);
+		});
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
 		event.enqueueWork(NetworkHandler::register);
 	}
 
+	private void kpo(final FMLClientSetupEvent event) {
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+			KeybindHandler.registerKeybinds(event);
+		});
+	}
+
 	private void clientSetup(final FMLClientSetupEvent event) {
+
 		ItemBlockRenderTypes.setRenderLayer(ModBlockss.INFINITYGlASS.get(), RenderType.translucent());
 		ItemBlockRenderTypes.setRenderLayer(ModBlockss.PAGED_CHEST.get(), RenderType.cutoutMipped());
 		event.enqueueWork(() ->{
 		});
 
+		BlockEntityRenderers.register(ModBlockEntities.GAME_BOARD_TILE.get(), RenderTileGameBoard::new);
+		BlockEntityRenderers.register(ModBlockEntities.BOARD_FATE_TILE.get(), RenderTileBoardFate::new);
+		BlockEntityRenderers.register(ModBlockEntities.FULL_ALTAR_TILE.get(), FullAltarRender::new);
+		BlockEntityRenderers.register(ModBlockEntities.MANA_CONTAINER_TILE.get(), ManaContainerRenderer::new);
 		BlockEntityRenderers.register(ModBlockEntities.MANA_CRYSTAL_TILE.get(), RenderTileManaCrystalCube::new);
 		BlockEntityRenderers.register(ModBlockEntities.PAGED_CHEST.get(), PagedChestRenderer::new);
 		BlockEntityRenderers.register(ModBlockEntities.INFINITY_CHEST.get(), InfinityChestRenderer::new);

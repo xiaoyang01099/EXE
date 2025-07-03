@@ -75,7 +75,7 @@ public class DaybloomBlockTile extends TileEntityGeneratingFlower {
     @Nullable
     @Override
     public RadiusDescriptor getRadius() {
-        return new RadiusDescriptor.Circle(getBlockPos(), 5);  // 设置作用半径为5格
+        return new RadiusDescriptor.Circle(getBlockPos(), 5);
     }
 
 }

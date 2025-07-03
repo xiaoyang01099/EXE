@@ -29,18 +29,13 @@ public class DeconstructionManager {
     public DeconstructionManager() {
     }
 
-    // 从配方管理器加载所有配方
     public void loadRecipes() {
-        // 获取配方管理器
         RecipeManager recipeManager = getRecipeManager();
         if (recipeManager == null) return;
 
-        // 清空现有配方
         recipeMap.clear();
 
-        // 获取所有合成配方
         for (Recipe<?> recipe : recipeManager.getRecipes()) {
-            // 只处理工作台合成配方
             if (recipe.getType() == RecipeType.CRAFTING) {
                 addRecipe(recipe);
             }
@@ -50,13 +45,11 @@ public class DeconstructionManager {
     }
 
     public RecipeManager getRecipeManager() {
-        // 尝试从服务器获取配方管理器
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
             return server.getRecipeManager();
         }
 
-        // 如果在客户端，则从客户端获取
         if (Minecraft.getInstance() != null && Minecraft.getInstance().level != null) {
             return Minecraft.getInstance().level.getRecipeManager();
         }
@@ -80,7 +73,6 @@ public class DeconstructionManager {
     }
 
     public List<DeconRecipe> getRecipes(ItemStack stack) {
-        // 如果配方尚未加载，尝试加载
         if (!isInitialized) {
             loadRecipes();
         }
@@ -112,13 +104,11 @@ public class DeconstructionManager {
         return filter;
     }
 
-    // 服务器启动事件处理器，加载配方
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
         instance.loadRecipes();
     }
 
-    // 资源重载事件处理器，确保配方跟随资源包/数据包变化更新
     @SubscribeEvent
     public static void onResourceReload(AddReloadListenerEvent event) {
         instance.loadRecipes();

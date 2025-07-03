@@ -13,9 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.minecraft.world.phys.Vec3;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.RenderTileManaCharger;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.TileManaCharger;
-import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.render.RenderTileManaCharger;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.ManaChargerTile;
 import vazkii.botania.client.fx.WispParticleData;
 
 import java.util.Objects;
@@ -59,7 +58,7 @@ public class ModelManaCharger extends Model {
     }
 
     public void render(RenderTileManaCharger render, PoseStack matrixStack, double time) {
-        TileManaCharger tile = render.charger;
+        ManaChargerTile tile = render.charger;
         float offset = (float) Math.sin(time / 40.0F) * 0.1F + 0.05F;
         float polerot = -(float) time / 16.0F * 25.0F;
 
@@ -69,12 +68,12 @@ public class ModelManaCharger extends Model {
 
         this.chargerBase.render(matrixStack, render.getBuffer(), render.getPackedLight(), render.getPackedOverlay());
 
-        if (tile.getItem(0) != null) {
+        if (tile.getStackInSlot(0) != null) {
             float rot = chargerPlate.yRot * 180.0F / (float) Math.PI;
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(rot));
             matrixStack.translate(-0.125F, 0.8125F, 0.125F);
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
-            render.renderItemStack(tile.getItem(0), matrixStack);
+            render.renderItemStack(tile.getStackInSlot(0), matrixStack);
         }
 
         matrixStack.popPose();
@@ -99,12 +98,12 @@ public class ModelManaCharger extends Model {
                 offset1 = 0.0F;
             }
 
-            ItemStack stack = tile.getItem(i);
+            ItemStack stack = tile.getStackInSlot(i);
             matrixStack.translate(0.0F, -offset1, 0.0F);
 
             if (stack != null) {
                 matrixStack.pushPose();
-                float manaPercent = TileManaCharger.getManaPercent(stack);
+                float manaPercent = ManaChargerTile.getManaPercent(stack);
                 float rot = chargerPlate.yRot * 180.0F / (float) Math.PI;
 
                 if (manaPercent < 100.0F) {

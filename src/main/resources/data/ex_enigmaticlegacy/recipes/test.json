@@ -1,0 +1,34 @@
+{
+  "type": "ex_enigmaticlegacy:polychrome",
+  "mana": 10000000,
+  "ingredients": [
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:emerald"
+    },
+    {
+      "item": "botania:mana_pearl"
+    },
+    {
+      "item": "ex_enigmaticlegacy:astral_ingot"
+    },
+    {
+      "item": "minecraft:netherite_ingot"
+    },
+    {
+      "item": "ex_enigmaticlegacy:frost_enchantress"
+    },
+    {
+      "item": "ex_enigmaticlegacy:dead_substance"
+    },
+    {
+      "item": "ex_enigmaticlegacy:mat_inscribed_ingot"
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:radiance_rune",
+    "count": 1
+  }
+}

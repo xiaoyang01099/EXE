@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/properties/mithrill_multi_tool"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "ex_enigmaticlegacy:enabled": 1
+      },
+      "model": "ex_enigmaticlegacy:item/mithrill_multi_tool_enabled"
+    }
+  ]
+}

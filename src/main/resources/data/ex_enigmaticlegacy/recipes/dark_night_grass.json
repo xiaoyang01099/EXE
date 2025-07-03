@@ -1,0 +1,57 @@
+{
+  "type": "botania:runic_altar",
+  "output": {
+    "item": "ex_enigmaticlegacy:dark_night_grass"
+  },
+  "mana": 300000,
+  "ingredients": [
+    {
+      "item": "minecraft:twisting_vines"
+    },
+    {
+      "item": "botania:livingwood_twig"
+    },
+    {
+      "item": "minecraft:observer"
+    },
+    {
+      "item": "botania:purple_petal"
+    },
+    {
+      "item": "botania:purple_petal"
+    },
+    {
+      "item": "botania:purple_petal"
+    },
+    {
+      "item": "minecraft:soul_lantern"
+    },
+    {
+      "item": "minecraft:spawner"
+    },
+    {
+      "item": "botania:rune_gluttony"
+    },
+    {
+      "item": "minecraft:hopper"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "botania:terrasteel_nugget"
+    },
+    {
+      "item": "botania:rune_lust"
+    },
+    {
+      "item": "botania:rune_wrath"
+    },
+    {
+      "item": "botania:black_petal"
+    },
+    {
+      "item": "botania:black_petal"
+    }
+  ]
+}

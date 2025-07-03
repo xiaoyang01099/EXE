@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/properties/terrasteel_shovel",
+    "layer1": "ex_enigmaticlegacy:items/properties/terrasteel_shovel_overlay"
+  }
+}

@@ -33,7 +33,6 @@ public class DarkNightGrass extends FlowerBlock {
 
     @Override
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
-        // 允许非观察者模式的玩家破坏（包括生存、创造和极限模式）
         return player != null && !player.isSpectator() && super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }
 

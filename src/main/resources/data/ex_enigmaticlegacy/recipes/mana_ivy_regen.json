@@ -1,0 +1,56 @@
+{
+  "type": "botania:petal_apothecary",
+  "output": {
+    "item": "ex_enigmaticlegacy:mana_ivy_regen"
+  },
+  "ingredients": [
+    {
+      "item": "avaritia:infinity_catalyst"
+    },
+    {
+      "item": "botania:rune_mana"
+    },
+    {
+      "item": "minecraft:vine"
+    },
+    {
+      "item": "botania:rune_pride"
+    },
+    {
+      "item": "botania:rune_air"
+    },
+    {
+      "item": "botania:rune_earth"
+    },
+    {
+      "item": "botania:rune_fire"
+    },
+    {
+      "item": "botania:rune_water"
+    },
+    {
+      "item": "botania:rune_spring"
+    },
+    {
+      "item": "botania:rune_summer"
+    },
+    {
+      "item": "botania:rune_autumn"
+    },
+    {
+      "item": "botania:rune_winter"
+    },
+    {
+      "item": "botania:rune_envy"
+    },
+    {
+      "item": "botania:rune_lust"
+    },
+    {
+      "item": "botania:rune_greed"
+    },
+    {
+      "item": "botania:rune_sloth"
+    }
+  ]
+}

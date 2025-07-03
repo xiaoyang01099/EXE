@@ -5,11 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -24,11 +19,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.PagedChestBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModModelLayers;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.PagedChestBlockEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.PagedChestBlockTile;
 
 @OnlyIn(Dist.CLIENT)
-public class PagedChestRenderer implements BlockEntityRenderer<PagedChestBlockEntity> {
+public class PagedChestRenderer implements BlockEntityRenderer<PagedChestBlockTile> {
     private final ModelPart lid;
     private final ModelPart bottom;
     private final ModelPart lock;
@@ -44,7 +38,7 @@ public class PagedChestRenderer implements BlockEntityRenderer<PagedChestBlockEn
     }
 
     @Override
-    public void render(PagedChestBlockEntity chest, float partialTick, PoseStack poseStack,
+    public void render(PagedChestBlockTile chest, float partialTick, PoseStack poseStack,
                        MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         Level level = chest.getLevel();
         boolean flag = level != null;
@@ -71,7 +65,7 @@ public class PagedChestRenderer implements BlockEntityRenderer<PagedChestBlockEn
     }
 
     private void render(PoseStack poseStack, VertexConsumer consumer, ModelPart lidPart, ModelPart lockPart, ModelPart bottomPart, float lidAngle, int packedLight, int packedOverlay) {
-        lidPart.xRot = -(lidAngle * 1.5707964F);
+        lidPart.xRot = -(lidAngle * ((float)Math.PI / 2F));
         lockPart.xRot = lidPart.xRot;
         bottomPart.render(poseStack, consumer, packedLight, packedOverlay);
         lockPart.render(poseStack, consumer, packedLight, packedOverlay);

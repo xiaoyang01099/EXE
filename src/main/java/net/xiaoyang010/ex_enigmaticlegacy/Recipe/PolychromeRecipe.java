@@ -3,57 +3,38 @@ package net.xiaoyang010.ex_enigmaticlegacy.Recipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
+import org.jetbrains.annotations.NotNull;
+import vazkii.botania.common.crafting.RecipeSerializerBase;
+import vazkii.botania.common.crafting.recipe.RecipeUtils;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.Nonnull;
 
 public class PolychromeRecipe implements IPolychromeRecipe {
     private final ResourceLocation id;
     private final ItemStack output;
-    private final List<IngredientWithCount> inputs;
+    private final NonNullList<Ingredient> inputs;
     private final int mana;
-    private final int processTime;
     public static final ResourceLocation TYPE_ID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "polychrome");
-    public static class IngredientWithCount {
-        private final Ingredient ingredient;
-        private final int count;
 
-        public IngredientWithCount(Ingredient ingredient, int count) {
-            this.ingredient = ingredient;
-            this.count = count;
-        }
-
-        public Ingredient getIngredient() {
-            return ingredient;
-        }
-
-        public int getCount() {
-            return count;
-        }
-
-        public boolean test(ItemStack stack) {
-            return this.ingredient.test(stack) && stack.getCount() >= this.count;
-        }
-    }
-
-    public PolychromeRecipe(ResourceLocation id, ItemStack output, List<IngredientWithCount> inputs, int mana, int processTime) {
+    public PolychromeRecipe(ResourceLocation id, int mana, NonNullList<Ingredient> inputs, ItemStack output) {
         this.id = id;
-        this.output = output;
-        this.inputs = inputs;
         this.mana = mana;
-        this.processTime = processTime;
+        this.inputs = inputs;
+        this.output = output;
     }
 
     public int getManaUsage() {
@@ -61,36 +42,24 @@ public class PolychromeRecipe implements IPolychromeRecipe {
     }
 
     @Override
-    public boolean matches(Container inv, Level worldIn) {
-        List<IngredientWithCount> ingredientsMissing = new ArrayList<>(inputs);
-
+    public boolean matches(Container inv, @Nonnull Level world) {
+        int nonEmptySlots = 0;
         for (int i = 0; i < inv.getContainerSize(); i++) {
-            ItemStack stack = inv.getItem(i);
-            if (stack.isEmpty()) {
-                continue;
-            }
-
-            int stackIndex = -1;
-            for (int j = 0; j < ingredientsMissing.size(); j++) {
-                IngredientWithCount ingr = ingredientsMissing.get(j);
-                if (ingr.getIngredient().test(stack) && stack.getCount() >= ingr.getCount()) {
-                    stackIndex = j;
-                    break;
+            if (!inv.getItem(i).isEmpty()) {
+                if (inv.getItem(i).getCount() > 1) {
+                    return false;
                 }
+                nonEmptySlots++;
             }
-
-            if (stackIndex == -1) {
-                return false; // 有额外不需要的物品或数量不足
-            }
-
-            ingredientsMissing.remove(stackIndex);
         }
 
-        return ingredientsMissing.isEmpty(); // 如果所有需要的材料都找到了
+        IntOpenHashSet usedSlots = new IntOpenHashSet(inv.getContainerSize());
+        return RecipeUtils.matches(inputs, inv, usedSlots) && usedSlots.size() == nonEmptySlots;
     }
 
+    @Nonnull
     @Override
-    public ItemStack assemble(Container inv) {
+    public ItemStack assemble(@Nonnull Container inv) {
         return output.copy();
     }
 
@@ -100,9 +69,22 @@ public class PolychromeRecipe implements IPolychromeRecipe {
     }
 
     @Override
+    public @NotNull RecipeType<?> getType() {
+        return ModRecipes.POLYCHROME_TYPE;
+    }
+
+    @Nonnull
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        return inputs;
+    }
+
+    @Nonnull
+    @Override
     public ItemStack getResultItem() {
         return output;
     }
+
 
     @Override
     public ResourceLocation getId() {
@@ -110,25 +92,16 @@ public class PolychromeRecipe implements IPolychromeRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<PolychromeRecipe> getSerializer() {
         return ModRecipes.POLYCHROME_SERIALIZER.get();
-    }
-
-    @Override
-    public RecipeType<?> getType() {
-        return ModRecipes.POLYCHROME_TYPE;
-    }
-
-    @Override
-    public int getMana() {
-        return mana;
     }
 
     public static class Type implements RecipeType<PolychromeRecipe> {
         public static final PolychromeRecipe.Type INSTANCE = new PolychromeRecipe.Type();
         public static final String ID = "polychrome";
 
-        public Type() {}
+        public Type() {
+        }
 
         @Override
         public String toString() {
@@ -136,97 +109,39 @@ public class PolychromeRecipe implements IPolychromeRecipe {
         }
     }
 
-    @Override
-    public int getProcessTime() {
-        return processTime;
-    }
-
-    public List<IngredientWithCount> getInputs() {
-        return inputs;
-    }
-
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<PolychromeRecipe> {
+    public static class Serializer extends RecipeSerializerBase<PolychromeRecipe> {
+        @Nonnull
         @Override
-        public PolychromeRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-            ItemStack output = ItemStack.EMPTY;
-            if (json.has("output")) {
-                JsonObject outputObj = json.getAsJsonObject("output");
-                ResourceLocation itemId = new ResourceLocation(outputObj.get("item").getAsString());
-                int count = outputObj.has("count") ? outputObj.get("count").getAsInt() : 1;
-
-                output = new ItemStack(net.minecraftforge.registries.ForgeRegistries.ITEMS.getValue(itemId), count);
-
-                if (outputObj.has("nbt")) {
-                    try {
-                        output.setTag(net.minecraft.nbt.TagParser.parseTag(outputObj.get("nbt").getAsString()));
-                    } catch (Exception e) {
-                        throw new RuntimeException("Invalid NBT string for output", e);
-                    }
-                }
+        public PolychromeRecipe fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+            int mana = GsonHelper.getAsInt(json, "mana");
+            JsonArray ingrs = GsonHelper.getAsJsonArray(json, "ingredients");
+            Ingredient[] ingredients = new Ingredient[ingrs.size()];
+            for (int i = 0; i < ingrs.size(); i++) {
+                ingredients[i] = Ingredient.fromJson(ingrs.get(i));
             }
-
-            JsonArray ingredients = json.getAsJsonArray("ingredients");
-            List<IngredientWithCount> inputs = new ArrayList<>();
-
-            for (JsonElement element : ingredients) {
-                if (element.isJsonObject()) {
-                    JsonObject ingredientObj = element.getAsJsonObject();
-                    Ingredient ingredient;
-                    int count = 1;
-
-                    // 如果是复杂格式带数量
-                    if (ingredientObj.has("ingredient") && ingredientObj.has("count")) {
-                        ingredient = Ingredient.fromJson(ingredientObj.get("ingredient"));
-                        count = ingredientObj.get("count").getAsInt();
-                    }
-                    // 标准Ingredient格式
-                    else {
-                        ingredient = Ingredient.fromJson(element);
-                    }
-
-                    inputs.add(new IngredientWithCount(ingredient, count));
-                } else {
-                    // 简单格式，数量为1
-                    Ingredient ingredient = Ingredient.fromJson(element);
-                    inputs.add(new IngredientWithCount(ingredient, 1));
-                }
-            }
-
-            int mana = json.get("mana").getAsInt();
-            int processTime = json.has("processTime") ? json.get("processTime").getAsInt() : 200;
-
-            return new PolychromeRecipe(recipeId, output, inputs, mana, processTime);
+            ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
+            return new PolychromeRecipe(recipeId, mana, NonNullList.of(Ingredient.EMPTY, ingredients), output);
         }
 
-        @Nullable
         @Override
-        public PolychromeRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-            int inputSize = buffer.readVarInt();
-            List<IngredientWithCount> inputs = new ArrayList<>();
-            for (int i = 0; i < inputSize; i++) {
-                Ingredient ingredient = Ingredient.fromNetwork(buffer);
-                int count = buffer.readVarInt();
-                inputs.add(new IngredientWithCount(ingredient, count));
-            }
-
-            ItemStack output = buffer.readItem();
+        public PolychromeRecipe fromNetwork(@Nonnull ResourceLocation recipeId, FriendlyByteBuf buffer) {
             int mana = buffer.readVarInt();
-            int processTime = buffer.readVarInt();
-
-            return new PolychromeRecipe(recipeId, output, inputs, mana, processTime);
+            Ingredient[] ingredients = new Ingredient[buffer.readVarInt()];
+            for (int i = 0; i < ingredients.length; i++) {
+                ingredients[i] = Ingredient.fromNetwork(buffer);
+            }
+            ItemStack output = buffer.readItem();
+            return new PolychromeRecipe(recipeId, mana, NonNullList.of(Ingredient.EMPTY, ingredients), output);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, PolychromeRecipe recipe) {
-            buffer.writeVarInt(recipe.inputs.size());
-            for (IngredientWithCount input : recipe.inputs) {
-                input.getIngredient().toNetwork(buffer);
-                buffer.writeVarInt(input.getCount());
-            }
-
-            buffer.writeItem(recipe.output);
             buffer.writeVarInt(recipe.mana);
-            buffer.writeVarInt(recipe.processTime);
+            buffer.writeVarInt(recipe.getIngredients().size());
+            for (Ingredient ingr : recipe.getIngredients()) {
+                ingr.toNetwork(buffer);
+            }
+            buffer.writeItem(recipe.output);
         }
     }
 }

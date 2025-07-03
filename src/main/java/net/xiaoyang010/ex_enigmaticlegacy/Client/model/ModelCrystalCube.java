@@ -60,10 +60,6 @@ public class ModelCrystalCube extends Model {
         this.cube.render(poseStack, vertexConsumer, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, alpha);
     }
 
-    public void renderCube(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay) {
-        renderCube(poseStack, vertexConsumer, packedLight, packedOverlay, 1.0F);
-    }
-
     public void setRotationAngle(ModelPart modelPart, float x, float y, float z) {
         modelPart.xRot = x;
         modelPart.yRot = y;

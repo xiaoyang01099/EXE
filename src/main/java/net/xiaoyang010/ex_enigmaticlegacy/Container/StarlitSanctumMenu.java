@@ -32,11 +32,19 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
     private final Map<Integer, Slot> customSlots = new HashMap<>();
     private boolean bound = false;
 
+    // 槽位索引定义
+    private static final int MAIN_GRID_SLOTS = 486;  // 主要区域槽位 (27x18)
+    private static final int INPUT_LEFT_SLOT = 486;   // 左侧输入槽
+    private static final int OUTPUT_SLOT = 487;       // 中间输出槽
+    private static final int INPUT_RIGHT_SLOT = 488;  // 右侧输入槽
+    private static final int TOTAL_CUSTOM_SLOTS = 489;
+
     public StarlitSanctumMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
         super(ModMenus.STARLIT_SANCTUM_SCREEN, id);
         this.entity = inv.player;
         this.world = inv.player.level;
-        this.internal = new ItemStackHandler(81);  // 81个槽位
+        this.internal = new ItemStackHandler(TOTAL_CUSTOM_SLOTS);  // 570个槽位
+
         BlockPos pos = null;
         if (extraData != null) {
             pos = extraData.readBlockPos();
@@ -44,6 +52,7 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
             this.y = pos.getY();
             this.z = pos.getZ();
         }
+
         if (pos != null) {
             if (extraData.readableBytes() == 1) { // 绑定到物品
                 byte hand = extraData.readByte();
@@ -75,35 +84,73 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
             }
         }
 
-        // 调整槽位位置以匹配背景图的网格
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                int index = i * 9 + j;
-                // 假设槽位的起始位置为 (10, 20) 并且每个槽位之间的间距是 18
-                int x = 10 + j * 18;  // 横向位置
-                int y = 20 + i * 18;  // 纵向位置
-                this.customSlots.put(index, this.addSlot(new SlotItemHandler(internal, index, x, y)));
-            }
-        }
+        setupSlots();
+        setupPlayerInventory(inv);
+    }
 
-        // 输出槽的坐标
-        this.customSlots.put(81, this.addSlot(new SlotItemHandler(internal, 81, 174, 34) {
+    private void setupSlots() {
+        // 根据实际游戏截图精确调整坐标
+
+        // 顶部特殊槽位 - 与发光装饰中心对齐
+        // 左侧输入槽 - 第一个发光装饰中心
+        this.customSlots.put(INPUT_LEFT_SLOT, this.addSlot(new SlotItemHandler(internal, INPUT_LEFT_SLOT, 83, 27) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return false; // 禁止放入物品
+                return true; // 允许放入物品
             }
         }));
 
-        // 玩家物品栏
-        for (int si = 0; si < 3; ++si) {
-            for (int sj = 0; sj < 9; ++sj) {
-                this.addSlot(new Slot(inv, sj + (si + 1) * 9, 8 + sj * 18, 140 + si * 18));  // 根据背景图调整坐标
+        // 中间输出槽 - 第二个发光装饰中心
+        this.customSlots.put(OUTPUT_SLOT, this.addSlot(new SlotItemHandler(internal, OUTPUT_SLOT, 256, 27) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return false; // 禁止放入物品，只能输出
+            }
+        }));
+
+        // 右侧输入槽 - 第三个发光装饰中心
+        this.customSlots.put(INPUT_RIGHT_SLOT, this.addSlot(new SlotItemHandler(internal, INPUT_RIGHT_SLOT, 429, 27) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return true; // 允许放入物品
+            }
+        }));
+
+        // 主要网格区域：486个槽位 (27列 x 18行)
+        // 从图片看，网格紧贴在装饰下方，左右居中
+        int gridStartX = 37;  // 让27列在512像素内居中（(512-27*18)/2 ≈ 37）
+        int gridStartY = 65;  // 网格起始Y坐标，在装饰下方
+        int slotSpacing = 18; // 标准MC槽位间距
+        int slotsPerRow = 27; // 每行27个槽位
+        int rows = 18; // 18行
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < slotsPerRow; col++) {
+                int index = row * slotsPerRow + col;
+                if (index >= MAIN_GRID_SLOTS) break; // 防止超出486个槽位
+
+                int x = gridStartX + col * slotSpacing;
+                int y = gridStartY + row * slotSpacing;
+                this.customSlots.put(index, this.addSlot(new SlotItemHandler(internal, index, x, y)));
+            }
+        }
+    }
+
+    private void setupPlayerInventory(Inventory inv) {
+        // 玩家物品栏位置调整
+        // 主网格从Y=65开始，18行*18像素 = 324，所以结束在Y=389
+        int playerInvStartY = 400; // 在主网格下方留一些空间
+
+        // 玩家物品栏 (3x9) - 居中显示
+        for (int row = 0; row < 3; ++row) {
+            for (int col = 0; col < 9; ++col) {
+                this.addSlot(new Slot(inv, col + (row + 1) * 9, 175 + col * 18, playerInvStartY + row * 18));
             }
         }
 
-        // 快速物品栏
-        for (int si = 0; si < 9; ++si) {
-            this.addSlot(new Slot(inv, si, 8 + si * 18, 198));  // 确保与 GUI 底部对齐
+        // 快速物品栏 (1x9) - 居中显示
+        for (int col = 0; col < 9; ++col) {
+            this.addSlot(new Slot(inv, col, 175 + col * 18, playerInvStartY + 58));
         }
     }
 
@@ -115,113 +162,140 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = (Slot) this.slots.get(index);
+        Slot slot = this.slots.get(index);
+
         if (slot != null && slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-            if (index < 81) {
-                if (!this.moveItemStackTo(itemstack1, 81, this.slots.size(), true)) {
+
+            if (index < TOTAL_CUSTOM_SLOTS) {
+                // 从自定义槽位移动到玩家物品栏
+                if (!this.moveItemStackTo(itemstack1, TOTAL_CUSTOM_SLOTS, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
                 slot.onQuickCraft(itemstack1, itemstack);
-            } else if (!this.moveItemStackTo(itemstack1, 0, 81, false)) {
-                if (index < 81 + 27) {
-                    if (!this.moveItemStackTo(itemstack1, 81 + 27, this.slots.size(), true)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else {
-                    if (!this.moveItemStackTo(itemstack1, 81, 81 + 27, false)) {
+            } else {
+                // 从玩家物品栏移动到自定义槽位
+                // 优先移动到输入槽
+                if (!this.moveItemStackTo(itemstack1, INPUT_LEFT_SLOT, INPUT_RIGHT_SLOT + 1, false)) {
+                    // 如果输入槽满了，移动到主网格区域
+                    if (!this.moveItemStackTo(itemstack1, 0, MAIN_GRID_SLOTS, false)) {
+                        // 在玩家物品栏内部移动
+                        if (index < TOTAL_CUSTOM_SLOTS + 27) {
+                            if (!this.moveItemStackTo(itemstack1, TOTAL_CUSTOM_SLOTS + 27, this.slots.size(), true)) {
+                                return ItemStack.EMPTY;
+                            }
+                        } else {
+                            if (!this.moveItemStackTo(itemstack1, TOTAL_CUSTOM_SLOTS, TOTAL_CUSTOM_SLOTS + 27, false)) {
+                                return ItemStack.EMPTY;
+                            }
+                        }
                         return ItemStack.EMPTY;
                     }
                 }
-                return ItemStack.EMPTY;
             }
+
             if (itemstack1.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
             }
+
             if (itemstack1.getCount() == itemstack.getCount()) {
                 return ItemStack.EMPTY;
             }
+
             slot.onTake(playerIn, itemstack1);
         }
+
         return itemstack;
     }
 
     @Override
-    protected boolean moveItemStackTo(ItemStack p_38904_, int p_38905_, int p_38906_, boolean p_38907_) {
+    protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
         boolean flag = false;
-        int i = p_38905_;
-        if (p_38907_) {
-            i = p_38906_ - 1;
+        int i = startIndex;
+
+        if (reverseDirection) {
+            i = endIndex - 1;
         }
-        if (p_38904_.isStackable()) {
-            while (!p_38904_.isEmpty()) {
-                if (p_38907_) {
-                    if (i < p_38905_) {
+
+        if (stack.isStackable()) {
+            while (!stack.isEmpty()) {
+                if (reverseDirection) {
+                    if (i < startIndex) {
                         break;
                     }
-                } else if (i >= p_38906_) {
+                } else if (i >= endIndex) {
                     break;
                 }
+
                 Slot slot = this.slots.get(i);
                 ItemStack itemstack = slot.getItem();
-                if (slot.mayPlace(itemstack) && !itemstack.isEmpty() && ItemStack.isSameItemSameTags(p_38904_, itemstack)) {
-                    int j = itemstack.getCount() + p_38904_.getCount();
-                    int maxSize = Math.min(slot.getMaxStackSize(), p_38904_.getMaxStackSize());
+
+                if (slot.mayPlace(stack) && !itemstack.isEmpty() && ItemStack.isSameItemSameTags(stack, itemstack)) {
+                    int j = itemstack.getCount() + stack.getCount();
+                    int maxSize = Math.min(slot.getMaxStackSize(), stack.getMaxStackSize());
+
                     if (j <= maxSize) {
-                        p_38904_.setCount(0);
+                        stack.setCount(0);
                         itemstack.setCount(j);
                         slot.set(itemstack);
                         flag = true;
                     } else if (itemstack.getCount() < maxSize) {
-                        p_38904_.shrink(maxSize - itemstack.getCount());
+                        stack.shrink(maxSize - itemstack.getCount());
                         itemstack.setCount(maxSize);
                         slot.set(itemstack);
                         flag = true;
                     }
                 }
-                if (p_38907_) {
+
+                if (reverseDirection) {
                     --i;
                 } else {
                     ++i;
                 }
             }
         }
-        if (!p_38904_.isEmpty()) {
-            if (p_38907_) {
-                i = p_38906_ - 1;
+
+        if (!stack.isEmpty()) {
+            if (reverseDirection) {
+                i = endIndex - 1;
             } else {
-                i = p_38905_;
+                i = startIndex;
             }
+
             while (true) {
-                if (p_38907_) {
-                    if (i < p_38905_) {
+                if (reverseDirection) {
+                    if (i < startIndex) {
                         break;
                     }
-                } else if (i >= p_38906_) {
+                } else if (i >= endIndex) {
                     break;
                 }
+
                 Slot slot1 = this.slots.get(i);
                 ItemStack itemstack1 = slot1.getItem();
-                if (itemstack1.isEmpty() && slot1.mayPlace(p_38904_)) {
-                    if (p_38904_.getCount() > slot1.getMaxStackSize()) {
-                        slot1.set(p_38904_.split(slot1.getMaxStackSize()));
+
+                if (itemstack1.isEmpty() && slot1.mayPlace(stack)) {
+                    if (stack.getCount() > slot1.getMaxStackSize()) {
+                        slot1.set(stack.split(slot1.getMaxStackSize()));
                     } else {
-                        slot1.set(p_38904_.split(p_38904_.getCount()));
+                        slot1.set(stack.split(stack.getCount()));
                     }
                     slot1.setChanged();
                     flag = true;
                     break;
                 }
-                if (p_38907_) {
+
+                if (reverseDirection) {
                     --i;
                 } else {
                     ++i;
                 }
             }
         }
+
         return flag;
     }
 

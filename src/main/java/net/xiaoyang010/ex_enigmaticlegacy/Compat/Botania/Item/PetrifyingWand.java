@@ -110,9 +110,7 @@ public class PetrifyingWand extends Item {
             return false;
         }
     }
-    /**
-     * 设置物品的魔力值
-     */
+
     protected static void setMana(ItemStack stack, int mana) {
         if (mana > 0) {
             ItemNBTHelper.setInt(stack, TAG_MANA, mana);
@@ -126,7 +124,6 @@ public class PetrifyingWand extends Item {
         return nbt.getInt(TAG_MANA);
     }
 
-    /* 物品使用逻辑 */
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
@@ -156,7 +153,7 @@ public class PetrifyingWand extends Item {
         }
 
         addMana(stack, -MANA_PER_USE);
-        aaa(player, world); //冰与火
+        aaa(player, world);
         player.getCooldowns().addCooldown(stack.getItem(), 40);
     }
 
@@ -232,7 +229,7 @@ public class PetrifyingWand extends Item {
                 .withStyle(ChatFormatting.DARK_PURPLE));
 
         if (flag.isAdvanced()) {
-            tooltip.add(new TranslatableComponent("item.iceandfire.petrify_wand.range", RANGE)
+            tooltip.add(new TranslatableComponent("", RANGE)
                     .withStyle(ChatFormatting.DARK_GRAY));
         }
     }
@@ -291,7 +288,7 @@ public class PetrifyingWand extends Item {
 
     @Override
     public int getBarColor(ItemStack stack) {
-        return 0x6600FF; // 紫色进度条
+        return 0x6600FF;
     }
 
     @Override
@@ -304,7 +301,6 @@ public class PetrifyingWand extends Item {
         return USE_DURATION;
     }
 
-    /* 工具方法 */
     private void sendLowManaWarning(Player player) {
         player.displayClientMessage(
                 new TranslatableComponent("tooltip.iceandfire.petrify_wand.no_mana")
@@ -372,16 +368,6 @@ public class PetrifyingWand extends Item {
         }
 
         return false;
-    }
-
-    private boolean isValidTarget(Entity entity) {
-        if (entity instanceof IBlacklistedFromStatues) {
-            return ((IBlacklistedFromStatues) entity).canBeTurnedToStone();
-        }
-        return entity instanceof LivingEntity living &&
-                !living.hasEffect(MobEffects.BLINDNESS) &&
-                !living.isInvulnerable() &&
-                living.isAlive();
     }
 
     private void petrifyEntity(Entity target, Level world, @Nullable Player player) {

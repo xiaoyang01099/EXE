@@ -23,7 +23,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityGaiaSpreaderTile;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.InfinityGaiaSpreaderTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Generating.AsgardFlowerTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModSounds;
 import vazkii.botania.api.mana.IManaPool;

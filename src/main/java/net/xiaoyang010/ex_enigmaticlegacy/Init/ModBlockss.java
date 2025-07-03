@@ -14,6 +14,9 @@ import net.xiaoyang010.ex_enigmaticlegacy.Block.ore.*;
 
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityGaiaSpreader.VariantE;
+//import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.GearFlower;
+//import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.TrinarySynthesis;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Generating.Catnip;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 import net.minecraftforge.registries.RegistryObject;
@@ -26,11 +29,15 @@ import net.xiaoyang010.ex_enigmaticlegacy.Block.portal.AnotherPortalBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.portal.MinersHeavenPortalBlock;
 import vazkii.botania.common.block.BlockSpecialFlower;
 
+import static vazkii.botania.common.block.ModBlocks.livingrock;
+
 public class ModBlockss {
 	public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, ExEnigmaticlegacyMod.MODID);
 	public static final Properties FLOWER_PROPS = Properties.copy(Blocks.POPPY);
+	private static final BlockBehaviour.StateArgumentPredicate<EntityType<?>> NO_SPAWN = (state, world, pos, et) -> false;
 
-	//botania
+	//botania联动
+	//方块放置
 	public static final RegistryObject<Block> NIGHTSHADE = REGISTRY.register("nightshade",() -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.NIGHTSHADE_TILE::get));
 	public static final RegistryObject<Block> ASTRAL_KILLOP = REGISTRY.register("astral_killop",() -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ASTRAL_KILLOP_TILE::get));
 	public static final RegistryObject<Block> DAYBLOOM = REGISTRY.register("daybloom",() -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.DAYBLOOM_TILE::get));
@@ -53,20 +60,35 @@ public class ModBlockss {
 	public static final RegistryObject<Block> VACUITY = REGISTRY.register("vacuity", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.VACUITY_TILE::get));
 	public static final RegistryObject<Block> YU_SHOU_CLOVER = REGISTRY.register("yu_shou_clover", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.YU_SHOU_CLOVER_TILE::get));
 	public static final RegistryObject<Block> CURSET_THISTLE = REGISTRY.register("curse_thistle", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.CURSET_THISTLE_TILE::get));
-	public static final RegistryObject<Block> ALCHEMY_SUNFLOWER = REGISTRY.register("alchemy_sunflower", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ALCHEMY_SUNFLOWER_TILE::get));
-	public static final RegistryObject<Block> ALCHEMY_AZALEA = REGISTRY.register("alchemy_azalea", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ALCHEMY_AZALEA_TILE::get));
+	//public static final RegistryObject<Block> RUNE_FLOWER = REGISTRY.register("rune_flower", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.RUNE_FLOWER_TILE::get));
+	public static final RegistryObject<Block> ENDER_LAVENDER = REGISTRY.register("ender_lavender", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ENDER_LAVENDER_TILE::get));
+	public static final RegistryObject<Block> AUREA_AMICITIA_CARNATION = REGISTRY.register("aurea_amicitia_carnation", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.AUREA_AMICITIA_CARNATION_TILE::get));
+	public static final RegistryObject<Block> MUSICAL_ORCHID = REGISTRY.register("musical_orchid", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.MUSICAL_ORCHID_TILE::get));
+	public static final RegistryObject<Block> CATNIP = REGISTRY.register("catnip", () -> new Catnip(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.CATNIP_TILE::get));
+	public static final RegistryObject<Block> ANCIENT_ALPHIRINE = REGISTRY.register("ancient_alphirine", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ANCIENT_ALPHIRINE_TILE::get));
+	public static final RegistryObject<Block> DICTARIUS = REGISTRY.register("dictarius", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.DICTARIUS_TILE::get));
+//	public static final RegistryObject<Block> TRINARY_SYNTHESIS = REGISTRY.register("trinary_synthesis", () -> new TrinarySynthesis(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.TRINARY_SYNTHESIS_TILE::get));
+//	public static final RegistryObject<Block> GEAR_FLOWER = REGISTRY.register("gear_flower", () -> new GearFlower(MobEffects.MOVEMENT_SPEED, 120, FLOWER_PROPS.lightLevel(state -> state.getValue(GearFlower.WORKING) ? (state.getValue(GearFlower.SPEED_LEVEL) * 3 + 3) : 0), ModBlockEntities.GEAR_FLOWER_TILE::get));
+	public static final RegistryObject<Block> EVIL_FORGE = REGISTRY.register("evil_forge", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.EVIL_FORGE_TILE::get));
+	public static final RegistryObject<Block> ETHERIUM_FORGE = REGISTRY.register("etherium_forge", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ETHERIUM_FORGE_TILE::get));
+	public static final RegistryObject<Block> ARDENT_AZARCISSUS = REGISTRY.register("ardent_azarcissus", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ARDENT_AZARCISSUS_TILE::get));
 
 
 
-
-
-	private static final BlockBehaviour.StateArgumentPredicate<EntityType<?>> NO_SPAWN = (state, world, pos, et) -> false;
+	public static final RegistryObject<Block> GAME_BOARD = REGISTRY.register("game_board", () -> new BlockBoardFate(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
+	public static final RegistryObject<Block> BOARD_FATE = REGISTRY.register("board_fate", () -> new BlockBoardFate(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
+	public static final RegistryObject<Block> FULL_ALTAR = REGISTRY.register("full_altar", () -> new FullAltarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
 	public static final RegistryObject<Block> infinitySpreader = REGISTRY.register("infinity_spreader", () -> new InfinityGaiaSpreader(VariantE.INFINITY, Properties.copy(Blocks.BIRCH_WOOD).isValidSpawn(NO_SPAWN)));
-	public static final RegistryObject<Block> NIDAVELLIR_FORGE = REGISTRY.register("nidavellir_forge", () -> new NidavellirForgeBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3.0f, 10.0f).sound(SoundType.METAL).noOcclusion()));
-	public static final RegistryObject<Block> MANA_CHARGER = REGISTRY.register("mana_charger", () -> new ManaChargerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3.0f, 10.0f).sound(SoundType.METAL)));
-	public static final RegistryObject<Block> MANA_CRYSTAL = REGISTRY.register("mana_crystal", () -> new ManaCrystalCubeBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3.0f, 10.0f).sound(SoundType.METAL)));
+	public static final RegistryObject<Block> NIDAVELLIR_FORGE = REGISTRY.register("nidavellir_forge", () -> new NidavellirForgeBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 10.0f).sound(SoundType.METAL).noOcclusion()));
+	public static final RegistryObject<Block> MANA_CHARGER = REGISTRY.register("mana_charger", () -> new ManaChargerBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 10.0f).sound(SoundType.METAL)));
+	public static final RegistryObject<Block> MANA_CRYSTAL = REGISTRY.register("mana_crystal", () -> new ManaCrystalCubeBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 10.0f).sound(SoundType.METAL)));
 	public static final RegistryObject<Block> INFINITY_POTATO = REGISTRY.register("infinity_potato", InfinityPotato::new);
-	public static final RegistryObject<Block> POLYCHROME_COLLAPSE_PRISM = REGISTRY.register("polychrome_collapse_prism", () -> new PolychromeCollapsePrism(BlockBehaviour.Properties.of(Material.METAL).strength(3.0f, 10.0f).sound(SoundType.METAL)));
+	public static final RegistryObject<Block> POLYCHROME_COLLAPSE_PRISM = REGISTRY.register("polychrome_collapse_prism", () -> new PolychromeCollapsePrism(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 10.0f).sound(SoundType.METAL)));
+	public static final RegistryObject<Block> MANA_CONTAINER = REGISTRY.register("mana_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.DEFAULT, BlockBehaviour.Properties.copy(livingrock)));
+	public static final RegistryObject<Block> CREATIVE_CONTAINER = REGISTRY.register("creative_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.CREATIVE, BlockBehaviour.Properties.copy(livingrock)));
+	public static final RegistryObject<Block> TERRA_FARMLAND = REGISTRY.register("terra_farmland", TerraFarmland::new);
+	public static final RegistryObject<Block> DILUTED_CONTAINER = REGISTRY.register("diluted_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.DILUTED, BlockBehaviour.Properties.copy(livingrock)));
+//public static final RegistryObject<Block> FABULOUS_CONTAINER = REGISTRY.register("fabulous_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.FABULOUS, BlockBehaviour.Properties.copy(livingrock)));
 
 
 

@@ -12,7 +12,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 public class ModTags {
     public static class Blocks {
-        public static final TagKey<Block> NEEDS_MITHRIL_TOOL = tag("needs_mithril_tool");
+        public static final TagKey<Block> NEEDS_MIRACLE_TOOL = tag("needs_miracle_tool");
 
         public static final TagKey<Block> SPECTRITE_CONTAINER = tag("spectrite_container");
 

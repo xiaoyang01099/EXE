@@ -16,6 +16,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -27,7 +29,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.PagedChestBlockEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.PagedChestBlockTile;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
@@ -48,6 +52,22 @@ public class PagedChestBlock extends BaseEntityBlock implements SimpleWaterlogge
         return Stats.CUSTOM.get(Stats.OPEN_CHEST);
     }
 
+    @Override
+    public boolean triggerEvent(BlockState state, Level level, BlockPos pos, int id, int param) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        return blockEntity != null && blockEntity.triggerEvent(id, param);
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return level.isClientSide ? createTickerHelper(blockEntityType, ModBlockEntities.PAGED_CHEST.get(), PagedChestBlockTile::lidAnimateTick) : null;
+    }
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
@@ -59,8 +79,8 @@ public class PagedChestBlock extends BaseEntityBlock implements SimpleWaterlogge
     private void checkPoweredState(Level level, BlockPos pos, BlockState state) {
         if (!level.isClientSide) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof PagedChestBlockEntity) {
-                ((PagedChestBlockEntity) blockEntity).recheckOpen();
+            if (blockEntity instanceof PagedChestBlockTile) {
+                ((PagedChestBlockTile) blockEntity).recheckOpen();
             }
         }
     }
@@ -101,12 +121,7 @@ public class PagedChestBlock extends BaseEntityBlock implements SimpleWaterlogge
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new PagedChestBlockEntity(pos, state);
-    }
-
-    @Override
-    public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.MODEL;
+        return new PagedChestBlockTile(pos, state);
     }
 
     @Override
@@ -117,8 +132,8 @@ public class PagedChestBlock extends BaseEntityBlock implements SimpleWaterlogge
         }
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity != null && blockEntity.getClass() == PagedChestBlockEntity.class) {
-            NetworkHooks.openGui((ServerPlayer) player, (PagedChestBlockEntity) blockEntity, pos);
+        if (blockEntity != null && blockEntity.getClass() == PagedChestBlockTile.class) {
+            NetworkHooks.openGui((ServerPlayer) player, (PagedChestBlockTile) blockEntity, pos);
             player.awardStat(this.getOpenChestStat());
             PiglinAi.angerNearbyPiglins(player, true);
             return InteractionResult.CONSUME;
@@ -132,8 +147,8 @@ public class PagedChestBlock extends BaseEntityBlock implements SimpleWaterlogge
                          BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof PagedChestBlockEntity) {
-                ((PagedChestBlockEntity) blockEntity).dropContents(level, pos);
+            if (blockEntity instanceof PagedChestBlockTile) {
+                ((PagedChestBlockTile) blockEntity).dropContents(level, pos);
                 level.removeBlockEntity(pos);
             }
         }
@@ -143,8 +158,8 @@ public class PagedChestBlock extends BaseEntityBlock implements SimpleWaterlogge
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof PagedChestBlockEntity) {
-            ((PagedChestBlockEntity)blockEntity).recheckOpen();
+        if (blockEntity instanceof PagedChestBlockTile) {
+            ((PagedChestBlockTile)blockEntity).recheckOpen();
         }
     }
 

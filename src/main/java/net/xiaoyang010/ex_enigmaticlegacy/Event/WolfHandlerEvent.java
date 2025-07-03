@@ -18,12 +18,10 @@ public class WolfHandlerEvent {
 
         Wolf wolf = (Wolf) event.getEntityLiving();
 
-        // 检查是否是临时狼
         if (wolf.getPersistentData().contains("TemporaryWolf")) {
             int timer = wolf.getPersistentData().getInt("DespawnTimer");
 
             if (timer <= 0) {
-                // 生成消失特效
                 for (int i = 0; i < 20; i++) {
                     wolf.level.addParticle(ParticleTypes.PORTAL,
                             wolf.getX() + (wolf.getRandom().nextDouble() - 0.5D) * 2.0D,
@@ -32,13 +30,10 @@ public class WolfHandlerEvent {
                             0, 0, 0);
                 }
 
-                // 移除狼
                 wolf.remove(Wolf.RemovalReason.DISCARDED);
             } else {
-                // 更新计时器
                 wolf.getPersistentData().putInt("DespawnTimer", timer - 1);
 
-                // 在即将消失前（最后10秒）添加粒子效果提示
                 if (timer <= 200) {
                     wolf.level.addParticle(ParticleTypes.SMOKE,
                             wolf.getX(),

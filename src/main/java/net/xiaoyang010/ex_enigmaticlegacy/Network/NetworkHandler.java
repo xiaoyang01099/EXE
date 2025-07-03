@@ -54,18 +54,17 @@ public class NetworkHandler {
         );
         CHANNEL.registerMessage(
                 packetId++,
-                PrismRenderPacket.class,
-                PrismRenderPacket::encode,
-                PrismRenderPacket::new,
-                PrismRenderPacket::handler,
-                Optional.of(NetworkDirection.PLAY_TO_SERVER)
-        );
-        CHANNEL.registerMessage(
-                packetId++,
                 PacketIndex.class,
                 PacketIndex::encode,
                 PacketIndex::decode,
                 PacketIndex::handle
+        );
+        CHANNEL.registerMessage(
+                packetId++,
+                SpectatorModePacket.class,
+                SpectatorModePacket::encode,
+                SpectatorModePacket::decode,
+                SpectatorModePacket::handle
         );
     }
 

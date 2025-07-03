@@ -25,7 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
@@ -39,7 +38,6 @@ public class DragonCrystalArmor extends ArmorItem {
     private static final ResourceLocation OVERLAY = new ResourceLocation("ex_enigmaticlegacy", "textures/overlay.png");
 
     private static final Map<UUID, Boolean> playerWearingFullSet = new HashMap<>();
-
     private static final Map<UUID, Boolean> playerOriginalFlightStatus = new HashMap<>();
     private static final Map<UUID, Float> playerOriginalFlySpeed = new HashMap<>();
 

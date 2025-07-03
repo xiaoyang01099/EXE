@@ -33,7 +33,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.InfinityChestEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.InfinityChestTile;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -116,12 +116,12 @@ public class InfinityChest extends BaseEntityBlock implements SimpleWaterloggedB
 
 
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new InfinityChestEntity(pPos, pState);
+        return new InfinityChestTile(pPos, pState);
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return pLevel.isClientSide ? createTickerHelper(pBlockEntityType, ModBlockEntities.INFINITY_CHEST.get(), InfinityChestEntity::lidAnimateTick) : null;
+        return pLevel.isClientSide ? createTickerHelper(pBlockEntityType, ModBlockEntities.INFINITY_CHEST.get(), InfinityChestTile::lidAnimateTick) : null;
     }
 
     public BlockState rotate(BlockState pState, Rotation pRot) {
@@ -154,8 +154,8 @@ public class InfinityChest extends BaseEntityBlock implements SimpleWaterloggedB
 
     public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, Random pRandom) {
         BlockEntity $$4 = pLevel.getBlockEntity(pPos);
-        if ($$4 instanceof InfinityChestEntity) {
-            ((InfinityChestEntity)$$4).recheckOpen();
+        if ($$4 instanceof InfinityChestTile) {
+            ((InfinityChestTile)$$4).recheckOpen();
         }
 
     }

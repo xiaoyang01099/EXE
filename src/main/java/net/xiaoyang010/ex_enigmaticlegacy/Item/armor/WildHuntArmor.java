@@ -25,6 +25,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -35,31 +36,33 @@ import net.xiaoyang010.ex_enigmaticlegacy.Client.model.ModelArmorWildHunt;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModDamageSources;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.CloudJumpParticlePacket;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.JumpPacket;
-import net.xiaoyang010.ex_enigmaticlegacy.api.AdvancedBotanyAPI;
+import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
 import vazkii.botania.api.item.IManaProficiencyArmor;
 import vazkii.botania.api.mana.IManaItem;
+import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.item.equipment.armor.manasteel.ItemManasteelArmor;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-@Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID)
 public class WildHuntArmor extends ItemManasteelArmor implements IManaItem, IManaProficiencyArmor {
     private static ItemStack[] armorSet;
-    private static final Properties WILD_HUNT_ARMOR = new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).durability(0).rarity(AdvancedBotanyAPI.rarityWildHunt).setNoRepair();
-
+    private static final Properties WILD_HUNT_ARMOR = new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).durability(0).rarity(EXEAPI.rarityWildHunt).setNoRepair();
+    private static final String TAG_MANA = "mana";
+    private static final int MAX_MANA = 500000;
+    private static final ThreadLocal<ItemStack> CURRENT_STACK = new ThreadLocal<>();
     private static final Map<UUID, Long> lastHealthRegenTime = new HashMap<>();
     private static final float HEALTH_REGEN_AMOUNT = 10.0F;
     private static final long HEALTH_REGEN_INTERVAL_MS = 1000L;
-
     private static final Map<UUID, Boolean> canDoubleJump = new HashMap<>();
     private static final Map<UUID, Boolean> hasDoubleJumped = new HashMap<>();
-
+    private static final Map<UUID, Boolean> playerEffectsActive = new HashMap<>();
     private static final UUID JUMP_STRENGTH_UUID = UUID.fromString("A5B719E6-34D3-47C1-B98F-89A5F1B7D373");
     private static final UUID ATTACK_DAMAGE_UUID = UUID.fromString("2B5D5D6C-3E1D-4D95-A7B2-D7A3F4C52B24");
     private static final UUID MAX_HEALTH_UUID = UUID.fromString("DF82A3E7-8521-4F98-B702-99D194061D63");
@@ -67,10 +70,9 @@ public class WildHuntArmor extends ItemManasteelArmor implements IManaItem, IMan
     private static final UUID ARMOR_TOUGHNESS_UUID = UUID.fromString("AB34991E-F4D7-4644-BFB1-AC024A3770FB");
     private static final UUID KNOCKBACK_RESISTANCE_UUID = UUID.fromString("8742DE69-717F-4B68-8E61-527AA5880262");
 
-    private static final Map<UUID, Boolean> playerEffectsActive = new HashMap<>();
-
     public WildHuntArmor(EquipmentSlot slot) {
-        super(slot, AdvancedBotanyAPI.wildHuntArmor, WILD_HUNT_ARMOR);
+        super(slot, EXEAPI.wildHuntArmor, WILD_HUNT_ARMOR);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public ItemStack[] getArmorSetStacks() {
@@ -107,91 +109,87 @@ public class WildHuntArmor extends ItemManasteelArmor implements IManaItem, IMan
 
     @Override
     public void onArmorTick(ItemStack stack, Level world, Player player) {
-        if (!world.isClientSide) {
-            UUID playerUUID = player.getUUID();
-            boolean fullSet = isWearingFullSet(player);
-            boolean previouslyActive = playerEffectsActive.getOrDefault(playerUUID, false);
-            long currentTime = System.currentTimeMillis();
+        CURRENT_STACK.set(stack);
 
-            if (fullSet) {
-                if (!previouslyActive) {
-                    applyArmorEffects(player);
-                    playerEffectsActive.put(playerUUID, true);
-                }
-
-                // 持续性效果应用
-                MobEffectInstance nightVision = player.getEffect(MobEffects.NIGHT_VISION);
-                if (nightVision == null || nightVision.getDuration() < 210) {
-                    player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, false, false));
-                }
-
-                // 抗性提升
-                MobEffectInstance resistance = player.getEffect(MobEffects.DAMAGE_RESISTANCE);
-                if (resistance == null || resistance.getAmplifier() < 3 || resistance.getDuration() < 5) {
-                    player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 3, false, false));
-                }
-
-                // 免疫中毒
-                if (player.hasEffect(MobEffects.POISON)) {
-                    player.removeEffect(MobEffects.POISON);
-                }
-
-                // 清除凋零效果
-                if (player.hasEffect(MobEffects.WITHER)) {
-                    player.removeEffect(MobEffects.WITHER);
-                }
-
-                // 生命恢复
-                if (!lastHealthRegenTime.containsKey(playerUUID) ||
-                        currentTime - lastHealthRegenTime.get(playerUUID) >= HEALTH_REGEN_INTERVAL_MS) {
-
-                    if (player.getHealth() < player.getMaxHealth()) {
-                        player.heal(HEALTH_REGEN_AMOUNT);
-                    }
-                    lastHealthRegenTime.put(playerUUID, currentTime);
-                }
-
-                // 速度效果
-                MobEffectInstance speed = player.getEffect(MobEffects.MOVEMENT_SPEED);
-                if (speed == null || speed.getDuration() < 5) {
-                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10, 5, false, false));
-                }
-
-                updateDoubleJumpStatus(player);
-
-            } else if (previouslyActive) {
-
-                removeArmorEffects(player);
-                playerEffectsActive.put(playerUUID, false);
+        try {
+            if (!world.isClientSide() && getMana() != getMaxMana() &&
+                    ManaItemHandler.instance().requestManaExactForTool(stack, player, 1000, true)) {
+                addMana(1000);
             }
+
+            if (!world.isClientSide) {
+                UUID playerUUID = player.getUUID();
+                boolean fullSet = isWearingFullSet(player);
+                boolean previouslyActive = playerEffectsActive.getOrDefault(playerUUID, false);
+                long currentTime = System.currentTimeMillis();
+
+                if (fullSet) {
+                    if (!previouslyActive) {
+                        applyArmorEffects(player);
+                        playerEffectsActive.put(playerUUID, true);
+                    }
+
+                    MobEffectInstance nightVision = player.getEffect(MobEffects.NIGHT_VISION);
+                    if (nightVision == null || nightVision.getDuration() < 210) {
+                        player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, false, false));
+                    }
+
+                    MobEffectInstance resistance = player.getEffect(MobEffects.DAMAGE_RESISTANCE);
+                    if (resistance == null || resistance.getAmplifier() < 3 || resistance.getDuration() < 5) {
+                        player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 3, false, false));
+                    }
+
+                    if (player.hasEffect(ModEffects.DROWNING.get())) {
+                        player.removeEffect(ModEffects.DROWNING.get());
+                    }
+
+                    if (player.hasEffect(MobEffects.POISON)) {
+                        player.removeEffect(MobEffects.POISON);
+                    }
+
+                    if (player.hasEffect(MobEffects.WITHER)) {
+                        player.removeEffect(MobEffects.WITHER);
+                    }
+
+                    if (!lastHealthRegenTime.containsKey(playerUUID) ||
+                            currentTime - lastHealthRegenTime.get(playerUUID) >= HEALTH_REGEN_INTERVAL_MS) {
+
+                        if (player.getHealth() < player.getMaxHealth()) {
+                            player.heal(HEALTH_REGEN_AMOUNT);
+                        }
+                        lastHealthRegenTime.put(playerUUID, currentTime);
+                    }
+
+                    MobEffectInstance speed = player.getEffect(MobEffects.MOVEMENT_SPEED);
+                    if (speed == null || speed.getDuration() < 5) {
+                        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10, 5, false, false));
+                    }
+
+                    updateDoubleJumpStatus(player);
+
+                } else if (previouslyActive) {
+                    removeArmorEffects(player);
+                    playerEffectsActive.put(playerUUID, false);
+                }
+            }
+        } finally {
+            CURRENT_STACK.remove();
         }
     }
 
-    // 应用护甲效果
     private void applyArmorEffects(Player player) {
-        // 增加攻击力
         Objects.requireNonNull(player.getAttribute(Attributes.ATTACK_DAMAGE)).addTransientModifier(
                 new AttributeModifier(ATTACK_DAMAGE_UUID, "", 50.0, AttributeModifier.Operation.ADDITION));
-
-        // 增加生命值上限
         Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).addTransientModifier(
                 new AttributeModifier(MAX_HEALTH_UUID, "", 40.0, AttributeModifier.Operation.ADDITION));
-
-        // 增加护甲值和韧性
         Objects.requireNonNull(player.getAttribute(Attributes.ARMOR)).addTransientModifier(
                 new AttributeModifier(ARMOR_UUID, "", 1000.0, AttributeModifier.Operation.ADDITION));
         Objects.requireNonNull(player.getAttribute(Attributes.ARMOR_TOUGHNESS)).addTransientModifier(
                 new AttributeModifier(ARMOR_TOUGHNESS_UUID, "", 1000.0, AttributeModifier.Operation.ADDITION));
-
-        // 增加击退抗性
         Objects.requireNonNull(player.getAttribute(Attributes.KNOCKBACK_RESISTANCE)).addTransientModifier(
                 new AttributeModifier(KNOCKBACK_RESISTANCE_UUID, "", 1.0, AttributeModifier.Operation.ADDITION));
-
-        // 增加跳跃高度
         Objects.requireNonNull(player.getAttribute(ForgeMod.ENTITY_GRAVITY.get())).addTransientModifier(
                 new AttributeModifier(JUMP_STRENGTH_UUID, "", -0.04, AttributeModifier.Operation.ADDITION));
-
-        // 恢复生命值以适应增加的最大生命值
         player.setHealth(player.getHealth() + 30.0f);
 
         UUID playerUUID = player.getUUID();
@@ -308,7 +306,6 @@ public class WildHuntArmor extends ItemManasteelArmor implements IManaItem, IMan
         if (event.getEntityLiving() instanceof Player) {
             Player player = (Player) event.getEntityLiving();
             if (isWearingFullSet(player)) {
-                // 防爆
                 if (event.getSource().isExplosion()) {
                     event.setCanceled(true);
                 }
@@ -424,20 +421,33 @@ public class WildHuntArmor extends ItemManasteelArmor implements IManaItem, IMan
         tooltip.add(new TranslatableComponent("tooltip.ex_enigmaticlegacy.wild_hunt_armor.desc8"));
         tooltip.add(new TranslatableComponent("tooltip.ex_enigmaticlegacy.wild_hunt_armor.desc9"));
         tooltip.add(new TranslatableComponent("tooltip.ex_enigmaticlegacy.wild_hunt_armor.desc10"));
+        tooltip.add(new TranslatableComponent("item.info.mana",
+                getManaInternal(stack), getMaxMana())
+                .withStyle(net.minecraft.ChatFormatting.AQUA));
     }
 
     @Override
     public int getMana() {
-        return 15000;
+        ItemStack stack = CURRENT_STACK.get();
+        if (stack != null) {
+            return getManaInternal(stack);
+        }
+        return 0;
     }
 
     @Override
     public int getMaxMana() {
-        return 500000;
+        return MAX_MANA;
     }
 
     @Override
     public void addMana(int mana) {
+        ItemStack stack = CURRENT_STACK.get();
+        if (stack != null) {
+            int currentMana = getManaInternal(stack);
+            int newMana = Math.min(currentMana + mana, getMaxMana());
+            setManaInternal(stack, newMana);
+        }
     }
 
     @Override
@@ -462,7 +472,15 @@ public class WildHuntArmor extends ItemManasteelArmor implements IManaItem, IMan
 
     @Override
     public boolean isNoExport() {
-        return false;
+        return true;
+    }
+
+    public static int getManaInternal(ItemStack stack) {
+        return stack.getOrCreateTag().getInt(TAG_MANA);
+    }
+
+    public static void setManaInternal(ItemStack stack, int mana) {
+        stack.getOrCreateTag().putInt(TAG_MANA, Math.min(mana, MAX_MANA));
     }
 
     @Override

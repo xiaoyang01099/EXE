@@ -10,6 +10,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.SimpleContainer;
@@ -49,10 +50,8 @@ public class DeconTableMenu extends AbstractContainerMenu {
         this.player = playerInventory.player;
         this.access = access;
 
-        // 输入槽
         this.addSlot(new Slot(this.in, 0, 45, 21));
 
-        // 附魔书槽
         this.addSlot(new Slot(this.enchantInv, 0, 45, 46) {
             @Override
             public boolean mayPlace(@Nullable ItemStack stack) {
@@ -60,7 +59,6 @@ public class DeconTableMenu extends AbstractContainerMenu {
             }
         });
 
-        // 输出槽矩阵
         for(int x = 0; x < 3; ++x) {
             for(int y = 0; y < 3; ++y) {
                 this.addSlot((new Slot(this.matrix, y + x * 3, 106 + y * 18, 17 + x * 18) {
@@ -71,20 +69,12 @@ public class DeconTableMenu extends AbstractContainerMenu {
                         return false;
                     }
 
-
                     @Override
                     public void onTake(Player playerIn, ItemStack stack) {
                         if (!playerIn.level.isClientSide()) {
-                            this.eventHandler.giveAllOutputItems(playerIn);
+                            this.eventHandler.decrementCurrentRecipe();
                         }
                     }
-
-//                    @Override
-//                    public void onTake(Player playerIn, ItemStack stack) {
-//                        if (!playerIn.level.isClientSide()) {
-//                            this.eventHandler.decrementCurrentRecipe();
-//                        }
-//                    }
 
                     private Slot setEventHandler(DeconTableMenu c) {
                         this.eventHandler = c;
@@ -105,39 +95,19 @@ public class DeconTableMenu extends AbstractContainerMenu {
         }
     }
 
-    public void giveAllOutputItems(Player player) {
-        List<DeconRecipe> recipes = DeconstructionManager.instance.getRecipes(this.in.getItem(0));
-        if (recipes.isEmpty() || this.getRecipeIndex() >= recipes.size()) {
-            return;
-        }
-
-        DeconRecipe recipe = recipes.get(this.getRecipeIndex());
-        ItemStack inputStack = this.in.getItem(0);
-        if (inputStack.isEmpty() || inputStack.getCount() < recipe.getResult().getCount()) {
-            return;
-        }
-
-        ItemStack[] ingredients = recipe.getIngredients();
-        if (ingredients == null) {
-            return;
-        }
-
-        this.in.removeItem(0, recipe.getResult().getCount());
-
-        if (!this.enchantInv.getItem(0).isEmpty() && inputStack.isEnchanted()) {
+    private void decrementCurrentRecipe() {
+        if (!this.enchantInv.getItem(0).isEmpty()) {
             this.handleEnchant(this.enchantInv, this.in);
         }
 
-        for (ItemStack ingredient : ingredients) {
-            if (ingredient != null && !ingredient.isEmpty()) {
-                if (!player.getInventory().add(ingredient.copy())) {
-                    player.drop(ingredient.copy(), false);
-                }
-            }
+        List<DeconRecipe> recipes = DeconstructionManager.instance.getRecipes(this.in.getItem(0));
+        if (!recipes.isEmpty()) {
+            DeconRecipe recipe = recipes.get(this.getRecipeIndex());
+            ItemStack first = this.slots.get(0).getItem();
+            ItemStack decremented = this.in.removeItem(0, recipe.getResult().getCount());
+            this.slots.get(0).onQuickCraft(first, decremented);
+            this.broadcastChanges();
         }
-        this.matrix.clearContent();
-
-        this.broadcastChanges();
     }
 
     private void handleEnchant(Container enchantInv, Container in) {
@@ -168,7 +138,6 @@ public class DeconTableMenu extends AbstractContainerMenu {
                 this.setRecipeIndex(0);
                 NetworkHandler.CHANNEL.sendToServer(new PacketIndex(0));
                 if (!Minecraft.getInstance().level.isClientSide()) {
-                    // 可能需要处理服务器端逻辑
                 }
             }
 
@@ -188,6 +157,66 @@ public class DeconTableMenu extends AbstractContainerMenu {
     }
 
     @Override
+    public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
+        if (clickTypeIn == ClickType.PICKUP_ALL) {
+            return;
+        } else {
+            if (clickTypeIn == ClickType.QUICK_CRAFT) {
+                super.clicked(slotId, dragType, clickTypeIn, player);
+            }
+
+            if (slotId >= 0) {
+                Slot clickSlot = this.slots.get(slotId);
+                if (slotId >= 0 && !clickSlot.getItem().isEmpty() && clickSlot.getItem().getItem() != Items.AIR) {
+                    if (clickTypeIn == ClickType.PICKUP && slotId > 1 && slotId < 11) {
+                        Slot currSlot = this.slots.get(slotId);
+                        ItemStack currStack = currSlot.getItem();
+
+                        for(int i = 2; i < 11; ++i) {
+                            if (i != slotId) {
+                                Slot slot = this.slots.get(i);
+                                ItemStack stack = slot.getItem();
+                                if (!stack.isEmpty()) {
+                                    ItemStack copy = stack.copy();
+                                    if (!this.moveItemStackTo(stack, 11, 47, true)) {
+                                        player.drop(stack, true);
+                                        slot.set(ItemStack.EMPTY);
+                                    } else {
+                                        slot.onQuickCraft(stack, copy);
+                                    }
+
+                                    if (stack.getCount() == 0) {
+                                        slot.set(ItemStack.EMPTY);
+                                    } else {
+                                        slot.onQuickCraft(ItemStack.EMPTY, ItemStack.EMPTY);
+                                    }
+                                }
+                            }
+                        }
+
+                        super.clicked(slotId, dragType, clickTypeIn, player);
+                    } else if (clickTypeIn == ClickType.PICKUP || clickTypeIn == ClickType.QUICK_MOVE ||
+                            clickTypeIn == ClickType.QUICK_CRAFT || clickTypeIn == ClickType.CLONE) {
+                        super.clicked(slotId, dragType, clickTypeIn, player);
+                    }
+
+                    if (clickTypeIn == ClickType.THROW && slotId > 11) {
+                        super.clicked(slotId, dragType, clickTypeIn, player);
+                    }
+                } else {
+                    super.clicked(slotId, dragType, clickTypeIn, player);
+                }
+            }
+
+            if (slotId == 0) {
+                this.broadcastChanges();
+            }
+
+            return;
+        }
+    }
+
+    @Override
     public ItemStack quickMoveStack(Player player, int index) {
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
@@ -199,7 +228,7 @@ public class DeconTableMenu extends AbstractContainerMenu {
                         return ItemStack.EMPTY;
                     }
 
-                    slot.set(stack);
+                    slot.onQuickCraft(stack, copy);
                 } else if (index < 11) {
                     for(int i = 2; i < 11; ++i) {
                         slot = this.slots.get(i);
@@ -210,7 +239,7 @@ public class DeconTableMenu extends AbstractContainerMenu {
                                 player.drop(stack, true);
                                 slot.set(ItemStack.EMPTY);
                             } else {
-                                slot.set(stack);
+                                slot.onQuickCraft(stack, copy);
                             }
 
                             if (stack.getCount() == 0) {
@@ -221,13 +250,13 @@ public class DeconTableMenu extends AbstractContainerMenu {
                         }
                     }
 
-                    player.drop(stack, true);
+                    slot.onTake(player, stack);
                 } else if (index < 47) {
                     if (!this.moveItemStackTo(stack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
 
-                    slot.set(stack);
+                    slot.onQuickCraft(stack, copy);
                 }
 
                 if (index > 10 || index < 2) {
@@ -241,7 +270,7 @@ public class DeconTableMenu extends AbstractContainerMenu {
                         return ItemStack.EMPTY;
                     }
 
-                    player.drop(stack, true);
+                    slot.onTake(player, stack);
                 }
 
                 return ItemStack.EMPTY;

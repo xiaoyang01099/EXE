@@ -32,7 +32,7 @@ public class ModTabs {
 		TAB_EXENIGMATICLEGACY_WEAPON_ARMOR = new CreativeModeTab("ex_enigmaticlegacy_weapon") {
 			@Override
 			public ItemStack makeIcon() {
-				return new ItemStack(ModWeapons.CRISSAEGRIM.get());
+				return new ItemStack(ModWeapons.SONG_OF_THE_ABYSS.get());
 			}
 
 			@OnlyIn(Dist.CLIENT)

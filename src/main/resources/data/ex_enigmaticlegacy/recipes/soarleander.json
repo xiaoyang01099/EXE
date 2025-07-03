@@ -1,0 +1,38 @@
+{
+  "type": "botania:petal_apothecary",
+  "output": {
+    "item": "ex_enigmaticlegacy:soarleander"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:chicken"
+    },
+    {
+      "item": "minecraft:flint_and_steel"
+    },
+    {
+      "item": "botania:rune_gluttony"
+    },
+    {
+      "item": "botania:rune_lust"
+    },
+    {
+      "item": "botania:mana_pearl"
+    },
+    {
+      "item": "botania:mana_pearl"
+    },
+    {
+      "item": "botania:brown_petal"
+    },
+    {
+      "item": "botania:brown_petal"
+    },
+    {
+      "item": "minecraft:skeleton_skull"
+    },
+    {
+      "item": "botania:rune_greed"
+    }
+  ]
+}

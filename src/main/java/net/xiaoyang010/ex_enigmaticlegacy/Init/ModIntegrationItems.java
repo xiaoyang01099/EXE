@@ -7,6 +7,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.PetrifyingWand;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Spell.InfinitasVortex;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Spell.LumenAureum;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.InfinityMatter;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModAmorphous;
@@ -46,7 +47,7 @@ public class ModIntegrationItems {
         if(ModList.get().isLoaded("irons_spellbooks")) {
 
             SPELLBOOKS_ITEM.put("infinitas_vortex", register("infinitas_vortex", InfinitasVortex::new));
-
+            SPELLBOOKS_ITEM.put("lumen_aureum", register("lumen_aureum", LumenAureum::new));
         }
         INTEGRATION_ITEMS.put("irons_spellbooks", SPELLBOOKS_ITEM);
     }

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "HAH",
+    "SGS",
+    "HDH"
+  ],
+  "key": {
+    "A": {
+      "item": "botania:rune_lust"
+    },
+    "S": {
+      "item": "botania:mana_pool"
+    },
+    "D": {
+      "item": "botania:rune_greed"
+    },
+    "G": {
+      "item": "botania:mana_pylon"
+    },
+    "H": {
+      "item": "ex_enigmaticlegacy:mithrill"
+    }
+  },
+  "result": {
+    "item": "ex_enigmaticlegacy:mana_container",
+    "count": 1
+  }
+}

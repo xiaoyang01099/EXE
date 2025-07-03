@@ -1,0 +1,38 @@
+{
+  "type": "botania:petal_apothecary",
+  "output": {
+    "item": "ex_enigmaticlegacy:blazing_orchid"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:nether_brick"
+    },
+    {
+      "item": "botania:rune_fire"
+    },
+    {
+      "item": "minecraft:blaze_powder"
+    },
+    {
+      "item": "minecraft:furnace"
+    },
+    {
+      "item": "botania:brown_petal"
+    },
+    {
+      "item": "botania:brown_petal"
+    },
+    {
+      "item": "botania:orange_petal"
+    },
+    {
+      "item": "botania:red_petal"
+    },
+    {
+      "item": "botania:red_petal"
+    },
+    {
+      "item": "botania:red_petal"
+    }
+  ]
+}

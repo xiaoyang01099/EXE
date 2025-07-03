@@ -1,22 +1,22 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Item.weapon;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
+import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class SongOfTheAbyss extends SwordItem {
+public class SongOfTheAbyss extends SwordItem implements Vanishable{
+    public float range = 3.0F;
 
     public SongOfTheAbyss() {
-        super(Tiers.NETHERITE, 150, -2.4F, new Item.Properties()
+        super(EXEAPI.MIRACLE_ITEM_TIER, 150, -2.4F, new Item.Properties()
                 .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
                 .rarity(ModRarities.MIRACLE));
     }

@@ -14,8 +14,8 @@
     "minecraft:anvil",
     "minecraft:chipped_anvil",
     "minecraft:damaged_anvil",
-    "minecraft:furnace"
-
+    "minecraft:furnace",
+    "ex_enigmaticlegacy:mana_charger"
 
 
   ]

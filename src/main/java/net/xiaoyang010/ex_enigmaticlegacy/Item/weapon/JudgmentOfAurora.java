@@ -10,18 +10,19 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
+import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
+import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.client.fx.SparkleParticleData;
 import vazkii.botania.common.entity.EntityFallingStar;
 import vazkii.botania.common.entity.EntityPixie;
@@ -29,6 +30,9 @@ import vazkii.botania.common.item.equipment.tool.ToolCommons;
 import vazkii.botania.common.item.equipment.tool.manasteel.ItemManasteelSword;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class JudgmentOfAurora extends ItemManasteelSword {
     // 基础属性
@@ -38,7 +42,7 @@ public class JudgmentOfAurora extends ItemManasteelSword {
     private static final float AREA_RADIUS = 5.0f;
 
     public JudgmentOfAurora() {
-        super(Tiers.NETHERITE, 90, -2.4F,
+        super(EXEAPI.MIRACLE_ITEM_TIER, 90, -2.4F,
                 new Item.Properties()
                         .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
                         .rarity(ModRarities.MIRACLE));
@@ -56,39 +60,26 @@ public class JudgmentOfAurora extends ItemManasteelSword {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-//        boolean leftPressed = Minecraft.getInstance().mouseHandler.isLeftPressed();
-//        if (stack.getItem() == ModWeapons.JUDGMENT_OF_AURORA.get() && leftPressed && entity instanceof Player player) {
-//            summonFallingStarMultiple(stack, world, player);
-//            summonStarCircle(stack, world, player);
-//        }
-    }
-
-    @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (!world.isClientSide) {
-            // 检查魔力值并消耗
             int manaCost = 1500;
-            if (!vazkii.botania.api.mana.ManaItemHandler.instance().requestManaExactForTool(stack, player, manaCost, true)) {
+            if (!ManaItemHandler.instance().requestManaExactForTool(stack, player, manaCost, true)) {
                 return InteractionResultHolder.pass(stack);
             }
 
-            // 获取玩家视线方向
-            Vec3 lookVec = player.getLookAngle();
+            int circles = 4;
+            int pixiesPerCircle = 4;
+            float baseRadius = 2.0f;
 
-            // 在玩家周围生成多个精灵圈
-            int circles = 3; // 精灵圈数量
-            int pixiesPerCircle = 4; // 每圈精灵数量
-            float baseRadius = 2.0f; // 基础半径
+            List<LivingEntity> availableTargets = findAllValidTargets(world, player, 20);
 
             for (int circle = 0; circle < circles; circle++) {
                 float radius = baseRadius + (circle * 1.5f);
                 float yOffset = circle * 0.5f;
 
                 for (int i = 0; i < pixiesPerCircle; i++) {
-                    // 计算圆形分布的位置
                     double angle = (2 * Math.PI * i) / pixiesPerCircle;
                     double offsetX = Math.cos(angle) * radius;
                     double offsetZ = Math.sin(angle) * radius;
@@ -100,51 +91,57 @@ public class JudgmentOfAurora extends ItemManasteelSword {
                             player.getZ() + offsetZ
                     );
 
-                    // 根据圈数设置不同的效果
                     MobEffectInstance effect;
                     float damage;
                     int type;
 
                     switch (circle) {
-                        case 0: // 内圈 - 减速精灵
+                        case 0:
                             effect = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2);
                             damage = 15;
                             type = 0;
                             break;
-                        case 1: // 中圈 - 虚弱精灵
+                        case 1:
                             effect = new MobEffectInstance(MobEffects.WEAKNESS, 80, 1);
                             damage = 20;
                             type = 1;
                             break;
-                        default: // 外圈 - 凋零精灵
+                        case 2:
                             effect = new MobEffectInstance(MobEffects.WITHER, 60, 0);
                             damage = 25;
                             type = 0;
                             break;
+                        default:
+                            effect = new MobEffectInstance(ModEffects.DROWNING.get(), 120, 10);
+                            damage = 50;
+                            type = 1;
+                            break;
                     }
 
-                    // 查找最近的敌对生物作为目标
-                    LivingEntity target = world.getNearestEntity(
-                            LivingEntity.class,
-                            TargetingConditions.forCombat().range(16),
-                            player,
-                            player.getX(), player.getY(), player.getZ(),
-                            player.getBoundingBox().inflate(16, 8, 16)
-                    );
+                    LivingEntity target = assignSmartTarget(availableTargets, pixie, circle, i);
 
                     pixie.setProps(target, player, type, damage);
                     pixie.setApplyPotionEffect(effect);
 
                     world.addFreshEntity(pixie);
 
-                    // 在精灵周围添加粒子效果
-                    SparkleParticleData sparkle = SparkleParticleData.sparkle(
-                            1.5F,
-                            circle == 0 ? 0.5F : 1F,
-                            circle == 1 ? 0.5F : 0.2F,
-                            circle == 2 ? 0.8F : 0.4F,
-                            20
-                    );
+                    float red, green, blue;
+                    switch (circle) {
+                        case 0:
+                            red = 0.5F; green = 0.5F; blue = 1.0F;
+                            break;
+                        case 1:
+                            red = 0.2F; green = 1.0F; blue = 0.2F;
+                            break;
+                        case 2:
+                            red = 0.8F; green = 0.2F; blue = 0.8F;
+                            break;
+                        default:
+                            red = 1.0F; green = 0.1F; blue = 0.1F;
+                            break;
+                    }
+
+                    SparkleParticleData sparkle = SparkleParticleData.sparkle(1.5F, red, green, blue, 20);
 
                     for (int p = 0; p < 8; p++) {
                         double px = pixie.getX() + (Math.random() - 0.5) * 0.5;
@@ -155,13 +152,11 @@ public class JudgmentOfAurora extends ItemManasteelSword {
                 }
             }
 
-            // 物品耐久消耗
             int durabilityDamage = ToolCommons.damageItemIfPossible(stack, 1, player, manaCost);
             if (durabilityDamage > 0) {
                 stack.hurtAndBreak(durabilityDamage, player, p -> p.broadcastBreakEvent(hand));
             }
 
-            // 播放音效
             world.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS,
                     1.0F, 1.0F + (float) Math.random() * 0.2F);
@@ -170,6 +165,74 @@ public class JudgmentOfAurora extends ItemManasteelSword {
         }
 
         return InteractionResultHolder.pass(stack);
+    }
+
+    /**
+     * 获取所有有效的攻击目标
+     */
+    private List<LivingEntity> findAllValidTargets(Level world, Player player, double range) {
+        List<LivingEntity> nearbyEntities = world.getEntitiesOfClass(
+                LivingEntity.class,
+                player.getBoundingBox().inflate(range, 8, range)
+        );
+
+        List<LivingEntity> validTargets = new ArrayList<>();
+
+        for (LivingEntity entity : nearbyEntities) {
+            if (isValidPixieTarget(entity, player)) {
+                validTargets.add(entity);
+            }
+        }
+
+        validTargets.sort(Comparator.comparingDouble(player::distanceToSqr));
+
+        return validTargets;
+    }
+
+    /**
+     * 智能分配目标给精灵
+     */
+    private LivingEntity assignSmartTarget(List<LivingEntity> availableTargets, EntityPixie pixie, int circle, int pixieIndex) {
+        if (availableTargets.isEmpty()) {
+            return null;
+        }
+
+        switch (circle) {
+            case 0:
+                return availableTargets.get(0);
+
+            case 1:
+                int targetIndex = pixieIndex % availableTargets.size();
+                return availableTargets.get(targetIndex);
+
+            case 2:
+                return availableTargets.stream()
+                        .max((a, b) -> Float.compare(a.getHealth(), b.getHealth()))
+                        .orElse(availableTargets.get(0));
+
+            default:
+                return availableTargets.get(pixie.level.random.nextInt(availableTargets.size()));
+        }
+    }
+
+    /**
+     * 判断实体是否是精灵的有效攻击目标
+     */
+    private boolean isValidPixieTarget(LivingEntity entity, Player summoner) {
+        // 排除精灵自己
+        if (entity instanceof EntityPixie) {
+            return false;
+        }
+
+        if (summoner != null && entity == summoner) {
+            return false;
+        }
+
+        if (!entity.isAlive()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

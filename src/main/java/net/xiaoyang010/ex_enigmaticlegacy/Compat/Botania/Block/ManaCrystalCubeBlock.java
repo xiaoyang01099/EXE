@@ -22,6 +22,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.ManaCrystalCubeBlockTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.block.IWandable;
@@ -59,7 +60,7 @@ public class ManaCrystalCubeBlock extends BaseEntityBlock implements IWandable {
             return InteractionResult.PASS;
         } else {
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof ManaCrystalCubeBlockEntity cube && !world.isClientSide()) {
+            if (blockEntity instanceof ManaCrystalCubeBlockTile cube && !world.isClientSide()) {
                 CompoundTag tag = new CompoundTag();
                 cube.writeCustomNBT(tag);
                 int[] mana = cube.getManaAround();
@@ -79,13 +80,13 @@ public class ManaCrystalCubeBlock extends BaseEntityBlock implements IWandable {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new ManaCrystalCubeBlockEntity(ModBlockEntities.MANA_CRYSTAL_TILE.get(), pos, state);
+        return new ManaCrystalCubeBlockTile(ModBlockEntities.MANA_CRYSTAL_TILE.get(), pos, state);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return createTickerHelper(type, ModBlockEntities.MANA_CRYSTAL_TILE.get(), ManaCrystalCubeBlockEntity::tick);
+        return createTickerHelper(type, ModBlockEntities.MANA_CRYSTAL_TILE.get(), ManaCrystalCubeBlockTile::tick);
     }
 
     @Nullable

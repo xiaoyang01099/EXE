@@ -3,6 +3,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Tile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.CompoundContainer;
@@ -26,7 +27,7 @@ import javax.annotation.Nullable;
 
 public class SpectriteChestTile extends ChestBlockEntity implements LidBlockEntity, WorldlyContainer {
     private final NonNullList<ItemStack> items = NonNullList.withSize(27, ItemStack.EMPTY);
-
+    private final ChestLidController chestLidController = new ChestLidController();
     private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
         protected void onOpen(Level level, BlockPos pos, BlockState state) {
             level.playSound(null, pos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
@@ -52,7 +53,43 @@ public class SpectriteChestTile extends ChestBlockEntity implements LidBlockEnti
         }
     };
 
-    private final ChestLidController chestLidController = new ChestLidController();
+    @Override
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ContainerHelper.saveAllItems(tag, this.items);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        this.items.clear();
+        ContainerHelper.loadAllItems(tag, this.items);
+    }
+
+    @Override
+    public boolean triggerEvent(int id, int type) {
+        if (id == 1) {
+            this.chestLidController.shouldBeOpen(type > 0);
+            return true;
+        }
+        return super.triggerEvent(id, type);
+    }
+
+    @Override
+    public void startOpen(Player player) {
+        if (!this.remove && !player.isSpectator()) {
+            this.triggerEvent(1, 1);
+            this.openersCounter.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+        }
+    }
+
+    @Override
+    public void stopOpen(Player player) {
+        if (!this.remove && !player.isSpectator()) {
+            this.triggerEvent(1, 0);
+            this.openersCounter.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+        }
+    }
 
     public SpectriteChestTile(BlockPos pos, BlockState state) {
         super(ModBlockEntities.SPECTRITE_CHEST_TILE.get(), pos, state);
@@ -76,7 +113,6 @@ public class SpectriteChestTile extends ChestBlockEntity implements LidBlockEnti
         return this.chestLidController.getOpenness(partialTicks);
     }
 
-    // 添加物品过滤功能
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
         return stack.is(ModTags.Items.SPECTRITE_ITEMS);

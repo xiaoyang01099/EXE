@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/properties/terrasteel_shovel"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "ex_enigmaticlegacy:enabled": 1
+      },
+      "model": "ex_enigmaticlegacy:item/terra_shovel_enabled"
+    }
+  ]
+}

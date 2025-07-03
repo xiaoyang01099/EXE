@@ -1,0 +1,8 @@
+{
+  "parent": "botania:block/shapes/three_high_bottom_top",
+  "textures": {
+    "bottom": "ex_enigmaticlegacy:blocks/board/game_board_0",
+    "top": "ex_enigmaticlegacy:blocks/board/game_board_1",
+    "side": "ex_enigmaticlegacy:blocks/board/game_board_2"
+  }
+}

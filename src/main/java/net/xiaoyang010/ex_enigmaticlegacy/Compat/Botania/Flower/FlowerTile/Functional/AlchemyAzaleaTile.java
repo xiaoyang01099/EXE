@@ -1,13 +1,20 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Functional;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,25 +30,37 @@ import vazkii.botania.api.subtile.TileEntityFunctionalFlower;
 import java.math.BigInteger;
 import java.util.List;
 
-/**
- * 炼金杜鹃花 - Alchemy Azalea
- * 基于放置时间递增EMC产出，时间越长产出越高
- */
 public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
 
     private static final String TAG_PLACEMENT_TIME = "placementTime";
     private static final String TAG_ACCUMULATED_EMC = "accumulatedEmc";
+    private static final String TAG_INITIALIZED = "initialized";
+    private static final String TAG_LAST_MULTIPLIER = "lastMultiplier";
+    private static final String TAG_LAST_UPDATE = "lastUpdate";
+    private static final String TAG_CURRENT_MULTIPLIER = "currentMultiplier";
+    private static final String TAG_CURRENT_EMC_RATE = "currentEmcRate";
+    private static final String TAG_CURRENT_MANA_COST = "currentManaCost";
 
-    // 时间递增EMC配置
-    private static final int BASE_EMC_PER_SECOND = 8000; // 初始每秒8000 EMC
-    private static final int MAX_MULTIPLIER = 100; // 最大倍数
-    private static final int TICKS_PER_DAY = 24000; // MC一天的tick数
-    private static final int MANA_COST_PER_EMC = 1; // 每1EMC消耗1mana
+    // 重新平衡的配置
+    private static final int BASE_EMC_PER_SECOND = 1000; // 降低基础产出
+    private static final int MAX_MULTIPLIER = 2147483647; // 安全的最大倍数 (2^30)
+    private static final int TICKS_PER_DAY = 6000; // MC一天的tick数
+    private static final int MANA_COST_BASE = 100; // 基础魔力消耗，不随倍数线性增长
     private static final int RANGE = 8; // 影响范围
+    private static final int MAX_DAYS_FOR_CALCULATION = 30; // 用于计算的最大天数
 
     // 状态变量
-    private long placementTime = 0;
+    private long placementTime = -1;
     private long accumulatedEmc = 0;
+    private boolean initialized = false;
+    private int lastMultiplier = 1;
+    private long lastUpdate = 0; // 用于确保时间连续性
+
+    // 客户端缓存数据（用于HUD显示）
+    private int cachedMultiplier = 1;
+    private long cachedEmcRate = BASE_EMC_PER_SECOND;
+    private int cachedManaCost = MANA_COST_BASE;
+
 
     public AlchemyAzaleaTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -51,62 +70,231 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         public FunctionalWandHud(AlchemyAzaleaTile flower) {
             super(flower);
         }
+
+        @Override
+        public void renderHUD(PoseStack ms, Minecraft mc) {
+            super.renderHUD(ms, mc);
+
+            int days = flower.getDaysElapsed();
+            int multiplier = flower.getDisplayMultiplier();
+            long ticksToNext = flower.getTicksToNextUpgrade();
+
+            String upgradeInfo;
+            if (ticksToNext == -1 || multiplier >= MAX_MULTIPLIER) {
+                upgradeInfo = "§6Max Level (" + multiplier + "x)";
+            } else {
+                int secondsToNext = (int) (ticksToNext / 20);
+                int minutesToNext = secondsToNext / 60;
+                int hoursToNext = minutesToNext / 60;
+
+                if (hoursToNext > 0) {
+                    upgradeInfo = String.format("§eNext upgrade: %dh %dm", hoursToNext, minutesToNext % 60);
+                } else if (minutesToNext > 0) {
+                    upgradeInfo = String.format("§eNext upgrade: %dm %ds", minutesToNext, secondsToNext % 60);
+                } else {
+                    upgradeInfo = String.format("§eNext upgrade: %ds", secondsToNext);
+                }
+            }
+
+            String statusInfo = String.format("§aDays: %d | Multiplier: %dx | Rate: %,d EMC/s",
+                    days, multiplier, flower.getDisplayEmcRate());
+
+            String manaInfo = String.format("§bMana: %d/%d | Cost: %d/s",
+                    flower.getMana(), flower.getMaxMana(), flower.getDisplayManaCost());
+
+            mc.font.draw(ms, statusInfo, 10, 40, 0xFFFFFF);
+            mc.font.draw(ms, upgradeInfo, 10, 52, 0xFFFFFF);
+            mc.font.draw(ms, manaInfo, 10, 64, 0xFFFFFF);
+        }
     }
 
     @Override
     public void tickFlower() {
         super.tickFlower();
 
-        if (level == null || level.isClientSide) {
+        if (level == null) {
             return;
         }
 
-        // 初始化放置时间
-        if (placementTime == 0) {
-            placementTime = level.getGameTime();
+        if (level.isClientSide) {
+            updateClientCache();
+            return;
+        }
+
+        if (!initialized) {
+            if (placementTime == -1) {
+                placementTime = level.getGameTime();
+                lastUpdate = placementTime;
+                setChanged();
+            }
+            initialized = true;
             setChanged();
         }
 
-        // 每秒执行EMC生成
         if (ticksExisted % 20 == 0) {
-            generateEMC(ticksExisted);
+            generateEMC();
         }
 
-        // 每0.5秒产生粒子效果
         if (ticksExisted % 10 == 0) {
             spawnParticles();
         }
+
+        if (ticksExisted % 40 == 0) {
+            syncToClient();
+        }
     }
 
     /**
-     * 计算当前的EMC倍数
+     * 更新客户端缓存数据
+     */
+    private void updateClientCache() {
+        if (ticksExisted % 10 == 0) {
+            cachedMultiplier = getCurrentMultiplier();
+            cachedEmcRate = getCurrentEmcRate();
+            cachedManaCost = getCurrentManaCost();
+        }
+    }
+
+    /**
+     * 同步数据到客户端
+     */
+    private void syncToClient() {
+        if (level instanceof ServerLevel) {
+            cachedMultiplier = getCurrentMultiplier();
+            cachedEmcRate = getCurrentEmcRate();
+            cachedManaCost = getCurrentManaCost();
+
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        }
+    }
+
+    /**
+     * 修复后的倍数计算 - 确保达到最大倍数后持续工作
      */
     private int getCurrentMultiplier() {
-        if (level == null) return 1;
+        if (level == null || placementTime == -1) return 1;
 
-        long existTime = level.getGameTime() - placementTime;
+        long currentTime = level.getGameTime();
+        long existTime = currentTime - placementTime;
+
+        // 防止时间回退
+        if (existTime < 0) {
+            placementTime = currentTime;
+            existTime = 0;
+        }
+
         int daysElapsed = (int) (existTime / TICKS_PER_DAY);
 
-        // 每天翻倍，最高100倍
-        int multiplier = (int) Math.pow(2, daysElapsed);
-        return Math.min(multiplier, MAX_MULTIPLIER);
+        daysElapsed = Math.max(0, daysElapsed);
+
+        if (daysElapsed >= MAX_DAYS_FOR_CALCULATION) {
+            return 2147483647; // 2^30，避免后续计算溢出
+        }
+
+        // 安全的2^n计算
+        int multiplier = 1;
+        for (int i = 0; i < daysElapsed && i < 30; i++) { // 限制循环次数防止无限循环
+            if (multiplier > 2147483647 / 2) { // 防止下一次乘法溢出
+                return 2147483647;
+            }
+            multiplier *= 2;
+        }
+
+        return Math.min(multiplier, 2147483647);
     }
 
     /**
-     * 获取当前EMC产出率
+     * 获取当前EMC产出率 - 修复整数溢出问题
      */
-    public int getCurrentEmcRate() {
-        return BASE_EMC_PER_SECOND * getCurrentMultiplier();
+    public long getCurrentEmcRate() {
+        int multiplier = getCurrentMultiplier();
+        long emcRate = (long) BASE_EMC_PER_SECOND * multiplier;
+        return Math.min(emcRate, Long.MAX_VALUE / 100);
     }
 
     /**
-     * 生成EMC
+     * 获取当前魔力消耗 - 修改为对数增长而非线性增长
      */
-    private void generateEMC(int tick) {
-        int day = Math.min(tick / 360, 100) + 1;
-        int emcPerSecond = Math.min(8000 * (int)Math.pow(2, day), 1000000);  //EMC
+    public int getCurrentManaCost() {
+        int multiplier = getCurrentMultiplier();
 
-        int manaCost = Math.toIntExact(emcPerSecond * MANA_COST_PER_EMC);
+        // 达到最大倍数时的特殊消耗
+        if (multiplier >= MAX_MULTIPLIER) {
+            return 500000;
+        }
+
+        // 使用对数增长：基础消耗 + log2(倍数) * 50
+        if (multiplier <= 1) {
+            return MANA_COST_BASE;
+        }
+        return MANA_COST_BASE + (int)(Math.log(multiplier) / Math.log(2) * 50);
+    }
+
+    public int getDisplayMultiplier() {
+        if (level != null && level.isClientSide) {
+            return cachedMultiplier;
+        }
+        return getCurrentMultiplier();
+    }
+
+    public long getDisplayEmcRate() {
+        if (level != null && level.isClientSide) {
+            return cachedEmcRate;
+        }
+        return getCurrentEmcRate();
+    }
+
+    public int getDisplayManaCost() {
+        if (level != null && level.isClientSide) {
+            return cachedManaCost;
+        }
+        return getCurrentManaCost();
+    }
+
+    /**
+     * 修复后的EMC生成逻辑 - 确保在最大倍数时持续工作
+     */
+    private void generateEMC() {
+        int currentMultiplier = getCurrentMultiplier();
+
+        if (currentMultiplier > lastMultiplier && currentMultiplier < MAX_MULTIPLIER) {
+            if (level != null) {
+                level.playSound(null, getBlockPos(), SoundEvents.PLAYER_LEVELUP,
+                        SoundSource.BLOCKS, 1.0f, 1.0f + (Math.min(currentMultiplier, 10) * 0.1f));
+            }
+
+            if (level instanceof ServerLevel serverLevel) {
+                double x = getBlockPos().getX() + 0.5;
+                double y = getBlockPos().getY() + 0.7;
+                double z = getBlockPos().getZ() + 0.5;
+
+                serverLevel.sendParticles(ParticleTypes.FIREWORK, x, y, z, 20, 0.8, 0.5, 0.8, 0.2);
+                serverLevel.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, x, y, z, 15, 0.6, 0.4, 0.6, 0.1);
+            }
+        }
+
+        if (currentMultiplier >= MAX_MULTIPLIER && lastMultiplier < MAX_MULTIPLIER) {
+            level.playSound(null, getBlockPos(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE,
+                    SoundSource.BLOCKS, 1.0f, 1.2f);
+
+            if (level instanceof ServerLevel serverLevel) {
+                double x = getBlockPos().getX() + 0.5;
+                double y = getBlockPos().getY() + 0.7;
+                double z = getBlockPos().getZ() + 0.5;
+
+                // 达到最大等级的特殊粒子效果
+                serverLevel.sendParticles(ParticleTypes.FIREWORK, x, y, z, 50, 1.0, 0.8, 1.0, 0.3);
+                serverLevel.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, x, y, z, 30, 1.0, 0.6, 1.0, 0.2);
+                serverLevel.sendParticles(ParticleTypes.END_ROD, x, y, z, 25, 0.8, 0.5, 0.8, 0.15);
+            }
+        }
+
+        lastMultiplier = currentMultiplier;
+
+        long emcPerSecond = getCurrentEmcRate();
+        int manaCost = getCurrentManaCost();
+
+        // 检查魔力是否足够
         if (getMana() < manaCost) {
             return;
         }
@@ -114,9 +302,11 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         addMana(-manaCost);
         accumulatedEmc += emcPerSecond;
 
-        if (accumulatedEmc >= 1) {
+        // 修复：确保即使在最大倍数时也能正常分发EMC
+        if (accumulatedEmc > 0) {
             distributeEMC(accumulatedEmc);
             accumulatedEmc = 0;
+            setChanged();
         }
     }
 
@@ -133,17 +323,14 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         if (level != null) {
             players = level.getEntitiesOfClass(Player.class, searchArea);
         }
-        if (players.isEmpty()) return;
+        if (players == null || players.isEmpty()) return;
 
         long emcPerPlayer = totalEmc / players.size();
-        if (emcPerPlayer == 0) return;
+        if (emcPerPlayer <= 0) return;
 
         for (Player player : players) {
             giveEMCToPlayer(player, emcPerPlayer);
         }
-
-        //level.playSound(null, getBlockPos(), SoundEvents.EXPERIENCE_ORB_PICKUP,
-                //SoundSource.BLOCKS, 0.3f, 1.5f);
     }
 
     /**
@@ -157,10 +344,11 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
                 BigInteger currentEmc = knowledge.getEmc();
                 BigInteger newEmc = currentEmc.add(BigInteger.valueOf(emc));
                 knowledge.setEmc(newEmc);
-                knowledge.sync((ServerPlayer) player);
+                if (player instanceof ServerPlayer serverPlayer) {
+                    knowledge.sync(serverPlayer);
+                }
             });
         } catch (Exception e) {
-            // 静默处理ProjectE API异常
         }
     }
 
@@ -175,13 +363,33 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         double z = getBlockPos().getZ() + 0.5;
 
         int multiplier = getCurrentMultiplier();
+        long ticksToNext = getTicksToNextUpgrade();
 
-        if (multiplier >= 50) {
+        // 最大等级时的特殊粒子效果
+        if (multiplier >= MAX_MULTIPLIER) {
+            serverLevel.sendParticles(ParticleTypes.FIREWORK, x, y, z, 15, 0.8, 0.5, 0.8, 0.15);
+            serverLevel.sendParticles(ParticleTypes.END_ROD, x, y, z, 12, 0.6, 0.4, 0.6, 0.1);
+            serverLevel.sendParticles(ParticleTypes.ENCHANT, x, y, z, 20, 0.8, 0.6, 0.8, 0.25);
+            serverLevel.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, x, y, z, 8, 0.4, 0.3, 0.4, 0.08);
+            return;
+        }
+
+        // 接近升级时的特殊效果 (升级前30秒)
+        if (ticksToNext != -1 && ticksToNext <= 600) { // 30秒 = 600 ticks
+            serverLevel.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, x, y, z, 5, 0.3, 0.3, 0.3, 0.1);
+            serverLevel.sendParticles(ParticleTypes.ENCHANT, x, y, z, 8, 0.5, 0.3, 0.5, 0.15);
+
+            if (ticksToNext <= 200) { // 10秒 = 200 ticks
+                serverLevel.sendParticles(ParticleTypes.FIREWORK, x, y, z, 3, 0.2, 0.2, 0.2, 0.05);
+            }
+        }
+
+        if (multiplier >= 32) {
             // 高倍数：炫酷粒子
             serverLevel.sendParticles(ParticleTypes.FIREWORK, x, y, z, 10, 0.5, 0.3, 0.5, 0.1);
             serverLevel.sendParticles(ParticleTypes.END_ROD, x, y, z, 8, 0.4, 0.2, 0.4, 0.05);
             serverLevel.sendParticles(ParticleTypes.ENCHANT, x, y, z, 15, 0.6, 0.4, 0.6, 0.2);
-        } else if (multiplier >= 10) {
+        } else if (multiplier >= 8) {
             // 中等倍数：金色粒子
             serverLevel.sendParticles(ParticleTypes.HAPPY_VILLAGER, x, y, z, 6, 0.4, 0.2, 0.4, 0.05);
             serverLevel.sendParticles(ParticleTypes.END_ROD, x, y, z, 4, 0.3, 0.2, 0.3, 0.03);
@@ -197,27 +405,86 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         return RadiusDescriptor.Rectangle.square(getEffectivePos(), RANGE);
     }
 
+    /**
+     * 修复后的魔力容量计算 - 更合理的增长
+     */
     @Override
     public int getMaxMana() {
-        return 1000000;
+        int multiplier = getCurrentMultiplier();
+
+        // 达到最大倍数时的特殊容量 - 能存储约10秒的魔力消耗
+        if (multiplier >= MAX_MULTIPLIER) {
+            return 5000000; // 500万魔力，足够消耗10秒
+        }
+
+        // 基础容量 + 对数增长，避免过度膨胀
+        if (multiplier <= 1) {
+            return 10000;
+        }
+
+        // 高倍数时增加更多容量
+        int baseCapacity = 10000;
+        int logBonus = (int)(Math.log(multiplier) / Math.log(2) * 5000);
+
+        // 当倍数很高时（接近最大值），给予额外的容量缓冲
+        if (multiplier >= 1000000) { // 100万倍数以上
+            return baseCapacity + logBonus + 2000000; // 额外200万魔力
+        } else if (multiplier >= 100000) { // 10万倍数以上
+            return baseCapacity + logBonus + 1000000; // 额外100万魔力
+        } else if (multiplier >= 10000) { // 1万倍数以上
+            return baseCapacity + logBonus + 500000; // 额外50万魔力
+        }
+
+        return baseCapacity + logBonus;
     }
 
     @Override
     public int getColor() {
         int multiplier = getCurrentMultiplier();
 
-        if (multiplier >= 50) return 0xFF00FF; // 紫色
-        if (multiplier >= 20) return 0xFF6600; // 橙色
-        if (multiplier >= 10) return 0xFFD700; // 金色
-        if (multiplier >= 4) return 0x00BFFF;  // 天蓝色
-        return 0x4CAF50; // 绿色
+        if (multiplier >= MAX_MULTIPLIER) return 0xFF00FF; // 最大等级：紫色
+        if (multiplier >= 32) return 0xFF6600; // 橙色
+        if (multiplier >= 16) return 0xFFD700;  // 金色
+        if (multiplier >= 8) return 0x00BFFF;  // 天蓝色
+        if (multiplier >= 4) return 0x4CAF50; // 绿色
+        return 0x4CAF50; // 默认绿色
     }
+
+    // ========== 网络同步相关 ==========
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        writeToPacketNBT(tag);
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
+        readFromPacketNBT(tag);
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    // ========== NBT数据持久化 ==========
 
     @Override
     public void readFromPacketNBT(CompoundTag cmp) {
         super.readFromPacketNBT(cmp);
         placementTime = cmp.getLong(TAG_PLACEMENT_TIME);
         accumulatedEmc = cmp.getLong(TAG_ACCUMULATED_EMC);
+        initialized = cmp.getBoolean(TAG_INITIALIZED);
+        lastMultiplier = cmp.getInt(TAG_LAST_MULTIPLIER);
+        lastUpdate = cmp.getLong(TAG_LAST_UPDATE);
+
+        // 读取缓存数据
+        cachedMultiplier = cmp.getInt(TAG_CURRENT_MULTIPLIER);
+        cachedEmcRate = cmp.getLong(TAG_CURRENT_EMC_RATE);
+        cachedManaCost = cmp.getInt(TAG_CURRENT_MANA_COST);
     }
 
     @Override
@@ -225,24 +492,32 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         super.writeToPacketNBT(cmp);
         cmp.putLong(TAG_PLACEMENT_TIME, placementTime);
         cmp.putLong(TAG_ACCUMULATED_EMC, accumulatedEmc);
+        cmp.putBoolean(TAG_INITIALIZED, initialized);
+        cmp.putInt(TAG_LAST_MULTIPLIER, lastMultiplier);
+        cmp.putLong(TAG_LAST_UPDATE, lastUpdate);
+
+        // 写入缓存数据用于客户端同步
+        cmp.putInt(TAG_CURRENT_MULTIPLIER, cachedMultiplier);
+        cmp.putLong(TAG_CURRENT_EMC_RATE, cachedEmcRate);
+        cmp.putInt(TAG_CURRENT_MANA_COST, cachedManaCost);
     }
 
     // 工具方法
     public int getDaysElapsed() {
-        if (level == null) return 0;
+        if (level == null || placementTime == -1) return 0;
         long existTime = level.getGameTime() - placementTime;
-        return (int) (existTime / TICKS_PER_DAY);
+        return Math.max(0, (int) (existTime / TICKS_PER_DAY));
     }
 
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap,
-                LazyOptional.of(() -> new AlchemyAzaleaTile.FunctionalWandHud(this)).cast());
+                LazyOptional.of(() -> new FunctionalWandHud(this)).cast());
     }
 
     public long getTicksToNextUpgrade() {
-        if (getCurrentMultiplier() >= MAX_MULTIPLIER) return -1;
+        if (getCurrentMultiplier() >= MAX_MULTIPLIER || placementTime == -1) return -1;
 
         int currentDays = getDaysElapsed();
         long nextUpgradeTime = placementTime + ((long) (currentDays + 1) * TICKS_PER_DAY);

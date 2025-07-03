@@ -15,13 +15,10 @@ public class ColorToolTipBar {
         float hue = (float) Util.getMillis() / 5000.0F % 1.0F;
         float c =0xff000000| Mth.hsvToRgb(hue, 2.0F, 1.5F);
         int cd= (int)0xff000000| Mth.hsvToRgb(hue, 2.0F, 0.1F);
-        //int i = new Random().nextInt();
         if (event.getItemStack().getItem() instanceof HolyRing) {
             event.setBorderEnd((int)c);
             event.setBorderStart((int)c/*Mth.hsvToRgb(hue, 2.0F, 1.5F)*/);
             event.setBackground(cd);
         }
-       // event.setBorderStart();
-       // event.setBorderEnd();
     }
 }

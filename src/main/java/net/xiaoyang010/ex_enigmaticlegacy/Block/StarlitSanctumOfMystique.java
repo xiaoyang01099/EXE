@@ -14,8 +14,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -25,14 +23,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.StarlitSanctumOfMystiqueBlockEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.StarlitSanctumOfMystiqueBlockTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
-
-import java.util.Collections;
-import java.util.List;
 
 public class StarlitSanctumOfMystique extends Block implements EntityBlock {
     public StarlitSanctumOfMystique() {
@@ -71,7 +65,7 @@ public class StarlitSanctumOfMystique extends Block implements EntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new StarlitSanctumOfMystiqueBlockEntity(pos, state);
+        return new StarlitSanctumOfMystiqueBlockTile(pos, state);
     }
 
     @Override
@@ -85,7 +79,7 @@ public class StarlitSanctumOfMystique extends Block implements EntityBlock {
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof StarlitSanctumOfMystiqueBlockEntity be) {
+            if (blockEntity instanceof StarlitSanctumOfMystiqueBlockTile be) {
                 Containers.dropContents(world, pos, be);
                 world.updateNeighbourForOutputSignal(pos, this);
             }
@@ -101,7 +95,7 @@ public class StarlitSanctumOfMystique extends Block implements EntityBlock {
     @Override
     public int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos) {
         BlockEntity tileentity = world.getBlockEntity(pos);
-        if (tileentity instanceof StarlitSanctumOfMystiqueBlockEntity be)
+        if (tileentity instanceof StarlitSanctumOfMystiqueBlockTile be)
             return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
         else
             return 0;

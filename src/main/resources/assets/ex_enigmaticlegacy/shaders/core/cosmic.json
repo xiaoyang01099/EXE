@@ -4,8 +4,8 @@
         "srcrgb": "srcalpha",
         "dstrgb": "1-srcalpha"
     },
-    "vertex": "avaritia:cosmic",
-    "fragment": "avaritia:cosmic",
+    "vertex": "ex_enigmaticlegacy:cosmic",
+    "fragment": "ex_enigmaticlegacy:cosmic",
     "attributes": [
         "Position",
         "Color",

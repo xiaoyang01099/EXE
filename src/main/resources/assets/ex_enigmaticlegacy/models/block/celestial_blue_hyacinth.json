@@ -1,0 +1,7 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "ex_enigmaticlegacy:blocks/flowers/celestial_blue_hyacinth",
+    "particle": "ex_enigmaticlegacy:blocks/flowers/celestial_blue_hyacinth"
+  }
+}

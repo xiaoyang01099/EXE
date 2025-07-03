@@ -9,10 +9,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.KindMiaoModel;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.CatMewEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.ModEventBusEvents;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModModelLayers;
 
 public class MiaoMiaoRenderer extends MobRenderer<CatMewEntity, KindMiaoModel<CatMewEntity>> {
     public MiaoMiaoRenderer(EntityRendererProvider.Context context) {
-        super(context, new KindMiaoModel<>(context.bakeLayer(ModEventBusEvents.MIAOMIAO_LAYER)), 0.5f);
+        super(context, new KindMiaoModel<>(context.bakeLayer(ModModelLayers.MIAOMIAO_LAYER)), 0.5f);
         this.addLayer(new HumanoidArmorLayer(this,
                 new HumanoidModel(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
                 new HumanoidModel(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));

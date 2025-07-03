@@ -4,14 +4,13 @@ import net.minecraft.world.item.*;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.AquaSword;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.NaturalThousandBlades;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.SpaceBlade;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.*;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.weapon.*;
 
 public class ModWeapons {
     public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, ExEnigmaticlegacyMod.MODID);
+
     public static final RegistryObject<Item> MANAITASWORDGOD = REGISTRY.register("manaitaswordgod", ManaitaSwordGod::new);
     public static final RegistryObject<Item> MANAITABOW = REGISTRY.register("manaitabow", ManaitaBow::new);
     public static final RegistryObject<Item> REALFINALSWORDGOD = REGISTRY.register("realfinalswordgod", RealFinalSwordGod::new);
@@ -20,7 +19,7 @@ public class ModWeapons {
     public static final RegistryObject<Item> CRISSAEGRIM = REGISTRY.register("crissaegrim", Crissaegrim::new);
     public static final RegistryObject<Item> OBSIDIAN_EDGE = REGISTRY.register("obsidian_edge", ObsidianEdge::new);
     public static final RegistryObject<Item> CRYSTAL_DAGGER = REGISTRY.register("crystal_dagger", CrystalDagger::new);
-    public static final RegistryObject<Item> CLAYMORE = REGISTRY.register("claymore", Claymore::new);
+    public static final RegistryObject<Item> CLAYMORE = REGISTRY.register("claymore", () -> new Claymore(90.0F));
     public static final RegistryObject<Item> WICKEDKRIS = REGISTRY.register("wickedkris", WickedKris::new);
     public static final RegistryObject<Item> BLADE_FALLEN_STAR = REGISTRY.register("blade_fallen_star", BladeFallenStar::new);
     public static final RegistryObject<Item> KISS_OF_NYX = REGISTRY.register("kiss_of_nyx", KissOfNyx::new);
@@ -30,5 +29,6 @@ public class ModWeapons {
     public static final RegistryObject<Item> SPACE_BLADE = REGISTRY.register("space_blade", () -> new SpaceBlade(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
     public static final RegistryObject<Item> NATURAL_THOUSAND_BLADES = REGISTRY.register("natural_thousand_blades", () -> new NaturalThousandBlades(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
     public static final RegistryObject<Item> AQUA_SWORD = REGISTRY.register("aqua_sword", () -> new AquaSword(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+    public static final RegistryObject<Item> TERRA_BOW = REGISTRY.register("terra_bow", () -> new TerraBow(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 }

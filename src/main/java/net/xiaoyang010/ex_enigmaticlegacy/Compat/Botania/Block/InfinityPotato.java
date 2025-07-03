@@ -28,6 +28,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.InfinityPotatoTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import org.jetbrains.annotations.NotNull;
@@ -52,13 +53,11 @@ public class InfinityPotato extends Block implements SimpleWaterloggedBlock, Ent
         this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false).setValue(FACING, Direction.NORTH));
     }
 
-    // 设置初始状态
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WATERLOGGED, FACING);
     }
 
-    // 放置方块时的方向与水合属性
     @Nonnull
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -68,22 +67,11 @@ public class InfinityPotato extends Block implements SimpleWaterloggedBlock, Ent
                 .setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
-    // 水合状态
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.defaultFluidState() : Fluids.EMPTY.defaultFluidState();
     }
 
-    // 方块状态变化时更新水合状态
-    //@Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, Level level, BlockPos pos, BlockPos facingPos) {
-        if (state.getValue(WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level)); // 确保水合状态更新
-        }
-        return super.updateShape(state, facing, facingState, level, pos, facingPos); // 返回父类的更新形状方法
-    }
-
-    // 方块移除时处理物品掉落
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
@@ -95,11 +83,10 @@ public class InfinityPotato extends Block implements SimpleWaterloggedBlock, Ent
         }
     }
 
-    // 右键交互触发
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
-            if (tileEntity instanceof InfinityPotatoEntity tile) {
+            if (tileEntity instanceof InfinityPotatoTile tile) {
                 tile.interact(player, hand);
                 tile.jumpTicks = 20;
 
@@ -107,41 +94,36 @@ public class InfinityPotato extends Block implements SimpleWaterloggedBlock, Ent
         return InteractionResult.SUCCESS;
     }
 
-    // 设置方块的碰撞箱
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
-    // 方块放置后设置自定义名称
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity living, ItemStack stack) {
         if (stack.hasCustomHoverName()) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
-            if (tileEntity instanceof InfinityPotatoEntity) {
-                ((InfinityPotatoEntity) tileEntity).setCustomName(stack.getHoverName());
+            if (tileEntity instanceof InfinityPotatoTile) {
+                ((InfinityPotatoTile) tileEntity).setCustomName(stack.getHoverName());
             }
         }
     }
 
-    // 定义渲染方式，使用实体渲染
     @Nonnull
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
-    // 创建方块实体
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new InfinityPotatoEntity(pos, state); // 创建并返回一个新的方块实体
+        return new InfinityPotatoTile(pos, state);
     }
 
-    // 设置方块实体的 Ticker
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return !level.isClientSide ? null : createTickerHelper(type, ModBlockEntities.INFINITY_POTATO.get(), InfinityPotatoEntity::tick);
+        return !level.isClientSide ? null : createTickerHelper(type, ModBlockEntities.INFINITY_POTATO.get(), InfinityPotatoTile::tick);
     }
 
     @Override

@@ -60,6 +60,7 @@ public class CatMewEntity extends Monster {
     private double catEndY = 0;
     private int shieldParticles = 0;
     private WorldBorder worldBorder;
+    private final List<EntityPixie> summonedPixies = new ArrayList<>();
 
     public CatMewEntity(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -256,6 +257,9 @@ public class CatMewEntity extends Monster {
 
     private void summonPixies() {
         if (!this.level.isClientSide) {
+            // 清理已死亡的精灵引用
+            summonedPixies.removeIf(pixie -> !pixie.isAlive() || pixie.isRemoved());
+
             // 获取当前目标
             LivingEntity target = this.getTarget();
             if (target == null) return;
@@ -311,8 +315,9 @@ public class CatMewEntity extends Monster {
                 this.level.playSound(null, x, y, z,
                         ModSounds.babylonAttack, SoundSource.HOSTILE, 0.6F, 0.8F + this.random.nextFloat() * 0.4F);
 
-                // 生成精灵
+                // 生成精灵并添加到列表
                 this.level.addFreshEntity(pixie);
+                summonedPixies.add(pixie); // 添加到召唤列表
             }
 
             // 每个精灵生成后的间隔
@@ -328,6 +333,7 @@ public class CatMewEntity extends Monster {
                         pixie.setProps(target, this, 1, 15.0f); // 召唤黑暗精灵，更高伤害
                         pixie.setApplyPotionEffect(new MobEffectInstance(MobEffects.BLINDNESS, 60, 0));
                         this.level.addFreshEntity(pixie);
+                        summonedPixies.add(pixie); // 添加到召唤列表
                     }
                 }
             }
@@ -408,6 +414,7 @@ public class CatMewEntity extends Monster {
 
     @Override
     public void die(DamageSource pDamageSource) {
+        summonedPixies.clear(); // 清理召唤列表
         if (this.phase){ //转变时被击杀
             this.phaseTime = 100;
             this.phase = false;
@@ -468,9 +475,33 @@ public class CatMewEntity extends Monster {
         super.registerGoals();
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.2, false));
-
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true) {
+            @Override
+            public boolean canUse() {
+                return super.canUse() && isValidTarget(this.target);
+            }
+
+            @Override
+            public boolean canContinueToUse() {
+                return super.canContinueToUse() && isValidTarget(this.target);
+            }
+
+            private boolean isValidTarget(LivingEntity target) {
+                if (target == null) return false;
+
+                if (target == CatMewEntity.this) return false;
+
+                if (target instanceof CatMewEntity) return false;
+
+                if (target instanceof EntityPixie && summonedPixies.contains(target)) {
+                    return false;
+                }
+
+                return true;
+            }
+        });
+
         this.goalSelector.addGoal(3, new RandomStrollGoal(this, 1));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(5, new FloatGoal(this));

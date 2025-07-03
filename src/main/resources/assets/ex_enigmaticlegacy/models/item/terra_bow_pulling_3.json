@@ -1,0 +1,6 @@
+{
+  "parent": "ex_enigmaticlegacy:item/terra_bow",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/weapons/terra_bow/bow_terra_pulling_3"
+  }
+}

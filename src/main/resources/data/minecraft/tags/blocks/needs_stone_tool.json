@@ -3,6 +3,8 @@
   "values": [
     "ex_enigmaticlegacy:end_ore",
     "ex_enigmaticlegacy:cobble_stone",
-    "ex_enigmaticlegacy:arcane_ice_chunk"
+    "ex_enigmaticlegacy:arcane_ice_chunk",
+    "ex_enigmaticlegacy:full_altar",
+    "ex_enigmaticlegacy:terra_farmland"
   ]
 }

@@ -31,16 +31,16 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.xiaoyang010.ex_enigmaticlegacy.api.AdvancedBotanyAPI;
+import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
 import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.internal.IManaBurst;
 import vazkii.botania.api.mana.BurstProperties;
 import vazkii.botania.api.mana.ILensEffect;
 import vazkii.botania.api.mana.IManaItem;
+import vazkii.botania.api.mana.IManaPool;
 import vazkii.botania.client.fx.SparkleParticleData;
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.client.gui.TooltipHandler;
-import vazkii.botania.common.block.tile.mana.TilePool;
 import vazkii.botania.common.entity.EntityManaBurst;
 import vazkii.botania.common.handler.ModSounds;
 
@@ -60,7 +60,7 @@ public class NaturalThousandBlades extends SwordItem implements IManaItem, ILens
     private static final int NATURE_FURY_COST = 5000;
 
     public NaturalThousandBlades(Properties properties) {
-        super(AdvancedBotanyAPI.MITHRIL_ITEM_TIER, 3, -2.4F, properties);
+        super(EXEAPI.MIRACLE_ITEM_TIER, 3, -2.4F, properties);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class NaturalThousandBlades extends SwordItem implements IManaItem, ILens
 
         for (BlockPos blockPos : BlockPos.betweenClosed(pos.offset(-2, 0, -2), pos.offset(2, 1, 2))) {
             BlockEntity blockEntity = world.getBlockEntity(blockPos);
-            if (blockEntity instanceof TilePool pool) {
+            if (blockEntity instanceof IManaPool pool) {
                 int mana = pool.getCurrentMana();
                 int manaTag = getManaTag(stack);
                 int level = getLevel(stack);

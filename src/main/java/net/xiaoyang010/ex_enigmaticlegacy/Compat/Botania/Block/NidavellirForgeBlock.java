@@ -19,18 +19,14 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.TileInventory;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.NidavellirForgeTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class NidavellirForgeBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -75,18 +71,17 @@ public class NidavellirForgeBlock extends BaseEntityBlock {
                                  InteractionHand hand, BlockHitResult hit) {
         if (!level.isClientSide && player.isShiftKeyDown()) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof TileNidavellirForge tile) {
-                // 处理主物品槽
-                if (!tile.getItem(0).isEmpty()) {
-                    dropItemWithDirection(level, player, tile.getItem(0).copy());
-                    tile.setItem(0, ItemStack.EMPTY);
+            if (blockEntity instanceof NidavellirForgeTile tile) {
+
+                if (!tile.getItem(NidavellirForgeTile.OUTPUT_SLOT).isEmpty()) {
+                    dropItemWithDirection(level, player, tile.getItem(NidavellirForgeTile.OUTPUT_SLOT).copy());
+                    tile.setItem(NidavellirForgeTile.OUTPUT_SLOT, ItemStack.EMPTY);
                     tile.requestUpdate = true;
                     level.updateNeighbourForOutputSignal(pos, this);
                     return InteractionResult.SUCCESS;
                 }
 
-                // 处理其他物品槽
-                for (int i = tile.getContainerSize() - 1; i > 0; i--) {
+                for (int i = tile.getContainerSize() - 1; i >= NidavellirForgeTile.FIRST_INPUT_SLOT; i--) {
                     ItemStack stack = tile.getItem(i);
                     if (!stack.isEmpty()) {
                         dropItemWithDirection(level, player, stack.copy());
@@ -115,7 +110,7 @@ public class NidavellirForgeBlock extends BaseEntityBlock {
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof TileInventory inventory) {
+            if (blockEntity instanceof NidavellirForgeTile inventory) {
                 for (int i = 0; i < inventory.getContainerSize(); i++) {
                     ItemStack stack = inventory.getItem(i);
                     if (!stack.isEmpty()) {
@@ -147,16 +142,16 @@ public class NidavellirForgeBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new TileNidavellirForge(pos, state);
+        return new NidavellirForgeTile(pos, state);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
                                                                   BlockEntityType<T> blockEntityType) {
-        return level.isClientSide ? null : createTickerHelper(blockEntityType,
+        return createTickerHelper(blockEntityType,
                 ModBlockEntities.NIDAVELLIR_FORGE_TILE.get(),
-                TileNidavellirForge::serverTick);
+                level.isClientSide ? NidavellirForgeTile::clientTick : NidavellirForgeTile::serverTick);
     }
 
     @Override
@@ -172,5 +167,21 @@ public class NidavellirForgeBlock extends BaseEntityBlock {
     @Override
     public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    }
+
+    @Override
+    public boolean triggerEvent(BlockState state, Level level, BlockPos pos, int eventID, int eventParam) {
+        super.triggerEvent(state, level, pos, eventID, eventParam);
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        return blockEntity != null && blockEntity.triggerEvent(eventID, eventParam);
+    }
+
+    @Override
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof NidavellirForgeTile tile && !level.isClientSide) {
+            level.sendBlockUpdated(pos, state, state, 3);
+        }
     }
 }

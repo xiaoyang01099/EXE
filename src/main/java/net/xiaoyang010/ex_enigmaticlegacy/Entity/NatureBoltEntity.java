@@ -16,16 +16,20 @@ import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModParticleTypes;
 
+import java.util.List;
+
 public class NatureBoltEntity extends ThrowableProjectile implements ItemSupplier {
 
-    private float damage = 90.0F; // 基础伤害值
-    private int lifetime = 60; // 最长存活时间（ticks）
+    private float damage = 90.0F;
+    private int lifetime = 60;
+    private float damageRadius = 10F;
 
     public NatureBoltEntity(EntityType<? extends NatureBoltEntity> type, Level level) {
         super(type, level);
@@ -42,7 +46,6 @@ public class NatureBoltEntity extends ThrowableProjectile implements ItemSupplie
 
     @Override
     protected void defineSynchedData() {
-        // 定义需要同步的数据
     }
 
     public void setDamage(float damage) {
@@ -53,52 +56,21 @@ public class NatureBoltEntity extends ThrowableProjectile implements ItemSupplie
     public void tick() {
         super.tick();
 
-        // 粒子效果
+        if (!level.isClientSide) {
+            checkAndDamageNearbyEntities();
+        }
+
         if (level.isClientSide) {
-            for (int i = 0; i < 3; i++) {
-                level.addParticle(
-                        ParticleTypes.COMPOSTER,
-                        getX() + (random.nextDouble() - 0.5) * 0.5,
-                        getY() + (random.nextDouble() - 0.5) * 0.5,
-                        getZ() + (random.nextDouble() - 0.5) * 0.5,
-                        0, 0, 0
-                );
-
-                // 添加一些叶子粒子效果
-                if (random.nextInt(3) == 0) {
-                    level.addParticle(
-                            ParticleTypes.FALLING_SPORE_BLOSSOM,
-                            getX() + (random.nextDouble() - 0.5) * 0.5,
-                            getY() + (random.nextDouble() - 0.5) * 0.5,
-                            getZ() + (random.nextDouble() - 0.5) * 0.5,
-                            (random.nextDouble() - 0.5) * 0.2,
-                            random.nextDouble() * 0.1,
-                            (random.nextDouble() - 0.5) * 0.2
-                    );
-                }
-            }
+            spawnClientParticles();
         }
 
-        // 光效
-        if (!level.isClientSide && tickCount % 4 == 0) {
-            ((ServerLevel) level).sendParticles(
-                    ParticleTypes.END_ROD,
-                    getX(), getY(), getZ(),
-                    1, 0, 0, 0, 0.02
-            );
+        if (!level.isClientSide) {
+            spawnServerParticlesWithDamage();
         }
 
-        // 存活时间限制
         if (tickCount > lifetime) {
             if (!level.isClientSide) {
-                // 自然消散时的粒子效果
-                ((ServerLevel) level).sendParticles(
-                        ParticleTypes.HAPPY_VILLAGER,
-                        getX(), getY(), getZ(),
-                        10, 0.5, 0.5, 0.5, 0.1
-                );
-
-                // 播放消散音效
+                spawnDeathParticlesWithDamage();
                 level.playSound(null, getX(), getY(), getZ(),
                         SoundEvents.FLOWERING_AZALEA_BREAK, SoundSource.NEUTRAL,
                         1.0F, 1.0F + (random.nextFloat() - 0.5F) * 0.2F);
@@ -107,33 +79,214 @@ public class NatureBoltEntity extends ThrowableProjectile implements ItemSupplie
         }
     }
 
+    private void spawnClientParticles() {
+        for (int i = 0; i < 3; i++) {
+            level.addParticle(
+                    ParticleTypes.COMPOSTER,
+                    getX() + (random.nextDouble() - 0.5) * 0.5,
+                    getY() + (random.nextDouble() - 0.5) * 0.5,
+                    getZ() + (random.nextDouble() - 0.5) * 0.5,
+                    0, 0, 0
+            );
+
+            if (random.nextInt(3) == 0) {
+                level.addParticle(
+                        ParticleTypes.FALLING_SPORE_BLOSSOM,
+                        getX() + (random.nextDouble() - 0.5) * 0.5,
+                        getY() + (random.nextDouble() - 0.5) * 0.5,
+                        getZ() + (random.nextDouble() - 0.5) * 0.5,
+                        (random.nextDouble() - 0.5) * 0.2,
+                        random.nextDouble() * 0.1,
+                        (random.nextDouble() - 0.5) * 0.2
+                );
+            }
+        }
+    }
+
+    private void spawnServerParticlesWithDamage() {
+        for (int i = 0; i < 5; i++) {
+            double particleX = getX() + (random.nextDouble() - 0.5) * 1.0;
+            double particleY = getY() + (random.nextDouble() - 0.5) * 1.0;
+            double particleZ = getZ() + (random.nextDouble() - 0.5) * 1.0;
+
+            damageAtPosition(particleX, particleY, particleZ, 0.8F, damage * 0.3F);
+
+            ((ServerLevel) level).sendParticles(
+                    ParticleTypes.COMPOSTER,
+                    particleX, particleY, particleZ,
+                    1, 0.1, 0.1, 0.1, 0.0
+            );
+        }
+
+        if (tickCount % 2 == 0) {
+            for (int i = 0; i < 3; i++) {
+                double trailX = getX() + (random.nextDouble() - 0.5) * 0.6;
+                double trailY = getY() + (random.nextDouble() - 0.5) * 0.6;
+                double trailZ = getZ() + (random.nextDouble() - 0.5) * 0.6;
+
+                damageAtPosition(trailX, trailY, trailZ, 0.6F, damage * 0.2F);
+
+                ((ServerLevel) level).sendParticles(
+                        ParticleTypes.FALLING_SPORE_BLOSSOM,
+                        trailX, trailY, trailZ,
+                        1, 0.0, 0.0, 0.0, 0.0
+                );
+            }
+        }
+
+        if (tickCount % 4 == 0) {
+            for (int i = 0; i < 2; i++) {
+                double endRodX = getX() + (random.nextDouble() - 0.5) * 0.4;
+                double endRodY = getY() + (random.nextDouble() - 0.5) * 0.4;
+                double endRodZ = getZ() + (random.nextDouble() - 0.5) * 0.4;
+
+                damageAtPosition(endRodX, endRodY, endRodZ, 0.5F, damage * 0.5F);
+
+                ((ServerLevel) level).sendParticles(
+                        ParticleTypes.END_ROD,
+                        endRodX, endRodY, endRodZ,
+                        1, 0, 0, 0, 0.02
+                );
+            }
+        }
+    }
+
+    private void spawnDeathParticlesWithDamage() {
+        for (int i = 0; i < 15; i++) {
+            double spreadX = getX() + (random.nextDouble() - 0.5) * 3.0;
+            double spreadY = getY() + (random.nextDouble() - 0.5) * 2.0;
+            double spreadZ = getZ() + (random.nextDouble() - 0.5) * 3.0;
+
+            damageAtPosition(spreadX, spreadY, spreadZ, 1.0F, damage * 0.4F);
+
+            ((ServerLevel) level).sendParticles(
+                    ParticleTypes.HAPPY_VILLAGER,
+                    spreadX, spreadY, spreadZ,
+                    1, 0.1, 0.1, 0.1, 0.1
+            );
+        }
+
+        for (int i = 0; i < 8; i++) {
+            double poisonX = getX() + (random.nextDouble() - 0.5) * 4.0;
+            double poisonY = getY() + (random.nextDouble() - 0.5) * 1.5;
+            double poisonZ = getZ() + (random.nextDouble() - 0.5) * 4.0;
+
+            damageAtPosition(poisonX, poisonY, poisonZ, 1.2F, damage * 0.6F);
+
+            ((ServerLevel) level).sendParticles(
+                    ParticleTypes.WITCH,
+                    poisonX, poisonY, poisonZ,
+                    2, 0.2, 0.2, 0.2, 0.05
+            );
+        }
+    }
+
+    private void damageAtPosition(double x, double y, double z, float radius, float particleDamage) {
+        AABB damageBox = new AABB(
+                x - radius, y - radius, z - radius,
+                x + radius, y + radius, z + radius
+        );
+
+        List<LivingEntity> entities = this.level.getEntitiesOfClass(LivingEntity.class, damageBox);
+        Entity owner = getOwner();
+
+        for (LivingEntity living : entities) {
+            if (living == owner) continue;
+
+            double distance = Math.sqrt(
+                    Math.pow(living.getX() - x, 2) +
+                            Math.pow(living.getY() - y, 2) +
+                            Math.pow(living.getZ() - z, 2)
+            );
+
+            if (distance <= radius && living.invulnerableTime <= 8) {
+                living.hurt(DamageSource.MAGIC, particleDamage);
+
+                applyParticleEffectsToTarget(living);
+
+                if (level instanceof ServerLevel) {
+                    ((ServerLevel) level).sendParticles(
+                            ParticleTypes.DAMAGE_INDICATOR,
+                            living.getX(), living.getY() + living.getBbHeight() * 0.7, living.getZ(),
+                            2, 0.2, 0.2, 0.2, 0.0
+                    );
+
+                    if (random.nextInt(5) == 0) {
+                        level.playSound(null, living.getX(), living.getY(), living.getZ(),
+                                SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.NEUTRAL,
+                                0.3F, 1.5F + random.nextFloat() * 0.5F);
+                    }
+                }
+            }
+        }
+    }
+
+    private void applyParticleEffectsToTarget(LivingEntity target) {
+        target.addEffect(new MobEffectInstance(MobEffects.WITHER, 200, 10));
+        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 10));
+        target.addEffect(new MobEffectInstance(ModEffects.DROWNING.get(), 200, 10));
+
+        if (level instanceof ServerLevel && random.nextInt(3) == 0) {
+            ((ServerLevel) level).sendParticles(
+                    ParticleTypes.SOUL,
+                    target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(),
+                    3, 0.3, 0.3, 0.3, 0.02
+            );
+        }
+    }
+
+    private void checkAndDamageNearbyEntities() {
+        AABB boundingBox = this.getBoundingBox().inflate(damageRadius);
+        List<LivingEntity> entities = this.level.getEntitiesOfClass(LivingEntity.class, boundingBox);
+
+        Entity owner = getOwner();
+
+        for (LivingEntity living : entities) {
+            if (living == owner) {
+                continue;
+            }
+
+            if (living.invulnerableTime <= 15) {
+                living.hurt(DamageSource.MAGIC, damage);
+
+                applyMainEffectsToTarget(living);
+
+                if (level instanceof ServerLevel) {
+                    ((ServerLevel) level).sendParticles(
+                            ParticleTypes.CRIT,
+                            living.getX(), living.getY() + living.getBbHeight() * 0.5, living.getZ(),
+                            8, 0.3, 0.3, 0.3, 0.1
+                    );
+
+                    level.playSound(null, living.getX(), living.getY(), living.getZ(),
+                            SoundEvents.THORNS_HIT, SoundSource.NEUTRAL,
+                            0.8F, 1.0F + (random.nextFloat() - 0.5F) * 0.2F);
+                }
+            }
+        }
+    }
+
     @Override
     protected void onHit(HitResult result) {
         super.onHit(result);
 
         if (!level.isClientSide) {
-            // 命中效果的粒子
             ((ServerLevel) level).sendParticles(
                     ModParticleTypes.ASGARDANDELION.get(),
                     getX(), getY(), getZ(),
                     14, 0.4, 0.4, 0.4, 0.1
             );
 
-            ((ServerLevel) level).sendParticles(
-                    ParticleTypes.HAPPY_VILLAGER,
-                    getX(), getY(), getZ(),
-                    15, 0.5, 0.5, 0.5, 0.1
-            );
-
-            // 播放命中音效
             level.playSound(null, getX(), getY(), getZ(),
                     SoundEvents.THORNS_HIT, SoundSource.NEUTRAL,
                     1.0F, 1.0F + (random.nextFloat() - 0.5F) * 0.2F);
 
             if (!(result instanceof EntityHitResult)) {
-                // 如果击中方块，在地面产生小范围的生长效果
                 growNearbyPlants();
             }
+
+            finalExplosionDamage();
+            spawnDeathParticlesWithDamage();
 
             discard();
         }
@@ -142,43 +295,43 @@ public class NatureBoltEntity extends ThrowableProjectile implements ItemSupplie
     @Override
     protected void onHitEntity(EntityHitResult result) {
         super.onHitEntity(result);
+    }
 
-        if (!level.isClientSide) {
-            Entity target = result.getEntity();
-            Entity owner = getOwner();
+    private void finalExplosionDamage() {
+        AABB explosionBox = this.getBoundingBox().inflate(3.0D);
+        List<LivingEntity> entities = this.level.getEntitiesOfClass(LivingEntity.class, explosionBox);
+        Entity owner = getOwner();
 
-            // 确保不会伤害发射者
-            if (target != owner && target instanceof LivingEntity) {
-                LivingEntity livingTarget = (LivingEntity) target;
+        for (LivingEntity living : entities) {
+            if (living == owner) continue;
 
-                for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(5d))) {
-                    if (living == owner) continue; //不攻击自己
-                    // 造成伤害
-                    living.hurt(DamageSource.MAGIC, damage);
-                    applyEffectsToTarget(living);
-                }
+            living.hurt(DamageSource.MAGIC, damage * 1.5F);
+            applyMainEffectsToTarget(living);
+
+            if (level instanceof ServerLevel) {
+                ((ServerLevel) level).sendParticles(
+                        ParticleTypes.EXPLOSION,
+                        living.getX(), living.getY() + living.getBbHeight() * 0.5, living.getZ(),
+                        3, 0.2, 0.2, 0.2, 0.0
+                );
             }
         }
     }
 
-    // 对目标实体应用效果
-    private void applyEffectsToTarget(LivingEntity target) {
+    private void applyMainEffectsToTarget(LivingEntity target) {
         target.addEffect(new MobEffectInstance(MobEffects.WITHER, 1200, 5));
         target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1200, 5));
-
         target.addEffect(new MobEffectInstance(ModEffects.DROWNING.get(), 1200, 5));
 
-        // 额外粒子效果
         if (level instanceof ServerLevel) {
             ((ServerLevel) level).sendParticles(
-                    ParticleTypes.CRIT,
+                    ParticleTypes.WITCH,
                     target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(),
-                    15, 0.5, 0.5, 0.5, 0.1
+                    5, 0.3, 0.3, 0.3, 0.05
             );
         }
     }
 
-    // 使附近植物生长的效果
     private void growNearbyPlants() {
         if (level instanceof ServerLevel) {
             ((ServerLevel) level).sendParticles(

@@ -12,9 +12,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.AlphirinePortal;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.EntityAdvancedSpark;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.SpectriteWither;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
+import vazkii.botania.common.entity.EntityManaSpark;
+import vazkii.botania.common.lib.LibEntityNames;
 
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -29,6 +33,30 @@ public class ModEntities {
 //							.updateInterval(10)
 //							.fireImmune()
 //							.build(new ResourceLocation("ex_enigmaticlegacy", "rainbow_wither_skull").toString()));
+
+	public static final RegistryObject<EntityType<EntitySword>> ENTITY_SWORD = REGISTRY.register("entity_sword",
+			() -> EntityType.Builder.<EntitySword>of(EntitySword::new, MobCategory.MISC)
+					.sized(0.5F, 0.5F)
+					.clientTrackingRange(4)
+					.updateInterval(10)
+					.build(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity_sword").toString()));
+
+	public static final RegistryObject<EntityType<EntityAdvancedSpark>> ADVANCED_SPARK = REGISTRY.register("advanced_spark",
+			() ->EntityType.Builder.<EntityAdvancedSpark>of
+					(EntityAdvancedSpark::new, MobCategory.MISC)
+			.sized(0.2F, 0.5F)
+			.fireImmune()
+			.clientTrackingRange(4)
+			.updateInterval(10)
+			.build(new ResourceLocation("ex_enigmaticlegacy","advanced_spark").toString()));
+
+	public static final RegistryObject<EntityType<AlphirinePortal>> ALPHIRINE_PORTAL =
+			REGISTRY.register("alphirine_portal", () ->
+					EntityType.Builder.<AlphirinePortal>of(AlphirinePortal::new, MobCategory.MISC)
+							.sized(0.25F, 0.25F)
+							.clientTrackingRange(4)
+							.updateInterval(20)
+							.build(new ResourceLocation("ex_enigmaticlegacy","alphirine_portal").toString()));
 
 	public static final RegistryObject<EntityType<RideablePearlEntity>> RIDEABLE_PEARL_ENTITY =
 			REGISTRY.register("rideable_pearl_entity",
@@ -69,10 +97,18 @@ public class ModEntities {
 
 	public static final RegistryObject<EntityType<NatureBoltEntity>> NATURE_BOLT = REGISTRY.register("nature_bolt",
 			() -> EntityType.Builder.<NatureBoltEntity>of(NatureBoltEntity::new, MobCategory.MISC)
-					.sized(0.5F, 0.5F) // 设置实体大小
-					.clientTrackingRange(4) // 客户端追踪范围
-					.updateInterval(10) // 更新间隔
+					.sized(0.5F, 0.5F)
+					.clientTrackingRange(4)
+					.updateInterval(10)
 					.build(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "nature_bolt").toString())
+	);
+
+	public static final RegistryObject<EntityType<EntitySeed>> ENTITY_SEED = REGISTRY.register("entity_seed",
+			() -> EntityType.Builder.<EntitySeed>of(EntitySeed::new, MobCategory.MISC)
+					.sized(0.5F, 0.5F)
+					.clientTrackingRange(4)
+					.updateInterval(10)
+					.build(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity_seed").toString())
 	);
 
 	public static final RegistryObject<EntityType<Xiaoyang010Entity>> XIAOYANG_010 = register("xiaoyang_010", EntityType.Builder.<Xiaoyang010Entity>of(Xiaoyang010Entity::new, MobCategory.CREATURE).setShouldReceiveVelocityUpdates(true)

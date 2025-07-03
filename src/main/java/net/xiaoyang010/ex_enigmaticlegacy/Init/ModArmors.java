@@ -21,7 +21,7 @@ public class ModArmors {
     public static final RegistryObject<Item> DRAGON_WINGS = REGISTRY.register("dragon_wings", () -> new DragonWings(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).rarity(Rarity.EPIC).durability(0)));
 
     public static final RegistryObject<Item> NEBULA_HELMET = REGISTRY.register("nebula_helmet", () -> new NebulaArmor(EquipmentSlot.HEAD));
-    public static final RegistryObject<Item> NEBULA_HELMET_REVEAL = REGISTRY.register("nebula_helmet_reveal",() -> new NebulaArmor(EquipmentSlot.HEAD));
+    public static final RegistryObject<Item> NEBULA_HELMET_REVEAL = REGISTRY.register("nebula_helmet_reveal",() -> new ItemNebulaHelm(EquipmentSlot.HEAD));
     public static final RegistryObject<Item> NEBULA_CHESTPLATE = REGISTRY.register("nebula_chestplate",() -> new NebulaArmor(EquipmentSlot.CHEST));
     public static final RegistryObject<Item> NEBULA_LEGGINGS = REGISTRY.register("nebula_leggings",() -> new NebulaArmor(EquipmentSlot.LEGS));
     public static final RegistryObject<Item> NEBULA_BOOTS = REGISTRY.register("nebula_boots",() -> new NebulaArmor(EquipmentSlot.FEET));

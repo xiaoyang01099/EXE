@@ -26,6 +26,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.ManaitaArrow;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
+import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -36,9 +37,9 @@ public class ManaitaBow extends BowItem {
     private final Random random = new Random();
 
     public ManaitaBow() {
-        super(new Item.Properties()
-                .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
-                .rarity(ModRarities.MIRACLE));
+        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
+                .rarity(ModRarities.MIRACLE)
+        );
     }
 
     @Override

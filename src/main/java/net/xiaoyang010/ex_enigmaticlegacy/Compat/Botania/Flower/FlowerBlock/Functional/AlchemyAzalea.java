@@ -15,6 +15,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModIntegrationFlowers;
 
 public class AlchemyAzalea extends FlowerBlock {
     public AlchemyAzalea() {
@@ -37,7 +38,7 @@ public class AlchemyAzalea extends FlowerBlock {
 
     @OnlyIn(Dist.CLIENT)
     public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ModBlockss.ALCHEMY_AZALEA.get(), renderType -> renderType == RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModIntegrationFlowers.ALCHEMY_AZALEA.get(), renderType -> renderType == RenderType.cutout());
     }
 
     @Override

@@ -4,7 +4,7 @@ license="null"
 
 [[mods]]
 modId="ex_enigmaticlegacy"
-version="1.18.2-0.0.5-Beta"
+version="1.18.2-0.0.6-Beta"
 displayName="EXEnigmaticlegacy"
 credits="xiaoyang010"
 displayURL="https://space.bilibili.com/176266911"
@@ -26,7 +26,6 @@ description = '''正在努力变强，我会加油哒！'''
     versionRange="[1.18.2-4.0,)"
     ordering="AFTER"
     side="BOTH"
-
 
 [[dependencies.ex_enigmaticlegacy]]
     modId="curios"

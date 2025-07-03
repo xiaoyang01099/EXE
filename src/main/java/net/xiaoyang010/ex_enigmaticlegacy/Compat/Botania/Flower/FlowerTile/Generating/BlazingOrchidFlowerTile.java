@@ -79,7 +79,6 @@ public class BlazingOrchidFlowerTile extends TileEntityGeneratingFlower {
                 level.setBlockAndUpdate(checkPos, resultState);
                 addMana(manaToAdd);
 
-                // 产生特效
                 Vec3 offset = level.getBlockState(getBlockPos()).getOffset(level, getBlockPos());
                 double x = getBlockPos().getX() + offset.x;
                 double y = getBlockPos().getY() + offset.y;

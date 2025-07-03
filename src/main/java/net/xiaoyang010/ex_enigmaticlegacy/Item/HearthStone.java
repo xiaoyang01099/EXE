@@ -37,42 +37,35 @@ public class HearthStone extends Item {
         ItemStack itemstack = player.getItemInHand(hand);
 
         if (!level.isClientSide) {
-            // 获取玩家当前所在维度
             ResourceKey<Level> currentDimension = level.dimension();
             ServerPlayer serverPlayer = (ServerPlayer) player;
             ServerLevel targetLevel;
             BlockPos targetPos;
 
             if (currentDimension == Level.OVERWORLD) {
-                // 如果在主世界，传送到重生点
                 targetLevel = serverPlayer.getServer().getLevel(Level.OVERWORLD);
                 targetPos = serverPlayer.getRespawnPosition();
 
-                // 如果没有重生点，使用世界出生点
                 if (targetPos == null) {
                     targetPos = targetLevel.getSharedSpawnPos();
                 }
             } else {
-                // 如果在其他维度，传送回主世界出生点
                 targetLevel = serverPlayer.getServer().getLevel(Level.OVERWORLD);
                 targetPos = targetLevel.getSharedSpawnPos();
             }
 
-            // 执行传送
             if (targetLevel != null) {
-                // 添加传送前的粒子效果
                 ((ServerLevel) level).sendParticles(ParticleTypes.PORTAL,
                         player.getX(),
                         player.getY() + 1.0D,
                         player.getZ(),
-                        50,  // 粒子数量
-                        0.5D,  // X轴扩散
-                        0.5D,  // Y轴扩散
-                        0.5D,  // Z轴扩散
-                        0.1D   // 粒子速度
+                        50,
+                        0.5D,
+                        0.5D,
+                        0.5D,
+                        0.1D
                 );
 
-                // 播放传送开始音效
                 level.playSound(null,
                         player.getX(),
                         player.getY(),
@@ -83,7 +76,6 @@ public class HearthStone extends Item {
                         1.0F
                 );
 
-                // 执行传送
                 serverPlayer.teleportTo(targetLevel,
                         targetPos.getX() + 0.5D,
                         targetPos.getY() + 0.5D,
@@ -92,7 +84,6 @@ public class HearthStone extends Item {
                         serverPlayer.getXRot()
                 );
 
-                // 传送后在目标位置也添加粒子效果
                 targetLevel.sendParticles(ParticleTypes.PORTAL,
                         targetPos.getX() + 0.5D,
                         targetPos.getY() + 1.0D,
@@ -106,8 +97,7 @@ public class HearthStone extends Item {
             }
         }
 
-        // 添加使用冷却
-        player.getCooldowns().addCooldown(this, 100); // 5秒冷却时间
+        player.getCooldowns().addCooldown(this, 100);
 
         return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
     }

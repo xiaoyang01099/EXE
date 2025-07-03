@@ -1,0 +1,35 @@
+{
+  "type": "ex_enigmaticlegacy:nidavellir_forge",
+  "mana": 2500000,
+  "color": 65535,
+  "ingredients": [
+    {
+      "item": "ex_enigmaticlegacy:platinum_ingot",
+      "count": 4
+    },
+    {
+      "item": "ex_enigmaticlegacy:gypsum_ingot",
+      "count": 4
+    },
+    {
+      "item": "botania:quartz_mana",
+      "count": 8
+    },
+    {
+      "item": "botania:manasteel_nugget",
+      "count": 8
+    },
+    {
+      "item": "botania:terrasteel_nugget",
+      "count": 8
+    },
+    {
+      "item": "ex_enigmaticlegacy:jade_ingot",
+      "count": 6
+    }
+  ],
+  "output": {
+    "item": "ex_enigmaticlegacy:mithrill_nugget",
+    "count": 1
+  }
+}

@@ -7,7 +7,6 @@ import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -73,7 +72,7 @@ public class InfinitasVortex extends SimpleAttributeCurio {
         atts.put(AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier(uuid, "lightning", 10000.0F, AttributeModifier.Operation.ADDITION));
         atts.put(AttributeRegistry.HOLY_SPELL_POWER.get(), new AttributeModifier(uuid, "holy", 10000.0F, AttributeModifier.Operation.ADDITION));
         atts.put(AttributeRegistry.ENDER_SPELL_POWER.get(), new AttributeModifier(uuid, "ender", 5.0F, AttributeModifier.Operation.ADDITION));
-        atts.put(AttributeRegistry.BLOOD_SPELL_POWER.get(), new AttributeModifier(uuid, "blood", 10000.0F, AttributeModifier.Operation.ADDITION));
+        atts.put(AttributeRegistry.BLOOD_SPELL_POWER.get(), new AttributeModifier(uuid, "blood", 10.0F, AttributeModifier.Operation.ADDITION));
         atts.put(AttributeRegistry.EVOCATION_SPELL_POWER.get(), new AttributeModifier(uuid, "evocation", 10000.0F, AttributeModifier.Operation.ADDITION));
         atts.put(AttributeRegistry.POISON_SPELL_POWER.get(), new AttributeModifier(uuid, "poison", 10000.0F, AttributeModifier.Operation.ADDITION));
         atts.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(uuid, "speed_bonus", 1, AttributeModifier.Operation.MULTIPLY_TOTAL));

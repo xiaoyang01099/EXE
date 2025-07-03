@@ -14,6 +14,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.*;
@@ -26,6 +28,7 @@ import net.minecraftforge.network.NetworkHooks;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.SpectriteChestContainer;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.SpectriteChestTile;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.Container;
 import java.util.Optional;
@@ -48,6 +51,12 @@ public class SpectriteChest extends ChestBlock {
                 .setValue(FACING, Direction.NORTH)
                 .setValue(TYPE, ChestType.SINGLE)
                 .setValue(WATERLOGGED, Boolean.FALSE));
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return level.isClientSide ? createTickerHelper(blockEntityType, ModBlockEntities.SPECTRITE_CHEST_TILE.get(), SpectriteChestTile::lidAnimateTick) : null;
     }
 
     @Override
@@ -83,7 +92,6 @@ public class SpectriteChest extends ChestBlock {
             }
         };
     }
-
 
     private static final DoubleBlockCombiner.Combiner<ChestBlockEntity, Optional<? extends net.minecraft.world.Container>> MENU_COMBINER =
             new DoubleBlockCombiner.Combiner<>() {

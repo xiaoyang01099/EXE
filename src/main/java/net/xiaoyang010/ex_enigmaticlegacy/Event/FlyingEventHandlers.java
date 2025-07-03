@@ -36,25 +36,20 @@ public class FlyingEventHandlers {
         boolean flying = effect != null && effect.getAmplifier() >= 0;
         boolean hasManaitaArmor = isWearingFullArmor(player);
 
-        //防止其它模组飞行装备无法使用 参考1.12无尽
         String key = player.getGameProfile().getName()+":"+player.level.isClientSide;
-        //星花石
         if (playersWithStone.contains(key)){
             if (hasStone){
                 if (!player.getAbilities().mayfly) {
                     player.getAbilities().mayfly = true;
                     player.onUpdateAbilities();
                 }
-                // 添加各种效果
                 addEffects(player);
             }else {
-                // 如果没有 StarflowerStone 且没有穿戴整套盔甲，则移除飞行能力和所有效果
                 if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()) {
                     player.getAbilities().mayfly = false;
                     player.getAbilities().flying = false;
                     player.onUpdateAbilities();
                 }
-                // 移除所有与 StarflowerStone 相关的效果
                 removeEffects(player);
                 playersWithStone.remove(key);
             }
@@ -62,7 +57,6 @@ public class FlyingEventHandlers {
             playersWithStone.add(key);
         }
 
-        //星云盔甲
         if (playersWithNebulaChest.contains(key)) {
             if (hasNeutralChest) {
                 if (!player.getAbilities().mayfly){
@@ -81,16 +75,12 @@ public class FlyingEventHandlers {
             playersWithNebulaChest.add(key);
         }
 
-        //砧板套
         if (playersWithManaitaArmor.contains(key)) {
-            // 检查玩家是否穿戴了整套砧板盔甲
             if (hasManaitaArmor) {
-                // 给予玩家飞行能力，如果其他物品没有控制飞行能力
                 if (!player.getAbilities().mayfly) {
                     player.getAbilities().mayfly = true;
-                    player.onUpdateAbilities(); // 确保同步能力
+                    player.onUpdateAbilities();
                 }
-                // 给予玩家无限饱食度
                 if (player.getFoodData().getFoodLevel() < 20) {
                     player.getFoodData().setFoodLevel(20);
                 }
@@ -99,10 +89,9 @@ public class FlyingEventHandlers {
                 }
             }else {
                 if (player.getAbilities().mayfly && !player.isCreative() && !player.isSpectator()){
-                    // 如果没穿整套盔甲且玩家不在创造模式，移除飞行能力
                     player.getAbilities().mayfly = false;
-                    player.getAbilities().flying = false; // 停止飞行
-                    player.onUpdateAbilities(); // 确保同步能力
+                    player.getAbilities().flying = false;
+                    player.onUpdateAbilities();
                 }
                 playersWithManaitaArmor.remove(key);
             }
@@ -110,7 +99,6 @@ public class FlyingEventHandlers {
             playersWithManaitaArmor.add(key);
         }
 
-        //飞行buff
         if (playersWithFlyEffect.contains(key)) {
             if (flying) {
                 if (!player.getAbilities().mayfly) {
@@ -124,7 +112,6 @@ public class FlyingEventHandlers {
                     player.onUpdateAbilities();
 
                     player.displayClientMessage(new TranslatableComponent("info.ex_enigmaticlegacy.flying.stop"), true);
-                    // 如果玩家仍然在空中，标记玩家
                     if (!player.isOnGround()) {
                         player.getPersistentData().putBoolean(FlyingEffect.NBT_FLYING, true);
                     }
@@ -146,7 +133,7 @@ public class FlyingEventHandlers {
         if (!hand.isEmpty() && hand.getItem() instanceof StarflowerStone){
             return true;
         }
-        // 优先检查玩家的物品栏中是否有 StarflowerStone  物品栏不包含副手和盔甲栏
+
         for (ItemStack itemStack : player.getInventory().items) {
             if (itemStack.getItem() instanceof StarflowerStone) {
                return true;
@@ -156,39 +143,23 @@ public class FlyingEventHandlers {
         return false;
     }
 
-    // 添加效果的方法
+
     private static void addEffects(Player player) {
-        // 夜视效果
         player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, Integer.MAX_VALUE, 255, false, false));
-        // 饱和效果
         player.addEffect(new MobEffectInstance(MobEffects.SATURATION, Integer.MAX_VALUE, 255, false, false));
-        // 生命恢复效果
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Integer.MAX_VALUE, 255, false, false));
-        // 伤害吸收效果
         player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, Integer.MAX_VALUE, 255, false, false));
-        // 速度效果
         player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, Integer.MAX_VALUE, 4, false, false));
     }
 
-    // 移除效果的方法
     private static void removeEffects(Player player) {
-        // 移除夜视效果
         player.removeEffect(MobEffects.NIGHT_VISION);
-
-        // 移除饱和效果
         player.removeEffect(MobEffects.SATURATION);
-
-        // 移除生命恢复效果
         player.removeEffect(MobEffects.REGENERATION);
-
-        // 移除伤害吸收效果
         player.removeEffect(MobEffects.ABSORPTION);
-
-        // 移除速度效果
         player.removeEffect(MobEffects.MOVEMENT_SPEED);
     }
 
-    // 检查是否穿戴完整的盔甲
     private static boolean isWearingFullArmor(Player player) {
         ItemStack head = player.getItemBySlot(EquipmentSlot.HEAD);
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);

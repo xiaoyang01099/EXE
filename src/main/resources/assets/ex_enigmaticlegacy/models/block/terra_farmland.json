@@ -1,0 +1,7 @@
+{
+  "parent": "block/template_farmland",
+  "textures": {
+    "dirt": "minecraft:block/dirt",
+    "top": "ex_enigmaticlegacy:blocks/terra_farmland"
+  }
+}

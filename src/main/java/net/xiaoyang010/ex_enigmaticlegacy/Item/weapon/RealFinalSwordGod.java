@@ -28,6 +28,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Entity.EntityRainBowLightningBlot;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.ColorText;
+import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -35,7 +36,7 @@ import java.util.List;
 public class RealFinalSwordGod extends SwordItem {
 
     public RealFinalSwordGod() {
-        super(Tiers.NETHERITE, 10, -2.4F, new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR));
+        super(EXEAPI.MIRACLE_ITEM_TIER, 10, -2.4F, new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR));
     }
 
     @Override

@@ -126,5 +126,13 @@
         "stream": false
       }
     ]
+  },
+  "board_cube": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:board_cube",
+        "stream": false
+      }
+    ]
   }
 }

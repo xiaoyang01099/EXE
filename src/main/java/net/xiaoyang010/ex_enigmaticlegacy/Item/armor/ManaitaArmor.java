@@ -18,15 +18,13 @@ public class ManaitaArmor extends ArmorItem {
         super(new ZMaterial(), pSlot, MANAITA_ARMOR);
     }
 
-    // 覆盖此方法以隐藏盔甲的属性提示信息
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        // 返回空的属性映射以隐藏提示信息
         return ImmutableMultimap.of();
     }
 
     @Override
     public boolean isDamageable(ItemStack stack) {
-        return false; // 盔甲无法损坏
+        return false;
     }
 }

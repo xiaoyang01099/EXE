@@ -1,0 +1,7 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "ex_enigmaticlegacy:blocks/flowers/evil_forge",
+    "particle": "ex_enigmaticlegacy:blocks/flowers/evil_forge"
+  }
+}

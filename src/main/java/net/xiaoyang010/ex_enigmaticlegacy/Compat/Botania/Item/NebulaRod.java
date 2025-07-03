@@ -3,6 +3,8 @@ package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -21,16 +23,22 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.ConfigHandler;
+import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
+import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.mana.IManaItem;
 import vazkii.botania.api.mana.ManaBarTooltip;
 import vazkii.botania.client.fx.WispParticleData;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Optional;
 
-public class NebulaRod extends Item implements IManaItem {
+public class NebulaRod extends Item {
     private static final int MAX_MANA = 500000;
     private static final int MANA_PER_USE = 5000;
 
@@ -256,43 +264,8 @@ public class NebulaRod extends Item implements IManaItem {
     }
 
     @Override
-    public int getMana() {
-        return getManaInternal(new ItemStack(this));
-    }
-
-    @Override
-    public int getMaxMana() {
-        return MAX_MANA;
-    }
-
-    @Override
-    public void addMana(int mana) {
-        setManaInternal(new ItemStack(this), getMana() + mana);
-    }
-
-    @Override
-    public boolean canReceiveManaFromPool(BlockEntity pool) {
-        return true;
-    }
-
-    @Override
-    public boolean canReceiveManaFromItem(ItemStack otherStack) {
-        return true;
-    }
-
-    @Override
-    public boolean canExportManaToPool(BlockEntity pool) {
-        return false;
-    }
-
-    @Override
-    public boolean canExportManaToItem(ItemStack otherStack) {
-        return false;
-    }
-
-    @Override
-    public boolean isNoExport() {
-        return true;
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        return new ManaItemCapabilityProvider(stack);
     }
 
     @Override
@@ -316,5 +289,73 @@ public class NebulaRod extends Item implements IManaItem {
             return true;
         }
         return false;
+    }
+
+    private static class ManaItemCapabilityProvider implements ICapabilityProvider {
+        private final ItemStack stack;
+        private final LazyOptional<IManaItem> manaItemOptional;
+
+        public ManaItemCapabilityProvider(ItemStack stack) {
+            this.stack = stack;
+            this.manaItemOptional = LazyOptional.of(() -> new ManaItemImpl(stack));
+        }
+
+        @Nonnull
+        @Override
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+            if (cap == BotaniaForgeCapabilities.MANA_ITEM) {
+                return manaItemOptional.cast();
+            }
+            return LazyOptional.empty();
+        }
+    }
+
+    private static class ManaItemImpl implements IManaItem {
+        private final ItemStack stack;
+
+        public ManaItemImpl(ItemStack stack) {
+            this.stack = stack;
+        }
+
+        @Override
+        public int getMana() {
+            return stack.getOrCreateTag().getInt("mana");
+        }
+
+        @Override
+        public int getMaxMana() {
+            return MAX_MANA;
+        }
+
+        @Override
+        public void addMana(int mana) {
+            int current = getMana();
+            stack.getOrCreateTag().putInt("mana", Math.min(current + mana, MAX_MANA));
+        }
+
+        @Override
+        public boolean canReceiveManaFromPool(BlockEntity pool) {
+            return true;
+        }
+
+        @Override
+        public boolean canReceiveManaFromItem(ItemStack otherStack) {
+            return true;
+        }
+
+        @Override
+        public boolean canExportManaToPool(BlockEntity pool) {
+            return false;
+        }
+
+        @Override
+        public boolean canExportManaToItem(ItemStack otherStack) {
+            return false;
+        }
+
+        @Override
+        public boolean isNoExport() {
+            return true;
+        }
     }
 }

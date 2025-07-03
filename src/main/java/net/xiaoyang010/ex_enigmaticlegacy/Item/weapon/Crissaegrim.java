@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
+import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class Crissaegrim extends SwordItem {
 
     public Crissaegrim() {
         // 设置极高的攻击伤害和攻击速度
-        super(Tiers.NETHERITE, INFINITE_DAMAGE, INFINITE_ATTACK_SPEED,
+        super(EXEAPI.MIRACLE_ITEM_TIER, INFINITE_DAMAGE, INFINITE_ATTACK_SPEED,
                 new Item.Properties()
                         .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
                         .rarity(ModRarities.MIRACLE));

@@ -27,6 +27,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.InfinityGaiaSpreaderTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import vazkii.botania.api.mana.ILens;
 import vazkii.botania.api.state.BotaniaStateProps;

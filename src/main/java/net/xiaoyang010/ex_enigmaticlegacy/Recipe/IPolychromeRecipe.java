@@ -1,44 +1,47 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Recipe;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
+
+
+import javax.annotation.Nonnull;
 
 /**
  * 多色崩解棱镜合成配方接口
  * 类似于泰拉板的配方，但提供更多功能
  */
 public interface IPolychromeRecipe extends Recipe<Container> {
-    /**
-     * 获取完成合成所需的魔力
-     */
-    int getMana();
-    int getProcessTime();
-    /**
-     * 获取完成这个合成所需的时间（以tick为单位）
+    ResourceLocation POLY_ID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "polychrome");
+    ResourceLocation TYPE_ID = POLY_ID;
 
+    @Nonnull
+    @Override
+    default ItemStack getToastSymbol() {
+        return Registry.ITEM.getOptional(POLY_ID).map(ItemStack::new).orElse(ItemStack.EMPTY);
     }
 
-    /**
-     * 获取合成的产物
-     */
+    @Override
+    default RecipeType<?> getType() {
+        return Registry.RECIPE_TYPE.getOptional(TYPE_ID).get();
+    }
+
+    @Override
+    default boolean canCraftInDimensions(int width, int height) {
+        return false;
+    }
+
+    @Override
+    default boolean isSpecial() {
+        return true;
+    }
+
     @Override
     ItemStack assemble(Container inventory);
-
-    /**
-     * 当合成进行中每tick触发的效果
-     * @param completion 完成度，范围0-1
-     */
-    default void onCraftingTick(float completion) {
-        // 默认无操作
-    }
-
-    /**
-     * 当合成完成时触发的效果
-     */
-    default void onCraftingComplete() {
-        // 默认无操作
-    }
 
     int getManaUsage();
 }

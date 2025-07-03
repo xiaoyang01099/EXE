@@ -18,22 +18,15 @@ import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
-import net.xiaoyang010.ex_enigmaticlegacy.Recipe.CelestialTransmuteRecipe;
-import net.xiaoyang010.ex_enigmaticlegacy.Recipe.RainbowTableRecipe;
+import net.xiaoyang010.ex_enigmaticlegacy.Recipe.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
     public static final ResourceLocation PLUGIN_ID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "jei_plugin");
-
-    public static final RecipeType<CelestialTransmuteRecipe> CELESTIAL_TRANSMUTE =
-            new RecipeType<>(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "celestial_transmute"),
-                    CelestialTransmuteRecipe.class);
-
-    public static final RecipeType<RainbowTableRecipe> RAINBOW_TABLE =
-            new RecipeType<>(RainbowTableRecipe.TYPE_ID, RainbowTableRecipe.class);
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -43,9 +36,10 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(
+                new PolychromeCollapsePrismRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new CelestialTransmuteRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
-                new RainbowTableCategory(registration.getJeiHelpers().getGuiHelper())
-        );
+                new RainbowTableCategory(registration.getJeiHelpers().getGuiHelper()),
+                new AncientAlphirineCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -80,6 +74,9 @@ public class JEIPlugin implements IModPlugin {
                 CelestialTransmuteRecipe.TYPE_ID);
         registration.addRecipeCatalyst(new ItemStack(ModBlockss.RAINBOW_TABLE.get()),
                 RainbowTableRecipe.TYPE_ID);
+        registration.addRecipeCatalyst(new ItemStack(ModBlockss.POLYCHROME_COLLAPSE_PRISM.get()),
+                PolychromeRecipe.TYPE_ID);
+
     }
 
     @Override
@@ -93,6 +90,14 @@ public class JEIPlugin implements IModPlugin {
         List<RainbowTableRecipe> rainbowRecipes = recipeManager.getAllRecipesFor(ModRecipes.RAINBOW_TABLE_TYPE)
                 .stream().filter(Objects::nonNull).toList();
         registration.addRecipes(rainbowRecipes, RainbowTableRecipe.TYPE_ID);
+
+        List<AncientAlphirineRecipe> ancientAlphirineRecipes = recipeManager.getAllRecipesFor(ModRecipes.ANCIENT_ALPHIRINE_TYPE)
+                .stream().filter(Objects::nonNull).toList();
+        registration.addRecipes(ancientAlphirineRecipes, AncientAlphirineRecipe.TYPE_ID);
+
+        List<PolychromeRecipe> polychromeRecipes = recipeManager.getAllRecipesFor(ModRecipes.POLYCHROME_TYPE)
+                .stream().filter(Objects::nonNull).toList();
+        registration.addRecipes(polychromeRecipes, PolychromeRecipe.TYPE_ID);
 
         registration.addIngredientInfo(
                 new ItemStack(ModItems.ASTRAL_PILE.get()),

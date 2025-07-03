@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:entity/superconductive_spark"
+  }
+}
