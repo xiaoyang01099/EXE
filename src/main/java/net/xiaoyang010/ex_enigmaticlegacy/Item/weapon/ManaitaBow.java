@@ -1,10 +1,10 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Item.weapon;
 
-import morph.avaritia.entity.InfinityArrowEntity;
+import com.yuo.endless.Entity.EntityRegistry;
+import com.yuo.endless.Entity.InfinityArrowEntity;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -16,17 +16,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.AbstractArrow.Pickup;
-import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.ManaitaArrow;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
-import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -92,10 +87,8 @@ public class ManaitaBow extends BowItem {
                     arrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 4.0F, 1.0F);
                 } else {
                     // 普通模式使用无尽箭
-                    InfinityArrowEntity infinityArrow = new InfinityArrowEntity(level, player);
-                    infinityArrow.setSpectral(200);
+                    InfinityArrowEntity infinityArrow = new InfinityArrowEntity(EntityRegistry.INFINITY_ARROW.get(), level);
                     infinityArrow.setCritArrow(true);
-                    infinityArrow.setJumpCount(0);
                     infinityArrow.setBaseDamage(Float.POSITIVE_INFINITY);
 
                     // 计算力量仅影响速度

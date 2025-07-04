@@ -1,11 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Event;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import morph.avaritia.item.InfinityArmorItem;
+import com.yuo.endless.Items.Armor.InfinityArmor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,6 +10,8 @@ import net.minecraft.world.level.GameType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import java.util.*;
 
 public class SpectatorModeHandler {
 
@@ -29,7 +26,7 @@ public class SpectatorModeHandler {
 
     public static boolean isWearingFullInfinityArmor(Player player) {
         for (ItemStack armorPiece : player.getInventory().armor) {
-            if (armorPiece.isEmpty() || !(armorPiece.getItem() instanceof InfinityArmorItem)) {
+            if (armorPiece.isEmpty() || !(armorPiece.getItem() instanceof InfinityArmor)) {
                 return false;
             }
         }

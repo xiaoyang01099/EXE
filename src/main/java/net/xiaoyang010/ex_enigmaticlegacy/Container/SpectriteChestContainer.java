@@ -6,9 +6,9 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTags;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.SpectriteChestTile;
+
+import java.util.Locale;
 
 public class SpectriteChestContainer extends ChestMenu {
     private final Container container;
@@ -48,8 +48,8 @@ public class SpectriteChestContainer extends ChestMenu {
         }
 
         @Override
-        public boolean mayPlace(ItemStack stack) {
-            return stack.is(ModTags.Items.SPECTRITE_ITEMS);
+        public boolean mayPlace(ItemStack stack) { //非原版可放
+            return !stack.getItem().getDescriptionId().toLowerCase(Locale.ENGLISH).contains("minecraft");
         }
     }
 }

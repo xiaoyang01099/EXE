@@ -1,10 +1,10 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.JEI;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.yuo.endless.Blocks.EndlessBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
-import morph.avaritia.init.AvaritiaModContent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
@@ -82,9 +82,9 @@ public class PolychromeCollapsePrismDrawable implements IDrawable {
         blockDrawables.put('0', guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlockss.BLOCKNATURE.get())));
         blockDrawables.put('L', guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlockss.GAIA_BLOCK.get())));
         blockDrawables.put('Q', guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlockss.ARCANE_ICE_CHUNK.get())));
-        blockDrawables.put('W', guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(AvaritiaModContent.CRYSTAL_MATRIX_STORAGE_BLOCK.get())));
+        blockDrawables.put('W', guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(EndlessBlocks.crystalMatrixBlock.get())));
         blockDrawables.put('E', guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlockss.DRAGON_CRYSTALS_BLOCK.get())));
-        blockDrawables.put('T', guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(AvaritiaModContent.NEUTRONIUM_STORAGE_BLOCK.get())));
+        blockDrawables.put('T', guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(EndlessBlocks.neutroniumBlock.get())));
         blockDrawables.put('Y', guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.livingrock)));
         blockDrawables.put('U', guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Blocks.GLOWSTONE)));
         blockDrawables.put('I', guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlockss.INFINITYGlASS.get())));

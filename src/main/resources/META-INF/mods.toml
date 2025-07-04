@@ -21,9 +21,9 @@ description = '''正在努力变强，我会加油哒！'''
 
 
 [[dependencies.ex_enigmaticlegacy]]
-    modId="avaritia"
+    modId="endless"
     mandatory=true
-    versionRange="[1.18.2-4.0,)"
+    versionRange="[1.18.2-0.4,)"
     ordering="AFTER"
     side="BOTH"
 

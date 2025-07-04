@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTags;
 
 import javax.annotation.Nullable;
 
@@ -115,7 +114,7 @@ public class SpectriteChestTile extends ChestBlockEntity implements LidBlockEnti
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        return stack.is(ModTags.Items.SPECTRITE_ITEMS);
+        return true;
     }
 
     @Override

@@ -2,7 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile;
 
 import com.google.common.base.Predicates;
 import com.google.common.base.Suppliers;
-import morph.avaritia.init.AvaritiaModContent;
+import com.yuo.endless.Blocks.EndlessBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
@@ -12,7 +12,6 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,7 +39,6 @@ import vazkii.patchouli.api.IMultiblock;
 import vazkii.patchouli.api.PatchouliAPI;
 
 import javax.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -109,9 +107,9 @@ public class PolychromeCollapsePrismTile extends BlockEntityBase implements ISpa
             '0', ModBlockss.BLOCKNATURE.get(),
             'L', ModBlockss.GAIA_BLOCK.get(),
             'Q', ModBlockss.ARCANE_ICE_CHUNK.get(),
-            'W', AvaritiaModContent.CRYSTAL_MATRIX_STORAGE_BLOCK.get(),
+            'W', EndlessBlocks.crystalMatrixBlock.get(),
             'E', ModBlockss.DRAGON_CRYSTALS_BLOCK.get(),
-            'T', AvaritiaModContent.NEUTRONIUM_STORAGE_BLOCK.get(),
+            'T', EndlessBlocks.neutroniumBlock.get(),
             'Y', ModBlocks.livingrock,
             'U', Blocks.GLOWSTONE,
             'I', ModBlockss.INFINITYGlASS.get(),

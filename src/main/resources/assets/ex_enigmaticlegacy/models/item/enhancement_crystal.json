@@ -2,9 +2,9 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "ex_enigmaticlegacy:items/ingots/enhancement_crystal",
-    "halo": "avaritia:item/halo"
+    "halo": "endless:item/halo"
   },
-  "loader": "avaritia:halo",
+  "loader": "endless:halo",
   "halo": {
     "texture": "#halo",
     "color": -16777216,

@@ -211,9 +211,9 @@ dependencies {
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.18.2-71.1")
 
     //无尽贪婪
-    compileOnly fg.deobf("curse.maven:avaritia-1-10-261348:4406602")
-    runtimeOnly fg.deobf("curse.maven:avaritia-1-10-261348:4406602")
-    //implementation fg.deobf("curse.maven:avaritia-1-10-261348:4406602")
+//    compileOnly fg.deobf("curse.maven:avaritia-1-10-261348:4406602")
+//    runtimeOnly fg.deobf("curse.maven:avaritia-1-10-261348:4406602")
+    implementation fg.deobf("curse.maven:avaritia-endless-624491:6489780")
 
     //codechickenlib
     compileOnly fg.deobf("codechicken:CodeChickenLib:1.18.2-4.1.4.488:universal")

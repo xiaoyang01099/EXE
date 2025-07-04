@@ -1,6 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Item;
 
-import morph.avaritia.init.AvaritiaModContent;
+import com.yuo.endless.Items.EndlessItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -22,7 +22,6 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
@@ -35,8 +34,8 @@ public class InfinityTotem extends Item {
         super(new Item.Properties().stacksTo(1).rarity(ModRarities.MIRACLE).tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).durability(99));
     }
 
-    private static final List<Supplier<Item>> REPAIR_ITEMS = Arrays.asList(
-            AvaritiaModContent.INFINITY_INGOT::get
+    private static final List<Supplier<Item>> REPAIR_ITEMS = List.of(
+            EndlessItems.infinityIngot
     );
 
     @Override

@@ -18,7 +18,6 @@ import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModDetermination;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModIngot;
-import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModSingularity;
 
 
 public class ModItems {
@@ -232,25 +231,25 @@ public class ModItems {
 
 
 	//奇点
-	public static final RegistryObject<Item> ETERNAL_SINGULARITY = REGISTRY.register("eternal_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> RAINBOW_SINGULARITY = REGISTRY.register("rainbow_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> WOODEN_SINGULARITY = REGISTRY.register("wooden_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> MANYYULLYN_SINGULARITY = REGISTRY.register("manyyullyn_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> COBALT_SINGULARITY = REGISTRY.register("cobalt_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> GAIA_SINGULARITY = REGISTRY.register("gaia_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> BEDROCK_SINGULARITY = REGISTRY.register("bedrock_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> GOBBER_SINGULARITY_END = REGISTRY.register("gobber_singularity_end", ModSingularity::new);
-	public static final RegistryObject<Item> WHITE_MATTER_SINGULARITY = REGISTRY.register("white_matter_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> POLONIUM_210_SINGULARITY = REGISTRY.register("polonium_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> MANAITA_SINGULARITY = REGISTRY.register("manaita_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> NEUTRON_SINGULARITY = REGISTRY.register("neutron_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> YUANSHI_SINGULARITY = REGISTRY.register("yuanshi_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> ORICHALCOS_SINGULARITY = REGISTRY.register("orichalcos_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> SHADOWIUM_SINGULARITY = REGISTRY.register("shadowium_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> CRYSTAL_MATRIX_SINGULARITY = REGISTRY.register("crystal_matrix_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> ETHERIUM_SINGULARITY = REGISTRY.register("etherium_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> EVIL_SINGULARITY = REGISTRY.register("evil_singularity", ModSingularity::new);
-	public static final RegistryObject<Item> COMPRESSED_INFINITY_SINGULARITY = REGISTRY.register("compressed_infinity_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> ETERNAL_SINGULARITY = REGISTRY.register("eternal_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> RAINBOW_SINGULARITY = REGISTRY.register("rainbow_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> WOODEN_SINGULARITY = REGISTRY.register("wooden_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> MANYYULLYN_SINGULARITY = REGISTRY.register("manyyullyn_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> COBALT_SINGULARITY = REGISTRY.register("cobalt_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> GAIA_SINGULARITY = REGISTRY.register("gaia_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> BEDROCK_SINGULARITY = REGISTRY.register("bedrock_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> GOBBER_SINGULARITY_END = REGISTRY.register("gobber_singularity_end", ModSingularity::new);
+//	public static final RegistryObject<Item> WHITE_MATTER_SINGULARITY = REGISTRY.register("white_matter_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> POLONIUM_210_SINGULARITY = REGISTRY.register("polonium_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> MANAITA_SINGULARITY = REGISTRY.register("manaita_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> NEUTRON_SINGULARITY = REGISTRY.register("neutron_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> YUANSHI_SINGULARITY = REGISTRY.register("yuanshi_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> ORICHALCOS_SINGULARITY = REGISTRY.register("orichalcos_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> SHADOWIUM_SINGULARITY = REGISTRY.register("shadowium_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> CRYSTAL_MATRIX_SINGULARITY = REGISTRY.register("crystal_matrix_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> ETHERIUM_SINGULARITY = REGISTRY.register("etherium_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> EVIL_SINGULARITY = REGISTRY.register("evil_singularity", ModSingularity::new);
+//	public static final RegistryObject<Item> COMPRESSED_INFINITY_SINGULARITY = REGISTRY.register("compressed_infinity_singularity", ModSingularity::new);
 
 
 	//决心
