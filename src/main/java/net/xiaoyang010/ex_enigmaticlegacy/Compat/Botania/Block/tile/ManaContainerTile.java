@@ -4,12 +4,12 @@ import com.google.common.base.Predicates;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -21,11 +21,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.ManaContainerBlock;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Hud.ClientHelper;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.BlockEntityBase;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
@@ -46,7 +46,6 @@ import vazkii.botania.client.fx.SparkleParticleData;
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.client.gui.HUDHandler;
 import vazkii.botania.common.block.ModBlocks;
-
 import vazkii.botania.common.block.tile.mana.IThrottledPacket;
 import vazkii.botania.common.block.tile.mana.TileBellows;
 import vazkii.botania.common.crafting.ModRecipeTypes;
@@ -394,6 +393,26 @@ public class ManaContainerTile extends BlockEntityBase implements IManaPool, ISp
         public WandHud(ManaContainerTile pool) {
             this.pool = pool;
         }
+
+//        @Override
+//        public void renderHUD(PoseStack ms, Minecraft mc) {
+//            ItemStack poolStack = new ItemStack(pool.getBlockState().getBlock());
+//            String name = poolStack.getHoverName().getString();
+//            int color = 0xFFD700;
+//
+//            BotaniaAPIClient.instance().drawSimpleManaHUD(ms, color, pool.getCurrentMana(), pool.manaCap, name);
+//
+//            ClientHelper.drawPoolManaHUD(ms, name, pool.getCurrentMana(), pool.manaCap, color);
+//
+//            int x = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - 11;
+//            int y = Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2 + 30;
+//
+//            ItemStack tablet = new ItemStack(ModItems.manaTablet);
+//            ItemManaTablet.setStackCreative(tablet);
+//
+//            mc.getItemRenderer().renderAndDecorateItem(tablet, x - 20, y);
+//            mc.getItemRenderer().renderAndDecorateItem(poolStack, x + 26, y);
+//        }
 
         @Override
         public void renderHUD(PoseStack ms, Minecraft mc) {

@@ -24,33 +24,26 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID)
 public class SkeletonGoalReplacer {
 
-    // 存储玩家攻击过的亡灵生物的映射
     private static final Map<UUID, Set<UUID>> playerAttackedUndeadMap;
 
-    // 静态初始化，从WildHuntArmorEventHandler获取引用
     static {
         playerAttackedUndeadMap = WildHuntArmorEventHandler.getPlayerAttackedUndeadMap();
     }
 
     @SubscribeEvent
     public static void onEntityJoin(EntityJoinWorldEvent event) {
-        // 只在服务器端处理
         if (event.getWorld().isClientSide()) {
             return;
         }
 
-        // 只处理骷髅类型
         if (event.getEntity() instanceof AbstractSkeleton) {
             AbstractSkeleton skeleton = (AbstractSkeleton) event.getEntity();
 
-            // 替换骷髅的AI目标
             replaceSkeletonGoals(skeleton);
         }
     }
 
-    // 替换骷髅的AI目标
     private static void replaceSkeletonGoals(AbstractSkeleton skeleton) {
-        // 替换弓箭攻击目标
         for (WrappedGoal wrappedGoal : skeleton.goalSelector.getAvailableGoals()) {
             if (wrappedGoal.getGoal() instanceof RangedBowAttackGoal) {
                 int priority = wrappedGoal.getPriority();
@@ -67,7 +60,7 @@ public class SkeletonGoalReplacer {
             }
         }
 
-        // 替换近战攻击目标
+
         for (WrappedGoal wrappedGoal : skeleton.goalSelector.getAvailableGoals()) {
             if (wrappedGoal.getGoal() instanceof MeleeAttackGoal) {
                 int priority = wrappedGoal.getPriority();
@@ -87,9 +80,7 @@ public class SkeletonGoalReplacer {
     @SubscribeEvent
     public static void onWorldTick(TickEvent.WorldTickEvent event) {
         if (event.phase == TickEvent.Phase.END && event.world instanceof ServerLevel) {
-            // 每10 ticks进行一次检查
             if (event.world.getGameTime() % 10 == 0) {
-                // 检查所有骷髭
                 for (AbstractSkeleton skeleton : ((ServerLevel)event.world).getEntities(
                         EntityTypeTest.forClass(AbstractSkeleton.class),
                         entity -> true)) {
@@ -108,20 +99,16 @@ public class SkeletonGoalReplacer {
         }
     }
 
-    // 判断是否应该忽略玩家的逻辑
     private static boolean shouldIgnorePlayer(Player player) {
-        // 检查玩家是否穿戴全套野猎护甲
         boolean wearingFullSet = WildHuntArmor.isWearingFullSet(player);
 
         if (!wearingFullSet) {
-            return false; // 不穿全套不需要忽略
+            return false;
         }
 
-        // 查看这个玩家是否攻击过骷髅
         UUID playerUUID = player.getUUID();
         Set<UUID> attackedEntities = playerAttackedUndeadMap.get(playerUUID);
 
-        // 如果玩家没有攻击记录，应该忽略
         return attackedEntities == null || attackedEntities.isEmpty();
     }
 }

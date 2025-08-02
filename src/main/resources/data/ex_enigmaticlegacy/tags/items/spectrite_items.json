@@ -76,22 +76,36 @@
     "ex_enigmaticlegacy:prismaticradianceblock",
     "ex_enigmaticlegacy:blocknature",
     "ex_enigmaticlegacy:dragon_crystal_block",
+
     "botania:creative_pool",
-    "endless:infinity_sword",
-    "endless:infinity_bow",
-    "endless:infinity_helmet",
-    "endless:infinity_chestplate",
-    "endless:infinity_legs",
-    "endless:infinity_boots",
-    "endless:ultimate_stew",
-    "endless:endest_pearl",
-    "endless:infinity_block",
-    "endless:infinity_pickaxe",
-    "endless:infinity_axe",
-    "endless:infinity_hoe",
-    "endless:infinity_ingot",
-    "endless:infinity_shovel",
-    "endless:infinity_catalyst",
-    "endless:cosmic_meatballs"
+
+
+    "avaritia:infinity_sword",
+    "avaritia:infinity_bow",
+    "avaritia:infinity_helmet",
+    "avaritia:infinity_chestplate",
+    "avaritia:infinity_legs",
+    "avaritia:infinity_boots",
+    "avaritia:ultimate_stew",
+    "avaritia:endest_pearl",
+    "avaritia:infinity_block",
+    "avaritia:infinity_pickaxe",
+    "avaritia:infinity_axe",
+    "avaritia:infinity_hoe",
+    "avaritia:infinity_ingot",
+    "avaritia:infinity_shovel",
+    "avaritia:infinity_catalyst",
+    "avaritia:cosmic_meatballs"
+
+
+
+
+
+
+
+
+
+
+
   ]
 }

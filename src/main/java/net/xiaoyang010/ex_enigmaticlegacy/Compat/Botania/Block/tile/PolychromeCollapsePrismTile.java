@@ -2,7 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile;
 
 import com.google.common.base.Predicates;
 import com.google.common.base.Suppliers;
-import com.yuo.endless.Blocks.EndlessBlocks;
+import morph.avaritia.init.AvaritiaModContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
@@ -21,7 +21,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.BlockEntityBase;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
-import net.xiaoyang010.ex_enigmaticlegacy.Recipe.IPolychromeRecipe;
+import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.IPolychromeRecipe;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.internal.VanillaPacketDispatcher;
@@ -39,6 +39,7 @@ import vazkii.patchouli.api.IMultiblock;
 import vazkii.patchouli.api.PatchouliAPI;
 
 import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -107,9 +108,9 @@ public class PolychromeCollapsePrismTile extends BlockEntityBase implements ISpa
             '0', ModBlockss.BLOCKNATURE.get(),
             'L', ModBlockss.GAIA_BLOCK.get(),
             'Q', ModBlockss.ARCANE_ICE_CHUNK.get(),
-            'W', EndlessBlocks.crystalMatrixBlock.get(),
+            'W', AvaritiaModContent.CRYSTAL_MATRIX_STORAGE_BLOCK.get(),
             'E', ModBlockss.DRAGON_CRYSTALS_BLOCK.get(),
-            'T', EndlessBlocks.neutroniumBlock.get(),
+            'T', AvaritiaModContent.NEUTRONIUM_STORAGE_BLOCK.get(),
             'Y', ModBlocks.livingrock,
             'U', Blocks.GLOWSTONE,
             'I', ModBlockss.INFINITYGlASS.get(),
@@ -189,12 +190,6 @@ public class PolychromeCollapsePrismTile extends BlockEntityBase implements ISpa
         List<ItemStack> items = getItems();
         return new SimpleContainer(flattenStacks(items));
     }
-
-    /**
-     * 将堆栈列表展平为大小为 1 的堆栈数组,
-     * 仅用于配方匹配目的。
-     * 如果项目总数超过 64，则不返回任何项目。
-     */
 
     private static ItemStack[] flattenStacks(List<ItemStack> items) {
         ItemStack[] stacks;
@@ -324,5 +319,4 @@ public class PolychromeCollapsePrismTile extends BlockEntityBase implements ISpa
         }
         return val;
     }
-
 }

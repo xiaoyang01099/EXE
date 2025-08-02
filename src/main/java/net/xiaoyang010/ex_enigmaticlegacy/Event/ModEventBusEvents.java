@@ -1,17 +1,18 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Event;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -19,32 +20,37 @@ import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.*;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.DragonWingsLayer;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.SpottedGardenEelRenderer;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.block.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.layer.DragonWingsLayer;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.tile.SpottedGardenEelRenderer;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.CosmicBlockRenderer;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.shader.CosmicModelLoader;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.model.InfinityArmorModel;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.render.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.MithrillMultiTool;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.TerraShovel;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.SpecialCoreShaders;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.SpecialMiscellaneousModels;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModModelLayers;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModWeapons;
 import vazkii.botania.forge.mixin.client.ForgeAccessorModelBakery;
-
+import vazkii.botania.mixin.client.AccessorModelBakery;
+import vazkii.botania.mixin.client.AccessorRenderBuffers;
 import java.io.IOException;
-
-import static net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmor.NEBULA_EYES_TEXTURE;
+import java.util.Set;
+import java.util.SortedMap;
 
 @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModEventBusEvents {
-
-    public static final ModelLayerLocation NEBULA_ARMOR_LAYER = new ModelLayerLocation(
-            new ResourceLocation(ExEnigmaticlegacyMod.MODID, "armor_nebula"), "main");
-
-    @SubscribeEvent
-    public static void registerRecipeTypes(final RegistryEvent.Register<RecipeSerializer<?>> event) {
-    }
 
     @SubscribeEvent
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -82,6 +88,72 @@ public class ModEventBusEvents {
         );
         event.registerLayerDefinition(ModModelLayers.DICE_FATE, ModelDiceFate::createBodyLayer
         );
+        event.registerLayerDefinition(ModModelLayers.ENGINEER_HOPPER, ModelEngineerHopper::createBodyLayer
+        );
+    }
+
+    @SubscribeEvent
+    public static void registerItemCapabilities(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            ItemProperties.register(ModWeapons.TERRA_BOW.get(),
+                    new ResourceLocation("pull"),
+                    (stack, level, entity, seed) -> {
+                        if (entity == null) return 0.0F;
+                        return entity.getUseItem() != stack ? 0.0F :
+                                (float) (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F;
+                    });
+
+            ItemProperties.register(ModWeapons.TERRA_BOW.get(),
+                    new ResourceLocation("pulling"),
+                    (stack, level, entity, seed) ->
+                            entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
+
+            ItemProperties.register(
+                    ModItems.MITHRILL_MULTI_TOOL.get(),
+                    new ResourceLocation("ex_enigmaticlegacy", "enabled"),
+                    (stack, world, entity, seed) -> MithrillMultiTool.isEnabled(stack) ? 1.0F : 0.0F
+            );
+
+            ItemProperties.register(
+                    ModItems.TERRA_SHOVEL.get(),
+                    new ResourceLocation("ex_enigmaticlegacy", "enabled"),
+                    (stack, world, entity, seed) -> TerraShovel.isEnabled(stack) ? 1.0F : 0.0F
+            );
+        });
+    }
+
+    @SubscribeEvent
+    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        BlockEntityRenderers.register(ModBlockEntities.MANA_BRACKET_TILE.get(), ManaBracketRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.ASTRAL_KILLOP_TILE.get(), AstralKillopRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.ASTRAL_BLOCK_ENTITY.get(), AstralBlockEntityRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.GAME_BOARD_TILE.get(), RenderTileGameBoard::new);
+        BlockEntityRenderers.register(ModBlockEntities.BOARD_FATE_TILE.get(), RenderTileBoardFate::new);
+        BlockEntityRenderers.register(ModBlockEntities.FULL_ALTAR_TILE.get(), FullAltarRender::new);
+        BlockEntityRenderers.register(ModBlockEntities.MANA_CONTAINER_TILE.get(), ManaContainerRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.MANA_CRYSTAL_TILE.get(), RenderTileManaCrystalCube::new);
+        BlockEntityRenderers.register(ModBlockEntities.PAGED_CHEST.get(), PagedChestRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.INFINITY_CHEST.get(), InfinityChestRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.INFINITY_POTATO.get(), InfinityPotatoRender::new);
+        BlockEntityRenderers.register(ModBlockEntities.INFINITY_SPREADER.get(), InfinityGaiaSpreaderRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.RAINBOW_TABLE_TILE.get(), RainbowTableRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.NIDAVELLIR_FORGE_TILE.get(), RenderTileNidavellirForge::new);
+        BlockEntityRenderers.register(ModBlockEntities.SPECTRITE_CHEST_TILE.get(), SpectriteChestRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.MANA_CHARGER_TILE.get(), RenderTileManaCharger::new);
+        BlockEntityRenderers.register(ModBlockEntities.POLYCHROME_COLLAPSE_PRISM_TILE.get(),PolychromeCollapsePrismRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.ENGINEER_HOPPER_TILE.get(),RenderTileEngineerHopper::new);
+        BlockEntityRenderers.register(ModBlockEntities.COSMIC_BLOCK_ENTITY.get(), CosmicBlockRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void addLayers(EntityRenderersEvent.AddLayers ev) {
+        addLayer(ev, "default");
+        addLayer(ev, "slim");
+    }
+
+    public static void addLayer(EntityRenderersEvent.AddLayers ev, String s) {
+        LivingEntityRenderer r = ev.getSkin(s);
+        r.addLayer(new InfinityArmorModel.PlayerRender(r));
     }
 
     @SubscribeEvent
@@ -104,34 +176,34 @@ public class ModEventBusEvents {
     }
 
     @SubscribeEvent
-    public static void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-//            MinecraftForgeClient.registerTooltipComponentFactory(
-//            );
-        });
-    }
-
-    @SubscribeEvent
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
         if (event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {
-            event.addSprite(SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay.texture());
-            event.addSprite(SpecialMiscellaneousModels.INSTANCE.rainbowManaWater.texture());
             event.addSprite(SpecialMiscellaneousModels.INSTANCE.superconductiveSparkIcon.texture());
             event.addSprite(SpecialMiscellaneousModels.INSTANCE.superconductiveSparkIconStar.texture());
-
-        }
-        if (event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
-            event.addSprite(NEBULA_EYES_TEXTURE);
+            event.addSprite(SpecialMiscellaneousModels.INSTANCE.nebula_eyes.texture());
         }
     }
 
     @SubscribeEvent
     public static void onModelRegister(ModelRegistryEvent evt) {
+        Set<Material> materials = AccessorModelBakery.getMaterials();
+        materials.add(SpecialMiscellaneousModels.INSTANCE.evilManaWater);
+        materials.add(SpecialMiscellaneousModels.INSTANCE.rainbowManaWater);
+        materials.add(SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay);
+
+        ModelLoaderRegistry.registerLoader(new ResourceLocation("ex_enigmaticlegacy", "cosmic"), new CosmicModelLoader());
+
         ResourceManager resourceManager = null;
         if (ForgeModelBakery.instance() != null) {
             resourceManager = ((ForgeAccessorModelBakery) (Object) ForgeModelBakery.instance()).getResourceManager();
         }
-        //SpecialMiscellaneousModels.INSTANCE.onModelRegister(resourceManager, ForgeModelBakery::addSpecialModel);
+    }
+
+    @SubscribeEvent
+    public static void loadComplete(FMLLoadCompleteEvent evt) {
+        SortedMap<RenderType, BufferBuilder> layers = ((AccessorRenderBuffers) Minecraft.getInstance()
+                .renderBuffers()).getEntityBuilders();
+        layers.put(SpecialRenderHelper.RAINBOW_MANA_WATER, new BufferBuilder(SpecialRenderHelper.RAINBOW_MANA_WATER.bufferSize()));
     }
 
     @SubscribeEvent

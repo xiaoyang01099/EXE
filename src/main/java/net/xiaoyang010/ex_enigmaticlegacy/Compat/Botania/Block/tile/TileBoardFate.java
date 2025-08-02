@@ -1,6 +1,5 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile;
 
-import com.google.common.base.Suppliers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ChatType;
@@ -18,8 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.TileInventory;
-import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
-import net.xiaoyang010.ex_enigmaticlegacy.Data.FakeSparkleParticleData;
 import vazkii.botania.api.internal.VanillaPacketDispatcher;
 import vazkii.botania.api.item.IRelic;
 import vazkii.botania.client.fx.SparkleParticleData;
@@ -29,9 +26,36 @@ import vazkii.botania.xplat.IXplatAbstractions;
 
 import java.awt.*;
 import java.util.List;
-import java.util.function.Supplier;
+
 
 public class TileBoardFate extends TileInventory {
+    public static final List<ItemStack> FATE_RELIC_STACKS = List.of(
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.WEATHER_STONE.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.BLACK_HALO.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.SUPERPOSITION_RING.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.TALISMAN_HIDDEN_RICHES.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.FLOWER_FINDER_WAND.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.NEBULOUS_CORE.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.SHINY_STONE.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.ANCIENT_ALPHIRINE.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.APOTHEOSIS.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.CHAO_TOME.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.CRIMSON_SPELL.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.DARK_SUN_RING.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.DEIFIC_AMULET.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.DORMANT_ARCANUM.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.ELDRITCH_SPELL.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.GHASTLY_SKULL.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.MANAITA_SHEARS.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.OVERTHROWER.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.SOUL_TOME.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.TELEKINESIS_TOME.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.MISSILE_TOME.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.XP_TOME.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.THUNDER_PEAL.get()),
+            new ItemStack(net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems.FALSE_JUSTICE.get())
+            );
+
     private static final String TAG_SLOT_CHANCE = "slotChance";
     private static final String TAG_REQUEST_UPDATE = "requestUpdate";
 
@@ -193,7 +217,10 @@ public class TileBoardFate extends TileInventory {
         AABB aabb = new AABB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
                 worldPosition.getX() + 1, worldPosition.getY() + 0.7F, worldPosition.getZ() + 1);
 
-        List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, aabb);
+        List<ItemEntity> items = null;
+        if (level != null) {
+            items = level.getEntitiesOfClass(ItemEntity.class, aabb);
+        }
 
         for (ItemEntity item : items) {
             if (!item.isRemoved() && item.getItem() != null) {
@@ -237,7 +264,7 @@ public class TileBoardFate extends TileInventory {
     public static void clientTick(Level level, BlockPos pos, BlockState state, TileBoardFate tile) {
         if (tile.level == null) return;
         tile.updateAnimationTicks();
-//        tile.clientTick();
+        tile.clientTick();
     }
 
     public void serverTick() {
@@ -323,8 +350,8 @@ public class TileBoardFate extends TileInventory {
                         break;
 
                     case 2:
-                        FakeSparkleParticleData fakeSparkData =
-                                FakeSparkleParticleData.fakeSpark(
+                        SparkleParticleData fakeSparkData =
+                                SparkleParticleData.fake(
                                         0.6f + level.random.nextFloat() * 0.3f,
                                         red, green, blue,
                                         8 + level.random.nextInt(12)
@@ -421,21 +448,13 @@ public class TileBoardFate extends TileInventory {
     public static boolean isDice(ItemStack stack) {
         return !stack.isEmpty() && stack.getItem() == ModItems.dice;
     }
-    public static final Supplier<List<ItemStack>> RELIC_STACKS = Suppliers.memoize(() -> {
-        return List.of(new ItemStack(ModItems.infiniteFruit), new ItemStack(ModItems.kingKey), new ItemStack(ModItems.flugelEye), new ItemStack(ModItems.thorRing), new ItemStack(ModItems.odinRing), new ItemStack(ModItems.lokiRing));
-    });
+
     private ItemStack getRelicFromList(int index) {
-        return ((ItemStack)((List)RELIC_STACKS.get()).get(index)).copy();
+        return FATE_RELIC_STACKS.get(index).copy();
     }
 
     private int getRelicListSize() {
-        return 6;
-    }
-
-    private boolean isRelicEnabled(int index) {
-        return ConfigHandler.fateBoardRelicEnables != null &&
-                index < ConfigHandler.fateBoardRelicEnables.length &&
-                ConfigHandler.fateBoardRelicEnables[index];
+        return FATE_RELIC_STACKS.size();
     }
 
     @Override
@@ -454,7 +473,7 @@ public class TileBoardFate extends TileInventory {
 
     @Override
     public int getContainerSize() {
-        return 2;
+        return 4;
     }
 
     @Override

@@ -19,12 +19,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.TerraFarmlandList;
-import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class TerraFarmland extends Block {
+    public static List<TerraFarmlandList> farmlandList = new ArrayList<>();
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 15.0D, 16.0D);
 
     public TerraFarmland() {
@@ -72,7 +73,7 @@ public class TerraFarmland extends Block {
                     return;
                 }
             } else if (aboveBlock instanceof IPlantable) {
-                for (TerraFarmlandList fSeed : EXEAPI.farmlandList) {
+                for (TerraFarmlandList fSeed : farmlandList) {
                     BlockState targetState = fSeed.getBlockState();
                     if (aboveState.equals(targetState)) {
                         this.refreshSeed(level, pos, abovePos, aboveState);

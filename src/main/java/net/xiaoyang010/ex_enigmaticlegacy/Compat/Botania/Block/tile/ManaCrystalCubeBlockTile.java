@@ -2,6 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -22,10 +23,11 @@ import vazkii.botania.api.mana.IManaReceiver;
 import vazkii.botania.api.mana.spark.IManaSpark;
 import vazkii.botania.api.mana.spark.ISparkAttachable;
 import vazkii.botania.api.mana.spark.SparkHelper;
+import vazkii.botania.common.block.tile.TileMod;
 
 import java.util.List;
 
-public class ManaCrystalCubeBlockTile extends BlockEntity implements IWandable, IWandHUD{
+public class ManaCrystalCubeBlockTile extends TileMod implements IWandable, IWandHUD{
     private int knownMana = -1;
     private int knownMaxMana = -1;
     private int ticks = 0;
@@ -68,7 +70,15 @@ public class ManaCrystalCubeBlockTile extends BlockEntity implements IWandable, 
     public void renderHUD(PoseStack ms, Minecraft mc) {
         Component name = new TranslatableComponent("block.ex_enigmaticlegacy.mana_crystal_cube");
         int color = 0x30D5C8;
-        ClientHelper.drawPoolManaHUD(ms, String.valueOf(name), knownMana, knownMaxMana, color);
+
+        Screen currentScreen = mc.screen;
+        if (currentScreen == null) {
+            int screenWidth = mc.getWindow().getGuiScaledWidth();
+            int screenHeight = mc.getWindow().getGuiScaledHeight();
+
+            ClientHelper.drawSimpleManaHUD(ms, color, knownMana, knownMaxMana,
+                    name.getString(), screenWidth, screenHeight);
+        }
     }
 
     public int[] getManaAround() {

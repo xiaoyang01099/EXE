@@ -20,24 +20,17 @@ public class ConfigHandler {
     public static int sprawlRodMaxArea = 64;
     public static double sprawlRodSpeed = 1.5;
 
-    public static final String[] relicNames = new String[]{
-            "infiniteFruit", "kingKey", "flugelEye", "thorRing", "odinRing", "lokiRing",
-    };
-
     // AstralKillop 配置静态字段
     public static int astralKillopManaCost = 100;
     public static int astralKillopNuggetDay = 14;
     public static int astralKillopEffectDay = 25;
     public static int astralKillopRange = 5;
     public static int astralKillopEffectDropCount = 4;
-    public static int astralKillopEffectDuration = 12000; // 10分钟
-    public static int astralKillopEffectLevel = 29; // 30级抗性
+    public static int astralKillopEffectDuration = 12000;
+    public static int astralKillopEffectLevel = 29;
     public static int astralKillopMaxMana = 10000;
 
-    // 客户端配置静态字段
-    public static boolean enableDragonArmorOverlay = true; // 新增：龙甲头盔覆盖层开关
-    public static final ForgeConfigSpec.BooleanValue[] fateBoardRelicEnableConfigs = new ForgeConfigSpec.BooleanValue[relicNames.length];
-    public static boolean[] fateBoardRelicEnables = new boolean[relicNames.length];
+    public static boolean enableDragonArmorOverlay = true; //龙甲头盔覆盖层开关
 
     // ForgeConfigSpec 构建器
     private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
@@ -57,7 +50,7 @@ public class ConfigHandler {
 
     // 客户端配置
     public static ForgeConfigSpec.BooleanValue useManaChargerAnimation;
-    public static ForgeConfigSpec.BooleanValue enableDragonArmorOverlayConfig; // 新增
+    public static ForgeConfigSpec.BooleanValue enableDragonArmorOverlayConfig;
 
     // 通用配置 (服务端和客户端都需要)
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> lockWorldNameNebulaRodConfig;
@@ -119,7 +112,7 @@ public class ConfigHandler {
                 .comment("Activating the charging animation for the Mana Charger")
                 .define("manaChargerLighting", true);
 
-        // 新增：龙甲头盔覆盖层配置
+        // 龙甲头盔覆盖层配置
         enableDragonArmorOverlayConfig = CLIENT_BUILDER
                 .comment("Enable/disable the Dragon Crystal Armor helmet overlay effect",
                         "Set to false to disable the visual overlay when wearing full dragon armor set")
@@ -208,15 +201,6 @@ public class ConfigHandler {
         COMMON_BUILDER.comment("Relic Configuration")
                 .push("relics");
 
-        for (int i = 0; i < relicNames.length; i++) {
-            fateBoardRelicEnableConfigs[i] = COMMON_BUILDER
-                    .comment("Enable or disable relic drop on the Fate Playing Board: " + relicNames[i])
-                    .define("enable_relic_" + relicNames[i], true);
-        }
-
-        COMMON_BUILDER.pop(); // relics
-        COMMON_BUILDER.pop(); // board_of_fate
-
         COMMON_BUILDER.pop(); // common
         COMMON_SPEC = COMMON_BUILDER.build();
     }
@@ -234,11 +218,6 @@ public class ConfigHandler {
         }
     }
 
-    public static void loadConfig() {
-        for (int i = 0; i < relicNames.length; i++) {
-            fateBoardRelicEnables[i] = fateBoardRelicEnableConfigs[i].get();
-        }
-    }
 
     public static void onReload(final ModConfigEvent.Reloading configEvent) {
         if (configEvent.getConfig().getSpec() == COMMON_SPEC) {
@@ -248,8 +227,7 @@ public class ConfigHandler {
         }
     }
 
-    private static void syncCommonConfig() {
-        // 原有配置同步
+    public static void syncCommonConfig() {
         lockWorldNameNebulaRod = new ArrayList<>(lockWorldNameNebulaRodConfig.get());
         nebulaWandCooldownTick = nebulaWandCooldownTickConfig.get();
         nebulaRodManaCost = nebulaRodManaCostConfig.get();
@@ -269,7 +247,7 @@ public class ConfigHandler {
         astralKillopMaxMana = astralKillopMaxManaConfig.get();
     }
 
-    private static void syncClientConfig() {
+    public static void syncClientConfig() {
         enableDragonArmorOverlay = enableDragonArmorOverlayConfig.get();
     }
 
@@ -342,7 +320,6 @@ public class ConfigHandler {
         }
     }
 
-    // 新增：客户端配置访问类
     public static class ClientConfig {
         public static boolean isDragonArmorOverlayEnabled() {
             return enableDragonArmorOverlay;

@@ -45,7 +45,7 @@ public class EntityAdvancedSpark extends EntitySparkBase implements IManaSpark {
             SynchedEntityData.defineId(EntityAdvancedSpark.class, EntityDataSerializers.INT);
 
     private final Set<IManaSpark> transfers = Collections.newSetFromMap(new WeakHashMap<>());
-    private int transferSpeed = 48000;
+    private int transferSpeed = 480000;
     private int removeTransferants = 2;
     private boolean firstTick = true;
 
@@ -309,14 +309,12 @@ public class EntityAdvancedSpark extends EntitySparkBase implements IManaSpark {
                     return InteractionResult.SUCCESS;
                 }
 
-                // Show spark connections
                 for (IManaSpark spark : SparkHelper.getSparksAround(level, getX(), getY(), getZ())) {
                     createParticleBeam(this, spark.entity());
                 }
                 return InteractionResult.SUCCESS;
             }
 
-            // Handle spark upgrade
             if (stack.getItem() == ModItems.sparkUpgradeDispersive && currentUpgrade == SparkUpgradeType.NONE) {
                 SparkUpgradeType newUpgrade = SparkUpgradeType.values()[stack.getDamageValue() + 1];
                 setUpgrade(newUpgrade);

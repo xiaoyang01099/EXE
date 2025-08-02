@@ -1,0 +1,7 @@
+{
+  "parent": "ex_enigmaticlegacy:block/astral_block",
+  "loader": "ex_enigmaticlegacy:cosmic",
+  "cosmic": {
+    "mask": "ex_enigmaticlegacy:blocks/astral_block_mask"
+  }
+}

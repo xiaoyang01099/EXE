@@ -20,6 +20,9 @@ public class ModModelLayers {
     public static final ModelLayerLocation DILUTED_CONTAINER = new ModelLayerLocation(
             new ResourceLocation(ExEnigmaticlegacyMod.MODID, "diluted_container"), "main");
 
+    public static final ModelLayerLocation ENGINEER_HOPPER = new ModelLayerLocation(
+            new ResourceLocation(ExEnigmaticlegacyMod.MODID, "engineer_hopper"), "main");
+
     private static ModelLayerLocation createLocation(String name, String variant) {
         return new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, name), variant);
 

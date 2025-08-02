@@ -11,7 +11,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.CapybaraEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.CapybaraEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 import java.util.Collections;

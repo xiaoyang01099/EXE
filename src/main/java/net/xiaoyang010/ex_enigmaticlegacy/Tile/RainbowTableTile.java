@@ -51,8 +51,8 @@ public class RainbowTableTile extends BlockEntity implements MenuProvider, Conta
             return slot != 4;
         }
     };
-    private static final int SHRINK_MANA = 10000; //每秒获取魔力
-    private static final int TICK_MANA = 1200; //每tick消耗魔力
+    private static final int SHRINK_MANA = 15000; //每秒获取魔力
+    private static final int TICK_MANA = 100; //每tick消耗魔力
     private static final int CRAFT_MANA = 3000; //合成消耗魔力
     public static final int MAX_MANA = 1000000; //最大存储魔力
     private static final int OPEN_MANA = 5000; //最小开启魔力

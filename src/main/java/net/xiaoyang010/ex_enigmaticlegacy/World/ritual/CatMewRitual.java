@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.CatMewEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.CatMewEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import vazkii.patchouli.api.IMultiblock;

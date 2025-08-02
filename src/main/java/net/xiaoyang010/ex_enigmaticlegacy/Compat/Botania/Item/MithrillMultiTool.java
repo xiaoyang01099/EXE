@@ -66,7 +66,8 @@ public class MithrillMultiTool extends DiggerItem {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        return isEnabled(stack);
+//        return isEnabled(stack);
+        return false;
     }
 
     public static boolean isEnabled(ItemStack stack) {

@@ -13,7 +13,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.SpottedGardenEelEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.SpottedGardenEelEntity;
 
 
 @OnlyIn(Dist.CLIENT)

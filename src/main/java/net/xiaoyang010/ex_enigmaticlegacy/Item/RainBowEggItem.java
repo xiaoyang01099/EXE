@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.Xingyun2825Entity;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.Xingyun2825Entity;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
@@ -54,7 +54,7 @@ public class RainBowEggItem extends Item {
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
         if (entity instanceof Xingyun2825Entity entity1){
-                entity1.costomDie();
+            entity1.costomDie();
         }
         return super.onLeftClickEntity(stack, player, entity);
     }

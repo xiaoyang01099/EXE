@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
+import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.IComplexMob;
 
 public abstract class ComplexCreature extends AquaticCreature implements IComplexMob {
     private static final EntityDataAccessor<Integer> TICKS_EXISTED = SynchedEntityData.defineId(ComplexCreature.class, EntityDataSerializers.INT);

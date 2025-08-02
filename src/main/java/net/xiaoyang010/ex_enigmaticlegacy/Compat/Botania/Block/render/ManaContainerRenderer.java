@@ -21,6 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.ModelManaContainer;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.ManaContainerBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.ManaContainerTile;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.SpecialMiscellaneousModels;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModModelLayers;
 import vazkii.botania.api.mana.IPoolOverlayProvider;
@@ -114,8 +116,8 @@ public class ManaContainerRenderer implements BlockEntityRenderer<ManaContainerT
             ms.mulPose(Vector3f.XP.rotationDegrees(90F));
             ms.scale(s, s, s);
 
-            VertexConsumer buffer = buffers.getBuffer(RenderHelper.MANA_POOL_WATER);
-            RenderHelper.renderIcon(ms, buffer, 0, 0, MiscellaneousModels.INSTANCE.manaWater.sprite(), 16, 16, 1);
+            VertexConsumer buffer = buffers.getBuffer(SpecialRenderHelper.RAINBOW_MANA_WATER);
+            SpecialRenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.rainbowManaWater.sprite(), 16, 16, 1);
 
             ms.popPose();
         }

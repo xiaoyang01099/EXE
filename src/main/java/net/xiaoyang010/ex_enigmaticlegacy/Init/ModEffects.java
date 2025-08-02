@@ -20,9 +20,9 @@ public class ModEffects {
     public static final RegistryObject<MobEffect> CREEPER_FRIENDLY = EFFECTS.register("creeper_friendly", CreeperFriendly::new);
     public static final RegistryObject<MobEffect> DROWNING = EFFECTS.register("drowning", Drowning::new);
     public static final RegistryObject<MobEffect> RANDOM_TELEPORT = EFFECTS.register("random_teleport", RandomTeleport::new);
+    public static final RegistryObject<MobEffect> FREEZE_WORST = EFFECTS.register("freeze_worst", FreezeWorst::new);
 
 
-    // 在 Mod 的加载事件中调用此方法进行注册
     public static void registerEffects() {
         EFFECTS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

@@ -1,11 +1,13 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.api.distmarker.Dist;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.block.SpectriteCrystalRenderer;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.others.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.tile.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.render.AlphirinePortalRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.render.RenderAdvencedSpark;
 
@@ -30,9 +32,17 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.ALPHIRINE_PORTAL.get(), AlphirinePortalRenderer::new);
 		event.registerEntityRenderer(ModEntities.RIDEABLE_PEARL_ENTITY.get(), (context) -> new ThrownItemRenderer<>(context, 1.0F, true));
 		event.registerEntityRenderer(ModEntities.NATURE_BOLT.get(), (context) -> new ThrownItemRenderer<>(context, 1.0F, true));
-		event.registerEntityRenderer(ModEntities.ENTITY_SWORD.get(), (context) -> new ThrownItemRenderer<>(context, 1.0F, true));
+		event.registerEntityRenderer(ModEntities.ENTITY_SWORD.get(), EntityNullRender::new);
 		event.registerEntityRenderer(ModEntities.ENTITY_SEED.get(), (context) -> new ThrownItemRenderer<>(context, 1.0F, true));
-
+		event.registerEntityRenderer(ModEntities.SOUL_ENERGY.get(), EntityNullRender::new);
+		event.registerEntityRenderer(ModEntities.THUNDERPEAL_ORB.get(), ThunderpealOrbRenderer::new);
+		event.registerEntityRenderer(ModEntities.LUNAR_FLARE.get(), EntityNullRender::new);
+		event.registerEntityRenderer(ModEntities.BABYLON_WEAPON_SS.get(), RenderBabylonWeaponSS::new);
+		event.registerEntityRenderer(ModEntities.RAGEOUS_MISSILE.get(), RenderRageousMissile::new);
+		event.registerEntityRenderer(ModEntities.CHAOTIC_ORB.get(), RenderChaoticOrb::new);
+		event.registerEntityRenderer(ModEntities.SHINY_ENERGY.get(), EntityNullRender::new);
+		event.registerEntityRenderer(ModEntities.CRIMSON_ORB.get(), RenderCrimsonOrb::new);
+		event.registerEntityRenderer(ModEntities.DARK_MATTER_ORB.get(), RenderEldritchOrb::new);
 		//event.registerEntityRenderer(ModEntities.RAINBOW_WITHER_SKULL.get(), RainbowWitherSkullRenderer::new);
 	}
 

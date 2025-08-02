@@ -8,14 +8,12 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.ForgeTier;
 import net.minecraftforge.common.TierSortingRegistry;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.TerraFarmlandList;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTags;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EXEAPI {
-    public static List<TerraFarmlandList> farmlandList = new ArrayList<>();
     public static List<ItemStack> relicList = new ArrayList<>();
     public static List<ItemStack> diceList = new ArrayList<>();
 
@@ -48,7 +46,6 @@ public class EXEAPI {
     public static final Rarity rarityWildHunt;
 
     static {
-        //使用自定义实现初始化装甲材质
         nebulaArmorMaterial = new CustomArmorMaterial(
                 "nebula",
                 0,
@@ -60,16 +57,15 @@ public class EXEAPI {
         );
 
         wildHuntArmor = new CustomArmorMaterial(
-                "wild_hunt",//护甲材质的标识符
-                -1,//护甲的耐久度乘数
-                new int[]{10, 40, 30, 20},//护甲各部位提供的护甲值数组
-                30,//附魔能力值
-                null,//装备时播放的声音效果
-                100.0F,//护甲韧性
-                100.0F//击退抗性
+                "wild_hunt",
+                -1,
+                new int[]{10, 40, 30, 20},
+                30,
+                null,
+                100.0F,
+                100.0F
         );
 
-        // 创建自定义稀有度
         rarityNebula = Rarity.create("NEBULA", ChatFormatting.LIGHT_PURPLE);
         rarityWildHunt = Rarity.create("WILD_HUNT", ChatFormatting.DARK_GRAY);
     }

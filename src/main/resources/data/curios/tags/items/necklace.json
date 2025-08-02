@@ -1,6 +1,9 @@
 {
   "replace": false,
   "values": [
-    "ex_enigmaticlegacy:plumed_belt"
+    "ex_enigmaticlegacy:dormant_arcanum",
+    "ex_enigmaticlegacy:nebulous_core",
+    "ex_enigmaticlegacy:deific_amulet",
+    "ex_enigmaticlegacy:shiny_stone"
   ]
 }

@@ -20,7 +20,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.SpectriteCrystalEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.SpectriteCrystalEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 

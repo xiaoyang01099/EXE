@@ -11,24 +11,23 @@ import net.minecraft.world.level.material.Material;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.custom.CustomSaplingBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.ore.*;
-
+import net.xiaoyang010.ex_enigmaticlegacy.Block.AstralBlock;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.CosmicBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityGaiaSpreader.VariantE;
-//import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.GearFlower;
-//import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.TrinarySynthesis;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.AstralKillop;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Generating.Catnip;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.DeferredRegister;
-
 import net.minecraft.world.level.block.Block;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.StarlitSanctumOfMystique;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.portal.AnotherPortalBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.portal.MinersHeavenPortalBlock;
+import net.xiaoyang010.ex_enigmaticlegacy.Block.BlockExtremeAutoCrafter;
+import net.xiaoyang010.ex_enigmaticlegacy.Block.BlockInfinityCompressor;
 import vazkii.botania.common.block.BlockSpecialFlower;
-
 import static vazkii.botania.common.block.ModBlocks.livingrock;
 
 public class ModBlockss {
@@ -39,7 +38,7 @@ public class ModBlockss {
 	//botania联动
 	//方块放置
 	public static final RegistryObject<Block> NIGHTSHADE = REGISTRY.register("nightshade",() -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.NIGHTSHADE_TILE::get));
-	public static final RegistryObject<Block> ASTRAL_KILLOP = REGISTRY.register("astral_killop",() -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ASTRAL_KILLOP_TILE::get));
+	public static final RegistryObject<Block> ASTRAL_KILLOP = REGISTRY.register("astral_killop",() -> new AstralKillop(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ASTRAL_KILLOP_TILE::get));
 	public static final RegistryObject<Block> DAYBLOOM = REGISTRY.register("daybloom",() -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.DAYBLOOM_TILE::get));
 	public static final RegistryObject<Block> ASGARDANDELION = REGISTRY.register("asgardandelion",() -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ASGARDANDELIONTILE::get));
 	public static final RegistryObject<Block> FLOWEY = REGISTRY.register("flowey",() -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.FLOWEYTILE::get));
@@ -67,8 +66,6 @@ public class ModBlockss {
 	public static final RegistryObject<Block> CATNIP = REGISTRY.register("catnip", () -> new Catnip(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.CATNIP_TILE::get));
 	public static final RegistryObject<Block> ANCIENT_ALPHIRINE = REGISTRY.register("ancient_alphirine", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ANCIENT_ALPHIRINE_TILE::get));
 	public static final RegistryObject<Block> DICTARIUS = REGISTRY.register("dictarius", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.DICTARIUS_TILE::get));
-//	public static final RegistryObject<Block> TRINARY_SYNTHESIS = REGISTRY.register("trinary_synthesis", () -> new TrinarySynthesis(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.TRINARY_SYNTHESIS_TILE::get));
-//	public static final RegistryObject<Block> GEAR_FLOWER = REGISTRY.register("gear_flower", () -> new GearFlower(MobEffects.MOVEMENT_SPEED, 120, FLOWER_PROPS.lightLevel(state -> state.getValue(GearFlower.WORKING) ? (state.getValue(GearFlower.SPEED_LEVEL) * 3 + 3) : 0), ModBlockEntities.GEAR_FLOWER_TILE::get));
 	public static final RegistryObject<Block> EVIL_FORGE = REGISTRY.register("evil_forge", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.EVIL_FORGE_TILE::get));
 	public static final RegistryObject<Block> ETHERIUM_FORGE = REGISTRY.register("etherium_forge", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ETHERIUM_FORGE_TILE::get));
 	public static final RegistryObject<Block> ARDENT_AZARCISSUS = REGISTRY.register("ardent_azarcissus", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ARDENT_AZARCISSUS_TILE::get));
@@ -88,12 +85,17 @@ public class ModBlockss {
 	public static final RegistryObject<Block> CREATIVE_CONTAINER = REGISTRY.register("creative_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.CREATIVE, BlockBehaviour.Properties.copy(livingrock)));
 	public static final RegistryObject<Block> TERRA_FARMLAND = REGISTRY.register("terra_farmland", TerraFarmland::new);
 	public static final RegistryObject<Block> DILUTED_CONTAINER = REGISTRY.register("diluted_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.DILUTED, BlockBehaviour.Properties.copy(livingrock)));
-//public static final RegistryObject<Block> FABULOUS_CONTAINER = REGISTRY.register("fabulous_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.FABULOUS, BlockBehaviour.Properties.copy(livingrock)));
-
-
+	//public static final RegistryObject<Block> FABULOUS_CONTAINER = REGISTRY.register("fabulous_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.FABULOUS, BlockBehaviour.Properties.copy(livingrock)));
+	public static final RegistryObject<Block> ASTRAL_BLOCK = REGISTRY.register("astral_block", () -> new AstralBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
+	public static final RegistryObject<Block> MANA_BRACKET = REGISTRY.register("mana_bracket", () -> new ManaBracket(BlockBehaviour.Properties.of(Material.STONE).strength(1.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
+	public static final RegistryObject<Block> ENGINEER_HOPPER = REGISTRY.register("engineer_hopper", () -> new BlockEngineerHopper(BlockBehaviour.Properties.of(Material.METAL).strength(3.5F, 8.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion()));
+	public static final RegistryObject<Block> COSMIC_BLOCK = REGISTRY.register("cosmic_block", () -> new CosmicBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
+	public static final RegistryObject<Block> EXTREME_AUTO_CRAFTER = REGISTRY.register("extreme_auto_crafter", () -> new BlockExtremeAutoCrafter(Properties.of(Material.METAL).strength(50F, 2000F).requiresCorrectToolForDrops().sound(SoundType.GLASS)));
+	public static final RegistryObject<Block> INFINITY_COMPRESSOR = REGISTRY.register("infinity_compressor", () -> new BlockInfinityCompressor(BlockBehaviour.Properties.of(Material.METAL).strength(50F, 2000F).requiresCorrectToolForDrops().lightLevel((state) -> 15)));
 
 
 	//其他
+//	public static final RegistryObject<Block> MAGIC_TABLE = REGISTRY.register("magic_table", () -> new MagicTableBlock(Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD).noOcclusion()));
 	public static final RegistryObject<Block> SPECTRITE_CHEST = REGISTRY.register("spectrite_chest", SpectriteChest::new);
 	public static final RegistryObject<Block> INFINITYGlASS = REGISTRY.register("infinityglass", InfinityGlass::new);
 	public static final RegistryObject<Block> STARLITSANCTUM = REGISTRY.register("starlit_sanctum", StarlitSanctumOfMystique::new);
@@ -117,6 +119,7 @@ public class ModBlockss {
 	public static final RegistryObject<Block> MITHRILL_BLOCK = REGISTRY.register("mithrill_block", MithrillBlock::new);
 	public static final RegistryObject<Block> DRAGON_CRYSTALS_BLOCK = REGISTRY.register("dragon_crystal_block", DragonCrystalBlock::new);
 	public static final RegistryObject<Block> DECON_TABLE = REGISTRY.register("deconstruction_table", DeconTableBlock::new);
+	public static final RegistryObject<Block> ANTIGRAVITATION_BLOCK = REGISTRY.register("antigravitation_block", BlockAntigravitation::new);
 
 
 

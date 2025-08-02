@@ -1,7 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Recipe;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.core.NonNullList;
@@ -17,6 +16,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
+import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.IPolychromeRecipe;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.common.crafting.RecipeSerializerBase;
 import vazkii.botania.common.crafting.recipe.RecipeUtils;

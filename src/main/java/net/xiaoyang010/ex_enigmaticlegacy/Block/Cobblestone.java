@@ -8,22 +8,14 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.CraftingTableBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.CobblesStoneMenu;
-
-import java.util.Collections;
-import java.util.List;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.CobblesStoneMenu;
 
 public class Cobblestone extends CraftingTableBlock {
     private static final Component CONTAINER_TITLE = new TranslatableComponent("container.crafting");

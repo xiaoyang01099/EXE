@@ -14,9 +14,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.UseHoeEvent;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraft.world.level.block.state.BlockState;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 import vazkii.botania.api.BotaniaAPI;
@@ -24,7 +22,7 @@ import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.item.ModItems;
 
-public class TerraHoe extends HoeItem{
+public class TerraHoe extends HoeItem {
     private static final int MANA_PER_DAMAGE = 60;
 
     public TerraHoe(Properties tab) {
@@ -48,17 +46,8 @@ public class TerraHoe extends HoeItem{
             return InteractionResult.FAIL;
         }
 
-        UseHoeEvent event = new UseHoeEvent(context);
-        if (MinecraftForge.EVENT_BUS.post(event)) {
-            return InteractionResult.FAIL;
-        }
-
-        if (event.getResult() == Event.Result.ALLOW) {
-            damageItem(stack, 1, player);
-            return InteractionResult.SUCCESS;
-        }
-
-        Block block = level.getBlockState(pos).getBlock();
+        BlockState blockState = level.getBlockState(pos);
+        Block block = blockState.getBlock();
         BlockPos abovePos = pos.above();
 
         if (face != Direction.DOWN && level.getBlockState(abovePos).isAir() &&
@@ -76,23 +65,12 @@ public class TerraHoe extends HoeItem{
                 damageItem(stack, 1, player);
                 return InteractionResult.SUCCESS;
             } else {
-                float velMul = 0.025F;
-                for (int i = 0; i < 48; ++i) {
-                    double px = (Math.random() - 0.5D) * 3.0D;
-                    double py = Math.random() - 0.5D + 1.0D;
-                    double pz = (Math.random() - 0.5D) * 3.0D;
-
-                    BotaniaAPI.instance().sparkleFX(level,
-                            pos.getX() + 0.5D + px,
-                            pos.getY() + 0.5D + py,
-                            pos.getZ() + 0.5D + pz,
-                            0.0F, 0.4F, 0.0F,
-                            (float)(Math.random() * 0.15F + 0.15F),
-                            5);
-                }
+                createTerraformParticles(level, pos);
                 return InteractionResult.SUCCESS;
             }
-        } else if (player.isShiftKeyDown() && face != Direction.DOWN &&
+        }
+
+        else if (player.isShiftKeyDown() && face != Direction.DOWN &&
                 level.getBlockState(abovePos).isAir() &&
                 block == ModBlocks.enchantedSoil) {
 
@@ -111,7 +89,37 @@ public class TerraHoe extends HoeItem{
             return InteractionResult.SUCCESS;
         }
 
+        else if (canHoeBlock(blockState)) {
+            return super.useOn(context);
+        }
+
         return InteractionResult.PASS;
+    }
+
+    private boolean canHoeBlock(BlockState blockState) {
+        Block block = blockState.getBlock();
+        return block == Blocks.GRASS_BLOCK ||
+                block == Blocks.DIRT ||
+                block == Blocks.COARSE_DIRT ||
+                block == Blocks.DIRT_PATH ||
+                block == Blocks.ROOTED_DIRT;
+    }
+
+    private void createTerraformParticles(Level level, BlockPos pos) {
+        float velMul = 0.025F;
+        for (int i = 0; i < 48; ++i) {
+            double px = (Math.random() - 0.5D) * 3.0D;
+            double py = Math.random() - 0.5D + 1.0D;
+            double pz = (Math.random() - 0.5D) * 3.0D;
+
+            BotaniaAPI.instance().sparkleFX(level,
+                    pos.getX() + 0.5D + px,
+                    pos.getY() + 0.5D + py,
+                    pos.getZ() + 0.5D + pz,
+                    0.0F, 0.4F, 0.0F,
+                    (float)(Math.random() * 0.15F + 0.15F),
+                    5);
+        }
     }
 
     @Override

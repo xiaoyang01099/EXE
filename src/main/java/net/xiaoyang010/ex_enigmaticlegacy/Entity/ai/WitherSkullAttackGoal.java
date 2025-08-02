@@ -2,7 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Entity.ai;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.CatMewEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.CatMewEntity;
 
 import java.util.EnumSet;
 

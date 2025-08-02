@@ -17,7 +17,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.EntitySeed;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.EntitySeed;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +54,7 @@ public class SprawlRod extends Item {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        return true;
+        return false;
     }
 
     @Override

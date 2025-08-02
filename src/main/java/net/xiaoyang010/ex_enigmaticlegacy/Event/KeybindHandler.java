@@ -11,7 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
-import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.SpectatorModePacket;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.inputPacket.SpectatorModePacket;
 import org.lwjgl.glfw.GLFW;
 
 @Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)

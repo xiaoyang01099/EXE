@@ -17,9 +17,10 @@ import net.xiaoyang010.ex_enigmaticlegacy.Block.custom.CustomSaplingBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.AsgardandelionParticle;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.DandelionFluffParticle;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.GearFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Generating.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.Future.TrinarySynthesis;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModParticleTypes;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSideHandler {
@@ -28,10 +29,6 @@ public class ClientSideHandler {
     public static final ModelLayerLocation INFINITY_CHEST = new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "infinity_chest"), "main");
     public static final ResourceLocation SPECTRITE_CHEST_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity/chest/spectrite_chest");
     public static final ModelLayerLocation SPECTRITE_CHEST = new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "spectrite_chest"), "main");
-    public static final ResourceLocation SPECTRITE_CHEST_LEFT_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity/chest/spectrite_chest_left");
-    public static final ModelLayerLocation SPECTRITE_CHEST_LEFT_DOUBLE = new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "spectrite_chest_left"), "main");
-    public static final ResourceLocation SPECTRITE_CHEST_RIGHT_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity/chest/spectrite_chest_right");
-    public static final ModelLayerLocation SPECTRITE_CHEST_RIGHT_DOUBLE = new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "spectrite_chest_right"), "main");
 
 
     @SubscribeEvent
@@ -43,15 +40,6 @@ public class ClientSideHandler {
         if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
             event.addSprite(SPECTRITE_CHEST_TEXTURE);
         }
-
-        if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
-            event.addSprite(SPECTRITE_CHEST_LEFT_TEXTURE);
-        }
-
-        if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
-            event.addSprite(SPECTRITE_CHEST_RIGHT_TEXTURE);
-        }
-
     }
 
     @SubscribeEvent
@@ -91,8 +79,7 @@ public class ClientSideHandler {
         MusicalOrchid.registerRenderLayer();
         AncientAlphirine.registerRenderLayer();
         Dictarius.registerRenderLayer();
-//        TrinarySynthesis.registerRenderLayer();
-//        GearFlower.registerRenderLayer();
+
         EvilForge.registerRenderLayer();
         EtheriumForge.registerRenderLayer();
         ArdentAzarcissus.registerRenderLayer();
@@ -103,20 +90,23 @@ public class ClientSideHandler {
             AlchemyAzalea.registerRenderLayer();
             CelestialBlueHyacinth.registerRenderLayer();
         }
+
+        if (ModList.get().isLoaded("create")){
+        TrinarySynthesis.registerRenderLayer();
+        GearFlower.registerRenderLayer();
+        }
     }
-
-
-
 
 
     //粒子效果注册
     @SubscribeEvent
     public static void registerParticleFactories(final ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particleEngine.register(ModParticleTypes.DANDELION_FLUFF.get(),
+        Minecraft.getInstance().particleEngine.register(
+                ModParticleTypes.DANDELION_FLUFF.get(),
                 DandelionFluffParticle.Factory::new);
 
-        Minecraft.getInstance().particleEngine.register(ModParticleTypes.ASGARDANDELION.get(),
+        Minecraft.getInstance().particleEngine.register(
+                ModParticleTypes.ASGARDANDELION.get(),
                 AsgardandelionParticle.Factory::new);
-
     }
 }

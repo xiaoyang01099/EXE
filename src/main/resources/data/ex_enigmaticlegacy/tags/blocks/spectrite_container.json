@@ -15,8 +15,8 @@
     "minecraft:chipped_anvil",
     "minecraft:damaged_anvil",
     "minecraft:furnace",
-    "ex_enigmaticlegacy:mana_charger"
-
-
+    "ex_enigmaticlegacy:mana_charger",
+    "ex_enigmaticlegacy:extreme_auto_crafter",
+    "ex_enigmaticlegacy:infinity_compressor"
   ]
 }

@@ -10,9 +10,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
+import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
 
 public class ManaitaArmor extends ArmorItem {
-    protected static final Properties MANAITA_ARMOR = new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).rarity(ModRarities.MIRACLE);
+    public static final Properties MANAITA_ARMOR = new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).rarity(ModRarities.MIRACLE);
 
     public ManaitaArmor(EquipmentSlot pSlot) {
         super(new ZMaterial(), pSlot, MANAITA_ARMOR);

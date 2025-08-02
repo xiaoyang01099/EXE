@@ -5,14 +5,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
+import vazkii.botania.client.core.helper.CoreShaders;
+import vazkii.botania.client.lib.LibResources;
 import vazkii.botania.mixin.client.AccessorRenderType;
 
 public final class SpecialRenderHelper extends RenderType {
 
     public static final RenderType RAINBOW_MANA_WATER;
+    public static final RenderType POLYCHROME_COLLAPSE_PRISM;
+    public static final RenderType COSMIC_BACKGROUND;
+    public static final RenderType EVIL_WATER;
 
     private SpecialRenderHelper(String string, VertexFormat vertexFormat, VertexFormat.Mode mode,
                                 int i, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
@@ -31,6 +38,7 @@ public final class SpecialRenderHelper extends RenderType {
     }
 
     static {
+        //彩虹魔力
         RenderType.CompositeState glState = RenderType.CompositeState.builder()
                 .setTextureState(BLOCK_SHEET_MIPPED)
                 .setShaderState(new ShaderStateShard(SpecialCoreShaders::rainbowManaWater))
@@ -41,11 +49,46 @@ public final class SpecialRenderHelper extends RenderType {
 
         RAINBOW_MANA_WATER = makeLayer(ExEnigmaticlegacyMod.MODID + ":rainbow_mana_water",
                 DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
+
+        //多谱坍缩纹理
+        glState = RenderType.CompositeState.builder().setTextureState(BLOCK_SHEET_MIPPED)
+                .setShaderState(new ShaderStateShard(SpecialCoreShaders::polychromeCollapsePrismOverlay))
+                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .setOutputState(ITEM_ENTITY_TARGET)
+                .setLightmapState(LIGHTMAP).createCompositeState(false);
+        POLYCHROME_COLLAPSE_PRISM = makeLayer(ExEnigmaticlegacyMod.MODID + "polychrome_collapse_prism",
+                DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
+
+        //宇宙背景
+        glState = RenderType.CompositeState.builder()
+                .setShaderState(new RenderStateShard.ShaderStateShard(SpecialCoreShaders::cosmicBackground))
+                .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
+                        .add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
+                        .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false)
+                        .build())
+                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .setCullState(NO_CULL)
+                .setWriteMaskState(COLOR_WRITE)
+                .setDepthTestState(LEQUAL_DEPTH_TEST)
+                .createCompositeState(false);
+
+        COSMIC_BACKGROUND = makeLayer(ExEnigmaticlegacyMod.MODID + ":cosmic_background",
+                DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, glState);
+
+        //邪恶魔力
+        glState = RenderType.CompositeState.builder()
+                .setTextureState(BLOCK_SHEET_MIPPED)
+                .setShaderState(new ShaderStateShard(SpecialCoreShaders::evilWater))
+                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .setOutputState(ITEM_ENTITY_TARGET)
+                .setLightmapState(LIGHTMAP)
+                .createCompositeState(false);
+
+        EVIL_WATER = makeLayer(ExEnigmaticlegacyMod.MODID + "evil_water",
+                DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
     }
 
-    /**
-     * 渲染图标到缓冲区
-     */
+
     public static void renderIcon(PoseStack ms, VertexConsumer buffer, int x, int y,
                                   TextureAtlasSprite icon, int width, int height, float alpha) {
         Matrix4f mat = ms.last().pose();

@@ -11,8 +11,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 public class ModTags {
-    public static final ResourceLocation SPECTRITE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "spectrite_items");
-    public static final ResourceLocation AA = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "aa");
     public static class Blocks {
         public static final TagKey<Block> NEEDS_MIRACLE_TOOL = tag("needs_miracle_tool");
 

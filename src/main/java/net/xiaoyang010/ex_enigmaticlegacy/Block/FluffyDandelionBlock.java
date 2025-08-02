@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -14,15 +13,11 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModParticleTypes;
-import org.jetbrains.annotations.NotNull;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.ModParticleTypes;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 public class FluffyDandelionBlock extends FlowerBlock {

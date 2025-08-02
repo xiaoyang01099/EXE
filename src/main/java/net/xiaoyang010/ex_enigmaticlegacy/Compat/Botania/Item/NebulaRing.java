@@ -76,13 +76,11 @@ public class NebulaRing extends ItemBauble implements ICurioItem {
         if (entity.level.getGameTime() % 20 == 0) {
             stack.getCapability(BotaniaForgeCapabilities.MANA_ITEM).ifPresent(manaItem -> {
                 if (manaItem.getMana() < manaItem.getMaxMana()) {
-                    manaItem.addMana(10000); // 每1秒恢复10000魔力
+                    manaItem.addMana(5000); // 每1秒恢复10000魔力
                 }
             });
         }
     }
-
-    // ============ Creative Mode Tab ============
 
     @Override
     public void fillItemCategory(@Nonnull CreativeModeTab tab, @Nonnull NonNullList<ItemStack> stacks) {

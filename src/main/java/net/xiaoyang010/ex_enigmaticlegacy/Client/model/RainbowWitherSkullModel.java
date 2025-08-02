@@ -9,7 +9,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.RainbowWitherSkull;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.RainbowWitherSkull;
 
 public class RainbowWitherSkullModel extends EntityModel<RainbowWitherSkull> {
     private final ModelPart head;

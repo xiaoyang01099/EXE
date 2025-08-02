@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 
 import net.xiaoyang010.ex_enigmaticlegacy.Container.DimensionalMirrorContainer;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
-import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.TeleportPacket;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.inputPacket.TeleportPacket;
 
 public class DimensionalMirrorScreen extends AbstractContainerScreen<DimensionalMirrorContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation("ex_enigmaticlegacy", "textures/gui/dimensional_mirror.png");

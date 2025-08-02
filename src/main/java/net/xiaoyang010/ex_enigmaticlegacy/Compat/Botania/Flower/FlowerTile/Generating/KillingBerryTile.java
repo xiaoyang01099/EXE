@@ -15,7 +15,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.CatMewEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.CatMewEntity;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeClientCapabilities;
 import vazkii.botania.api.subtile.RadiusDescriptor;

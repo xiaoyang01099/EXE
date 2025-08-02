@@ -13,7 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -31,13 +30,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.ModelArmorNebula;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.SpecialMiscellaneousModels;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
@@ -60,12 +58,9 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
     public static final List<String> playersWithStepup = new ArrayList<>();
     public static final List<String> playersWithFeet = new ArrayList<>();
     public static final String NBT_FALL = ExEnigmaticlegacyMod.MODID + ":nebula_armor";
-
     private static final ThreadLocal<ItemStack> CURRENT_STACK = new ThreadLocal<>();
 
     public static TextureAtlasSprite nebulaEyes;
-    public static final ResourceLocation NEBULA_EYES_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "textures/models/nebula_eyes.png");
-
     private static final UUID CHEST_UUID = UUID.fromString("6d88f904-e22f-7cfa-8c66-c0bee4e40289");
     private static final UUID HEAD_UUID = UUID.fromString("cfb111e4-9caa-12bf-6a67-01bccaabe34d");
     private static final UUID HEAD_REVEAL_UUID = UUID.fromString("584424ee-c473-d5b7-85b9-aa4081577bd7");
@@ -77,22 +72,12 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class TextureEvents {
-        @SubscribeEvent
-        public static void onTextureStitch(TextureStitchEvent.Pre event) {
-            if (event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
-                event.addSprite(NEBULA_EYES_TEXTURE);
-            }
-        }
-    }
-
     @OnlyIn(Dist.CLIENT)
     public static void initTextures() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS) != null) {
             try {
-                nebulaEyes = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(NEBULA_EYES_TEXTURE);
+                nebulaEyes = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(SpecialMiscellaneousModels.INSTANCE.nebula_eyes.texture());
                 ExEnigmaticlegacyMod.LOGGER.info("Nebula eyes texture loaded successfully");
             } catch (Exception e) {
                 ExEnigmaticlegacyMod.LOGGER.error("Failed to load nebula eyes texture", e);
@@ -110,7 +95,7 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
         if (nebulaEyes == null) {
             Minecraft mc = Minecraft.getInstance();
             if (mc.level != null && mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS) != null) {
-                nebulaEyes = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(NEBULA_EYES_TEXTURE);
+                nebulaEyes = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(SpecialMiscellaneousModels.INSTANCE.nebula_eyes.texture());
             }
         }
 
@@ -241,10 +226,10 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.isShiftKeyDown()) {
-            NebulaArmorHelper.setCosmicFace(stack, !NebulaArmorHelper.enableCosmicFace(stack));
+        if (player.isShiftKeyDown() && this.slot == EquipmentSlot.HEAD) {
             return InteractionResultHolder.success(stack);
         }
+
         return super.use(level, player, hand);
     }
 
@@ -273,6 +258,9 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
                     armorModel = new ModelArmorNebula<>(modelPart, slot);
                 }
 
+                if (armorModel instanceof ModelArmorNebula<?> nebulaModel) {
+                    nebulaModel.setCurrentEntity(entity);
+                }
                 armorModel.crouching = entity.isShiftKeyDown();
                 armorModel.riding = defaultModel.riding;
                 armorModel.young = entity.isBaby();

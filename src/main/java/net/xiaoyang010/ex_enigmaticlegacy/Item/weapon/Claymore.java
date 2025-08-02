@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.Level;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.EntitySword;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.EntitySword;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
@@ -22,7 +22,8 @@ public class Claymore extends SwordItem {
     public Claymore(float damage, int pierceCount) {
         super(EXEAPI.MIRACLE_ITEM_TIER, 90, -2.4F, new Properties()
                 .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
-                .rarity(ModRarities.MIRACLE));
+                .rarity(ModRarities.MIRACLE)
+        );
         this.damage = damage;
         this.pierceCount = pierceCount;
     }
@@ -49,10 +50,6 @@ public class Claymore extends SwordItem {
 
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.TRIDENT_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
-        }
-
-        if (!player.getAbilities().instabuild) {
-            itemstack.shrink(1);
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));

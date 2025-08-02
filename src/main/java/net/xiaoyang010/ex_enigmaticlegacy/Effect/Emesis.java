@@ -42,12 +42,10 @@ public class Emesis extends MobEffect {
 
     @Override
     public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-        // 通过UUID移除移动速度修改器
         if (entity.getAttribute(Attributes.MOVEMENT_SPEED) != null) {
             entity.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_MODIFIER_UUID);
         }
 
-        // 清除伤害标记
         if (entity instanceof Player player) {
             player.getPersistentData().remove("emesis_damage_dealt");
         }
@@ -58,17 +56,14 @@ public class Emesis extends MobEffect {
     @Override
     public void applyEffectTick(LivingEntity entity, int amplifier) {
         if (entity instanceof Player player) {
-            // 服务端：使用NBT标记确保只造成一次伤害，伤害随等级增加
             if (!player.level.isClientSide) {
                 if (!player.getPersistentData().getBoolean("emesis_damage_dealt")) {
-                    // 基础伤害18点，每级增加4点伤害
                     float damage = 18.0f + (amplifier * 4.0f);
                     player.hurt(ModDamageSources.ABSOLUTE, damage);
                     player.getPersistentData().putBoolean("emesis_damage_dealt", true);
                 }
             }
 
-            // 客户端：视角随机摆动，强度随等级增加
             if (player.level.isClientSide) {
                 applyViewShaking(player, amplifier);
             }
@@ -79,8 +74,8 @@ public class Emesis extends MobEffect {
     private void applyViewShaking(Player player, int amplifier) {
         float intensityMultiplier = 1.0f + (amplifier * 0.5f);
 
-        float yawChange = (random.nextFloat() - 0.5f) * 8.0f * intensityMultiplier; // 左右摆动
-        float pitchChange = (random.nextFloat() - 0.5f) * 4.0f * intensityMultiplier; // 上下摆动
+        float yawChange = (random.nextFloat() - 0.5f) * 8.0f * intensityMultiplier;
+        float pitchChange = (random.nextFloat() - 0.5f) * 4.0f * intensityMultiplier;
 
         player.setYRot(player.getYRot() + yawChange);
         player.setXRot(Math.max(-90.0f, Math.min(90.0f, player.getXRot() + pitchChange)));

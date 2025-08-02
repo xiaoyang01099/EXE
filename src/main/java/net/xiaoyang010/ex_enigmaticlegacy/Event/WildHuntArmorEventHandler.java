@@ -23,7 +23,6 @@ import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.WildHuntArmor;
 @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID)
 public class WildHuntArmorEventHandler {
     private static final Map<UUID, Set<UUID>> playerAttackedUndeadMap = new HashMap<>();
-    private static final long ATTACK_RECORD_EXPIRY = 30000;
 
     public static Map<UUID, Set<UUID>> getPlayerAttackedUndeadMap() {
         return playerAttackedUndeadMap;
@@ -89,7 +88,6 @@ public class WildHuntArmorEventHandler {
         Player nearestPlayer = getNearestPlayerWithFullSet(mob);
 
         if (nearestPlayer != null && !hasPlayerAttackedUndead(nearestPlayer.getUUID(), mob.getUUID())) {
-            // 清除目标
             if (mob.getTarget() == nearestPlayer) {
                 mob.setTarget(null);
             }

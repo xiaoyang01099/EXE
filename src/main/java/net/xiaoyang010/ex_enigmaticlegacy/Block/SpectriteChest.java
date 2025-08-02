@@ -9,15 +9,15 @@ import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
@@ -30,27 +30,25 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.SpectriteChestTile;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Container;
-import java.util.Optional;
-
-public class SpectriteChest extends ChestBlock {
+public class SpectriteChest extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    public static final EnumProperty<ChestType> TYPE = BlockStateProperties.CHEST_TYPE;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private static final VoxelShape AABB = Block.box(1.0, 0.0, 1.0, 15.0, 15.0, 15.0);
 
-
     public SpectriteChest() {
         super(Properties.of(Material.WOOD)
-                        .strength(2.5F)
-                        .sound(SoundType.WOOD),
-                ModBlockEntities.SPECTRITE_CHEST_TILE::get);
+                .strength(2.5F)
+                .sound(SoundType.WOOD));
 
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
-                .setValue(TYPE, ChestType.SINGLE)
                 .setValue(WATERLOGGED, Boolean.FALSE));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING, WATERLOGGED);
     }
 
     @Nullable
@@ -65,51 +63,33 @@ public class SpectriteChest extends ChestBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return AABB;
     }
 
     @Override
-    public MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
-        return new MenuProvider() {
-            @Override
-            public Component getDisplayName() {
-                return new TranslatableComponent("container.spectrite_chest");
-            }
-
-            @Override
-            public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-                DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> result =
-                        combine(state, level, pos, false);
-
-                net.minecraft.world.Container container = result.apply(MENU_COMBINER).orElse(null);
-                if (container instanceof net.minecraft.world.CompoundContainer) {
-                    return new SpectriteChestContainer(windowId, playerInventory, container);
-                } else if (container instanceof SpectriteChestTile) {
-                    return new SpectriteChestContainer(windowId, playerInventory, (SpectriteChestTile)container);
-                }
-                return null;
-            }
-        };
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
-    private static final DoubleBlockCombiner.Combiner<ChestBlockEntity, Optional<? extends net.minecraft.world.Container>> MENU_COMBINER =
-            new DoubleBlockCombiner.Combiner<>() {
+    @Override
+    public MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof SpectriteChestTile) {
+            return new MenuProvider() {
                 @Override
-                public Optional<net.minecraft.world.Container> acceptDouble(ChestBlockEntity first, ChestBlockEntity second) {
-                    return Optional.of(new net.minecraft.world.CompoundContainer(first, second));
+                public Component getDisplayName() {
+                    return new TranslatableComponent("container.spectrite_chest");
                 }
 
                 @Override
-                public Optional<net.minecraft.world.Container> acceptSingle(ChestBlockEntity single) {
-                    return Optional.of(single);
-                }
-
-                @Override
-                public Optional<net.minecraft.world.Container> acceptNone() {
-                    return Optional.empty();
+                public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
+                    return new SpectriteChestContainer(windowId, playerInventory, (SpectriteChestTile) blockEntity);
                 }
             };
+        }
+        return null;
+    }
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
@@ -127,33 +107,33 @@ public class SpectriteChest extends ChestBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
-                                  LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        if (state.getValue(WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
-        }
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Direction direction = context.getHorizontalDirection().getOpposite();
+        boolean waterlogged = context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER;
+        return this.defaultBlockState()
+                .setValue(FACING, direction)
+                .setValue(WATERLOGGED, waterlogged);
+    }
 
-        if (neighborState.getBlock() instanceof SpectriteChest &&
-                direction.getAxis().isHorizontal()) {
-            ChestType type = state.getValue(TYPE);
-            if (type == ChestType.SINGLE && neighborState.getValue(TYPE) == ChestType.SINGLE &&
-                    state.getValue(FACING) == neighborState.getValue(FACING) &&
-                    getDirectionToAttached(state) == direction.getOpposite()) {
-                return state.setValue(TYPE, getAttachedChestType(direction));
+    @Override
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof Container) {
+                Containers.dropContents(level, pos, (Container) blockEntity);
+                level.updateNeighbourForOutputSignal(pos, this);
             }
-        } else if (getDirectionToAttached(state) == direction) {
-            return state.setValue(TYPE, ChestType.SINGLE);
+            super.onRemove(state, level, pos, newState, isMoving);
         }
-
-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
-    }
-
-    private static Direction getDirectionToAttached(BlockState state) {
-        Direction direction = state.getValue(FACING);
-        return state.getValue(TYPE) == ChestType.LEFT ? direction.getClockWise() : direction.getCounterClockWise();
-    }
-
-    private static ChestType getAttachedChestType(Direction direction) {
-        return direction.getAxisDirection() == Direction.AxisDirection.NEGATIVE ? ChestType.RIGHT : ChestType.LEFT;
     }
 }

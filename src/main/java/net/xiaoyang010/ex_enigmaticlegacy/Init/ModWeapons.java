@@ -5,12 +5,15 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.AquaSword;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.TerraBow;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.weapon.*;
 
 public class ModWeapons {
     public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, ExEnigmaticlegacyMod.MODID);
 
+    public static final RegistryObject<Item> ANNIHILATION_SWORD = REGISTRY.register("annihilation_sword", AnnihilationSword::new);
     public static final RegistryObject<Item> MANAITASWORDGOD = REGISTRY.register("manaitaswordgod", ManaitaSwordGod::new);
     public static final RegistryObject<Item> MANAITABOW = REGISTRY.register("manaitabow", ManaitaBow::new);
     public static final RegistryObject<Item> REALFINALSWORDGOD = REGISTRY.register("realfinalswordgod", RealFinalSwordGod::new);
@@ -30,5 +33,6 @@ public class ModWeapons {
     public static final RegistryObject<Item> NATURAL_THOUSAND_BLADES = REGISTRY.register("natural_thousand_blades", () -> new NaturalThousandBlades(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
     public static final RegistryObject<Item> AQUA_SWORD = REGISTRY.register("aqua_sword", () -> new AquaSword(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
     public static final RegistryObject<Item> TERRA_BOW = REGISTRY.register("terra_bow", () -> new TerraBow(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+    public static final RegistryObject<Item> HORN_STONE_SWORD = REGISTRY.register("horn_stone_sword", HornstoneSword::new);
 
 }

@@ -32,6 +32,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.TileGameBoar
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModSounds;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.EComponent;
 
 import javax.annotation.Nullable;
@@ -125,7 +126,7 @@ public class BlockBoardFate extends BaseEntityBlock {
 
                         heldItem.shrink(1);
 
-                        level.playSound(null, pos, SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 0.6F, 1.0F);
+                        level.playSound(null, pos, ModSounds.BOARD_CUBE, SoundSource.BLOCKS, 0.6F, 1.0F);
                         return InteractionResult.SUCCESS;
                     }
                 }
@@ -200,9 +201,8 @@ public class BlockBoardFate extends BaseEntityBlock {
         int variant = getVariantFromItemStack(stack);
 
         if (variant == 0) {
-            tooltip.add(EComponent.translatable(""));
+
         } else {
-            tooltip.add(EComponent.translatable(""));
             tooltip.add(EComponent.translatable("tooltip.ex_enigmaticlegacy.board_fate.usage"));
         }
     }

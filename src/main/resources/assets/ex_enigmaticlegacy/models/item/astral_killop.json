@@ -4,7 +4,7 @@
     "layer0": "ex_enigmaticlegacy:blocks/flowers/astral_killop",
     "mask": "ex_enigmaticlegacy:blocks/flowers/astral_killop_mask"
   },
-  "loader": "endless:cosmic",
+  "loader": "avaritia:cosmic",
   "cosmic": {
     "mask": "#mask"
   }

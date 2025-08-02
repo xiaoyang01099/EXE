@@ -19,7 +19,7 @@ public class ManaFlower extends Item implements ICurioItem {
     private static final int MANA_GENERATION = 54;
     private static final String TAG_MANA = "mana";
 
-    public ManaFlower(Properties tab) {
+    public ManaFlower() {
         super(new Properties()
                 .tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)
                 .stacksTo(1)

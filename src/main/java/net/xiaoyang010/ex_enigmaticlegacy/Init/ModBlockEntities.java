@@ -11,12 +11,15 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.CosmicBlockEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.AstralBlockEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Functional.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Generating.*;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.*;
-
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityExtremeAutoCrafter;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityInfinityCompressor;
 
 
 public class ModBlockEntities {
@@ -28,6 +31,15 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<RainbowTableTile>> RAINBOW_TABLE_TILE = REGISTRY.register("rainbow_table_tile", () -> BlockEntityType.Builder.of(RainbowTableTile::new, ModBlockss.RAINBOW_TABLE.get()).build(null));
     public static final RegistryObject<BlockEntityType<NidavellirForgeTile>> NIDAVELLIR_FORGE_TILE = REGISTRY.register("nidavellir_forge_tile", () -> BlockEntityType.Builder.of(NidavellirForgeTile::new, ModBlockss.NIDAVELLIR_FORGE.get()).build(null));
     public static final RegistryObject<BlockEntityType<SpectriteChestTile>> SPECTRITE_CHEST_TILE = REGISTRY.register("spectrite_chest", () -> BlockEntityType.Builder.of(SpectriteChestTile::new, ModBlockss.SPECTRITE_CHEST.get()).build(null));
+    public static final RegistryObject<BlockEntityType<AstralBlockEntity>> ASTRAL_BLOCK_ENTITY = REGISTRY.register("astral_block", () -> BlockEntityType.Builder.of((pos, state) -> new AstralBlockEntity(ModBlockEntities.ASTRAL_BLOCK_ENTITY.get(), pos, state), ModBlockss.ASTRAL_BLOCK.get()).build(null));
+//    public static final RegistryObject<BlockEntityType<MagicTableBlockEntity>> MAGIC_TABLE_TILE = REGISTRY.register("magic_table_tile", () -> BlockEntityType.Builder.of(MagicTableBlockEntity::new, ModBlockss.MAGIC_TABLE.get()).build(null));
+    public static final RegistryObject<BlockEntityType<CosmicBlockEntity>> COSMIC_BLOCK_ENTITY = REGISTRY.register("cosmic_block", () -> BlockEntityType.Builder.of((pos, state) -> new CosmicBlockEntity(ModBlockEntities.COSMIC_BLOCK_ENTITY.get(), pos, state), ModBlockss.COSMIC_BLOCK.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileEntityExtremeAutoCrafter>> EXTREME_AUTO_CRAFTER_TILE = REGISTRY.register("extreme_auto_crafter_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityExtremeAutoCrafter(ModBlockEntities.EXTREME_AUTO_CRAFTER_TILE.get(), pos, state), ModBlockss.EXTREME_AUTO_CRAFTER.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileEntityInfinityCompressor>> INFINITY_COMPRESSOR_TILE = REGISTRY.register("infinity_compressor_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityInfinityCompressor(ModBlockEntities.INFINITY_COMPRESSOR_TILE.get(), pos, state), ModBlockss.INFINITY_COMPRESSOR.get()).build(null));
+
+
+
+
 
 
     //botania
@@ -40,6 +52,8 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<FullAltarTile>> FULL_ALTAR_TILE = REGISTRY.register("full_altar", () -> BlockEntityType.Builder.of((pos, state) -> new FullAltarTile(ModBlockEntities.FULL_ALTAR_TILE.get(), pos, state), ModBlockss.FULL_ALTAR.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileBoardFate>> BOARD_FATE_TILE = REGISTRY.register("board_fate", () -> BlockEntityType.Builder.of((pos, state) -> new TileBoardFate(ModBlockEntities.BOARD_FATE_TILE.get(), pos, state), ModBlockss.BOARD_FATE.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileGameBoard>> GAME_BOARD_TILE = REGISTRY.register("game_board", () -> BlockEntityType.Builder.of((pos, state) -> new TileGameBoard(ModBlockEntities.GAME_BOARD_TILE.get(), pos, state), ModBlockss.GAME_BOARD.get()).build(null));
+    public static final RegistryObject<BlockEntityType<ManaBracketTile>> MANA_BRACKET_TILE = REGISTRY.register("mana_bracket", () -> BlockEntityType.Builder.of((pos, state) -> new ManaBracketTile(ModBlockEntities.MANA_BRACKET_TILE.get(), pos, state), ModBlockss.MANA_BRACKET.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileEngineerHopper>> ENGINEER_HOPPER_TILE = REGISTRY.register("engineer_hopper", () -> BlockEntityType.Builder.of((pos, state) -> new TileEngineerHopper(ModBlockEntities.ENGINEER_HOPPER_TILE.get(), pos, state), ModBlockss.ENGINEER_HOPPER.get()).build(null));
 
 
 
@@ -81,8 +95,6 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<CatnipTile>> CATNIP_TILE = REGISTRY.register("catnip_tile", () -> BlockEntityType.Builder.of((pos, state) -> new CatnipTile(ModBlockEntities.CATNIP_TILE.get(), pos, state), ModBlockss.CATNIP.get()).build(null));
     public static final RegistryObject<BlockEntityType<AncientAlphirineTile>> ANCIENT_ALPHIRINE_TILE = REGISTRY.register("ancient_alphirine_tile", () -> BlockEntityType.Builder.of((pos, state) -> new AncientAlphirineTile(ModBlockEntities.ANCIENT_ALPHIRINE_TILE.get(), pos, state), ModBlockss.ANCIENT_ALPHIRINE.get()).build(null));
     public static final RegistryObject<BlockEntityType<DictariusTile>> DICTARIUS_TILE = REGISTRY.register("dictarius_tile", () -> BlockEntityType.Builder.of((pos, state) -> new DictariusTile(ModBlockEntities.DICTARIUS_TILE.get(), pos, state), ModBlockss.DICTARIUS.get()).build(null));
-//    public static final RegistryObject<BlockEntityType<TrinarySynthesisTile>> TRINARY_SYNTHESIS_TILE = REGISTRY.register("trinary_synthesis_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TrinarySynthesisTile(ModBlockEntities.TRINARY_SYNTHESIS_TILE.get(), pos, state), ModBlockss.TRINARY_SYNTHESIS.get()).build(null));
-//    public static final RegistryObject<BlockEntityType<GearFlowerTile>> GEAR_FLOWER_TILE = REGISTRY.register("gear_flower_tile", () -> BlockEntityType.Builder.of((pos, state) -> new GearFlowerTile(ModBlockEntities.GEAR_FLOWER_TILE.get(), pos, state), ModBlockss.GEAR_FLOWER.get()).build(null));
     public static final RegistryObject<BlockEntityType<EvilForgeTile>> EVIL_FORGE_TILE = REGISTRY.register("evil_forge_tile", () -> BlockEntityType.Builder.of((pos, state) -> new EvilForgeTile(ModBlockEntities.EVIL_FORGE_TILE.get(), pos, state), ModBlockss.EVIL_FORGE.get()).build(null));
     public static final RegistryObject<BlockEntityType<EtheriumForgeTile>> ETHERIUM_FORGE_TILE = REGISTRY.register("etherium_forge_tile", () -> BlockEntityType.Builder.of((pos, state) -> new EtheriumForgeTile(ModBlockEntities.ETHERIUM_FORGE_TILE.get(), pos, state), ModBlockss.ETHERIUM_FORGE.get()).build(null));
     public static final RegistryObject<BlockEntityType<ArdentAzarcissusTile>> ARDENT_AZARCISSUS_TILE = REGISTRY.register("ardent_azarcissus_tile", () -> BlockEntityType.Builder.of((pos, state) -> new ArdentAzarcissusTile(ModBlockEntities.ARDENT_AZARCISSUS_TILE.get(), pos, state), ModBlockss.ARDENT_AZARCISSUS.get()).build(null));

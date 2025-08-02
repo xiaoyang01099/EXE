@@ -5,6 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -32,6 +33,9 @@ public class ModRecipes {
 
     public static final RegistryObject<RecipeSerializer<AncientAlphirineRecipe>> ANCIENT_ALPHIRINE_SERIALIZER =
             SERIALIZERS.register("ancient_alphirine", AncientAlphirineRecipe.Serializer::new);
+
+    public static final RegistryObject<RecipeSerializer<ManaitaRecipe>> MANAITA =
+            SERIALIZERS.register("manaita", () -> new SimpleRecipeSerializer<>(ManaitaRecipe::new));
 
 
 

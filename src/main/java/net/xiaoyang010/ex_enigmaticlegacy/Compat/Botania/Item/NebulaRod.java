@@ -27,6 +27,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Hud.ClientHelper;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
 import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.mana.IManaItem;
@@ -135,50 +137,61 @@ public class NebulaRod extends Item {
             player.stopUsingItem();
         }
 
-        if (level.isClientSide) {
-            spawnPortalParticle(level, player, time,
-                    level.random.nextBoolean() ? 9641964 : 4920962, 1.0F);
-        }
+        spawnPortalParticle(level, player, time,
+                level.random.nextBoolean() ? 9641964 : 4920962, 1.0F);
     }
 
     private void spawnPortalParticle(Level level, Player player, int time, int color, float particleTime) {
         if (!level.isClientSide) return;
 
-        boolean isFinish = time > 80;
-        int ticks = Math.min(100, time);
-        int totalSpiritCount = (int)Math.max(3.0F, (float)ticks / 100.0F * 18.0F);
-        double tickIncrement = (double)360.0F / (double)totalSpiritCount;
-        double wticks = (double)(ticks * 8) - tickIncrement;
-        double r = Math.sin((double)ticks / (double)100.0F) * Math.max((double)0.75F, 1.4 * (double)ticks / (double)100.0F);
-
-        Vec3 look = player.getViewVector(1.0F);
-        float yawOffset = Minecraft.getInstance().player == player ? 0.0F : 1.62F;
-        Vec3 playerPos = player.position();
-
-        if(time % 10 == 0) {
+        if (time % 10 == 0) {
             level.playLocalSound(player.getX(), player.getY(), player.getZ(),
                     SoundEvents.PORTAL_AMBIENT, SoundSource.PLAYERS, 0.1F, 1.0F, false);
         }
 
+        boolean isFinish = time > 80;
+        int ticks = Math.min(100, time);
+        int totalSpiritCount = (int)Math.max(3.0F, (float)ticks / 100.0F * 18.0F);
+        double tickIncrement = (double)360.0F / (double)totalSpiritCount;
+        int speed = 8;
+        double wticks = (double)(ticks * speed) - tickIncrement;
+
+        double r = Math.sin((double)ticks / (double)100.0F) * Math.max((double)0.75F, 1.4 * (double)ticks / (double)100.0F);
+
+        Vec3 look = player.getViewVector(1.0F);
+        float yawOffset = Minecraft.getInstance().player == player ? 0.0F : 1.62F;
+
+        Vector3 l = new Vector3(look.x, look.y + (double)yawOffset, look.z);
+        Vector3 playerPos = Vector3.fromEntity(player).add(0.0, 0.0, 0.0);
+        Vector3 v3 = new Vector3();
+
+        // ========== 位置调整参数 ==========
+        double forwardDistance = 0.5;    // 前方距离（Z轴）- 调整这个改变距离远近
+        double sideOffset = 0.0;         // 左右偏移（相对于视线）
+        double upOffset = 0.0;           // 上下偏移（相对于视线）
+        double viewDirectionMultiplier = 1.0;  // 视线方向倍数
+
+        // 额外的世界坐标偏移（不受视角影响）
+        double worldOffsetX = 0.0;       // 世界X轴偏移
+        double worldOffsetY = 1.65;       // 世界Y轴偏移
+        double worldOffsetZ = 0.0;       // 世界Z轴偏移
+        // ================================
+
         for(int i = 0; i < totalSpiritCount; ++i) {
             float size = Math.max(0.215F, (float)ticks / 100.0F);
 
-            double px = Math.sin(wticks * Math.PI / 180.0) / 1.825 * r;
-            double py = Math.cos(wticks * Math.PI / 180.0) * r;
-            double pz = 0.8;
-
-            float pitch = player.getXRot();
-            float yaw = player.getYRot();
-
-            double xp = pz * Math.sin(yaw * Math.PI / 180) + px * Math.cos(yaw * Math.PI / 180);
-            double zp = pz * Math.cos(yaw * Math.PI / 180) - px * Math.sin(yaw * Math.PI / 180);
-            double yp = py - Math.sin(pitch * Math.PI / 180) * pz;
-
-            Vec3 particlePos = playerPos.add(
-                    look.x + xp,
-                    look.y + yp + yawOffset,
-                    look.z + zp
+            // 基础圆形位置 + 可调整的偏移
+            v3.set(
+                    Math.sin(wticks * Math.PI / 180.0) / 1.825 * r + sideOffset,   // X + 左右偏移
+                    Math.cos(wticks * Math.PI / 180.0) * r + upOffset,             // Y + 上下偏移
+                    forwardDistance                                                 // Z = 前方距离
             );
+
+            ClientHelper.setRotation(player.getXRot(), 1.0F, 0.0F, 0.0F, v3);
+            ClientHelper.setRotation(-player.getYRot(), 0.0F, 1.0F, 0.0F, v3);
+
+            v3.add(l.copy().multiply(viewDirectionMultiplier)).add(playerPos)
+                    .add(worldOffsetX, worldOffsetY, worldOffsetZ);
 
             wticks += tickIncrement;
 
@@ -195,29 +208,28 @@ public class NebulaRod extends Item {
             WispParticleData mainWisp = WispParticleData.wisp(
                     0.3F * size,
                     colorsfx[0], colorsfx[1], colorsfx[2],
-                    1.0F
+                    0.3F * particleTime
             );
 
             level.addParticle(mainWisp,
-                    particlePos.x, particlePos.y, particlePos.z,
-                    isFinish ? -look.x * motionSpeed : 0,
-                    isFinish ? -look.y * motionSpeed : 0,
-                    isFinish ? -look.z * motionSpeed : 0);
-
-            float randomSize = (float)(Math.random() * 0.1F + 0.05F) * size;
-            float randMotionX = (float)(Math.random() - 0.5F) * 0.05F;
-            float randMotionY = (float)(Math.random() - 0.5F) * 0.05F;
-            float randMotionZ = (float)(Math.random() - 0.5F) * 0.05F;
+                    v3.x, v3.y, v3.z,
+                    isFinish ? (float)(look.x * -1.0) * motionSpeed : 0.0F,
+                    isFinish ? (float)(look.y * -1.0) * motionSpeed : 0.0F,
+                    isFinish ? (float)(look.z * -1.0) * motionSpeed : 0.0F
+            );
 
             WispParticleData randomWisp = WispParticleData.wisp(
-                    randomSize,
+                    (float)(Math.random() * 0.1F + 0.05F) * size,
                     colorsfx[0], colorsfx[1], colorsfx[2],
-                    1.0F
+                    0.4F * particleTime
             );
 
             level.addParticle(randomWisp,
-                    particlePos.x, particlePos.y, particlePos.z,
-                    randMotionX, randMotionY, randMotionZ);
+                    v3.x, v3.y, v3.z,
+                    (float)(Math.random() - 0.5F) * 0.05F,
+                    (float)(Math.random() - 0.5F) * 0.05F,
+                    (float)(Math.random() - 0.5F) * 0.05F
+            );
         }
     }
 

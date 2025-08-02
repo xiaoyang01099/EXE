@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.DeconTableMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
-import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.PacketIndex;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.inputPacket.PacketIndex;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.DeconstructionManager;
 
 public class DeconTableScreen extends AbstractContainerScreen<DeconTableMenu> {

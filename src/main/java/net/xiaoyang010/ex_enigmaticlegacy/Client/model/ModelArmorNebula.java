@@ -1,12 +1,14 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,6 +19,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Hud.ClientHelper;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmor;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmorHelper;
+import vazkii.botania.api.item.IPhantomInkable;
 
 public class ModelArmorNebula <T extends LivingEntity> extends HumanoidModel<T> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
@@ -385,23 +393,32 @@ public class ModelArmorNebula <T extends LivingEntity> extends HumanoidModel<T> 
             poseStack.pushPose();
             poseStack.scale(0.5F, 0.5F, 0.5F);
             poseStack.translate(0.0F, 1.5F, 0.0F);
-            body.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            leftArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            rightArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            leftLeg.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            rightLeg.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            leftBoot.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            rightBoot.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+            renderBodyParts(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
             poseStack.popPose();
         } else {
             head.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            body.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            leftArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            rightArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            leftLeg.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            rightLeg.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            leftBoot.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            rightBoot.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+            renderBodyParts(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         }
+    }
+
+    private void renderBodyParts(PoseStack poseStack, VertexConsumer buffer, int packedLight,
+                                 int packedOverlay, float red, float green, float blue, float alpha) {
+        body.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        leftArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        rightArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        leftLeg.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        rightLeg.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        leftBoot.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        rightBoot.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+    }
+
+    private LivingEntity currentEntity;
+
+    public void setCurrentEntity(LivingEntity entity) {
+        this.currentEntity = entity;
+    }
+
+    public LivingEntity getCurrentEntity() {
+        return this.currentEntity;
     }
 }

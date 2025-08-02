@@ -14,11 +14,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.AlphirinePortal;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.EntityAdvancedSpark;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.*;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.SpectriteWither;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.*;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import vazkii.botania.common.entity.EntityManaSpark;
-import vazkii.botania.common.lib.LibEntityNames;
 
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -34,29 +32,114 @@ public class ModEntities {
 //							.fireImmune()
 //							.build(new ResourceLocation("ex_enigmaticlegacy", "rainbow_wither_skull").toString()));
 
+	public static final RegistryObject<EntityType<EntityDarkMatterOrb>> DARK_MATTER_ORB = REGISTRY.register("dark_matter_orb",
+					() -> EntityType.Builder.<EntityDarkMatterOrb>of(EntityDarkMatterOrb::new, MobCategory.MISC)
+					.sized(0.25F, 0.25F)
+					.clientTrackingRange(64)
+					.updateInterval(20)
+					.setShouldReceiveVelocityUpdates(true)
+					.build("dark_matter_orb"));
+
+	public static final RegistryObject<EntityType<EntityCrimsonOrb>> CRIMSON_ORB = REGISTRY.register("crimson_orb",
+			() -> EntityType.Builder.<EntityCrimsonOrb>of(EntityCrimsonOrb::new, MobCategory.MISC)
+					.sized(0.5F, 0.5F)
+					.clientTrackingRange(64)
+					.updateInterval(1)
+					.setShouldReceiveVelocityUpdates(true)
+					.build("crimson_orb"));
+
+	public static final RegistryObject<EntityType<EntityShinyEnergy>> SHINY_ENERGY = REGISTRY.register("shiny_energy",
+			() -> EntityType.Builder.<EntityShinyEnergy>of(EntityShinyEnergy::new, MobCategory.MISC)
+					.sized(0.0F, 0.0F)
+					.clientTrackingRange(64)
+					.updateInterval(20)
+					.setShouldReceiveVelocityUpdates(true)
+					.build("shiny_energy"));
+
+	public static final RegistryObject<EntityType<EntityChaoticOrb>> CHAOTIC_ORB =
+			REGISTRY.register("chaotic_orb", () -> EntityType.Builder
+					.<EntityChaoticOrb>of(EntityChaoticOrb::new, MobCategory.MISC)
+					.sized(0.25F, 0.25F)
+					.clientTrackingRange(64)
+					.updateInterval(20)
+					.fireImmune()
+					.noSummon()
+					.build("chaotic_orb"));
+
+	public static final RegistryObject<EntityType<EntityRageousMissile>> RAGEOUS_MISSILE =
+			REGISTRY.register("rageous_missile", () -> EntityType.Builder
+					.<EntityRageousMissile>of(EntityRageousMissile::new, MobCategory.MISC)
+					.sized(0.25F, 0.25F)
+					.clientTrackingRange(64)
+					.updateInterval(20)
+					.setShouldReceiveVelocityUpdates(true)
+					.build("rageous_missile"));
+
+	public static final RegistryObject<EntityType<EntityBabylonWeaponSS>> BABYLON_WEAPON_SS =
+			REGISTRY.register("babylon_weapon_ss", () -> EntityType.Builder
+					.<EntityBabylonWeaponSS>of(EntityBabylonWeaponSS::new, MobCategory.MISC)
+					.sized(0.5F, 0.5F)
+					.clientTrackingRange(64)
+					.updateInterval(20)
+					.setShouldReceiveVelocityUpdates(true)
+					.build("babylon_weapon_ss"));
+
+	public static final RegistryObject<EntityType<EntityLunarFlare>> LUNAR_FLARE =
+			REGISTRY.register("lunar_flare",
+					() -> EntityType.Builder.<EntityLunarFlare>of(EntityLunarFlare::new, MobCategory.MISC)
+							.sized(0.25F, 0.25F)
+							.clientTrackingRange(196)
+							.updateInterval(20)
+							.setShouldReceiveVelocityUpdates(true)
+							.build("lunar_flare"));
+
+	public static final RegistryObject<EntityType<EntityThunderpealOrb>> THUNDERPEAL_ORB =
+			REGISTRY.register("thunderpeal_orb", () ->
+					EntityType.Builder.<EntityThunderpealOrb>of(EntityThunderpealOrb::new, MobCategory.MISC)
+							.sized(0.25F, 0.25F)
+							.clientTrackingRange(64)
+							.updateInterval(20)
+							.setShouldReceiveVelocityUpdates(true)
+							.build("thunderpeal_orb")
+			);
+
+	public static final RegistryObject<EntityType<EntitySoulEnergy>> SOUL_ENERGY = REGISTRY.register(
+			"soul_energy",
+			() -> EntityType.Builder.<EntitySoulEnergy>of(EntitySoulEnergy::new, MobCategory.MISC)
+					.sized(0.25F, 0.25F)
+					.clientTrackingRange(64)
+					.updateInterval(20)
+					.setShouldReceiveVelocityUpdates(true)
+					.build("soul_energy")
+	);
+
 	public static final RegistryObject<EntityType<EntitySword>> ENTITY_SWORD = REGISTRY.register("entity_sword",
 			() -> EntityType.Builder.<EntitySword>of(EntitySword::new, MobCategory.MISC)
 					.sized(0.5F, 0.5F)
 					.clientTrackingRange(4)
 					.updateInterval(10)
-					.build(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity_sword").toString()));
+					.build(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity_sword").toString())
+	);
 
 	public static final RegistryObject<EntityType<EntityAdvancedSpark>> ADVANCED_SPARK = REGISTRY.register("advanced_spark",
-			() ->EntityType.Builder.<EntityAdvancedSpark>of
+			() -> EntityType.Builder.<EntityAdvancedSpark>of
 					(EntityAdvancedSpark::new, MobCategory.MISC)
 			.sized(0.2F, 0.5F)
 			.fireImmune()
 			.clientTrackingRange(4)
 			.updateInterval(10)
-			.build(new ResourceLocation("ex_enigmaticlegacy","advanced_spark").toString()));
+			.build(new ResourceLocation("ex_enigmaticlegacy","advanced_spark").toString())
+	);
 
 	public static final RegistryObject<EntityType<AlphirinePortal>> ALPHIRINE_PORTAL =
-			REGISTRY.register("alphirine_portal", () ->
-					EntityType.Builder.<AlphirinePortal>of(AlphirinePortal::new, MobCategory.MISC)
+			REGISTRY.register("alphirine_portal",
+					() -> EntityType.Builder.<AlphirinePortal>of
+									(AlphirinePortal::new, MobCategory.MISC)
 							.sized(0.25F, 0.25F)
 							.clientTrackingRange(4)
 							.updateInterval(20)
-							.build(new ResourceLocation("ex_enigmaticlegacy","alphirine_portal").toString()));
+							.build(new ResourceLocation("ex_enigmaticlegacy","alphirine_portal").toString())
+			);
 
 	public static final RegistryObject<EntityType<RideablePearlEntity>> RIDEABLE_PEARL_ENTITY =
 			REGISTRY.register("rideable_pearl_entity",

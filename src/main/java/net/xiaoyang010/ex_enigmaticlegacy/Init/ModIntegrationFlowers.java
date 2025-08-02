@@ -13,9 +13,12 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.GearFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Functional.AlchemyAzaleaTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Functional.AlchemySunflowerTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Functional.CelestialBlueHyacinthTile;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.Future.GearFlowerTile;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.Future.TrinarySynthesisTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.ItemBlockFlower;
 import vazkii.botania.common.block.BlockSpecialFlower;
 
@@ -30,16 +33,22 @@ public class ModIntegrationFlowers {
     public static RegistryObject<Block> CELESTIAL_BLUE_HYACINTH;
     public static RegistryObject<Block> ALCHEMY_AZALEA;
     public static RegistryObject<Block> ALCHEMY_SUNFLOWER;
+    public static RegistryObject<Block> GEAR_FLOWER;
+    public static RegistryObject<Block> TRINARY_SYNTHESIS;
 
     //物品
     public static RegistryObject<Item> CELESTIAL_BLUE_HYACINTH_ITEM;
     public static RegistryObject<Item> ALCHEMY_AZALEA_ITEM;
     public static RegistryObject<Item> ALCHEMY_SUNFLOWER_ITEM;
+    public static RegistryObject<Item> GEAR_FLOWER_ITEM;
+    public static RegistryObject<Item> TRINARY_SYNTHESIS_ITEM;
 
     //方块实体
     public static RegistryObject<BlockEntityType<CelestialBlueHyacinthTile>> CELESTIAL_BLUE_HYACINTH_TILE;
     public static RegistryObject<BlockEntityType<AlchemyAzaleaTile>> ALCHEMY_AZALEA_TILE;
     public static RegistryObject<BlockEntityType<AlchemySunflowerTile>> ALCHEMY_SUNFLOWER_TILE;
+    public static RegistryObject<BlockEntityType<GearFlowerTile>> GEAR_FLOWER_TILE;
+    public static RegistryObject<BlockEntityType<TrinarySynthesisTile>> TRINARY_SYNTHESIS_TILE;
 
     static {
         if (ModList.get().isLoaded("projecte")) {
@@ -74,12 +83,38 @@ public class ModIntegrationFlowers {
                     () -> BlockEntityType.Builder.of((pos, state) ->
                                     new AlchemySunflowerTile(ModIntegrationFlowers.ALCHEMY_SUNFLOWER_TILE.get(), pos, state),
                             ModIntegrationFlowers.ALCHEMY_SUNFLOWER.get()).build(null));
-        }
 
             //联动花朵物品
             CELESTIAL_BLUE_HYACINTH_ITEM = blockFlowerLinkage(ModIntegrationFlowers.CELESTIAL_BLUE_HYACINTH, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
             ALCHEMY_AZALEA_ITEM = blockFlowerLinkage(ModIntegrationFlowers.ALCHEMY_AZALEA, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
             ALCHEMY_SUNFLOWER_ITEM = blockFlowerLinkage(ModIntegrationFlowers.ALCHEMY_SUNFLOWER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+        }
+
+        if (ModList.get().isLoaded("create")) {
+
+            TRINARY_SYNTHESIS = BLOCK_REGISTRY.register("trinary_synthesis",
+                    () -> new GearFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS,
+                            () -> GEAR_FLOWER_TILE.get())
+            );
+
+            GEAR_FLOWER = BLOCK_REGISTRY.register("gear_flower",
+                    () -> new GearFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS,
+                            () -> GEAR_FLOWER_TILE.get())
+            );
+
+            GEAR_FLOWER_TILE = BLOCK_ENTITY_REGISTRY.register("gear_flower_tile",
+                    () -> BlockEntityType.Builder.of((pos, state) ->
+                            new GearFlowerTile(ModIntegrationFlowers.GEAR_FLOWER_TILE.get(), pos, state),
+                            ModIntegrationFlowers.GEAR_FLOWER.get()).build(null));
+
+            TRINARY_SYNTHESIS_TILE = BLOCK_ENTITY_REGISTRY.register("trinary_synthesis_tile",
+                    () -> BlockEntityType.Builder.of((pos, state) ->
+                            new TrinarySynthesisTile(ModIntegrationFlowers.TRINARY_SYNTHESIS_TILE.get(), pos, state),
+                            ModIntegrationFlowers.TRINARY_SYNTHESIS.get()).build(null));
+
+            GEAR_FLOWER_ITEM = blockFlowerLinkage(ModIntegrationFlowers.GEAR_FLOWER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+            TRINARY_SYNTHESIS_ITEM = blockFlowerLinkage(ModIntegrationFlowers.TRINARY_SYNTHESIS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+        }
     }
 
     public static RegistryObject<Item> blockFlowerLinkage(RegistryObject<Block> block, CreativeModeTab tab) {

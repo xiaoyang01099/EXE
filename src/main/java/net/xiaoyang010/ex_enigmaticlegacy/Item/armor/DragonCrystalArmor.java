@@ -77,16 +77,17 @@ public class DragonCrystalArmor extends ArmorItem {
 
             UUID playerUUID = player.getUUID();
             boolean fullSet = isWearingFullSet(player);
-
             boolean previousFullSet = playerWearingFullSet.getOrDefault(playerUUID, false);
-            playerWearingFullSet.put(playerUUID, fullSet);
 
             if (fullSet) {
+                // 首次穿上完整套装
                 if (!previousFullSet) {
                     playerOriginalFlightStatus.put(playerUUID, player.getAbilities().mayfly);
                     playerOriginalFlySpeed.put(playerUUID, player.getAbilities().getFlyingSpeed());
+                    playerWearingFullSet.put(playerUUID, true);
                 }
 
+                // 设置飞行能力
                 if (!player.getAbilities().mayfly) {
                     player.getAbilities().mayfly = true;
                     player.getAbilities().setFlyingSpeed(DRAGON_ARMOR_FLY_SPEED);
@@ -95,29 +96,37 @@ public class DragonCrystalArmor extends ArmorItem {
                     player.getAbilities().setFlyingSpeed(DRAGON_ARMOR_FLY_SPEED);
                     player.onUpdateAbilities();
                 }
+
                 processRegeneration(player, world);
                 applyEffects(player);
-            } else {
-                if (previousFullSet) {
-
-                    removeAllEffects(player);
-
-                    Boolean originalFlight = playerOriginalFlightStatus.remove(playerUUID);
-                    Float originalSpeed = playerOriginalFlySpeed.remove(playerUUID);
-
-                    if (originalFlight != null && originalSpeed != null) {
-                        player.getAbilities().mayfly = originalFlight;
-                        if (!originalFlight) {
-                            player.getAbilities().flying = false;
-                        }
-                        player.getAbilities().setFlyingSpeed(originalSpeed);
-                        player.onUpdateAbilities();
-                    }
-                    playerRegenerationTimer.remove(playerUUID);
-                    playerWearingFullSet.put(playerUUID, false);
-                }
+            } else if (previousFullSet) {
+                // 脱下完整套装时的清理工作
+                cleanupPlayerEffects(player, playerUUID);
             }
         }
+    }
+
+    // 新增的清理方法
+    private void cleanupPlayerEffects(Player player, UUID playerUUID) {
+        // 移除所有无限时长的效果
+        removeAllEffects(player);
+
+        // 恢复原始飞行状态
+        Boolean originalFlight = playerOriginalFlightStatus.remove(playerUUID);
+        Float originalSpeed = playerOriginalFlySpeed.remove(playerUUID);
+
+        if (originalFlight != null && originalSpeed != null) {
+            player.getAbilities().mayfly = originalFlight;
+            if (!originalFlight) {
+                player.getAbilities().flying = false;
+            }
+            player.getAbilities().setFlyingSpeed(originalSpeed);
+            player.onUpdateAbilities();
+        }
+
+        // 清理其他状态
+        playerRegenerationTimer.remove(playerUUID);
+        playerWearingFullSet.put(playerUUID, false);
     }
 
     private void processRegeneration(Player player, Level level) {
@@ -171,43 +180,34 @@ public class DragonCrystalArmor extends ArmorItem {
     }
 
     private void applyEffects(Player player) {
-        MobEffectInstance dmgBoost = player.getEffect(MobEffects.DAMAGE_BOOST);
-        if (dmgBoost == null) {
-            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, Integer.MAX_VALUE, 127, false, false));
-        }
+        // 只在没有对应效果或者效果即将结束时才添加
+        applyEffectIfNeeded(player, MobEffects.DAMAGE_BOOST, 127);
+        applyEffectIfNeeded(player, MobEffects.WATER_BREATHING, 10);
+        applyEffectIfNeeded(player, MobEffects.MOVEMENT_SPEED, 40);
+        applyEffectIfNeeded(player, MobEffects.NIGHT_VISION, 5);
+        applyEffectIfNeeded(player, MobEffects.FIRE_RESISTANCE, 5);
+    }
 
-        MobEffectInstance waterBreathing = player.getEffect(MobEffects.WATER_BREATHING);
-        if (waterBreathing == null) {
-            player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, Integer.MAX_VALUE, 10, false, false));
-        }
-
-        MobEffectInstance speed = player.getEffect(MobEffects.MOVEMENT_SPEED);
-        if (speed == null) {
-            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, Integer.MAX_VALUE, 40, false, false));
-        }
-
-        MobEffectInstance nightVision = player.getEffect(MobEffects.NIGHT_VISION);
-        if (nightVision == null) {
-            player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, Integer.MAX_VALUE, 5, false, false));
-        }
-
-        MobEffectInstance fireResistance = player.getEffect(MobEffects.FIRE_RESISTANCE);
-        if (fireResistance == null) {
-            player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, Integer.MAX_VALUE, 5, false, false));
+    private void applyEffectIfNeeded(Player player, MobEffect effect, int amplifier) {
+        MobEffectInstance existingEffect = player.getEffect(effect);
+        if (existingEffect == null || existingEffect.getDuration() < 100) {
+            player.addEffect(new MobEffectInstance(effect, Integer.MAX_VALUE, amplifier, false, false));
         }
     }
 
     private void removeAllEffects(Player player) {
-        removeEffectIfInfinite(player, MobEffects.DAMAGE_BOOST);
-        removeEffectIfInfinite(player, MobEffects.WATER_BREATHING);
-        removeEffectIfInfinite(player, MobEffects.MOVEMENT_SPEED);
-        removeEffectIfInfinite(player, MobEffects.NIGHT_VISION);
-        removeEffectIfInfinite(player, MobEffects.FIRE_RESISTANCE);
+        // 更严格的移除逻辑，确保移除所有由龙甲产生的无限时长效果
+        removeEffectIfDragonArmor(player, MobEffects.DAMAGE_BOOST);
+        removeEffectIfDragonArmor(player, MobEffects.WATER_BREATHING);
+        removeEffectIfDragonArmor(player, MobEffects.MOVEMENT_SPEED);
+        removeEffectIfDragonArmor(player, MobEffects.NIGHT_VISION);
+        removeEffectIfDragonArmor(player, MobEffects.FIRE_RESISTANCE);
     }
 
-    private void removeEffectIfInfinite(Player player, MobEffect effect) {
+    private void removeEffectIfDragonArmor(Player player, MobEffect effect) {
         MobEffectInstance instance = player.getEffect(effect);
-        if (instance != null && instance.getDuration() > 20000) {
+        // 移除持续时间超过1000000的效果（认为是龙甲产生的无限效果）
+        if (instance != null && instance.getDuration() > 1000000) {
             player.removeEffect(effect);
         }
     }
@@ -234,7 +234,6 @@ public class DragonCrystalArmor extends ArmorItem {
         if (player.getItemBySlot(EquipmentSlot.LEGS).getItem() == ModArmors.dragonArmorLegs.get()) amount++;
         if (player.getItemBySlot(EquipmentSlot.CHEST).getItem() == ModArmors.dragonArmorChest.get()) amount++;
         if (player.getItemBySlot(EquipmentSlot.HEAD).getItem() == ModArmors.dragonArmorHelm.get()) amount++;
-
 
         if (amount >= 4) {
             RenderSystem.disableDepthTest();

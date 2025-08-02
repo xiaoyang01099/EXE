@@ -9,11 +9,11 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.SeaSerpent;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.SeaSerpent;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
-import static net.xiaoyang010.ex_enigmaticlegacy.Entity.SeaSerpent.PART_HEIGHT;
-import static net.xiaoyang010.ex_enigmaticlegacy.Entity.SeaSerpent.PART_LENGTH;
+import static net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.SeaSerpent.PART_HEIGHT;
+import static net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.SeaSerpent.PART_LENGTH;
 
 public class ModelSeaSerpent extends EntityModel<SeaSerpent> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(

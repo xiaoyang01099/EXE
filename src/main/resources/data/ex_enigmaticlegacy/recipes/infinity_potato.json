@@ -1,5 +1,5 @@
 {
-  "type": "endless:extreme_craft",
+  "type": "avaritia:extreme_shaped",
   "result": {
     "item": "ex_enigmaticlegacy:infinity_potato"
   },
@@ -19,7 +19,7 @@
       "item": "botania:tiny_potato"
     },
     "B": {
-      "item": "endless:infinity_catalyst"
+      "item": "avaritia:infinity_catalyst"
     },
     "C": {
       "item": "minecraft:diamond"

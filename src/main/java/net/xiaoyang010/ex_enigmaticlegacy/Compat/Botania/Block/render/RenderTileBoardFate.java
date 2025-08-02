@@ -64,8 +64,29 @@ public class RenderTileBoardFate implements BlockEntityRenderer<TileBoardFate> {
         dropAnim = Math.min(1.0F, Math.max(dropAnim, 0.0F));
         float alpha = (float)Math.cos((double)dropAnim);
 
-        float indent = slot == 0 ? 0.16F + 0.08F * dropAnim : -0.16F - 0.08F * dropAnim;
-        poseStack.translate(indent, 0.02F + Math.sin(time / 12.0) / 48.0 + (0.28F * dropAnim), indent);
+        float posX = 0.0F;
+        float posZ = 0.0F;
+
+        switch (slot) {
+            case 0: // 右上角
+                posX = 0.16F + 0.08F * dropAnim;
+                posZ = 0.16F + 0.08F * dropAnim;
+                break;
+            case 1: // 左上角
+                posX = -0.16F - 0.08F * dropAnim;
+                posZ = 0.16F + 0.08F * dropAnim;
+                break;
+            case 2: // 右下角
+                posX = 0.16F + 0.08F * dropAnim;
+                posZ = -0.16F - 0.08F * dropAnim;
+                break;
+            case 3: // 左下角
+                posX = -0.16F - 0.08F * dropAnim;
+                posZ = -0.16F - 0.08F * dropAnim;
+                break;
+        }
+
+        poseStack.translate(posX, 0.02F + Math.sin(time / 12.0) / 48.0 + (0.28F * dropAnim), posZ);
 
         poseStack.scale(0.25F, 0.25F, 0.25F);
 

@@ -7,6 +7,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Hud.TChest.GuiItemChest;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.GuiExtremeAutoCrafter;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.GuiInfinityCompressor;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ModScreens {
@@ -21,7 +24,10 @@ public class ModScreens {
             MenuScreens.register(ModMenus.RAINBOW_TABLE_CONTAINER, RainbowTableScreen::new);
             MenuScreens.register(ModMenus.SPECTRITE_CHEST_CONTAINER, ContainerScreen::new);
             MenuScreens.register(ModMenus.DECON_TABLE_MENU, DeconTableScreen::new);
-
+            MenuScreens.register(ModMenus.TALISMAN_CHEST, GuiItemChest::new);
+            MenuScreens.register(ModMenus.MAGIC_TABLE_MENU, MagicTableScreen::new);
+            MenuScreens.register(ModMenus.EXTREME_AUTO_CRAFTER_MENU, GuiExtremeAutoCrafter::new);
+            MenuScreens.register(ModMenus.INFINITY_COMPRESSOR_MENU, GuiInfinityCompressor::new);
         });
     }
 }

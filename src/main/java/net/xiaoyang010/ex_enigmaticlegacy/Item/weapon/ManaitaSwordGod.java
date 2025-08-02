@@ -2,7 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Item.weapon;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.yuo.endless.Items.Tool.InfinityDamageSource;
+import morph.avaritia.util.InfinityDamageSource;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -20,15 +20,12 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.EntityRainBowLightningBlot;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.Xingyun2825Entity;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.EntityRainBowLightningBlot;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.Xingyun2825Entity;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.ColorText;
@@ -40,12 +37,17 @@ import java.util.List;
 public class ManaitaSwordGod extends SwordItem {
 
     public ManaitaSwordGod() {
-        super(EXEAPI.MIRACLE_ITEM_TIER, 10, -2.4F, new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR));
+        super(EXEAPI.MIRACLE_ITEM_TIER, 200, -2.4F, new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR));
+    }
+
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return true;
     }
 
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if (!target.level.isClientSide) { // 确保代码在服务器端执行
+        if (!target.level.isClientSide) {
             target.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
             target.setHealth(0.0F);
 
@@ -76,12 +78,11 @@ public class ManaitaSwordGod extends SwordItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
             Vec3 playerPos = player.position();
-            double radius = 180000.0; // 设置雷电召唤的半径
+            double radius = 180000.0;
 
-            // 获取半径内的所有非玩家生物
             AABB boundingBox = new AABB(playerPos.subtract(radius, radius, radius), playerPos.add(radius, radius, radius));
             List<LivingEntity> entities = serverLevel.getEntitiesOfClass(LivingEntity.class, boundingBox,
-                    entity -> !(entity instanceof Player)); // 排除玩家
+                    entity -> !(entity instanceof Player));
 
             // 对每个非玩家生物召唤彩色雷电并杀死它们
             for (LivingEntity entity : entities) {
@@ -134,10 +135,6 @@ public class ManaitaSwordGod extends SwordItem {
         return super.onLeftClickEntity(stack, player, entity);
     }
 
-    /**
-     * 被攻击玩家掉落背包物品
-     * @param playerHurt
-     */
     private void dropItem(Player playerHurt){
         InventoryMenu inventoryMenu = playerHurt.inventoryMenu;
         for (Slot slot : inventoryMenu.slots) {
@@ -160,7 +157,6 @@ public class ManaitaSwordGod extends SwordItem {
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        //干掉原来的物品介绍，就是属性
         return ImmutableMultimap.of();
     }
 

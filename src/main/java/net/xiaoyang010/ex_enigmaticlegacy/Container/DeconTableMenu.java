@@ -23,7 +23,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
-import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.PacketIndex;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.inputPacket.PacketIndex;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.DeconRecipe;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.DeconstructionManager;
 

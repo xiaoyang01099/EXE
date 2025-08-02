@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.xiaoyang010.ex_enigmaticlegacy.Entity.RideablePearlEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.RideablePearlEntity;
 
 public class RideablePearl extends Item {
     public RideablePearl(Properties properties) {

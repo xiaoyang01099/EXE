@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "ex_enigmaticlegacy:blocks/compressor/infinity_compressor_side",
+    "up": "ex_enigmaticlegacy:blocks/compressor/infinity_compressor_top",
+    "north": "ex_enigmaticlegacy:blocks/compressor/infinity_compressor_front",
+    "south": "ex_enigmaticlegacy:blocks/compressor/infinity_compressor_side",
+    "east": "ex_enigmaticlegacy:blocks/compressor/infinity_compressor_side",
+    "west": "ex_enigmaticlegacy:blocks/compressor/infinity_compressor_side",
+    "particle": "ex_enigmaticlegacy:blocks/compressor/infinity_compressor_front"
+  }
+}
