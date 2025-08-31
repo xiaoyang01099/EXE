@@ -1,5 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Util;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
@@ -12,7 +13,7 @@ public class EComponent {
         return new TextComponent(key);
     }
 
-    public static net.minecraft.network.chat.Component empty() {
+    public static Component empty() {
         return TextComponent.EMPTY;
     }
 }

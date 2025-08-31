@@ -446,7 +446,7 @@ public class ModItems {
 
 	public static final RegistryObject<Item> ANTIGRAVITY_CHARM = REGISTRY.register("antigravity_charm",
 			() -> new AntigravityCharm(new Item.Properties()
-					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).rarity(Rarity.EPIC)));
+					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).rarity(Rarity.EPIC).setNoRepair()));
 
 	public static final RegistryObject<Item> TALISMAN_HIDDEN_RICHES = REGISTRY.register("talisman_hidden_riches",
 				() -> new TalismanHiddenRiches(new Item.Properties()

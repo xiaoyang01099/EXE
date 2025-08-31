@@ -185,19 +185,15 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements M
     private final class ExtremeCraftingMatrix extends CraftingContainer {
         final int square;
 
-        private ExtremeCraftingMatrix(final int squareRoot)
-        {
-            super(new AbstractContainerMenu(null, -1)
-            {
+        private ExtremeCraftingMatrix(final int squareRoot) {
+            super(new AbstractContainerMenu(null, -1) {
                 @Override
-                public @NotNull ItemStack quickMoveStack(@NotNull final Player player, final int index)
-                {
+                public @NotNull ItemStack quickMoveStack(@NotNull final Player player, final int index) {
                     return ItemStack.EMPTY;
                 }
 
                 @Override
-                public boolean stillValid(@NotNull final Player player)
-                {
+                public boolean stillValid(@NotNull final Player player) {
                     return false;
                 }
             }, squareRoot, squareRoot);
@@ -212,12 +208,10 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements M
         }
     }
 
-    private static class ItemHandlerExtremeAutoCrafter extends InvWrapper
-    {
+    private static class ItemHandlerExtremeAutoCrafter extends InvWrapper {
         private final TileEntityExtremeAutoCrafter tileEntityAutoBiggerCraftingTable;
 
-        private ItemHandlerExtremeAutoCrafter(@NotNull final TileEntityExtremeAutoCrafter tileEntityAutoBiggerCraftingTable)
-        {
+        private ItemHandlerExtremeAutoCrafter(@NotNull final TileEntityExtremeAutoCrafter tileEntityAutoBiggerCraftingTable) {
             super(tileEntityAutoBiggerCraftingTable);
             this.tileEntityAutoBiggerCraftingTable = tileEntityAutoBiggerCraftingTable;
         }

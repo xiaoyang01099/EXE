@@ -7,57 +7,119 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.BotaniaAPIClient;
-import vazkii.botania.api.block.IWandBindable;
 import vazkii.botania.api.block.IWandHUD;
+import vazkii.botania.api.block.IWandable;
 import vazkii.botania.api.internal.IManaNetwork;
 import vazkii.botania.api.mana.IManaCollector;
 import vazkii.botania.api.mana.IManaPool;
 import vazkii.botania.api.subtile.TileEntitySpecialFlower;
+import vazkii.botania.common.helper.MathHelper;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
- * 混合花的基本类，既可以产生魔力，也可以消耗魔力。
- * 这朵花可以绑定到魔力池（用于魔力消耗）和魔力收集器（用于魔力输出）。
+ * 杂交花基类 - 同时具有产能花和功能花的能力
+ * 可以绑定魔力池和魔力发射器，通过法杖右击切换模式
  */
+public abstract class TileEntityHybridFlower extends TileEntitySpecialFlower implements IWandable {
 
-public abstract class TileEntityHybridFlower extends TileEntitySpecialFlower implements IWandBindable {
-    private static final ResourceLocation SPREADER_ID = new ResourceLocation(BotaniaAPI.MODID, "mana_spreader");
+    // 常量定义
     private static final ResourceLocation POOL_ID = new ResourceLocation(BotaniaAPI.MODID, "mana_pool");
-    public static final int LINK_RANGE = 10;
+    private static final ResourceLocation SPREADER_ID = new ResourceLocation(BotaniaAPI.MODID, "mana_spreader");
+
+    public static final int LINK_RANGE_POOL = 10;      // 魔力池绑定范围
+    public static final int LINK_RANGE_COLLECTOR = 6;   // 魔力发射器绑定范围
+
+    // 工作模式枚举
+    public enum FlowerMode {
+        GENERATING,  // 产能模式
+        FUNCTIONAL   // 功能模式
+    }
+
+    // NBT标签
     private static final String TAG_MANA = "mana";
-    private static final String TAG_BOUND_POOL_X = "boundPoolX";
-    private static final String TAG_BOUND_POOL_Y = "boundPoolY";
-    private static final String TAG_BOUND_POOL_Z = "boundPoolZ";
-    private static final String TAG_BOUND_COLLECTOR_X = "boundCollectorX";
-    private static final String TAG_BOUND_COLLECTOR_Y = "boundCollectorY";
-    private static final String TAG_BOUND_COLLECTOR_Z = "boundCollectorZ";
+    private static final String TAG_MODE = "mode";
+    private static final String TAG_POOL_BINDING = "poolBinding";
+    private static final String TAG_COLLECTOR_BINDING = "collectorBinding";
+    private static final String TAG_REDSTONE_SIGNAL = "redstoneSignal";
+
     private int mana;
+    private FlowerMode mode = FlowerMode.GENERATING;  // 默认产能模式
+    @Nullable private BlockPos poolBinding = null;      // 魔力池绑定
+    @Nullable private BlockPos collectorBinding = null; // 魔力发射器绑定
     public int redstoneSignal = 0;
-    private BlockPos boundPool = null;
-    private BlockPos boundCollector = null;
 
     public TileEntityHybridFlower(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-    public boolean acceptsRedstone() {
-        return false;
+    @Override
+    protected void tickFlower() {
+        super.tickFlower();
+        if (ticksExisted == 1 && !level.isClientSide) {
+            if (poolBinding == null || !isValidPoolBinding()) {
+                setPoolBinding(findClosestPool());
+            }
+            if (collectorBinding == null || !isValidCollectorBinding()) {
+                setCollectorBinding(findClosestCollector());
+            }
+        }
+
+        updateRedstoneSignal();
+
+        if (mode == FlowerMode.GENERATING) {
+            tickGenerating();
+        } else {
+            tickFunctional();
+        }
+
+        spawnParticles();
     }
 
-    @Override
-    public void tickFlower() {
-        super.tickFlower();
+    private void tickGenerating() {
+        emptyManaIntoCollector();
+    }
 
+    private void tickFunctional() {
+        drawManaFromPool();
+    }
+
+    public void emptyManaIntoCollector() {
+        IManaCollector collector = findBoundCollector();
+        if (collector != null && !collector.isFull() && getMana() > 0) {
+            int manaval = Math.min(getMana(), collector.getMaxMana() - collector.getCurrentMana());
+            addMana(-manaval);
+            collector.receiveMana(manaval);
+            sync();
+        }
+    }
+
+    public void drawManaFromPool() {
+        IManaPool pool = findBoundPool();
+        if (pool != null) {
+            int manaInPool = pool.getCurrentMana();
+            int manaMissing = getMaxMana() - mana;
+            int manaToRemove = Math.min(manaMissing, manaInPool);
+            pool.receiveMana(-manaToRemove);
+            addMana(manaToRemove);
+        }
+    }
+
+    private void updateRedstoneSignal() {
         redstoneSignal = 0;
         if (acceptsRedstone()) {
             for (Direction dir : Direction.values()) {
@@ -65,13 +127,11 @@ public abstract class TileEntityHybridFlower extends TileEntitySpecialFlower imp
                 redstoneSignal = Math.max(redstoneSignal, redstoneSide);
             }
         }
+    }
 
-        drawManaFromPool();
-
-        emptyManaIntoCollector();
-
+    private void spawnParticles() {
         if (getLevel() != null && getLevel().isClientSide) {
-            double particleChance = 1F - (double) getMana() / (double) getMaxMana() / 3.5F;
+            double particleChance = 1F - (double) mana / (double) getMaxMana() / 3.5F;
             int color = getColor();
             float red = (color >> 16 & 0xFF) / 255F;
             float green = (color >> 8 & 0xFF) / 255F;
@@ -82,78 +142,14 @@ public abstract class TileEntityHybridFlower extends TileEntitySpecialFlower imp
                 double x = getBlockPos().getX() + offset.x;
                 double y = getBlockPos().getY() + offset.y;
                 double z = getBlockPos().getZ() + offset.z;
-                BotaniaAPI.instance().sparkleFX(getLevel(), x + 0.3 + Math.random() * 0.5, y + 0.5 + Math.random() * 0.5, z + 0.3 + Math.random() * 0.5, red, green, blue, (float) Math.random(), 5);
+                BotaniaAPI.instance().sparkleFX(getLevel(),
+                        x + 0.3 + Math.random() * 0.5,
+                        y + 0.5 + Math.random() * 0.5,
+                        z + 0.3 + Math.random() * 0.5,
+                        red, green, blue, (float) Math.random(), 5);
             }
         }
     }
-
-    @Nullable
-    public BlockPos findClosestPool() {
-        IManaNetwork network = BotaniaAPI.instance().getManaNetworkInstance();
-        var closestPool = network.getClosestPool(getBlockPos(), getLevel(), LINK_RANGE);
-        return closestPool == null ? null : closestPool.getManaReceiverPos();
-    }
-
-    @Nullable
-    public IManaPool findBoundPool() {
-        if (boundPool == null) {
-            return null;
-        }
-
-        if (getLevel().getBlockEntity(boundPool) instanceof IManaPool pool) {
-            return pool;
-        }
-
-        boundPool = null;
-        return null;
-    }
-
-    public void drawManaFromPool() {
-        IManaPool pool = findBoundPool();
-        if (pool != null) {
-            int manaInPool = pool.getCurrentMana();
-            int manaMissing = getMaxMana() - mana;
-            int manaToRemove = Math.min(manaMissing, manaInPool);
-            if (manaToRemove > 0) {
-                pool.receiveMana(-manaToRemove);
-                addMana(manaToRemove);
-            }
-        }
-    }
-
-    @Nullable
-    public BlockPos findClosestCollector() {
-        IManaNetwork network = BotaniaAPI.instance().getManaNetworkInstance();
-        var closestCollector = network.getClosestCollector(getBlockPos(), getLevel(), LINK_RANGE);
-        return closestCollector == null ? null : closestCollector.getManaReceiverPos();
-    }
-
-    @Nullable
-    public IManaCollector findBoundCollector() {
-        if (boundCollector == null) {
-            return null;
-        }
-
-        if (getLevel().getBlockEntity(boundCollector) instanceof IManaCollector collector) {
-            return collector;
-        }
-
-        boundCollector = null;
-        return null;
-    }
-
-    public void emptyManaIntoCollector() {
-        IManaCollector collector = findBoundCollector();
-        if (collector != null && !collector.isFull() && getMana() > 0) {
-            int manaval = Math.min(getMana(), collector.getMaxMana() - collector.getCurrentMana());
-            if (manaval > 0) {
-                addMana(-manaval);
-                collector.receiveMana(manaval);
-                sync();
-            }
-        }
-    }
-
 
     public int getMana() {
         return mana;
@@ -167,61 +163,143 @@ public abstract class TileEntityHybridFlower extends TileEntitySpecialFlower imp
     public abstract int getMaxMana();
     public abstract int getColor();
 
-    @Override
-    public boolean canSelect(Player player, ItemStack wand, BlockPos pos, Direction side) {
-        return true;
+    // ==================== 模式切换 ====================
+
+    public FlowerMode getMode() {
+        return mode;
     }
 
+    public void switchMode() {
+        mode = (mode == FlowerMode.GENERATING) ? FlowerMode.FUNCTIONAL : FlowerMode.GENERATING;
+        setChanged();
+        sync();
+    }
+
+    // ==================== 绑定管理 ====================
+
+    // 魔力池绑定
+    public @Nullable BlockPos getPoolBinding() {
+        return poolBinding;
+    }
+
+    public void setPoolBinding(@Nullable BlockPos pos) {
+        boolean changed = !Objects.equals(this.poolBinding, pos);
+        this.poolBinding = pos;
+        if (changed) {
+            setChanged();
+            sync();
+        }
+    }
+
+    public @Nullable IManaPool findBoundPool() {
+        if (level == null || poolBinding == null) return null;
+        BlockEntity be = level.getBlockEntity(poolBinding);
+        return (be instanceof IManaPool) ? (IManaPool) be : null;
+    }
+
+    public boolean isValidPoolBinding() {
+        return wouldBeValidPoolBinding(poolBinding);
+    }
+
+    public boolean wouldBeValidPoolBinding(@Nullable BlockPos pos) {
+        if (level == null || pos == null || !level.isLoaded(pos) ||
+                MathHelper.distSqr(getBlockPos(), pos) > (long) LINK_RANGE_POOL * LINK_RANGE_POOL) {
+            return false;
+        }
+        BlockEntity be = level.getBlockEntity(pos);
+        return be instanceof IManaPool;
+    }
+
+    public @Nullable BlockPos findClosestPool() {
+        IManaNetwork network = BotaniaAPI.instance().getManaNetworkInstance();
+        var closestPool = network.getClosestPool(getBlockPos(), getLevel(), LINK_RANGE_POOL);
+        return closestPool == null ? null : closestPool.getManaReceiverPos();
+    }
+
+    // 魔力发射器绑定
+    public @Nullable BlockPos getCollectorBinding() {
+        return collectorBinding;
+    }
+
+    public void setCollectorBinding(@Nullable BlockPos pos) {
+        boolean changed = !Objects.equals(this.collectorBinding, pos);
+        this.collectorBinding = pos;
+        if (changed) {
+            setChanged();
+            sync();
+        }
+    }
+
+    public @Nullable IManaCollector findBoundCollector() {
+        if (level == null || collectorBinding == null) return null;
+        BlockEntity be = level.getBlockEntity(collectorBinding);
+        return (be instanceof IManaCollector) ? (IManaCollector) be : null;
+    }
+
+    public boolean isValidCollectorBinding() {
+        return wouldBeValidCollectorBinding(collectorBinding);
+    }
+
+    public boolean wouldBeValidCollectorBinding(@Nullable BlockPos pos) {
+        if (level == null || pos == null || !level.isLoaded(pos) ||
+                MathHelper.distSqr(getBlockPos(), pos) > (long) LINK_RANGE_COLLECTOR * LINK_RANGE_COLLECTOR) {
+            return false;
+        }
+        BlockEntity be = level.getBlockEntity(pos);
+        return be instanceof IManaCollector;
+    }
+
+    public @Nullable BlockPos findClosestCollector() {
+        IManaNetwork network = BotaniaAPI.instance().getManaNetworkInstance();
+        var closestCollector = network.getClosestCollector(getBlockPos(), getLevel(), LINK_RANGE_COLLECTOR);
+        return closestCollector == null ? null : closestCollector.getManaReceiverPos();
+    }
+
+    // ==================== 法杖交互 ====================
+
     @Override
-    public boolean bindTo(Player player, ItemStack wand, BlockPos pos, Direction side) {
-        if (getLevel().getBlockEntity(pos) instanceof IManaPool) {
-            boundPool = pos;
-            sync();
-            return true;
-        } else if (getLevel().getBlockEntity(pos) instanceof IManaCollector) {
-            boundCollector = pos;
-            sync();
+    public boolean onUsedByWand(@Nullable Player player, ItemStack stack, Direction side) {
+        if (player != null && !level.isClientSide) {
+            switchMode();
+
+            Component message = new TranslatableComponent(
+                    "ex.hybrid_flower.mode_switched",
+                    new TranslatableComponent("ex.hybrid_flower.mode." + mode.name().toLowerCase())
+            );
+            player.sendMessage(message, player.getUUID());
+
             return true;
         }
         return false;
     }
 
-    @Override
-    public BlockPos getBinding() {
-        return boundPool;
+    /**
+     * 是否接受红石信号（仅功能模式下）
+     */
+    public boolean acceptsRedstone() {
+        return mode == FlowerMode.FUNCTIONAL;
     }
 
-    public BlockPos getCollectorBinding() {
-        return boundCollector;
-    }
-
-    public boolean isValidPoolBinding() {
-        return findBoundPool() != null;
-    }
-
-    public boolean isValidCollectorBinding() {
-        return findBoundCollector() != null;
+    /**
+     * 获取HUD图标
+     */
+    public ItemStack getHudIcon() {
+        ResourceLocation id = (mode == FlowerMode.GENERATING) ? SPREADER_ID : POOL_ID;
+        return Registry.ITEM.getOptional(id).map(ItemStack::new).orElse(ItemStack.EMPTY);
     }
 
     @Override
     public void readFromPacketNBT(CompoundTag cmp) {
         super.readFromPacketNBT(cmp);
         mana = cmp.getInt(TAG_MANA);
+        mode = FlowerMode.values()[cmp.getInt(TAG_MODE)];
+        redstoneSignal = cmp.getInt(TAG_REDSTONE_SIGNAL);
 
-        if (cmp.contains(TAG_BOUND_POOL_X)) {
-            boundPool = new BlockPos(
-                    cmp.getInt(TAG_BOUND_POOL_X),
-                    cmp.getInt(TAG_BOUND_POOL_Y),
-                    cmp.getInt(TAG_BOUND_POOL_Z)
-            );
+        if (cmp.contains(TAG_POOL_BINDING)) {
+            poolBinding = NbtUtils.readBlockPos(cmp.getCompound(TAG_POOL_BINDING));
         }
-
-        if (cmp.contains(TAG_BOUND_COLLECTOR_X)) {
-            boundCollector = new BlockPos(
-                    cmp.getInt(TAG_BOUND_COLLECTOR_X),
-                    cmp.getInt(TAG_BOUND_COLLECTOR_Y),
-                    cmp.getInt(TAG_BOUND_COLLECTOR_Z)
-            );
+        if (cmp.contains(TAG_COLLECTOR_BINDING)) {
+            collectorBinding = NbtUtils.readBlockPos(cmp.getCompound(TAG_COLLECTOR_BINDING));
         }
     }
 
@@ -229,26 +307,15 @@ public abstract class TileEntityHybridFlower extends TileEntitySpecialFlower imp
     public void writeToPacketNBT(CompoundTag cmp) {
         super.writeToPacketNBT(cmp);
         cmp.putInt(TAG_MANA, mana);
+        cmp.putInt(TAG_MODE, mode.ordinal());
+        cmp.putInt(TAG_REDSTONE_SIGNAL, redstoneSignal);
 
-        if (boundPool != null) {
-            cmp.putInt(TAG_BOUND_POOL_X, boundPool.getX());
-            cmp.putInt(TAG_BOUND_POOL_Y, boundPool.getY());
-            cmp.putInt(TAG_BOUND_POOL_Z, boundPool.getZ());
+        if (poolBinding != null) {
+            cmp.put(TAG_POOL_BINDING, NbtUtils.writeBlockPos(poolBinding));
         }
-
-        if (boundCollector != null) {
-            cmp.putInt(TAG_BOUND_COLLECTOR_X, boundCollector.getX());
-            cmp.putInt(TAG_BOUND_COLLECTOR_Y, boundCollector.getY());
-            cmp.putInt(TAG_BOUND_COLLECTOR_Z, boundCollector.getZ());
+        if (collectorBinding != null) {
+            cmp.put(TAG_COLLECTOR_BINDING, NbtUtils.writeBlockPos(collectorBinding));
         }
-    }
-
-    public ItemStack getPoolHudIcon() {
-        return Registry.ITEM.getOptional(POOL_ID).map(ItemStack::new).orElse(ItemStack.EMPTY);
-    }
-
-    public ItemStack getCollectorHudIcon() {
-        return Registry.ITEM.getOptional(SPREADER_ID).map(ItemStack::new).orElse(ItemStack.EMPTY);
     }
 
     public static class HybridWandHud<T extends TileEntityHybridFlower> implements IWandHUD {
@@ -261,16 +328,16 @@ public abstract class TileEntityHybridFlower extends TileEntitySpecialFlower imp
         @Override
         public void renderHUD(PoseStack ms, Minecraft mc) {
             String name = I18n.get(flower.getBlockState().getBlock().getDescriptionId());
+            String modeName = I18n.get("ex.hybrid_flower.mode." + flower.getMode().name().toLowerCase());
+            name += " (" + modeName + ")";
+
             int color = flower.getColor();
+            boolean isValidBinding = (flower.getMode() == FlowerMode.GENERATING)
+                    ? flower.isValidCollectorBinding()
+                    : flower.isValidPoolBinding();
 
             BotaniaAPIClient.instance().drawComplexManaHUD(ms, color, flower.getMana(), flower.getMaxMana(),
-                    name + " (魔力池)", flower.getPoolHudIcon(), flower.isValidPoolBinding());
-
-            ms.pushPose();
-            ms.translate(0, 20, 0);
-            BotaniaAPIClient.instance().drawComplexManaHUD(ms, color, flower.getMana(), flower.getMaxMana(),
-                    name + " (收集器)", flower.getCollectorHudIcon(), flower.isValidCollectorBinding());
-            ms.popPose();
+                    name, flower.getHudIcon(), isValidBinding);
         }
     }
 }

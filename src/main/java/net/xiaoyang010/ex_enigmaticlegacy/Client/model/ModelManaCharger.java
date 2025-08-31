@@ -71,7 +71,7 @@ public class ModelManaCharger extends Model {
         if (tile.getStackInSlot(0) != null) {
             float rot = chargerPlate.yRot * 180.0F / (float) Math.PI;
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(rot));
-            matrixStack.translate(-0.125F, 0.8125F, 0.125F);
+            matrixStack.translate(0F, 0.8125F, 0F);
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
             render.renderItemStack(tile.getStackInSlot(0), matrixStack);
         }
@@ -83,10 +83,10 @@ public class ModelManaCharger extends Model {
 
         for (int i = 1; i < 5; ++i) {
             switch (i) {
-                case 1 -> chargerPlate.yRot = (float) Math.PI;
-                case 2 -> chargerPlate.yRot = 0.0F;
-                case 3 -> chargerPlate.yRot = (float) Math.PI / 2;
-                case 4 -> chargerPlate.yRot = -(float) Math.PI / 2;
+                case 1 -> chargerPlate.yRot = -(float) Math.PI / 2;
+                case 2 -> chargerPlate.yRot = (float) Math.PI / 2;
+                case 3 -> chargerPlate.yRot = (float) Math.PI;
+                case 4 -> chargerPlate.yRot = 0.0F;
             }
 
             if (tile.getLevel() != null) {
@@ -144,14 +144,12 @@ public class ModelManaCharger extends Model {
                                 render.charger.getBlockPos().getZ() + 0.5F + posZ
                         );
 
-
                         if (Objects.requireNonNull(render.charger.getLevel()).isClientSide) {
                             float r = 0.5F + (float) Math.random() * 0.5F;
                             float g = 0.5F + (float) Math.random() * 0.5F;
                             float b = 0.5F + (float) Math.random() * 0.5F;
 
                             WispParticleData data = WispParticleData.wisp(0.5F, r, g, b, 1);
-
                             Vec3 motion = tileVec.subtract(itemVec).normalize().scale(0.1);
 
                             render.charger.getLevel().addParticle(data,
@@ -161,8 +159,9 @@ public class ModelManaCharger extends Model {
                     }
                 }
 
+                matrixStack.mulPose(Vector3f.YP.rotationDegrees(8.0F));
                 matrixStack.mulPose(Vector3f.YP.rotationDegrees(rot));
-                matrixStack.translate(0.3125F, 1.06F, 0.1245F);
+                matrixStack.translate(0.45F, 1.06F, 0.1245F);
                 matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
                 render.renderItemStack(stack, matrixStack);
                 matrixStack.popPose();

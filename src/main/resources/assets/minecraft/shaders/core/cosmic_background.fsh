@@ -25,7 +25,7 @@ void main() {
     vec4 portalColor = texture(Sampler1, texCoord1);
 
     // 创建动态的宇宙效果
-    float timeScale = time * 0.00002;
+    float timeScale = time * 0.02;
 
     // 多层次的色彩变化，结合ColorCycle
     float hue1 = fract(timeScale + texCoord0.x * 0.5 + ColorCycle * 0.1);

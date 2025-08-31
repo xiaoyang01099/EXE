@@ -48,6 +48,7 @@ public class FaceEffectLayer extends RenderLayer<AbstractClientPlayer, PlayerMod
         renderEyes(poseStack, buffer, player);
         poseStack.popPose();
     }
+
     private void renderEyes(PoseStack poseStack, MultiBufferSource buffer, AbstractClientPlayer player) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

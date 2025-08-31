@@ -27,7 +27,7 @@ public abstract class WTileEntity extends BlockEntity implements WorldlyContaine
     private final Dependencies<IController<?, ?>> controllerHandler = new Dependencies<>();
     private final Collection<IController<?, ?>> controllers = controllerHandler.getInstances();
     private final Map<Capability<?>, LazyOptional<?>> capabilitiesMap = new HashMap<>();
-    private String customName = null; // 修正：使用String而不是Component
+    private String customName = null;
     protected final NonNullList<ItemStack> itemStacks = getItemStacks();
 
     public WTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {

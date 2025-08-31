@@ -35,9 +35,9 @@ public class GuiInfinityCompressor extends WGuiContainer<TileEntityInfinityCompr
             showRecipesElement.setDefaultForegroundCheck().setTooltipSupplier((interaction, stackSupplier) ->
                     Lists.newArrayList(EComponent.literal(I18n.get("ex_enigmaticlegacy.no.jei"))));
         addElement(showRecipesElement);
-        addElement(new RedstoneControlWButton(getControl(RedstoneControl.class), this, imageWidth - 25, 29, true));
-        addElement(new CheckBoxWElement((CheckBox) getField("ex_enigmaticlegacy.compressor.trashcan"),
-                this, imageWidth - 25, 51));
+//        addElement(new RedstoneControlWButton(getControl(RedstoneControl.class), this, imageWidth - 25, 29, true));
+//        addElement(new CheckBoxWElement((CheckBox) getField("ex_enigmaticlegacy.compressor.trashcan"),
+//                this, imageWidth - 25, 51));
     }
 
     private final class SingularityTooltipSupplier implements ITooltipSupplier {
@@ -51,13 +51,13 @@ public class GuiInfinityCompressor extends WGuiContainer<TileEntityInfinityCompr
             if (compressorRecipeField.isNull() || outputStack.isEmpty())
                 return tooltip;
 
-            tooltip.add(EComponent.literal(I18n.get("ex_enigmaticlegacy.compressor.making")).withStyle(ChatFormatting.GOLD));
-            tooltip.add(outputStack.getHoverName().copy().withStyle(outputStack.getRarity().color));
-            tooltip.add(EComponent.literal(compressorRecipeField.getProgress()));
-            tooltip.add(Component.nullToEmpty(""));
-            tooltip.add(EComponent.literal(I18n.get("ex_enigmaticlegacy.clear.recipe")).withStyle(ChatFormatting.GOLD));
-            tooltip.add(EComponent.literal(I18n.get("ex_enigmaticlegacy.compressor.clear.note") + " " + I18n.get("ex_enigmaticlegacy.compressor.clear.warning"))
-                    .withStyle(ChatFormatting.RED).append(EComponent.literal("").withStyle(ChatFormatting.WHITE)));
+//            tooltip.add(EComponent.literal(I18n.get("ex_enigmaticlegacy.compressor.making")).withStyle(ChatFormatting.GOLD));
+//            tooltip.add(outputStack.getHoverName().copy().withStyle(outputStack.getRarity().color));
+//            tooltip.add(EComponent.literal(compressorRecipeField.getProgress()));
+//            tooltip.add(Component.nullToEmpty(""));
+//            tooltip.add(EComponent.literal(I18n.get("ex_enigmaticlegacy.clear.recipe")).withStyle(ChatFormatting.GOLD));
+//            tooltip.add(EComponent.literal(I18n.get("ex_enigmaticlegacy.compressor.clear.note") + " " + I18n.get("ex_enigmaticlegacy.compressor.clear.warning"))
+//                    .withStyle(ChatFormatting.RED).append(EComponent.literal("").withStyle(ChatFormatting.WHITE)));
             return tooltip;
         }
     }

@@ -45,11 +45,6 @@ public class TileEntityInfinityCompressor extends WTileEntity implements MenuPro
         return redstoneControl.canOperate() && !compressorRecipeField.isNull() && ((output = itemStacks.get(0)).isEmpty() || output.getCount() + compressorRecipeField.getCompressorRecipeOutput().getCount() <= output.getMaxStackSize());
     }
 
-//    @Override
-//    public boolean shouldRefresh(Level level, BlockPos pos, BlockState oldState, BlockState newState) {
-//        return oldState.getBlock() != newState.getBlock();
-//    }
-
     @Override
     protected NonNullList<ItemStack> getItemStacks() {
         return NonNullList.withSize(1, ItemStack.EMPTY);

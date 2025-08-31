@@ -15,6 +15,27 @@ import javax.annotation.Nullable;
 
 public class AutoExtremeCrafterTransferHandler implements IRecipeTransferHandler<ContainerExtremeAutoCrafter, ExtremeCraftingRecipe> {
 
+    @Nullable
+    @Override
+    public IRecipeTransferError transferRecipe(
+            ContainerExtremeAutoCrafter container,
+            ExtremeCraftingRecipe recipe,
+            IRecipeSlotsView recipeSlots,
+            Player player,
+            boolean maxTransfer,
+            boolean doTransfer) {
+
+        if (!doTransfer)
+            return null;
+
+        ResourceLocation recipeId = recipe.getId();
+        if (recipeId != null) {
+            DefineShapeMessage.sendToServer(container, recipeId);
+        }
+
+        return null;
+    }
+
     @Nonnull
     @Override
     public Class<ContainerExtremeAutoCrafter> getContainerClass() {
@@ -25,22 +46,5 @@ public class AutoExtremeCrafterTransferHandler implements IRecipeTransferHandler
     @Override
     public Class<ExtremeCraftingRecipe> getRecipeClass() {
         return ExtremeCraftingRecipe.class;
-    }
-
-    @Nullable
-    @Override
-    public IRecipeTransferError transferRecipe(@Nonnull final ContainerExtremeAutoCrafter container,
-                                               @Nonnull final ExtremeCraftingRecipe recipe,
-                                               @Nonnull final IRecipeSlotsView recipeSlots,
-                                               @Nonnull final Player player,
-                                               final boolean maxTransfer,
-                                               final boolean doTransfer) {
-        if (!doTransfer) {
-            return null;
-        }
-        ResourceLocation recipeId = recipe.getId();
-        DefineShapeMessage.sendToServer(container, recipeId);
-
-        return null;
     }
 }

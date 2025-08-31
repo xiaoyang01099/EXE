@@ -6,10 +6,13 @@
   "advancements.zhen_gui_zhi_wu.descr": "§6Platinum",
   "advancements.zhen_gui_zhi_wu.title": "§5Apple Of My Eye",
 
+  "ex.hybrid_flower.mode_switched": "Mode Switches To: %s",
+  "ex.hybrid_flower.mode.generating": "Capacity Model",
+  "ex.hybrid_flower.mode.functional": "Functional Mode",
   "button.recipe.previous": "Previous",
   "button.recipe.next": "Next",
   "container.deconstruction": "Deconstruction Table",
-
+  "ex.mana": "Mana: %s / %s",
   "curios.identifier.holy_ring": "",
   "curios.modifiers.holy_ring": "",
 
@@ -666,6 +669,7 @@
   "message.guardian_vanish": "Suddenly, something disrupts Guardian's existence, forcing it to disappear. Probably, there are some liquids nearby..",
   "key.ex_enigmaticlegacy.manaita_shears_toggle": "Toggle Manaita Shears Doubling",
   "item.ex_enigmaticlegacy.manaita_shears.message.doubling_toggle": "Doubling: %s",
+  "container.ex_enigmaticlegacy.infinity_compressor.name": "Infinity Compressor",
 
   "tooltip.chaos_tome.desc": "Unfolds Orbs of Primal Energy",
   "tooltip.chaos_tome.usage": "These orbs either behave chaotically, or try to aim at random living beings nearby",

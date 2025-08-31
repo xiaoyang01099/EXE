@@ -14,6 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.Container;
@@ -31,7 +33,9 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -45,6 +49,8 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -52,17 +58,14 @@ import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityPotato;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.FullAltarTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Generating.BelieverTile;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.AntigravityCharm;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.IvyRegen;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.Manaita;
 import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHTMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Effect.Drowning;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTags;
-import net.xiaoyang010.ex_enigmaticlegacy.Item.AdminController;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.BedrockBreaker;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.InfinityTotem;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmor;
@@ -76,11 +79,14 @@ import vazkii.botania.api.item.IRelic;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.block.decor.BlockTinyPotato;
 import vazkii.botania.common.helper.PlayerHelper;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import static net.xiaoyang010.ex_enigmaticlegacy.Item.AdminController.shouldKeepInventory;
 
 @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID)
 public class ModEventHandler {
@@ -91,25 +97,95 @@ public class ModEventHandler {
     private static final int REPAIR_COST = 1500;
 
     @SubscribeEvent
-    public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        Player player = event.getPlayer();
-
-        boolean hasAdminController = false;
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            ItemStack stack = player.getInventory().getItem(i);
-            if (stack.getItem() instanceof AdminController) {
-                hasAdminController = true;
-                break;
+    public static void onPlace(EntityPlaceEvent event) {
+        Entity entity = event.getEntity();
+        BlockPos pos = event.getPos();
+        BlockState block = event.getPlacedBlock();
+        LevelAccessor world = event.getWorld();
+        if (block.getBlock() instanceof FallingBlock && entity instanceof Player player){
+            boolean air = world.getBlockState(pos.below()).isAir();
+            boolean b = false;
+            for (ItemStack item : player.getInventory().items) {
+                if (item.getItem() == ModItems.ANTIGRAVITY_CHARM.get()) {
+                    boolean active = item.getOrCreateTag().getBoolean(AntigravityCharm.ACTIVE_KEY);
+                    if (active) b = true;
+                }
+            }
+            if (air && b){
+                world.setBlock(pos.below(), ModBlockss.ANTIGRAVITATION_BLOCK.get().defaultBlockState(), 2);  //设置空方块
             }
         }
+    }
 
-        if (hasAdminController) {
-            player.setHealth(player.getMaxHealth());
+    @SubscribeEvent
+    public static void onCharm(BreakEvent event){
+        BlockState state = event.getState();
+        BlockPos pos = event.getPos();
+        Player player = event.getPlayer();
+        LevelAccessor world = event.getWorld();
+        BlockState blockState = world.getBlockState(pos.above()); //上方方块
+        if (blockState.getBlock() instanceof FallingBlock fallingBlock) {
+            boolean b = false;
+            for (ItemStack item : player.getInventory().items) {
+                if (item.getItem() == ModItems.ANTIGRAVITY_CHARM.get()) {
+                    boolean active = item.getOrCreateTag().getBoolean(AntigravityCharm.ACTIVE_KEY);
+                    if (active) b = true;
+                }
+            }
 
-            player.getFoodData().setFoodLevel(20);
-            player.getFoodData().setSaturation(20.0F);
+            if (b){
+                world.setBlock(pos, ModBlockss.ANTIGRAVITATION_BLOCK.get().defaultBlockState(), 2);  //设置空方块
+                event.setCanceled(true);
+            }
         }
     }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPlayerClone(PlayerEvent.Clone event) {
+        if (!event.isWasDeath()) {
+            return;
+        }
+
+        Player original = event.getOriginal();
+        Player newPlayer = event.getPlayer();
+
+        if (shouldKeepInventory(original)) {
+            for (int i = 0; i < original.getInventory().getContainerSize(); i++) {
+                ItemStack stack = original.getInventory().getItem(i);
+                if (!stack.isEmpty()) {
+                    newPlayer.getInventory().setItem(i, stack.copy());
+                }
+            }
+
+            newPlayer.experienceLevel = original.experienceLevel;
+            newPlayer.experienceProgress = original.experienceProgress;
+            newPlayer.totalExperience = original.totalExperience;
+
+            if (newPlayer instanceof ServerPlayer serverPlayer) {
+                Component message = new TranslatableComponent("item.ex_enigmaticlegacy.admin_controller.inventory_restored")
+                        .withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
+                serverPlayer.sendMessage(message, serverPlayer.getUUID());
+
+                serverPlayer.level.playSound(null, serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ(),
+                        SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
+
+                for (int i = 0; i < 30; i++) {
+                    double offsetX = (serverPlayer.level.random.nextDouble() - 0.5) * 2.0;
+                    double offsetY = serverPlayer.level.random.nextDouble() * 2.0;
+                    double offsetZ = (serverPlayer.level.random.nextDouble() - 0.5) * 2.0;
+
+                    serverPlayer.level.addParticle(
+                            net.minecraft.core.particles.ParticleTypes.TOTEM_OF_UNDYING,
+                            serverPlayer.getX() + offsetX,
+                            serverPlayer.getY() + offsetY + 1.0,
+                            serverPlayer.getZ() + offsetZ,
+                            0.0, 0.1, 0.0
+                    );
+                }
+            }
+        }
+    }
+
 
     @SubscribeEvent
     public static void onItemCrafted(PlayerEvent.ItemCraftedEvent event) {

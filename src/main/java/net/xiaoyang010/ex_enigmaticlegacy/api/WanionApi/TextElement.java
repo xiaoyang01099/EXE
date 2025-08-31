@@ -123,7 +123,7 @@ public class TextElement extends WElement<TextElement>
     @Override
     public void draw(@Nonnull final WInteraction wInteraction)
     {
-        PoseStack poseStack = wInteraction.getPoseStack(); // 假设 WInteraction 提供 PoseStack
+        PoseStack poseStack = wInteraction.getPoseStack();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         if (drawShadow) {

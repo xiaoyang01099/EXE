@@ -12,12 +12,12 @@ import javax.annotation.Nonnull;
 public class ExtremeTarget<I> implements IGhostIngredientHandler.Target<I> {
     private final int slot;
     private final Rect2i rectangle;
-    private final AbstractContainerScreen<?> containerScreen;
+    private final AbstractContainerScreen<?> guiContainer;
 
-    public ExtremeTarget(final int slot, @Nonnull final Rect2i rectangle, @Nonnull final AbstractContainerScreen<?> containerScreen) {
+    public ExtremeTarget(int slot, @Nonnull Rect2i rectangle, @Nonnull AbstractContainerScreen<?> guiContainer) {
         this.slot = slot;
         this.rectangle = rectangle;
-        this.containerScreen = containerScreen;
+        this.guiContainer = guiContainer;
     }
 
     @Override
@@ -27,13 +27,13 @@ public class ExtremeTarget<I> implements IGhostIngredientHandler.Target<I> {
     }
 
     @Override
-    public void accept(@Nonnull final I ingredient) {
-        if (ingredient instanceof ItemStack) {
+    public void accept(@Nonnull I ingredient) {
+        if (ingredient instanceof ItemStack itemStack) {
             NetworkHandler.CHANNEL.sendToServer(
                     new ExtremeAutoCrafterGhostTransferMessage(
-                            containerScreen.getMenu().containerId,
+                            guiContainer.getMenu().containerId,
                             slot,
-                            (ItemStack) ingredient
+                            itemStack
                     )
             );
         }

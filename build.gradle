@@ -26,7 +26,6 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
         classpath 'org.parchmentmc:librarian:1.+'
-        //
         classpath 'org.spongepowered:mixingradle:0.7.+'
     }
 }
@@ -36,10 +35,9 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: 'maven-publish'
-//mixin
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.18.2-0.0.1-Beta'
+version = '1.18.2-0.0.6-Beta'
 group = 'ex_enigmaticlegacy'
 archivesBaseName = 'EXE'
 
@@ -47,7 +45,6 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 jar {
     manifest {
         attributes([
-                //你资源包中的mixin配置文件
                 "MixinConfigs": "ex_enigmaticlegacy.mixins.json"
         ])
     }
@@ -57,7 +54,7 @@ mixin {
     config "ex_enigmaticlegacy.mixins.json"
 }
 minecraft {
-//    mappings channel: 'official', version: '1.18.2'
+
     mappings channel: 'parchment', version: '2022.11.06-1.18.2'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -69,9 +66,9 @@ minecraft {
             property 'forge.logging.console.level', 'info'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-            arg "-mixin.config=ex_enigmaticlegacy.mixins.json"
+
             mods {
-                examplemod {
+                ex_enigmaticlegacy {
                     source sourceSets.main
                 }
             }
@@ -84,9 +81,9 @@ minecraft {
             property 'forge.logging.console.level', 'info'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-            arg "-mixin.config=ex_enigmaticlegacy.mixins.json"
+
             mods {
-                examplemod {
+                ex_enigmaticlegacy {
                     source sourceSets.main
                 }
             }
@@ -105,17 +102,14 @@ repositories {
         url "https://maven.blamejared.com"
     }
     maven {
-        // location of the maven that hosts JEI files before January 2023
         name = "Progwml6's maven"
         url = "https://dvs1.progwml6.com/files/maven/"
     }
     maven {
-        // location of the maven that hosts JEI files since January 2023
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
     maven {
-        // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
@@ -174,19 +168,14 @@ repositories {
         url = 'https://modmaven.dev/'
     }
     maven {
-        name = '神秘遗物'
-        url = 'https://github.com/Aizistral-Studios/Enigmatic-Legacy/tree/1.18.X'
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
     }
 }
 
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.2.9'
-
-    implementation fg.deobf("curse.maven:citadel-331936:3783096")
-    implementation fg.deobf("curse.maven:ice-and-fire-dragons-264231:4614465")
-    implementation fg.deobf("curse.maven:playeranimator-658587:4418152")
-    implementation fg.deobf("curse.maven:irons-spells-n-spellbooks-855414:5275053")
+    minecraft 'net.minecraftforge:forge:1.18.2-40.2.21'
 
     //jei
     compileOnly(fg.deobf("mezz.jei:jei-1.18.2-common-api:10.2.1.1008"))
@@ -213,14 +202,17 @@ dependencies {
     //无尽贪婪
     compileOnly fg.deobf("curse.maven:avaritia-1-10-261348:4406602")
     runtimeOnly fg.deobf("curse.maven:avaritia-1-10-261348:4406602")
-    implementation fg.deobf("curse.maven:avaritia-endless-624491:6489780")
+    //implementation fg.deobf("curse.maven:avaritia-endless-624491:6090046")
+
+    //LibGui
+    //compileOnly fg.deobf("maven.modrinth:libgui-forge:5.4.2")
+    //runtimeOnly fg.deobf("maven.modrinth:libgui-forge:5.4.2")
 
     //codechickenlib
     compileOnly fg.deobf("codechicken:CodeChickenLib:1.18.2-4.1.4.488:universal")
     runtimeOnly fg.deobf("codechicken:CodeChickenLib:1.18.2-4.1.4.488:universal")
 
     //等价交换
-    //implementation fg.deobf("curse.maven:projecte-226410:4860857")
     compileOnly fg.deobf("curse.maven:projecte-226410:4860857")
     runtimeOnly fg.deobf("curse.maven:projecte-226410:4860857")
 
@@ -228,35 +220,24 @@ dependencies {
     compileOnly fg.deobf("curse.maven:enigmatic-legacy-336184:4074264")
     runtimeOnly fg.deobf("curse.maven:enigmatic-legacy-336184:4074264")
 
-    //神秘遗物附属
-    //implementation fg.deobf("curse.maven:enigmatic-addons-1030121:5727873")
-
     //caelus
     compileOnly fg.deobf("curse.maven:caelus-308989:3650485")
     runtimeOnly fg.deobf("curse.maven:caelus-308989:3650485")
 
-    compileOnly fg.deobf("curse.maven:create-328085:5797603")
-    runtimeOnly fg.deobf("curse.maven:create-328085:5797603")
-
     //CrT
     compileOnly fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.116')
-//    runtimeOnly fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.116')
-
-    //鼠标手势
-//    runtimeOnly fg.deobf("curse.maven:mouse-tweaks-60089:3578801")
-
-    //geckolib
-    runtimeOnly fg.deobf("curse.maven:geckolib-388172:4181370")
+    runtimeOnly fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.116')
 
     //mob-battle
     runtimeOnly fg.deobf("curse.maven:mob-battle-mod-268746:4748498")
 
-    //blueprint
-    //implementation fg.deobf("com.teamabnormals:blueprint:1.18.2-5.5.0")
-
     //测试光影下是否bug
-    //implementation fg.deobf("curse.maven:oculus-581495:4578744")
-    //implementation fg.deobf("curse.maven:rubidium-574856:4494903")
+    implementation fg.deobf("curse.maven:oculus-581495:4578744")
+    implementation fg.deobf("curse.maven:rubidium-574856:4494903")
+
+    //联动mod
+    //geckolib
+    runtimeOnly fg.deobf("curse.maven:geckolib-388172:4181370")
 
     //属性修复
     compileOnly fg.deobf("curse.maven:attributefix-280510:5312029")
@@ -264,8 +245,21 @@ dependencies {
 
     //twilight forest
     compileOnly fg.deobf("teamtwilight:twilightforest:4.1.1494:universal")
-//    runtimeOnly fg.deobf("teamtwilight:twilightforest:4.1.1494:universal")
+    runtimeOnly fg.deobf("teamtwilight:twilightforest:4.1.1494:universal")
 
+    compileOnly fg.deobf("curse.maven:ice-and-fire-dragons-264231:4614465")
+    runtimeOnly fg.deobf("curse.maven:ice-and-fire-dragons-264231:4614465")
+
+    compileOnly fg.deobf("curse.maven:irons-spells-n-spellbooks-855414:5275053")
+    runtimeOnly fg.deobf("curse.maven:irons-spells-n-spellbooks-855414:5275053")
+
+    compileOnly fg.deobf("curse.maven:create-328085:5797603")
+    runtimeOnly fg.deobf("curse.maven:create-328085:5797603")
+
+    implementation fg.deobf("curse.maven:libx-412525:3829113")
+    implementation fg.deobf("curse.maven:mythicbotany-400058:4044205")
+    implementation fg.deobf("curse.maven:citadel-331936:3783096")
+    implementation fg.deobf("curse.maven:playeranimator-658587:4418152")
 
     //mixin
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'

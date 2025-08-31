@@ -399,6 +399,8 @@
   "death.attack.absolute": "%1$s被绝对力量湮灭了",
   "death.attack.absolute.player": "%1$s被%2$s的绝对力量湮灭了",
 
+
+  "container.ex_enigmaticlegacy.infinity_compressor.name": "无尽压缩机",
   "item.ex_enigmaticlegacy.colourful_dice.tooltip.line1": "一个能赐予强大遗物的神秘骰子",
   "item.ex_enigmaticlegacy.colourful_dice.tooltip.line2": "右键点击投掷以获得独特奖励",
   "item.ex_enigmaticlegacy.colourful_dice.tooltip.rewards": "可能的奖励：",
@@ -672,6 +674,10 @@
   "item.FRCtrlTooltip.lore": "§5按住§6Ctrl§5查看详情.",
   "key.ex_enigmaticlegacy.manaita_shears_toggle": "切换倍率模式",
   "item.ex_enigmaticlegacy.manaita_shears.message.doubling_toggle": "倍率模式: %s",
+  "ex.mana": "魔力: %s / %s",
+  "ex.hybrid_flower.mode_switched": "模式切换为: %s",
+  "ex.hybrid_flower.mode.generating": "产能模式",
+  "ex.hybrid_flower.mode.functional": "功能模式",
 
   "item.ex_enigmaticlegacy.crimson_spell.lore1": "召唤深红法球",
   "item.ex_enigmaticlegacy.crimson_spell.lore2": "法球试图瞄准你视线中的实体，",

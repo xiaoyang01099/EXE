@@ -60,7 +60,6 @@ public class BlockAntigravitation extends Block {
                               BlockEntity blockEntity, ItemStack tool) {
     }
 
-
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
                                   LevelAccessor world, BlockPos pos, BlockPos neighborPos) {

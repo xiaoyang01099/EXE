@@ -4,33 +4,23 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.*;
-import morph.avaritia.Avaritia;
-import morph.avaritia.compat.jei.AvaritiaJEIPlugin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.CelestialHTScreen;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.GuiExtremeAutoCrafter;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.GuiInfinityCompressor;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.RainbowTableScreen;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.JEI.AvaritiaJei.AutoExtremeCrafterGhostHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHTMenu;
-import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.RainbowTableContainer;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
-import net.xiaoyang010.ex_enigmaticlegacy.Recipe.AncientAlphirineRecipe;
-import net.xiaoyang010.ex_enigmaticlegacy.Recipe.CelestialTransmuteRecipe;
-import net.xiaoyang010.ex_enigmaticlegacy.Recipe.PolychromeRecipe;
-import net.xiaoyang010.ex_enigmaticlegacy.Recipe.RainbowTableRecipe;
+import net.xiaoyang010.ex_enigmaticlegacy.Recipe.*;
 
 import java.util.List;
 import java.util.Objects;
-
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
@@ -45,7 +35,6 @@ public class JEIPlugin implements IModPlugin {
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(
                 new PolychromeCollapsePrismRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
-                new AA(registration.getJeiHelpers().getGuiHelper()),
                 new CelestialTransmuteRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new RainbowTableCategory(registration.getJeiHelpers().getGuiHelper()),
                 new AncientAlphirineCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -55,9 +44,6 @@ public class JEIPlugin implements IModPlugin {
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addRecipeClickArea(CelestialHTScreen.class, 0, 0, 0, 0, CelestialTransmuteRecipe.TYPE_ID);
         registration.addRecipeClickArea(RainbowTableScreen.class, 99, 51, 35, 5, RainbowTableRecipe.TYPE_ID);
-        registration.addRecipeClickArea(GuiExtremeAutoCrafter.class, 251, 184, 7, 3, AvaritiaJEIPlugin.EXTREME_CRAFTING_TYPE);
-        registration.addRecipeClickArea(GuiInfinityCompressor.class, 151, 7, 17, 17, AvaritiaJEIPlugin.COMPRESSOR_TYPE);
-        registration.addGhostIngredientHandler(GuiExtremeAutoCrafter.class, new AutoExtremeCrafterGhostHandler());
     }
 
     @Override
@@ -78,19 +64,6 @@ public class JEIPlugin implements IModPlugin {
                 5,
                 36
         );
-        registration.addRecipeTransferHandler(
-                ContainerExtremeAutoCrafter.class,
-                new ResourceLocation(Avaritia.MOD_ID, "extreme_crafting"),
-                81,
-                161,
-                162,
-                163
-        );
-
-//        registration.addRecipeTransferHandler(new AutoExtremeCrafterTransferHandler(),
-//                AvaritiaJEIPlugin.EXTREME_CRAFTING_TYPE);
-//        registration.addRecipeTransferHandler(new InfinityCompressorTransferHandler(),
-//                AvaritiaJEIPlugin.COMPRESSOR_TYPE);
     }
 
     @Override
@@ -101,10 +74,7 @@ public class JEIPlugin implements IModPlugin {
                 RainbowTableRecipe.TYPE_ID);
         registration.addRecipeCatalyst(new ItemStack(ModBlockss.POLYCHROME_COLLAPSE_PRISM.get()),
                 PolychromeRecipe.TYPE_ID);
-        registration.addRecipeCatalyst(new ItemStack(ModBlockss.EXTREME_AUTO_CRAFTER.get()),
-                AvaritiaJEIPlugin.EXTREME_CRAFTING_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(ModBlockss.INFINITY_COMPRESSOR.get()),
-                AvaritiaJEIPlugin.COMPRESSOR_TYPE);
+
     }
 
     @Override
