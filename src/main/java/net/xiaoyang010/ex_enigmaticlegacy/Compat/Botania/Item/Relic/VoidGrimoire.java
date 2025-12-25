@@ -9,19 +9,26 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -129,6 +136,16 @@ public class VoidGrimoire extends Item implements INoEMCItem {
         if (overthrower.level.isClientSide) {
             entity.discard();
         } else {
+            if (!(entity instanceof Player)) {
+                entity.dropCustomDeathLoot(DamageSource.MAGIC, 0, false);
+                int experience = entity.getExperienceReward(overthrower);
+                if (experience > 0) {
+                    overthrower.giveExperiencePoints(experience);
+                }
+            }
+
+            generateAndGiveLoot(entity, overthrower);
+
             double x = (Math.random() - 0.5) * VOID_TELEPORT_RANGE;
             double z = (Math.random() - 0.5) * VOID_TELEPORT_RANGE;
             double y = VOID_Y_BASE + (Math.random() - 0.5) * VOID_TELEPORT_RANGE;
@@ -137,13 +154,53 @@ public class VoidGrimoire extends Item implements INoEMCItem {
 
             if (!(entity instanceof Player)) {
                 entity.discard();
-            } else if (!overthrower.level.isClientSide) {
+            } else {
                 NetworkHandler.sendOverthrowMessage(new OverthrowChatMessage(
                         entity.getDisplayName().getString(),
                         overthrower.getDisplayName().getString(),
                         1
                 ));
             }
+        }
+    }
+
+    private void generateAndGiveLoot(LivingEntity entity, Player player) {
+        if (!(entity.level instanceof ServerLevel serverLevel) || entity instanceof Player) {
+            return;
+        }
+
+        try {
+            LootTable lootTable = serverLevel.getServer().getLootTables().get(entity.getLootTable());
+
+            if (lootTable != null) {
+                LootContext.Builder contextBuilder = new LootContext.Builder(serverLevel)
+                        .withParameter(LootContextParams.THIS_ENTITY, entity)
+                        .withParameter(LootContextParams.ORIGIN, entity.position())
+                        .withParameter(LootContextParams.DAMAGE_SOURCE, DamageSource.MAGIC)
+                        .withOptionalParameter(LootContextParams.KILLER_ENTITY, player)
+                        .withOptionalParameter(LootContextParams.DIRECT_KILLER_ENTITY, player)
+                        .withLuck(player.getLuck());
+
+                LootContext context = contextBuilder.create(LootContextParamSets.ENTITY);
+
+                List<ItemStack> lootItems = lootTable.getRandomItems(context);
+
+                for (ItemStack lootItem : lootItems) {
+                    if (!lootItem.isEmpty()) {
+                        if (!player.getInventory().add(lootItem)) {
+                            ItemEntity itemEntity = new ItemEntity(serverLevel,
+                                    player.getX(), player.getY(), player.getZ(), lootItem);
+                            serverLevel.addFreshEntity(itemEntity);
+                        }
+                    }
+                }
+
+                player.level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.5F,
+                        0.8F + player.level.random.nextFloat() * 0.4F);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to generate loot for entity: " + entity.getType().toString());
         }
     }
 

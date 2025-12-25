@@ -446,12 +446,12 @@ public class CatMewEntity extends Monster {
     }
 
     @Override
-    protected int getExperienceReward(Player pPlayer) {
+    public int getExperienceReward(Player pPlayer) {
         return 1024;
     }
 
     @Override
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean hit) {
+    public void dropCustomDeathLoot(DamageSource source, int looting, boolean hit) {
         super.dropCustomDeathLoot(source, looting, hit);
         spawnLoot();
     }

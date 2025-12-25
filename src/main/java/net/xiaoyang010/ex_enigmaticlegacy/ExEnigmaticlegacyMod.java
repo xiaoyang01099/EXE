@@ -24,6 +24,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Event.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.TooltipEvent;
+import net.xiaoyang010.ex_enigmaticlegacy.Util.SkeletonGoalReplacer;
 import net.xiaoyang010.ex_enigmaticlegacy.api.emc.NoEMCCommandInterceptor;
 import net.xiaoyang010.ex_enigmaticlegacy.api.emc.NoEMCEventHandler;
 import org.apache.logging.log4j.LogManager;
@@ -73,6 +74,7 @@ public class ExEnigmaticlegacyMod {
 		ModBiomes.REGISTRY.register(bus);
 		ModEnchantments.REGISTRY.register(bus);
 		ModIntegrationItems.REGISTRY.register(bus);
+		ModMaterials.REGISTRY.register(bus);
 		ConfigHandler.register();
 
 		ModIntegrationFlowers.BLOCK_REGISTRY.register(bus);
@@ -87,7 +89,6 @@ public class ExEnigmaticlegacyMod {
 		MinecraftForge.EVENT_BUS.register(new RelicsEventHandler());
 		MinecraftForge.EVENT_BUS.register(new TooltipEvent());
 		MinecraftForge.EVENT_BUS.register(new SpectatorModeHandler());
-
 
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);

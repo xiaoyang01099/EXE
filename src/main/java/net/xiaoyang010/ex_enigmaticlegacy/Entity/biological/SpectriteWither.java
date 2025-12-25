@@ -55,7 +55,7 @@ public class SpectriteWither extends WitherBoss {
 
     // 不掉落物品
     @Override
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHit) {
+    public void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHit) {
         // 覆盖掉落逻辑，取消掉落
     }
 }

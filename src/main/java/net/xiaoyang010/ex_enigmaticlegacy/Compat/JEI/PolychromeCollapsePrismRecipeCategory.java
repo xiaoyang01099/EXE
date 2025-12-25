@@ -15,9 +15,12 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.PolychromeRecipe;
 import vazkii.botania.client.gui.HUDHandler;
+import vazkii.botania.client.integration.jei.TerraPlateDrawable;
+import vazkii.botania.common.block.ModBlocks;
 
 import javax.annotation.Nonnull;
 
@@ -34,14 +37,11 @@ public class PolychromeCollapsePrismRecipeCategory implements IRecipeCategory<Po
     private final IDrawable fullStructure;
 
     public PolychromeCollapsePrismRecipeCategory(IGuiHelper guiHelper) {
-        // 创建更大的背景以容纳完整的15x15结构
         ResourceLocation location = prefix("textures/gui/terrasteel_jei_overlay.png");
         background = guiHelper.createBlankDrawable(300, 400);
         overlay = guiHelper.createDrawable(location, 0, 0, 300, 400);
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlockss.POLYCHROME_COLLAPSE_PRISM.get()));
         localizedName = new TranslatableComponent("jei.ex_enigmaticlegacy.category.polychrome_collapse_prism");
-
-        // 创建完整的多方块结构绘制
         fullStructure = new PolychromeCollapsePrismDrawable(guiHelper);
     }
 

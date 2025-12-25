@@ -16,10 +16,12 @@ import net.xiaoyang010.ex_enigmaticlegacy.Block.FluffyDandelionBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.custom.CustomSaplingBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.AsgardandelionParticle;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.DandelionFluffParticle;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Hybrid.AquaticAnglerNarcissus;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.*;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.GearFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Generating.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.Future.GearFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.Future.TrinarySynthesis;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.RuneFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -79,10 +81,11 @@ public class ClientSideHandler {
         MusicalOrchid.registerRenderLayer();
         AncientAlphirine.registerRenderLayer();
         Dictarius.registerRenderLayer();
-
+        AquaticAnglerNarcissus.registerRenderLayer();
         EvilForge.registerRenderLayer();
         EtheriumForge.registerRenderLayer();
         ArdentAzarcissus.registerRenderLayer();
+        RuneFlower.registerRenderLayer();
 
         //联动渲染注册
         if (ModList.get().isLoaded("projecte")) {

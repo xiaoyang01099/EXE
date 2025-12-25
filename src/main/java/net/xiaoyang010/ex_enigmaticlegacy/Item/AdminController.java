@@ -8,13 +8,11 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -31,27 +29,22 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.ModList;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import org.jetbrains.annotations.NotNull;
-import twilightforest.TFSounds;
-import twilightforest.entity.CharmEffect;
-import twilightforest.entity.TFEntities;
-import twilightforest.item.PhantomArmorItem;
-import twilightforest.item.TFItems;
-import twilightforest.util.TFItemStackUtils;
-import twilightforest.util.TFStats;
+
+// Curios API imports
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
 import javax.annotation.Nullable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID)
 public class AdminController extends Item {
@@ -63,6 +56,7 @@ public class AdminController extends Item {
     };
 
     public static final String CHARM_INV_TAG = "CharmInventory";
+    public static final String CURIOS_INV_TAG = "CuriosInventory";
     private static final int TOTAL_WEIGHT = 100;
     private static final String NBT_KEEP_INVENTORY = "KeepInventoryEnabled";
     private static final String NBT_OWNER_UUID = "OwnerUUID";
@@ -92,6 +86,7 @@ public class AdminController extends Item {
         Player var2 = event.getPlayer();
         if (var2 instanceof ServerPlayer serverPlayer) {
             returnStoredItems(serverPlayer);
+            returnCuriosItems(serverPlayer);
         }
     }
 
@@ -102,17 +97,17 @@ public class AdminController extends Item {
         if (living instanceof Player player && !player.isSpectator()) {
             if (!living.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) {
                 charmOfKeeping(player);
-
             }
         }
-
     }
 
     private static ItemStack charmUsed;
     public static int damage = 0;
 
     public static boolean consumeInventoryItem(Player player, Item item) {
-        return consumeInventoryItem(player.getInventory().armor, item) || consumeInventoryItem(player.getInventory().items, item) || consumeInventoryItem(player.getInventory().offhand, item);
+        return consumeInventoryItem(player.getInventory().armor, item) ||
+                consumeInventoryItem(player.getInventory().items, item) ||
+                consumeInventoryItem(player.getInventory().offhand, item);
     }
 
     public static boolean consumeInventoryItem(NonNullList<ItemStack> stacks, Item item) {
@@ -139,43 +134,108 @@ public class AdminController extends Item {
     }
 
     private static void charmOfKeeping(Player player) {
-
         boolean tier3 = consumeInventoryItem(player, ModItems.ADMIN_CONTROLLER.get());
+
+        if (!tier3) return;
 
         Inventory keepInventory = new Inventory(null);
         ListTag tagList = new ListTag();
 
+        keepWholeList(keepInventory.items, player.getInventory().items);
 
+        keepWholeList(keepInventory.armor, player.getInventory().armor);
 
-        if (tier3) {
-            keepWholeList(keepInventory.items, player.getInventory().items);
-            charmUsed = new ItemStack(ModItems.ADMIN_CONTROLLER.get());
-        }
+        keepWholeList(keepInventory.offhand, player.getInventory().offhand);
 
-        for (int i = 0; i < player.getInventory().items.size(); i++) {
-            ItemStack stack = player.getInventory().items.get(i);
-            if (stack.getItem() == TFItems.TOWER_KEY.get()) {
-                keepInventory.items.set(i, stack.copy());
-                player.getInventory().items.set(i, ItemStack.EMPTY);
-            }
-            if (stack.getItem() instanceof PhantomArmorItem) {
-                keepInventory.items.set(i, stack.copy());
-                player.getInventory().items.set(i, ItemStack.EMPTY);
-            }
-        }
-
-        for (int i = 0; i < player.getInventory().armor.size(); i++) {
-            ItemStack armor = player.getInventory().armor.get(i);
-            if (armor.getItem() instanceof PhantomArmorItem) {
-                keepInventory.armor.set(i, armor.copy());
-                player.getInventory().armor.set(i, ItemStack.EMPTY);
-            }
-        }
-
+        charmUsed = new ItemStack(ModItems.ADMIN_CONTROLLER.get());
 
         if (!keepInventory.isEmpty()) {
             keepInventory.save(tagList);
             getPlayerData(player).put(CHARM_INV_TAG, tagList);
+        }
+
+        if (ModList.get().isLoaded("curios")) {
+            saveCuriosItems(player);
+        }
+    }
+
+    private static void saveCuriosItems(Player player) {
+        CuriosApi.getCuriosHelper().getCuriosHandler(player).ifPresent(handler -> {
+            CompoundTag curiosData = new CompoundTag();
+
+            Map<String, ICurioStacksHandler> curios = handler.getCurios();
+            for (Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet()) {
+                String identifier = entry.getKey();
+                ICurioStacksHandler stacksHandler = entry.getValue();
+
+                ListTag slotData = new ListTag();
+
+                for (int i = 0; i < stacksHandler.getSlots(); i++) {
+                    ItemStack stack = stacksHandler.getStacks().getStackInSlot(i);
+                    if (!stack.isEmpty()) {
+                        CompoundTag itemData = new CompoundTag();
+                        itemData.putInt("Slot", i);
+                        stack.save(itemData);
+                        slotData.add(itemData);
+
+                        stacksHandler.getStacks().setStackInSlot(i, ItemStack.EMPTY);
+                    }
+                }
+
+                if (!slotData.isEmpty()) {
+                    curiosData.put(identifier, slotData);
+                }
+            }
+
+            if (!curiosData.isEmpty()) {
+                getPlayerData(player).put(CURIOS_INV_TAG, curiosData);
+            }
+        });
+    }
+
+    private static void returnCuriosItems(Player player) {
+        if (!ModList.get().isLoaded("curios")) return;
+
+        CompoundTag playerData = getPlayerData(player);
+        if (!player.level.isClientSide && playerData.contains(CURIOS_INV_TAG)) {
+            CompoundTag curiosData = playerData.getCompound(CURIOS_INV_TAG);
+
+            CuriosApi.getCuriosHelper().getCuriosHandler(player).ifPresent(handler -> {
+                Map<String, ICurioStacksHandler> curios = handler.getCurios();
+
+                for (String identifier : curiosData.getAllKeys()) {
+                    if (curios.containsKey(identifier)) {
+                        ICurioStacksHandler stacksHandler = curios.get(identifier);
+                        ListTag slotData = curiosData.getList(identifier, 10);
+
+                        for (int i = 0; i < slotData.size(); i++) {
+                            CompoundTag itemData = slotData.getCompound(i);
+                            int slot = itemData.getInt("Slot");
+                            ItemStack stack = ItemStack.of(itemData);
+
+                            if (slot < stacksHandler.getSlots() && !stack.isEmpty()) {
+                                if (stacksHandler.getStacks().getStackInSlot(slot).isEmpty()) {
+                                    stacksHandler.getStacks().setStackInSlot(slot, stack);
+                                } else {
+                                    boolean placed = false;
+                                    for (int j = 0; j < stacksHandler.getSlots(); j++) {
+                                        if (stacksHandler.getStacks().getStackInSlot(j).isEmpty()) {
+                                            stacksHandler.getStacks().setStackInSlot(j, stack);
+                                            placed = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!placed) {
+                                        player.getInventory().add(stack);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            playerData.remove(CURIOS_INV_TAG);
         }
     }
 
@@ -183,25 +243,43 @@ public class AdminController extends Item {
         CompoundTag playerData = getPlayerData(player);
         if (!player.level.isClientSide && playerData.contains(CHARM_INV_TAG)) {
             ListTag tagList = playerData.getList(CHARM_INV_TAG, 10);
-            TFItemStackUtils.loadNoClear(tagList, player.getInventory());
+            loadNoClear(tagList, player.getInventory());
             getPlayerData(player).getList(CHARM_INV_TAG, 10).clear();
             getPlayerData(player).remove(CHARM_INV_TAG);
         }
+    }
 
-        if (charmUsed != null) {
-            CharmEffect effect = new CharmEffect((EntityType) TFEntities.CHARM_EFFECT.get(), player.level, player, charmUsed.getItem());
-            player.level.addFreshEntity(effect);
-            CharmEffect effect2 = new CharmEffect((EntityType)TFEntities.CHARM_EFFECT.get(), player.level, player, charmUsed.getItem());
-            effect2.offset = 3.1415927F;
-            player.level.addFreshEntity(effect2);
-            player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), TFSounds.CHARM_KEEP, player.getSoundSource(), 1.5F, 1.0F);
-            if (player instanceof ServerPlayer) {
-                player.awardStat((ResourceLocation) TFStats.KEEPING_CHARMS_ACTIVATED.get());
+    public static void loadNoClear(ListTag tag, Inventory inventory) {
+        List<ItemStack> blockedItems = new ArrayList<>();
+
+        for (int i = 0; i < tag.size(); ++i) {
+            CompoundTag compoundtag = tag.getCompound(i);
+            int j = compoundtag.getByte("Slot") & 255;
+            ItemStack itemstack = ItemStack.of(compoundtag);
+            if (!itemstack.isEmpty()) {
+                if (j < inventory.items.size()) {
+                    if (inventory.items.get(j).isEmpty()) {
+                        inventory.items.set(j, itemstack);
+                    } else {
+                        blockedItems.add(itemstack);
+                    }
+                } else if (j >= 100 && j < inventory.armor.size() + 100) {
+                    if (inventory.armor.get(j - 100).isEmpty()) {
+                        inventory.armor.set(j - 100, itemstack);
+                    } else {
+                        blockedItems.add(itemstack);
+                    }
+                } else if (j >= 150 && j < inventory.offhand.size() + 150) {
+                    if (inventory.offhand.get(j - 150).isEmpty()) {
+                        inventory.offhand.set(j - 150, itemstack);
+                    } else {
+                        blockedItems.add(itemstack);
+                    }
+                }
             }
-
-            charmUsed = null;
         }
 
+        if(!blockedItems.isEmpty()) blockedItems.forEach(inventory::add);
     }
 
     @Override
@@ -222,28 +300,6 @@ public class AdminController extends Item {
         }
 
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onLivingDrops(LivingDropsEvent event) {
-//        if (!(event.getEntityLiving() instanceof Player player)) {
-//            return;
-//        }
-//
-//        boolean globalKeepInventory = player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY);
-//
-//        if (globalKeepInventory) {
-//            return;
-//        }
-//
-//        boolean b = false;
-//        for (ItemStack item : player.getInventory().items) {
-//            if (item.getItem() == ModItems.ADMIN_CONTROLLER.get()) b = true;
-//        }
-//
-//        if (b) {
-//            event.setCanceled(true);
-//        }
     }
 
     private void enableKeepInventoryForSelf(ItemStack itemStack, ServerPlayer player) {

@@ -23,8 +23,7 @@ public class ModModelLayers {
     public static final ModelLayerLocation ENGINEER_HOPPER = new ModelLayerLocation(
             new ResourceLocation(ExEnigmaticlegacyMod.MODID, "engineer_hopper"), "main");
 
-    private static ModelLayerLocation createLocation(String name, String variant) {
-        return new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, name), variant);
+    public static final ModelLayerLocation VINE_AND_PIECE = new ModelLayerLocation(
+            new ResourceLocation(ExEnigmaticlegacyMod.MODID, "vine_and_piece"), "main");
 
-    }
 }

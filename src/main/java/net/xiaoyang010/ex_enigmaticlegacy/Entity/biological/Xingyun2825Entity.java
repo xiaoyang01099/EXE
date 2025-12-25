@@ -128,7 +128,7 @@ public class Xingyun2825Entity extends Monster implements PowerableMob{
     }
 
     //一般这里有这种方法是用来管理掉落的
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
+    public void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         this.spawnAtLocation(new ItemStack(Items.BEDROCK.asItem()));
         this.spawnAtLocation(new ItemStack(Items.BARRIER.asItem()));

@@ -17,6 +17,8 @@
     "minecraft:furnace",
     "ex_enigmaticlegacy:mana_charger",
     "ex_enigmaticlegacy:extreme_auto_crafter",
-    "ex_enigmaticlegacy:infinity_compressor"
+    "ex_enigmaticlegacy:infinity_compressor",
+    "ex_enigmaticlegacy:deconstruction_table",
+    "twilightforest:uncrafting_table"
   ]
 }

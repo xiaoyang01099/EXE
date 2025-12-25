@@ -32,6 +32,26 @@ public class ModEntities {
 //							.fireImmune()
 //							.build(new ResourceLocation("ex_enigmaticlegacy", "rainbow_wither_skull").toString()));
 
+//	public static final RegistryObject<EntityType<EntityDopplegangerVI>> DOPPLEGANGER_VI =
+//			REGISTRY.register("doppleganger_vi",
+//					() -> EntityType.Builder.of(EntityDopplegangerVI::new, MobCategory.MONSTER)
+//							.sized(0.6F, 1.8F)
+//							.clientTrackingRange(10)
+//							.updateInterval(10)
+//							.fireImmune()
+//							.build("doppleganger_vi")
+//			);
+
+	public static final RegistryObject<EntityType<EntityManaVine>> MANA_VINE_BALL =
+			REGISTRY.register("mana_vine_ball",
+					() -> EntityType.Builder.<EntityManaVine>of(EntityManaVine::new, MobCategory.MISC)
+							.sized(0.25F, 0.25F)
+							.clientTrackingRange(64)
+							.updateInterval(10)
+							.setShouldReceiveVelocityUpdates(true)
+							.build("mana_vine_ball")
+			);
+
 	public static final RegistryObject<EntityType<EntityDarkMatterOrb>> DARK_MATTER_ORB = REGISTRY.register("dark_matter_orb",
 					() -> EntityType.Builder.<EntityDarkMatterOrb>of(EntityDarkMatterOrb::new, MobCategory.MISC)
 					.sized(0.25F, 0.25F)

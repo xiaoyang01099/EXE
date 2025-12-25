@@ -17,6 +17,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -28,6 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.CommonHelper;
 import vazkii.botania.client.fx.WispParticleData;
 
@@ -45,10 +48,11 @@ public class EntityManaVine extends ThrowableProjectile {
     }
 
     public EntityManaVine(Level level, LivingEntity shooter) {
-        super(EntityType.SNOWBALL, shooter, level);
+        super(ModEntities.MANA_VINE_BALL.get(), shooter, level);
         if (shooter instanceof Player player) {
             setAttacker(player.getStringUUID());
         }
+        this.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 1.5F, 1.0F);
     }
 
     @Override
@@ -159,11 +163,9 @@ public class EntityManaVine extends ThrowableProjectile {
         List<Animal> animals = this.level.getEntitiesOfClass(Animal.class, area);
 
         for (Animal animal : animals) {
-            if (animal.hurt(DamageSource.playerAttack(player), 0.0F)) {
-                animal.setInLove(player);
-                if (this.level instanceof ServerLevel serverLevel) {
-                    serverLevel.broadcastEntityEvent(animal, (byte) 18);
-                }
+            animal.setInLove(null);
+            if (this.level instanceof ServerLevel serverLevel) {
+                serverLevel.broadcastEntityEvent(animal, (byte) 18);
             }
         }
     }

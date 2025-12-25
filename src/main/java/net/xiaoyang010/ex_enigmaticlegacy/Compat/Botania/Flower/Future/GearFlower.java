@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional;
+package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.Future;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;

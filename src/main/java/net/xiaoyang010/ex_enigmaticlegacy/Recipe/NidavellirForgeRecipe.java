@@ -10,12 +10,14 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class NidavellirForgeRecipe implements Recipe<Container> {
@@ -52,25 +54,25 @@ public class NidavellirForgeRecipe implements Recipe<Container> {
     }
 
     public boolean matches(Container inv) {
-        List<ItemStack> inputsRequired = new ArrayList<>(this.inputs);
-
-        for (ItemStack requiredInput : inputsRequired) {
-            boolean found = false;
-
-            for (int i = 1; i < inv.getContainerSize(); i++) {
-                ItemStack stack = inv.getItem(i);
-                if (!stack.isEmpty() && simpleAreStacksEqual(requiredInput.copy(), stack)) {
-                    found = true;
-                    break;
+        int num = 0;
+        List<ItemStack> stacks = new ArrayList<>();
+        this.inputs.forEach(stack -> stacks.add(stack.copy()));
+        Iterator<ItemStack> iterator = stacks.iterator();
+        for (int i = 1; i < inv.getContainerSize(); i++) {
+            ItemStack stack = inv.getItem(i);
+            if (!stack.isEmpty()) {
+                while (iterator.hasNext()){
+                    ItemStack next = iterator.next();
+                    if (next.equals(stack, false)) {
+                        num++;
+                        iterator.remove();
+                        break;
+                    }
                 }
-            }
-
-            if (!found) {
-                return false;
             }
         }
 
-        return true;
+        return num == this.inputs.size();
     }
 
     private boolean simpleAreStacksEqual(ItemStack input, ItemStack stack) {
@@ -134,9 +136,7 @@ public class NidavellirForgeRecipe implements Recipe<Container> {
         public static final String ID = "nidavellir_forge";
     }
 
-    public static class Serializer implements RecipeSerializer<NidavellirForgeRecipe> {
-        public static final Serializer INSTANCE = new Serializer();
-        private static final ResourceLocation NAME = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "nidavellir_forge");
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<NidavellirForgeRecipe> {
 
         @Override
         public NidavellirForgeRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
@@ -179,21 +179,6 @@ public class NidavellirForgeRecipe implements Recipe<Container> {
             for (ItemStack input : recipe.inputs) {
                 buffer.writeItem(input);
             }
-        }
-
-        @Override
-        public RecipeSerializer<?> setRegistryName(ResourceLocation name) {
-            return this;
-        }
-
-        @Override
-        public @Nullable ResourceLocation getRegistryName() {
-            return NAME;
-        }
-
-        @Override
-        public Class<RecipeSerializer<?>> getRegistryType() {
-            return (Class<RecipeSerializer<?>>) (Class<?>) RecipeSerializer.class;
         }
     }
 }

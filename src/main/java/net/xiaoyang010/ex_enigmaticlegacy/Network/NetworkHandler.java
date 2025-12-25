@@ -256,6 +256,13 @@ public class NetworkHandler {
                 ExtremeAutoCrafterGhostTransferMessage::decode,
                 ExtremeAutoCrafterGhostTransferMessage::handle
         );
+        CHANNEL.registerMessage(
+                packetId++,
+                StepHeightMessage.class,
+                StepHeightMessage::encode,
+                StepHeightMessage::decode,
+                StepHeightMessage::handle
+        );
     }
 
     public static void sendToServer(Object packet) {

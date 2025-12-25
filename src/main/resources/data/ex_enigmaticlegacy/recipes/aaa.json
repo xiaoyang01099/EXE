@@ -1,0 +1,27 @@
+{
+  "type": "ex_enigmaticlegacy:nidavellir_forge",
+  "mana": 5000,
+  "color": 65535,
+  "ingredients": [
+    {
+      "item": "minecraft:diamond",
+      "count": 1
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 1
+    },
+    {
+      "item": "minecraft:stick",
+      "count": 1
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 1
+    }
+  ],
+  "output": {
+    "item": "minecraft:emerald",
+    "count": 1
+  }
+}

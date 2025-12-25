@@ -123,7 +123,7 @@ public class WildHuntArmorEventHandler {
                 undead.setTarget(monster);
 
                 if (undead instanceof AbstractSkeleton) {
-                    ((AbstractSkeleton) undead).setAggressive(true);
+                    undead.setAggressive(true);
                 }
                 break;
             }
@@ -162,7 +162,7 @@ public class WildHuntArmorEventHandler {
             mobUndead.setTarget(player);
 
             if (mobUndead instanceof AbstractSkeleton) {
-                ((AbstractSkeleton) mobUndead).setAggressive(true);
+                mobUndead.setAggressive(true);
             }
         }
 
@@ -173,7 +173,7 @@ public class WildHuntArmorEventHandler {
                 nearbyUndead.setTarget(player);
 
                 if (nearbyUndead instanceof AbstractSkeleton) {
-                    ((AbstractSkeleton) nearbyUndead).setAggressive(true);
+                    nearbyUndead.setAggressive(true);
                 }
             }
         }

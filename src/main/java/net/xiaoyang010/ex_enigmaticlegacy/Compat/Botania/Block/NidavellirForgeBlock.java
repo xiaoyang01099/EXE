@@ -2,6 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -27,13 +28,14 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.NidavellirFo
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class NidavellirForgeBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    protected static final VoxelShape SHAPE_NORTH = Block.box(3, 0, 1, 13, 12, 16);
-    protected static final VoxelShape SHAPE_SOUTH = Block.box(3, 0, 0, 13, 12, 15);
-    protected static final VoxelShape SHAPE_EAST = Block.box(0, 0, 3, 15, 12, 13);
+    protected static final VoxelShape SHAPE_NORTH = Block.box(1, 0, 3, 12, 12, 16);
+    protected static final VoxelShape SHAPE_SOUTH = Block.box(1, 0, 3, 12, 12, 15);
+    protected static final VoxelShape SHAPE_EAST = Block.box(0, 0, 1, 15, 12, 13);
     protected static final VoxelShape SHAPE_WEST = Block.box(1, 0, 3, 16, 12, 13);
 
     public NidavellirForgeBlock(Properties properties) {
@@ -59,10 +61,10 @@ public class NidavellirForgeBlock extends BaseEntityBlock {
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return switch (state.getValue(FACING)) {
-            case SOUTH -> SHAPE_SOUTH;
-            case EAST -> SHAPE_EAST;
-            case WEST -> SHAPE_WEST;
-            default -> SHAPE_NORTH;
+            case SOUTH -> Block.box(1, 0, 4, 15, 10, 12);
+            case EAST -> Block.box(4, 0, 0, 12, 10, 15);
+            case WEST -> Block.box(4, 0, 1, 12, 10, 15);
+            default -> Block.box(0, 0, 4, 15, 10, 12);
         };
     }
 
@@ -93,6 +95,7 @@ public class NidavellirForgeBlock extends BaseEntityBlock {
                 }
             }
         }
+
         return InteractionResult.PASS;
     }
 

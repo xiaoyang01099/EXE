@@ -82,8 +82,6 @@ public class MithrillRing extends ItemBauble implements ICurioItem  {
         }
     }
 
-    // ============ Creative Mode Tab ============
-
     @Override
     public void fillItemCategory(@Nonnull CreativeModeTab tab, @Nonnull NonNullList<ItemStack> stacks) {
         if (allowdedIn(tab)) {

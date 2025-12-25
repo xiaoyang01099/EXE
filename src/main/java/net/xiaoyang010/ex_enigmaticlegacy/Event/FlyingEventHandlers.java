@@ -143,7 +143,6 @@ public class FlyingEventHandlers {
         return false;
     }
 
-
     private static void addEffects(Player player) {
         player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, Integer.MAX_VALUE, 255, false, false));
         player.addEffect(new MobEffectInstance(MobEffects.SATURATION, Integer.MAX_VALUE, 255, false, false));

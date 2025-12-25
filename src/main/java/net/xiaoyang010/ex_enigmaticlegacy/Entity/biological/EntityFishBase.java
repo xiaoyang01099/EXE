@@ -422,7 +422,7 @@ public abstract class EntityFishBase extends TamableAnimal {
     }
 
     @Override
-    protected boolean shouldDropExperience() {
+    public boolean shouldDropExperience() {
         return true;
     }
 

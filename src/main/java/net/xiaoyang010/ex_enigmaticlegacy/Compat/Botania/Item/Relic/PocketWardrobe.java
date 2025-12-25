@@ -258,7 +258,7 @@ public class PocketWardrobe extends ItemRelic implements INoEMCItem {
             var relicCap = stack.getCapability(BotaniaForgeCapabilities.RELIC);
             if (relicCap.isPresent()) {
                 IRelic relic = relicCap.orElse(null);
-                if (relic != null && relic.isRightPlayer(player)) {
+                if (relic.isRightPlayer(player)) {
                     this.render(stack, player, event.getPoseStack(), event.getPartialTick());
                 }
             }

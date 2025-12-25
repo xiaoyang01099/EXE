@@ -98,6 +98,7 @@ public class PolychromeCollapsePrismDrawable implements IDrawable {
         blockDrawables.put('X', guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.naturaPylon)));
     }
 
+
     @Override
     public int getWidth() {
         return 15 * blockSize + 2 * layerSpacing; // 3层并排显示

@@ -9,6 +9,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +22,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
@@ -31,6 +33,7 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.ModelArmorWildHunt;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
@@ -50,6 +53,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
+@Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID)
 public class WildHuntArmor extends ItemManasteelArmor implements IManaItem, IManaProficiencyArmor {
     private static ItemStack[] armorSet;
     private static final Properties WILD_HUNT_ARMOR = new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).durability(0).rarity(EXEAPI.rarityWildHunt).setNoRepair();
@@ -71,7 +75,6 @@ public class WildHuntArmor extends ItemManasteelArmor implements IManaItem, IMan
 
     public WildHuntArmor(EquipmentSlot slot) {
         super(slot, EXEAPI.wildHuntArmor, WILD_HUNT_ARMOR);
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public ItemStack[] getArmorSetStacks() {
@@ -227,6 +230,40 @@ public class WildHuntArmor extends ItemManasteelArmor implements IManaItem, IMan
                 player.playSound(SoundEvents.WITHER_SHOOT, 0.3F, 1.5F);
                 player.playSound(SoundEvents.ENDER_DRAGON_FLAP, 0.4F, 0.8F);
                 player.playSound(SoundEvents.BLAZE_SHOOT, 0.25F, 0.7F);
+
+                double damageRange = 3.5D;
+                List<LivingEntity> nearbyEntities = player.level.getEntitiesOfClass(
+                        LivingEntity.class,
+                        new AABB(
+                                player.getX() - damageRange, player.getY() - 1.0, player.getZ() - damageRange,
+                                player.getX() + damageRange, player.getY() + 2.0, player.getZ() + damageRange
+                        )
+                );
+
+                for (LivingEntity entity : nearbyEntities) {
+                    if (entity != player) {
+                        DamageSource absoluteDamage = new DamageSource("wild_hunt_jump")
+                                .bypassArmor()
+                                .bypassMagic()
+                                .bypassInvul()
+                                .setMagic();
+
+                        if (entity instanceof Mob) {
+                            Mob mob = (Mob) entity;
+                            LivingEntity originalTarget = mob.getTarget();
+
+                            entity.hurt(absoluteDamage, 100.0F);
+
+                            if (originalTarget != null && originalTarget.isAlive()) {
+                                mob.setTarget(originalTarget);
+                            } else if (mob.getTarget() == player) {
+                                mob.setTarget(null);
+                            }
+                        } else {
+                            entity.hurt(absoluteDamage, 100.0F);
+                        }
+                    }
+                }
 
                 CloudJumpParticlePacket packet = new CloudJumpParticlePacket(
                         player.getX(), player.getY(), player.getZ()

@@ -144,9 +144,6 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         }
     }
 
-    /**
-     * 更新客户端缓存数据
-     */
     private void updateClientCache() {
         if (ticksExisted % 10 == 0) {
             cachedMultiplier = getCurrentMultiplier();
@@ -155,9 +152,6 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         }
     }
 
-    /**
-     * 同步数据到客户端
-     */
     private void syncToClient() {
         if (level instanceof ServerLevel) {
             cachedMultiplier = getCurrentMultiplier();
@@ -168,9 +162,6 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         }
     }
 
-    /**
-     * 修复后的倍数计算 - 确保达到最大倍数后持续工作
-     */
     private int getCurrentMultiplier() {
         if (level == null || placementTime == -1) return 1;
 
@@ -203,22 +194,15 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         return Math.min(multiplier, 2147483647);
     }
 
-    /**
-     * 获取当前EMC产出率 - 修复整数溢出问题
-     */
     public long getCurrentEmcRate() {
         int multiplier = getCurrentMultiplier();
         long emcRate = (long) BASE_EMC_PER_SECOND * multiplier;
         return Math.min(emcRate, Long.MAX_VALUE / 100);
     }
 
-    /**
-     * 获取当前魔力消耗 - 修改为对数增长而非线性增长
-     */
     public int getCurrentManaCost() {
         int multiplier = getCurrentMultiplier();
 
-        // 达到最大倍数时的特殊消耗
         if (multiplier >= MAX_MULTIPLIER) {
             return 500000;
         }
@@ -251,9 +235,6 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         return getCurrentManaCost();
     }
 
-    /**
-     * 修复后的EMC生成逻辑 - 确保在最大倍数时持续工作
-     */
     private void generateEMC() {
         int currentMultiplier = getCurrentMultiplier();
 
@@ -294,7 +275,6 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         long emcPerSecond = getCurrentEmcRate();
         int manaCost = getCurrentManaCost();
 
-        // 检查魔力是否足够
         if (getMana() < manaCost) {
             return;
         }
@@ -302,7 +282,6 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         addMana(-manaCost);
         accumulatedEmc += emcPerSecond;
 
-        // 修复：确保即使在最大倍数时也能正常分发EMC
         if (accumulatedEmc > 0) {
             distributeEMC(accumulatedEmc);
             accumulatedEmc = 0;
@@ -310,9 +289,6 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         }
     }
 
-    /**
-     * 分发EMC给附近玩家
-     */
     private void distributeEMC(long totalEmc) {
         AABB searchArea = new AABB(
                 getEffectivePos().offset(-RANGE, -RANGE, -RANGE),
@@ -333,9 +309,6 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         }
     }
 
-    /**
-     * 给玩家添加EMC
-     */
     private void giveEMCToPlayer(Player player, long emc) {
         try {
             LazyOptional<IKnowledgeProvider> knowledgeCap = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
@@ -352,9 +325,6 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         }
     }
 
-    /**
-     * 生成粒子效果
-     */
     private void spawnParticles() {
         if (!(level instanceof ServerLevel serverLevel)) return;
 
@@ -365,7 +335,6 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         int multiplier = getCurrentMultiplier();
         long ticksToNext = getTicksToNextUpgrade();
 
-        // 最大等级时的特殊粒子效果
         if (multiplier >= MAX_MULTIPLIER) {
             serverLevel.sendParticles(ParticleTypes.FIREWORK, x, y, z, 15, 0.8, 0.5, 0.8, 0.15);
             serverLevel.sendParticles(ParticleTypes.END_ROD, x, y, z, 12, 0.6, 0.4, 0.6, 0.1);
@@ -374,27 +343,23 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
             return;
         }
 
-        // 接近升级时的特殊效果 (升级前30秒)
-        if (ticksToNext != -1 && ticksToNext <= 600) { // 30秒 = 600 ticks
+        if (ticksToNext != -1 && ticksToNext <= 600) {
             serverLevel.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, x, y, z, 5, 0.3, 0.3, 0.3, 0.1);
             serverLevel.sendParticles(ParticleTypes.ENCHANT, x, y, z, 8, 0.5, 0.3, 0.5, 0.15);
 
-            if (ticksToNext <= 200) { // 10秒 = 200 ticks
+            if (ticksToNext <= 200) {
                 serverLevel.sendParticles(ParticleTypes.FIREWORK, x, y, z, 3, 0.2, 0.2, 0.2, 0.05);
             }
         }
 
         if (multiplier >= 32) {
-            // 高倍数：炫酷粒子
             serverLevel.sendParticles(ParticleTypes.FIREWORK, x, y, z, 10, 0.5, 0.3, 0.5, 0.1);
             serverLevel.sendParticles(ParticleTypes.END_ROD, x, y, z, 8, 0.4, 0.2, 0.4, 0.05);
             serverLevel.sendParticles(ParticleTypes.ENCHANT, x, y, z, 15, 0.6, 0.4, 0.6, 0.2);
         } else if (multiplier >= 8) {
-            // 中等倍数：金色粒子
             serverLevel.sendParticles(ParticleTypes.HAPPY_VILLAGER, x, y, z, 6, 0.4, 0.2, 0.4, 0.05);
             serverLevel.sendParticles(ParticleTypes.END_ROD, x, y, z, 4, 0.3, 0.2, 0.3, 0.03);
         } else {
-            // 低倍数：基础粒子
             serverLevel.sendParticles(ParticleTypes.COMPOSTER, x, y, z, 3, 0.3, 0.2, 0.3, 0.03);
             serverLevel.sendParticles(ParticleTypes.HAPPY_VILLAGER, x, y, z, 2, 0.2, 0.1, 0.2, 0.02);
         }
@@ -405,19 +370,15 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         return RadiusDescriptor.Rectangle.square(getEffectivePos(), RANGE);
     }
 
-    /**
-     * 修复后的魔力容量计算 - 更合理的增长
-     */
+
     @Override
     public int getMaxMana() {
         int multiplier = getCurrentMultiplier();
 
-        // 达到最大倍数时的特殊容量 - 能存储约10秒的魔力消耗
         if (multiplier >= MAX_MULTIPLIER) {
             return 5000000; // 500万魔力，足够消耗10秒
         }
 
-        // 基础容量 + 对数增长，避免过度膨胀
         if (multiplier <= 1) {
             return 10000;
         }
@@ -450,8 +411,6 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         return 0x4CAF50; // 默认绿色
     }
 
-    // ========== 网络同步相关 ==========
-
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
@@ -469,8 +428,6 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
-
-    // ========== NBT数据持久化 ==========
 
     @Override
     public void readFromPacketNBT(CompoundTag cmp) {
@@ -496,13 +453,11 @@ public class AlchemyAzaleaTile extends TileEntityFunctionalFlower {
         cmp.putInt(TAG_LAST_MULTIPLIER, lastMultiplier);
         cmp.putLong(TAG_LAST_UPDATE, lastUpdate);
 
-        // 写入缓存数据用于客户端同步
         cmp.putInt(TAG_CURRENT_MULTIPLIER, cachedMultiplier);
         cmp.putLong(TAG_CURRENT_EMC_RATE, cachedEmcRate);
         cmp.putInt(TAG_CURRENT_MANA_COST, cachedManaCost);
     }
 
-    // 工具方法
     public int getDaysElapsed() {
         if (level == null || placementTime == -1) return 0;
         long existTime = level.getGameTime() - placementTime;

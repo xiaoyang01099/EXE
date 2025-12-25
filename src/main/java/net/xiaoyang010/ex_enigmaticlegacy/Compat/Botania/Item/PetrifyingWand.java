@@ -45,14 +45,11 @@ import java.util.Optional;
 
 public class PetrifyingWand extends Item {
 
-    // 配置参数
     private static final int MANA_PER_USE = 1000;
     private static final int MAX_MANA = 10000;
     private static final int RANGE = 32;
     private static final float DAMAGE = Float.MAX_VALUE;
     private static final int USE_DURATION = 30;
-
-    // NBT标签常量
     private static final String TAG_MANA = "mana";
 
     public PetrifyingWand() {

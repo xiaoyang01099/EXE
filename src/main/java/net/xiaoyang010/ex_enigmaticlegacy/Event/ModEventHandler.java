@@ -11,6 +11,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,7 +20,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -60,7 +64,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.FullAltarTil
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Generating.BelieverTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.AntigravityCharm;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.IvyRegen;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.Manaita;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.ManaBucket;
 import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHTMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Effect.Drowning;
@@ -74,11 +78,13 @@ import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.WildHuntArmor;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputPacket.JumpPacket;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.ColorText;
-import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.IRelic;
 import vazkii.botania.api.mana.ManaItemHandler;
+import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.block.decor.BlockTinyPotato;
+import vazkii.botania.common.block.tile.mana.TilePool;
 import vazkii.botania.common.helper.PlayerHelper;
+import vazkii.botania.xplat.IXplatAbstractions;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -95,6 +101,83 @@ public class ModEventHandler {
     private static int invulnerableTimer = 0;
     private static final int INVULNERABLE_DURATION = 30;
     private static final int REPAIR_COST = 1500;
+
+    @SubscribeEvent
+    public static void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
+        Player player = (Player) event.getEntity();
+        Level level = event.getWorld();
+        BlockPos pos = event.getPos();
+        InteractionHand hand = event.getHand();
+        ItemStack itemStack = player.getItemInHand(hand);
+
+        if (hand != InteractionHand.MAIN_HAND) {
+            return;
+        }
+
+        if (!(itemStack.getItem() instanceof ManaBucket manaBucket)) {
+            return;
+        }
+
+        if (level.getBlockState(pos).getBlock() != ModBlocks.manaPool) {
+            return;
+        }
+
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (!(blockEntity instanceof TilePool pool)) {
+            return;
+        }
+
+        if (level.isClientSide) {
+            return;
+        }
+
+        if (player.isShiftKeyDown()) {
+            return;
+        }
+
+        boolean changed = false;
+
+        if (!manaBucket.isFilled() && pool.isFull()) {
+            pool.receiveMana(-pool.getCurrentMana());
+
+            if (!player.getAbilities().instabuild) {
+                itemStack.shrink(1);
+                ItemStack filledBucket = new ItemStack(ModItems.FILLED_MANA_BUCKET.get());
+
+                if (itemStack.isEmpty()) {
+                    player.setItemInHand(hand, filledBucket);
+                } else {
+                    if (!player.getInventory().add(filledBucket)) {
+                        player.drop(filledBucket, false);
+                    }
+                }
+            }
+            changed = true;
+        }
+
+        else if (manaBucket.isFilled() && pool.getCurrentMana() == 0) {
+            pool.receiveMana(1000000);
+
+            if (!player.getAbilities().instabuild) {
+                itemStack.shrink(1);
+                ItemStack emptyBucket = new ItemStack(ModItems.EMPTY_MANA_BUCKET.get());
+
+                if (itemStack.isEmpty()) {
+                    player.setItemInHand(hand, emptyBucket);
+                } else {
+                    if (!player.getInventory().add(emptyBucket)) {
+                        player.drop(emptyBucket, false);
+                    }
+                }
+            }
+            changed = true;
+        }
+
+        if (changed) {
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.SUCCESS);
+        }
+    }
 
     @SubscribeEvent
     public static void onPlace(EntityPlaceEvent event) {
@@ -182,50 +265,6 @@ public class ModEventHandler {
                             0.0, 0.1, 0.0
                     );
                 }
-            }
-        }
-    }
-
-
-    @SubscribeEvent
-    public static void onItemCrafted(PlayerEvent.ItemCraftedEvent event) {
-        if (event.getCrafting().isEmpty()) return;
-        Player player = event.getPlayer();
-        if (event.getInventory() instanceof CraftingContainer craftingContainer) {
-            boolean hasInvalidRelic = false;
-            for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
-                ItemStack stack = craftingContainer.getItem(i);
-                if (stack.getItem() instanceof Manaita) {
-                    var relicCap = stack.getCapability(BotaniaForgeCapabilities.RELIC);
-                    if (relicCap.isPresent()) {
-                        IRelic relic = relicCap.orElse(null);
-                        if (relic != null && !relic.isRightPlayer(player)) {
-                            hasInvalidRelic = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (hasInvalidRelic) {
-                event.setCanceled(true);
-                if (!player.getLevel().isClientSide()) {
-                    for (int j = 0; j < craftingContainer.getContainerSize(); j++) {
-                        ItemStack slotStack = craftingContainer.getItem(j);
-                        if (!slotStack.isEmpty()) {
-                            ItemStack copy = slotStack.copy();
-                            if (!player.getInventory().add(copy)) {
-                                player.drop(copy, false);
-                            }
-                        }
-                    }
-
-                    craftingContainer.clearContent();
-                    if (player.containerMenu != null) {
-                        player.containerMenu.broadcastChanges();
-                    }
-                }
-                return;
             }
         }
     }
@@ -429,48 +468,6 @@ public class ModEventHandler {
             }
             event.setCanceled(true);
         }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onManaitaPlayerDeath(LivingDeathEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (hasManaitaArmor(player)) {
-                event.setCanceled(true);
-                player.setHealth(20.0F);
-            }
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onManaitaPlayerHurt(LivingHurtEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (hasManaitaArmor(player)) {
-                event.setCanceled(true);
-            }
-        }
-    }
-
-    private boolean hasManaitaArmor(Player player) {
-       /* for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (slot.getType() == EquipmentSlot.Type.ARMOR) {
-                ItemStack stack = player.getItemBySlot(slot);
-                if (stack.getItem() instanceof ManaitaArmor) {
-                    return true;
-                }
-            }
-        }
-
-        for (ItemStack stack : player.getInventory().items) {
-            if (stack.getItem() instanceof ManaitaArmor) {
-                return true;
-            }
-        }*/
-        if (player.getInventory().armor.contains(ModArmors.MANAITA_BOOTS)
-                &&player.getInventory().armor.contains(ModArmors.MANAITA_LEGGINGS)
-                &&player.getInventory().armor.contains(ModArmors.MANAITA_CHESTPLATE)
-                &&player.getInventory().armor.contains(ModArmors.MANAITA_HELMET))
-            return true;
-        return false;
     }
 
     @SubscribeEvent
@@ -802,17 +799,6 @@ public class ModEventHandler {
 
         if (!stack.isEmpty()) {
             player.drop(stack, false);
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onLivingHurt(LivingHurtEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
-
-            if (chestplate.getItem() == ModArmors.MANAITA_CHESTPLATE.get()) {
-                event.setCanceled(true);
-            }
         }
     }
 

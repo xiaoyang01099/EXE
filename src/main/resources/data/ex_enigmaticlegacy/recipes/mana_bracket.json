@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "N N",
+    "P P"
+  ],
+  "key": {
+    "N": {
+      "item": "botania:livingwood_log"
+    },
+    "P": {
+      "item": "botania:livingwood_planks"
+    },
+    "C": {
+      "item": "botania:livingrock_slab"
+    }
+  },
+  "result": {
+    "item": "ex_enigmaticlegacy:mana_bracket",
+    "count": 1
+  }
+}

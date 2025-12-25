@@ -15,8 +15,10 @@ import net.xiaoyang010.ex_enigmaticlegacy.Block.AstralBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.CosmicBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityGaiaSpreader.VariantE;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Hybrid.AquaticAnglerNarcissus;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.AstralKillop;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Generating.Catnip;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.RuneFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -59,7 +61,7 @@ public class ModBlockss {
 	public static final RegistryObject<Block> VACUITY = REGISTRY.register("vacuity", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.VACUITY_TILE::get));
 	public static final RegistryObject<Block> YU_SHOU_CLOVER = REGISTRY.register("yu_shou_clover", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.YU_SHOU_CLOVER_TILE::get));
 	public static final RegistryObject<Block> CURSET_THISTLE = REGISTRY.register("curse_thistle", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.CURSET_THISTLE_TILE::get));
-	//public static final RegistryObject<Block> RUNE_FLOWER = REGISTRY.register("rune_flower", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.RUNE_FLOWER_TILE::get));
+	public static final RegistryObject<Block> RUNE_FLOWER = REGISTRY.register("rune_flower", () -> new RuneFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.RUNE_FLOWER_TILE::get));
 	public static final RegistryObject<Block> ENDER_LAVENDER = REGISTRY.register("ender_lavender", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ENDER_LAVENDER_TILE::get));
 	public static final RegistryObject<Block> AUREA_AMICITIA_CARNATION = REGISTRY.register("aurea_amicitia_carnation", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.AUREA_AMICITIA_CARNATION_TILE::get));
 	public static final RegistryObject<Block> MUSICAL_ORCHID = REGISTRY.register("musical_orchid", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.MUSICAL_ORCHID_TILE::get));
@@ -69,6 +71,11 @@ public class ModBlockss {
 	public static final RegistryObject<Block> EVIL_FORGE = REGISTRY.register("evil_forge", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.EVIL_FORGE_TILE::get));
 	public static final RegistryObject<Block> ETHERIUM_FORGE = REGISTRY.register("etherium_forge", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ETHERIUM_FORGE_TILE::get));
 	public static final RegistryObject<Block> ARDENT_AZARCISSUS = REGISTRY.register("ardent_azarcissus", () -> new BlockSpecialFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ARDENT_AZARCISSUS_TILE::get));
+	public static final RegistryObject<Block> AQUATIC_ANGLER_NARCISSUS = REGISTRY.register("aquatic_angler_narcissus", () -> new AquaticAnglerNarcissus(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.AQUATIC_ANGLER_NARCISSUS_TILE::get));
+
+
+
+
 
 
 

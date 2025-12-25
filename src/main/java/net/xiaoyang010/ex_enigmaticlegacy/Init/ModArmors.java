@@ -10,6 +10,10 @@ import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.TerrorCrown;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.UV.UltimateValkyrieBoots;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.UV.UltimateValkyrieChestplate;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.UV.UltimateValkyrieHelmet;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.UV.UltimateValkyrieLeggings;
 
 public class ModArmors {
     public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, ExEnigmaticlegacyMod.MODID);
@@ -37,6 +41,32 @@ public class ModArmors {
     public static final RegistryObject<Item> dragonArmorLegs = REGISTRY.register("dragon_leggings", () -> new DragonCrystalArmor(ArmorMaterials.NETHERITE, EquipmentSlot.LEGS));
     public static final RegistryObject<Item> dragonArmorBoots = REGISTRY.register("dragon_boots", () -> new DragonCrystalArmor(ArmorMaterials.NETHERITE, EquipmentSlot.FEET));
 
+    public static final RegistryObject<Item> ULTIMATE_VALKYRIE_HELMET = REGISTRY.register("ultimate_valkyrie_helmet",
+            () -> new UltimateValkyrieHelmet(
+                    new Item.Properties()
+                            .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
+                            .rarity(Rarity.EPIC)
+            ));
 
+    public static final RegistryObject<Item> ULTIMATE_VALKYRIE_CHESTPLATE = REGISTRY.register("ultimate_valkyrie_chestplate",
+            () -> new UltimateValkyrieChestplate(
+                    new Item.Properties()
+                            .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
+                            .rarity(Rarity.EPIC)
+            ));
+
+    public static final RegistryObject<Item> ULTIMATE_VALKYRIE_LEGGINGS = REGISTRY.register("ultimate_valkyrie_leggings",
+            () -> new UltimateValkyrieLeggings(
+                    new Item.Properties()
+                            .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
+                            .rarity(Rarity.EPIC)
+            ));
+
+    public static final RegistryObject<Item> ULTIMATE_VALKYRIE_BOOTS = REGISTRY.register("ultimate_valkyrie_boots",
+            () -> new UltimateValkyrieBoots(
+                    new Item.Properties()
+                            .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
+                            .rarity(Rarity.EPIC)
+            ));
 
 }

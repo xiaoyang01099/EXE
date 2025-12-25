@@ -15,6 +15,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.ModRunes;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.ItemBlockFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.DarkSunRing;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.ItemHybridSpecialFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Curio.HolyRing;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.SuperpositionRing;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
@@ -81,6 +82,8 @@ public class ModItems {
 	public static final RegistryObject<Item> EVIL_FORGE = blockFlower(ModBlockss.EVIL_FORGE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> ETHERIUM_FORGE = blockFlower(ModBlockss.ETHERIUM_FORGE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> ARDENT_AZARCISSUS = blockFlower(ModBlockss.ARDENT_AZARCISSUS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> AQUATIC_ANGLER_NARCISSUS = blockHyFlower(ModBlockss.AQUATIC_ANGLER_NARCISSUS, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
+	public static final RegistryObject<Item> RUNE_FLOWER = blockHyFlower(ModBlockss.RUNE_FLOWER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 
 
 
@@ -241,11 +244,6 @@ public class ModItems {
 
 
 
-
-
-
-
-
 	//奇点
 	public static final RegistryObject<Item> ETERNAL_SINGULARITY = REGISTRY.register("eternal_singularity", ModSingularity::new);
 	public static final RegistryObject<Item> RAINBOW_SINGULARITY = REGISTRY.register("rainbow_singularity", ModSingularity::new);
@@ -294,7 +292,11 @@ public class ModItems {
 	public static final RegistryObject<Item> MysteriousPurpleWisteriaSpiritRune = REGISTRY.register("mysterious_purple_wisteria_spirit_rune", ModRunes::new);
 
 
+	public static final RegistryObject<Item> EMPTY_MANA_BUCKET = REGISTRY.register("empty_mana_bucket",
+			() -> new ManaBucket(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(16), false));
 
+	public static final RegistryObject<Item> FILLED_MANA_BUCKET = REGISTRY.register("filled_mana_bucket",
+			() -> new ManaBucket(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(16), true));
 
 	public static final RegistryObject<Item> SPRAWL_ROD = REGISTRY.register("sprawl_rod",
 			() -> new SprawlRod(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.UNCOMMON)));
@@ -361,6 +363,9 @@ public class ModItems {
 
 
 	//遗物
+	public static final RegistryObject<Item> FREYR_SLINGSHOT = REGISTRY.register("freyr_slingshot",
+			() -> new FreyrSlingshot(new Properties().stacksTo(1).rarity(Rarity.EPIC).tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+
 	public static final RegistryObject<Item> COLOURFUL_DICE = REGISTRY.register("colourful_dice",
 			() -> new ColourfulDice(new Properties().stacksTo(1).rarity(ModRarities.MIRACLE).tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
@@ -466,5 +471,9 @@ public class ModItems {
 
 	public static RegistryObject<Item> blockFlower(RegistryObject<Block> block, CreativeModeTab tab) {
 		return REGISTRY.register(block.getId().getPath(), () -> new ItemBlockFlower(block.get(), new Properties().tab(tab)));
+	}
+
+	public static RegistryObject<Item> blockHyFlower(RegistryObject<Block> block, CreativeModeTab tab) {
+		return REGISTRY.register(block.getId().getPath(), () -> new ItemHybridSpecialFlower(block.get(), new Properties().tab(tab)));
 	}
 }

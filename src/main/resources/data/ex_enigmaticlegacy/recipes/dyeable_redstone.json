@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:rainbow_table",
+  "ingredients": [
+    {
+      "item": "ex_enigmaticlegacy:custom_ingot",
+      "count": 20
+    },
+    {
+      "item": "avaritia:redstone_singularity",
+      "count": 64
+    },
+    {
+      "item": "ex_enigmaticlegacy:enhancement_crystal",
+      "count": 2
+    },
+    {
+      "item": "ex_enigmaticlegacy:mana_nether_star",
+      "count": 10
+    }
+  ],
+  "output": {
+    "item": "ex_enigmaticlegacy:dyeable_redstone",
+    "count": 2
+  }
+}

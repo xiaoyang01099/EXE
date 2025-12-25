@@ -37,7 +37,7 @@ public class RainbowGeneratingFlowerBlock extends FlowerBlock {
 
     @OnlyIn(Dist.CLIENT)
     public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ModBlockss.MINGXIANLAN.get(), renderType -> renderType == RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlockss.RAINBOW_GENERATING_FLOWER.get(), renderType -> renderType == RenderType.cutout());
     }
 
     @Override

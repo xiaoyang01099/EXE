@@ -413,7 +413,7 @@ public class Xiaoyang010Entity extends Monster {
 		return -0.35D;
 	}
 
-	protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
+	public void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
 		super.dropCustomDeathLoot(source, looting, recentlyHitIn);
 		this.spawnAtLocation(new ItemStack(ModItems.MIAOMIAOTOU.get()));
 	}

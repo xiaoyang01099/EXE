@@ -12,6 +12,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.CosmicBlockEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Hybrid.TileEntityAquaticAnglerNarcissus;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.TileEntityRuneFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.AstralBlockEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Functional.*;
@@ -67,7 +69,7 @@ public class ModBlockEntities {
 
 
 
-    // public static final RegistryObject<BlockEntityType<RuneFlowerTile>> RUNE_FLOWER_TILE = REGISTRY.register("rune_flower_tile", () -> BlockEntityType.Builder.of((pos, state) -> new RuneFlowerTile(ModBlockEntities.RUNE_FLOWER_TILE.get(), pos, state), ModBlockss.RUNE_FLOWER.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileEntityRuneFlower>> RUNE_FLOWER_TILE = REGISTRY.register("rune_flower_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityRuneFlower(ModBlockEntities.RUNE_FLOWER_TILE.get(), pos, state), ModBlockss.RUNE_FLOWER.get()).build(null));
     public static final RegistryObject<BlockEntityType<CurseThistleTile>> CURSET_THISTLE_TILE = REGISTRY.register("curse_thistle_tile", () -> BlockEntityType.Builder.of((pos, state) -> new CurseThistleTile(ModBlockEntities.CURSET_THISTLE_TILE.get(), pos, state), ModBlockss.CURSET_THISTLE.get()).build(null));
     public static final RegistryObject<BlockEntityType<YushouCloverTile>> YU_SHOU_CLOVER_TILE = REGISTRY.register("yu_shou_clover_tile", () -> BlockEntityType.Builder.of((pos, state) -> new YushouCloverTile(ModBlockEntities.YU_SHOU_CLOVER_TILE.get(), pos, state), ModBlockss.YU_SHOU_CLOVER.get()).build(null));
     public static final RegistryObject<BlockEntityType<VacuityTile>> VACUITY_TILE = REGISTRY.register("vacuity_tile", () -> BlockEntityType.Builder.of((pos, state) -> new VacuityTile(ModBlockEntities.VACUITY_TILE.get(), pos, state), ModBlockss.VACUITY.get()).build(null));
@@ -98,7 +100,7 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<EvilForgeTile>> EVIL_FORGE_TILE = REGISTRY.register("evil_forge_tile", () -> BlockEntityType.Builder.of((pos, state) -> new EvilForgeTile(ModBlockEntities.EVIL_FORGE_TILE.get(), pos, state), ModBlockss.EVIL_FORGE.get()).build(null));
     public static final RegistryObject<BlockEntityType<EtheriumForgeTile>> ETHERIUM_FORGE_TILE = REGISTRY.register("etherium_forge_tile", () -> BlockEntityType.Builder.of((pos, state) -> new EtheriumForgeTile(ModBlockEntities.ETHERIUM_FORGE_TILE.get(), pos, state), ModBlockss.ETHERIUM_FORGE.get()).build(null));
     public static final RegistryObject<BlockEntityType<ArdentAzarcissusTile>> ARDENT_AZARCISSUS_TILE = REGISTRY.register("ardent_azarcissus_tile", () -> BlockEntityType.Builder.of((pos, state) -> new ArdentAzarcissusTile(ModBlockEntities.ARDENT_AZARCISSUS_TILE.get(), pos, state), ModBlockss.ARDENT_AZARCISSUS.get()).build(null));
-
+    public static final RegistryObject<BlockEntityType<TileEntityAquaticAnglerNarcissus>> AQUATIC_ANGLER_NARCISSUS_TILE = REGISTRY.register("aquatic_angler_narcissus_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityAquaticAnglerNarcissus(ModBlockEntities.AQUATIC_ANGLER_NARCISSUS_TILE.get(), pos, state), ModBlockss.AQUATIC_ANGLER_NARCISSUS.get()).build(null));
 
 
 

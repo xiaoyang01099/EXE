@@ -43,6 +43,7 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.SHINY_ENERGY.get(), EntityNullRender::new);
 		event.registerEntityRenderer(ModEntities.CRIMSON_ORB.get(), RenderCrimsonOrb::new);
 		event.registerEntityRenderer(ModEntities.DARK_MATTER_ORB.get(), RenderEldritchOrb::new);
+		event.registerEntityRenderer(ModEntities.MANA_VINE_BALL.get(), EntityNullRender::new);
 		//event.registerEntityRenderer(ModEntities.RAINBOW_WITHER_SKULL.get(), RainbowWitherSkullRenderer::new);
 	}
 

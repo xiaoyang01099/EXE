@@ -70,6 +70,21 @@ public final class EXEShaders {
         return (RenderType)EYES.apply(resourceLocation);
     }
 
+    public static void uploadCommonUniformsForParticles() {
+        if (cosmicShader == null) return;
+
+        if (cosmicTime != null) {
+            cosmicTime.set((float) renderTime + renderFrame);
+        }
+
+        if (cosmicUVs != null) {
+            cosmicUVs.set(COSMIC_UVS);
+        }
+
+        if (cosmicExternalScale != null) cosmicExternalScale.set(1.0F);
+        if (cosmicOpacity != null) cosmicOpacity.set(0.78F);
+    }
+
     @EventBusSubscriber(
             modid = "ex_enigmaticlegacy",
             value = {Dist.CLIENT},

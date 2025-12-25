@@ -9,6 +9,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.CelestialHTScreen;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.RainbowTableScreen;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHTMenu;
@@ -37,6 +38,7 @@ public class JEIPlugin implements IModPlugin {
                 new PolychromeCollapsePrismRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new CelestialTransmuteRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new RainbowTableCategory(registration.getJeiHelpers().getGuiHelper()),
+                new NidavellirCategory(registration.getJeiHelpers().getGuiHelper()),
                 new AncientAlphirineCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
@@ -48,22 +50,8 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-        registration.addRecipeTransferHandler(
-                CelestialHTMenu.class,
-                CelestialTransmuteRecipe.TYPE_ID,
-                1,
-                4,
-                5,
-                36
-        );
-        registration.addRecipeTransferHandler(
-                RainbowTableContainer.class,
-                RainbowTableRecipe.TYPE_ID,
-                0,
-                4,
-                5,
-                36
-        );
+        registration.addRecipeTransferHandler(CelestialHTMenu.class, CelestialTransmuteRecipe.TYPE_ID, 1, 4, 5, 36);
+        registration.addRecipeTransferHandler(RainbowTableContainer.class, RainbowTableRecipe.TYPE_ID, 0, 4, 5, 36);
     }
 
     @Override
@@ -74,12 +62,15 @@ public class JEIPlugin implements IModPlugin {
                 RainbowTableRecipe.TYPE_ID);
         registration.addRecipeCatalyst(new ItemStack(ModBlockss.POLYCHROME_COLLAPSE_PRISM.get()),
                 PolychromeRecipe.TYPE_ID);
-
+        registration.addRecipeCatalyst(new ItemStack(ModBlockss.NIDAVELLIR_FORGE.get()), NidavellirCategory.UID);
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         RecipeManager recipeManager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
+
+        List<NidavellirForgeRecipe> nidavellirForgeRecipes = recipeManager.getAllRecipesFor(ModRecipes.NIDAVELLIR_FORGE_TYPE);
+        registration.addRecipes(nidavellirForgeRecipes, NidavellirCategory.UID);
 
         List<CelestialTransmuteRecipe> celestialRecipes = recipeManager.getAllRecipesFor(ModRecipes.CHT_TYPE)
                 .stream().filter(Objects::nonNull).toList();
@@ -97,15 +88,5 @@ public class JEIPlugin implements IModPlugin {
                 .stream().filter(Objects::nonNull).toList();
         registration.addRecipes(polychromeRecipes, PolychromeRecipe.TYPE_ID);
 
-        registration.addIngredientInfo(
-                new ItemStack(ModItems.ASTRAL_PILE.get()),
-                VanillaTypes.ITEM_STACK,
-                new TranslatableComponent("item.ex_enigmaticlegacy.astral_pile.desc")
-        );
-        registration.addIngredientInfo(
-                new ItemStack(ModItems.DEAD_SUBSTANCE.get()),
-                VanillaTypes.ITEM_STACK,
-                new TranslatableComponent("item.ex_enigmaticlegacy.dead_substance.desc")
-        );
     }
 }

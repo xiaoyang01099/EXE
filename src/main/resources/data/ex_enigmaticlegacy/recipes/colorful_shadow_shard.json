@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:rainbow_table",
+  "ingredients": [
+    {
+      "item": "ex_enigmaticlegacy:dragoncrystal",
+      "count": 10
+    },
+    {
+      "item": "ex_enigmaticlegacy:custom_ingot",
+      "count": 64
+    },
+    {
+      "item": "ex_enigmaticlegacy:compressed_infinity_singularity",
+      "count": 1
+    }, 
+    {
+      "item": "ex_enigmaticlegacy:enhancement_crystal",
+      "count": 1
+    }
+  ],
+  "output": {
+    "item": "ex_enigmaticlegacy:colorful_shadow_shard",
+    "count": 1
+  }
+}

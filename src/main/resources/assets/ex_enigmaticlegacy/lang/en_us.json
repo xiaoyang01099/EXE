@@ -27,8 +27,10 @@
   "entity.ex_enigmaticlegacy.spectrite_wither": "Spectrite Wither",
   "entity.ex_enigmaticlegacy.spotted_garden_eel_bucket": "Spotted Garden Eel",
 
+  "block.ex_enigmaticlegacy.rune_flower": "RuneFlower",
   "block.ex_enigmaticlegacy.infinity_compressor": "Infinity Compressor(WIP)",
-  "block.ex_enigmaticlegacy.extreme_auto_crafter": "AutoExtreme CraftingTable(WIP)",
+  "block.ex_enigmaticlegacy.aquatic_angler_narcissus": "Aquatic Angler Narcissus",
+  "block.ex_enigmaticlegacy.extreme_auto_crafter": "AutoExtreme CraftingTable",
   "block.ex_enigmaticlegacy.engineer_hopper": "Engineer Hopper",
   "block.ex_enigmaticlegacy.mana_bracket": "Mana Bracket",
   "block.ex_enigmaticlegacy.astral_block": "Astral Block",
@@ -135,6 +137,9 @@
   "death.attack.attackDarkMatter":"%1$s's soul drowned in the primordial darkness.",
   "death.attack.Magic":"%1$s was destroyed by %2$s using magic.",
 
+  "item.ex_enigmaticlegacy.freyr_slingshot": "Freyr Slingshot",
+  "item.ex_enigmaticlegacy.filled_mana_bucket": "Filled Mana Bucket",
+  "item.ex_enigmaticlegacy.empty_mana_bucket": "Mana Bucket",
   "item.ex_enigmaticlegacy.colourful_dice": "The Life Dice Of The God Of The Forest",
   "item.ex_enigmaticlegacy.admin_controller": "Admin Controller",
   "item.ex_enigmaticlegacy.glacial_ingot": "Glacial Ingot",
@@ -153,9 +158,10 @@
   "item.ex_enigmaticlegacy.lich_ring": "Lich Ring",
   "item.ex_enigmaticlegacy.pocket_wardrobe": "Pocket Wardrobe",
   "item.ex_enigmaticlegacy.sprawl_rod": "Rod of Sprawl",
+  "item.ex_enigmaticlegacy.plague_bane_ingot": "Plague Bane Ingot",
   "item.ex_enigmaticlegacy.horn_stone_sword": "Hornstone Sword",
   "item.ex_enigmaticlegacy.black_halo": "Black Halo",
-  "item.ex_enigmaticlegacy.antigravity_charm": "Antigravity Charm(WIP)",
+  "item.ex_enigmaticlegacy.antigravity_charm": "Antigravity Charm",
   "item.ex_enigmaticlegacy.talisman_hidden_riches": "Key to Hidden Wealth",
   "item.ex_enigmaticlegacy.mana_flower": "Mana Flower",
   "item.ex_enigmaticlegacy.terra_hoe": "Terra Hoe",
@@ -402,6 +408,10 @@
   "subtitles.scray": "",
   "subtitles.what": "",
 
+  "ex_enigmaticlegacy.jei.nidavellir_forge": "Nidavellir Forge",
+  "tooltip.manaita.warning": "§cWarning: Unauthorized use will face serious consequences",
+  "message.manaita.unauthorized": "§4You do not have permission to use this relicion! Enjoy the Void！",
+  "message.manaita.cannot_pickup": "§cThis relic refuses to be picked up by you。",
   "item.ex_enigmaticlegacy.infinitas_vortex.tooltip": "§kMYSTERIOUS§r §dYou bring the miracle back to the End§r",
   "item.ex_enigmaticlegacy.infinitas_vortex.tooltip_detailed": "Grants immense magical abilities and unlimited mana.",
   "container.extreme_auto_crafter.name": "AutoExtreme CraftingTable",
@@ -437,8 +447,6 @@
   "info.ex_enigmaticlegacy.natural_thousand_blades.bloom_active": "Bloom Active",
   "info.ex_enigmaticlegacy.natural_thousand_blades.mana":"Mana：%s",
   "info.ex_enigmaticlegacy.natural_thousand_blades.lv": "Level: %s",
-  "item.ex_enigmaticlegacy.dead_substance.desc":"Only death can earn the medal of the brave, \nwhich is also a badge of luck",
-  "item.ex_enigmaticlegacy.astral_pile.desc": "Contains the power of stardust, \nif you want to obtain it, you must first have a carrier and condense it, \nbut the price of time is also important",
   "gui.ex_enigmaticlegacy.category.rainbow_table": "Rainbow Table",
   "item.info.mana": "Mana: %s/%s",
   "item.info.durability": "Durability: %s/%s",
@@ -938,6 +946,7 @@
   "item.ex_enigmaticlegacy.dormant_arcanum.equipped": "§7Dormant Core equipped",
   "item.ex_enigmaticlegacy.dormant_arcanum.unequipped": "§7Dormant Core unequipped",
   "item.ex_enigmaticlegacy.dormant_arcanum.void_banishment": "§5§lThe Void claims all...",
-  "item.ex_enigmaticlegacy.dormant_arcanum.death_trigger": "§4§lVoid Banishment Activated!"
+  "item.ex_enigmaticlegacy.dormant_arcanum.death_trigger": "§4§lVoid Banishment Activated!",
+  "ex_enigmaticlegacy.flowerType.hybrid": "Hybrid Flower"
 
 }

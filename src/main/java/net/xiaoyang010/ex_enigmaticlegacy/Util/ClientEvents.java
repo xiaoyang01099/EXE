@@ -36,7 +36,6 @@ public class ClientEvents {
         }
     }
 
-
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void onMovementInput(MovementInputUpdateEvent event) {

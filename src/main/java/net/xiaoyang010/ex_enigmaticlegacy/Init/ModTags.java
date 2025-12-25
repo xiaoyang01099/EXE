@@ -12,6 +12,8 @@ import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 public class ModTags {
     public static class Blocks {
+        public static final TagKey<Block> HYBRID_SPECIAL_FLOWERS = tag("hybrid_special_flowers");
+
         public static final TagKey<Block> NEEDS_MIRACLE_TOOL = tag("needs_miracle_tool");
 
         public static final TagKey<Block> SPECTRITE_CONTAINER = tag("spectrite_container");
@@ -26,6 +28,7 @@ public class ModTags {
     }
 
     public static class Items {
+        public static final TagKey<Item> HYBRID_SPECIAL_FLOWERS = tag("hybrid_special_flowers");
         // 彩虹物品标签
         public static final TagKey<Item> SPECTRITE_ITEMS = tag("spectrite_items");
         //奇点标签

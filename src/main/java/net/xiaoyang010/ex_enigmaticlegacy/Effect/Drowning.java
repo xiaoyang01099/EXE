@@ -26,7 +26,7 @@ public class Drowning extends MobEffect {
     private static final HashMap<UUID, Integer> healCooldowns = new HashMap<>();
 
     public Drowning() {
-        super(MobEffectCategory.HARMFUL, 0x1E90FF);
+        super(MobEffectCategory.BENEFICIAL, 0x1E90FF);
 
         this.addAttributeModifier(
                 Attributes.MOVEMENT_SPEED,
