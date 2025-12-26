@@ -15,107 +15,86 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec2;
+import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.PolychromeRecipe;
 import vazkii.botania.client.gui.HUDHandler;
+import vazkii.botania.client.integration.jei.PetalApothecaryRecipeCategory;
 import vazkii.botania.client.integration.jei.TerraPlateDrawable;
 import vazkii.botania.common.block.ModBlocks;
+import vazkii.botania.common.lib.ResourceLocationHelper;
 
 import javax.annotation.Nonnull;
 
-import static vazkii.botania.common.lib.ResourceLocationHelper.prefix;
+import java.util.Iterator;
 
 
 public class PolychromeCollapsePrismRecipeCategory implements IRecipeCategory<PolychromeRecipe> {
-    public static final ResourceLocation UID = new ResourceLocation("ex_enigmaticlegacy", "polychrome_collapse_prism");
+    public static final ResourceLocation UID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "polychrome");
 
     private final Component localizedName;
     private final IDrawable background;
     private final IDrawable overlay;
     private final IDrawable icon;
-    private final IDrawable fullStructure;
+    private final IDrawable terraPlate;
 
     public PolychromeCollapsePrismRecipeCategory(IGuiHelper guiHelper) {
-        ResourceLocation location = prefix("textures/gui/terrasteel_jei_overlay.png");
-        background = guiHelper.createBlankDrawable(300, 400);
-        overlay = guiHelper.createDrawable(location, 0, 0, 300, 400);
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlockss.POLYCHROME_COLLAPSE_PRISM.get()));
-        localizedName = new TranslatableComponent("jei.ex_enigmaticlegacy.category.polychrome_collapse_prism");
-        fullStructure = new PolychromeCollapsePrismDrawable(guiHelper);
+        ResourceLocation location = ResourceLocationHelper.prefix("textures/gui/terrasteel_jei_overlay.png");
+        this.background = guiHelper.createBlankDrawable(114, 131);
+        this.overlay = guiHelper.createDrawable(location, 42, 29, 64, 64);
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlockss.POLYCHROME_COLLAPSE_PRISM.get()));
+        this.localizedName = new TranslatableComponent("botania.nei.terraPlate");
+        IDrawable livingrock = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlockss.PLATINUM_ORE.get()));
+        this.terraPlate = new TerraPlateDrawable(livingrock, livingrock, guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlockss.AMETHYST_ORE.get())));
     }
 
     @Nonnull
-    @Override
     public ResourceLocation getUid() {
         return UID;
     }
 
     @Nonnull
-    @Override
     public Class<? extends PolychromeRecipe> getRecipeClass() {
         return PolychromeRecipe.class;
     }
 
     @Nonnull
-    @Override
     public Component getTitle() {
-        return localizedName;
+        return this.localizedName;
     }
 
     @Nonnull
-    @Override
     public IDrawable getBackground() {
-        return background;
+        return this.background;
     }
 
     @Nonnull
-    @Override
     public IDrawable getIcon() {
-        return icon;
+        return this.icon;
     }
 
-    @Override
     public void draw(@Nonnull PolychromeRecipe recipe, @Nonnull IRecipeSlotsView view, @Nonnull PoseStack ms, double mouseX, double mouseY) {
         RenderSystem.enableBlend();
-
-        // 绘制覆盖层
-        overlay.draw(ms, 0, 0);
-
-        // 绘制魔力条 - 使用彩虹色调
-        HUDHandler.renderManaBar(ms, 10, 380, 0xFF00FF, 0.75F, recipe.getManaUsage(), recipe.getManaUsage());
-
-        // 绘制完整的多方块结构
-        fullStructure.draw(ms, 20, 100);
-
-        // 绘制结构说明文字
-        drawStructureInfo(ms);
-
+        this.overlay.draw(ms, 25, 14);
+        HUDHandler.renderManaBar(ms, 6, 126, 255, 0.75F, recipe.getManaUsage(), 100000);
+        this.terraPlate.draw(ms, 35, 92);
         RenderSystem.disableBlend();
     }
 
-    private void drawStructureInfo(PoseStack ms) {
-        ms.pushPose();
-        ms.popPose();
-    }
-
-    @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull PolychromeRecipe recipe, @Nonnull IFocusGroup focusGroup) {
-        // 输出槽 - 右上角位置
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 250, 20)
-                .addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 48, 37).addItemStack(recipe.getResultItem());
+        double angleBetweenEach = 360.0 / (double)recipe.getIngredients().size();
+        Vec2 point = new Vec2(48.0F, 5.0F);
+        Vec2 center = new Vec2(48.0F, 37.0F);
 
-        // 输入槽 - 左侧垂直排列
-        var ingredients = recipe.getIngredients();
-        int startY = 20;
-        int slotSpacing = 20;
-
-        for (int i = 0; i < ingredients.size(); i++) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 10, startY + i * slotSpacing)
-                    .addIngredients(ingredients.get(i));
+        for(Iterator<Ingredient> var8 = recipe.getIngredients().iterator(); var8.hasNext(); point = PetalApothecaryRecipeCategory.rotatePointAbout(point, center, angleBetweenEach)) {
+            Ingredient ingr = var8.next();
+            builder.addSlot(RecipeIngredientRole.INPUT, (int)point.x, (int)point.y).addIngredients(ingr);
         }
 
-        builder.addSlot(RecipeIngredientRole.CATALYST, 150, 210)
-                .addItemStack(new ItemStack(ModBlockss.POLYCHROME_COLLAPSE_PRISM.get()));
+        builder.addSlot(RecipeIngredientRole.CATALYST, 48, 92).addItemStack(new ItemStack(ModBlockss.POLYCHROME_COLLAPSE_PRISM.get()));
     }
 }

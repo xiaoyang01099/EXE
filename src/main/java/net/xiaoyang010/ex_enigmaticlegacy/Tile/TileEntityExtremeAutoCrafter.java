@@ -35,7 +35,7 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements M
     private static final int POWER_MULTIPLIER = 10;
     private static final int CAPACITY_MULTIPLIER = 100;
 
-    public final int full = getContainerSize() - 2, half = full / 2, powerConsumption = half * POWER_MULTIPLIER;
+    public final int full = getContainerSize() - 1, half = full / 2, powerConsumption = half * POWER_MULTIPLIER;
     public final RedstoneControl redstoneControl;
     public final EnergyControl energyControl;
     private final ExtremeCraftingMatrix extremeCraftingMatrix = new ExtremeCraftingMatrix((int) Math.sqrt(half));
@@ -74,7 +74,13 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements M
             return;
         }
         final ItemStack recipeStack = extremeRecipeField.getExtremeRecipeOutput();
-        final ItemStack outputStack = itemStacks.get(getContainerSize() - 2);
+        final ItemStack outputStack = itemStacks.get(163);
+//        if (recipeStack.isEmpty()){
+//            if (outputStack.isEmpty()){
+//
+//            }
+//            itemStacks.set(162, ItemStack.EMPTY); //配方输出设为空
+//        }
         if (recipeStack.isEmpty() || (!outputStack.isEmpty() && outputStack.getCount() == outputStack.getMaxStackSize()))
             return;
         if (patternMap == null)
@@ -86,7 +92,7 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements M
         allControls.forEach(IControl::operate);
         cleanInput();
         if (outputStack.isEmpty())
-            itemStacks.set(getContainerSize() - 2, recipeStack.copy());
+            itemStacks.set(163, recipeStack.copy());
         else
             outputStack.setCount(outputStack.getCount() + recipeStack.getCount());
         setChanged();
@@ -174,6 +180,9 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements M
             }
         }
         extremeRecipeField.setExtremeRecipe(matchedRecipe);
+        if (matchedRecipe == null){
+            itemStacks.set(162, ItemStack.EMPTY);
+        }
         patternMap = null;
     }
 

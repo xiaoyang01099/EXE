@@ -16,7 +16,7 @@ public class ShapeSlot extends Slot {
     @Override
     public boolean mayPlace(@Nonnull final ItemStack itemStack)
     {
-        return false;
+        return true;
     }
 
     @Override

@@ -1,11 +1,13 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Event;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -15,12 +17,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.WitherSkull;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
@@ -31,6 +36,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.UV.UltimateValkyrieBoots;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.UV.UltimateValkyrieChestplate;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.UltimateValkyrie;
 
@@ -342,6 +348,26 @@ public class UltimateValkyrieEvents {
         }
     }
 
+//    @SubscribeEvent
+    public static void onChangeTarget(LivingChangeTargetEvent event){
+        if (event.getEntity() instanceof WitherSkeleton skeleton) {
+            CompoundTag tag = skeleton.getPersistentData();
+            boolean b = tag.getBoolean(NBT_ENHANCED_SKELETON);
+            if (event.getNewTarget() instanceof Player player) {
+                if (b) {
+                    if (!UltimateValkyrie.isFullSuit(player)){
+                        tag.putBoolean(NBT_ENHANCED_SKELETON, false);
+                    }
+                }else {
+                    if (UltimateValkyrie.isFullSuit(player)) {
+                        tag.putBoolean(NBT_ENHANCED_SKELETON, true);
+                        event.setCanceled(true);
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * 全套盔甲效果 - 凋零骷髅友军系统
      */
@@ -351,7 +377,6 @@ public class UltimateValkyrieEvents {
             return;
         }
         Player player = event.player;
-
         if (UltimateValkyrie.isFullSuit(player) && player.level instanceof ServerLevel serverLevel) {
             if (player.tickCount % 20 == 0) {
                 serverLevel.getEntitiesOfClass(WitherSkeleton.class,
@@ -373,29 +398,6 @@ public class UltimateValkyrieEvents {
             }
         }
     }
-
-//        else if (!UltimateValkyrie.isFullSuit(player) && player.level instanceof ServerLevel serverLevel) {
-//            if (player.tickCount % 20 == 0) {
-//                serverLevel.getEntitiesOfClass(WitherSkeleton.class,
-//                                player.getBoundingBox().inflate(32.0D))
-//                        .forEach(skeleton -> {
-//                            CompoundTag tag = skeleton.getPersistentData();
-//                            if (tag.getBoolean(NBT_ENHANCED_SKELETON)) {
-//                                UUID ownerUUID = tag.getUUID(NBT_OWNER_UUID);
-//                                if (ownerUUID.equals(player.getUUID())) {
-//                                    if (!tag.getBoolean("ShouldRestore")) {
-//                                        tag.putBoolean("ShouldRestore", true);
-//
-//                                        player.displayClientMessage(
-//                                                Component.nullToEmpty("§c§l警告：凋零骷髅失去控制！"),
-//                                                true
-//                                        );
-//
-//                                        restoreSkeletonHostile(skeleton);
-//                                    }
-//                                }
-//                            }
-//                        });
 
 
 
@@ -509,16 +511,18 @@ public class UltimateValkyrieEvents {
      */
     @SubscribeEvent
     public static void onSkeletonKilled(LivingDeathEvent event) {
-        if (event.getEntity() instanceof Skeleton && !(event.getEntity() instanceof WitherSkeleton)) {
-            if (event.getSource().getEntity() instanceof Player player) {
+        Entity entity = event.getEntity();
+        Entity attack = event.getSource().getEntity();
+        if (entity instanceof Skeleton && !(attack instanceof WitherSkeleton)) {
+            if (attack instanceof Player player) {
                 if (UltimateValkyrie.isFullSuit(player) && player.level instanceof ServerLevel serverLevel) {
                     WitherSkeleton witherSkeleton = EntityType.WITHER_SKELETON.create(serverLevel);
                     if (witherSkeleton != null) {
                         witherSkeleton.moveTo(
-                                event.getEntity().getX(),
-                                event.getEntity().getY(),
-                                event.getEntity().getZ(),
-                                event.getEntity().getYRot(),
+                                entity.getX(),
+                                entity.getY(),
+                                entity.getZ(),
+                                entity.getYRot(),
                                 0.0F
                         );
 
@@ -536,21 +540,20 @@ public class UltimateValkyrieEvents {
                     }
                 }
             }
-        }
-        else if (event.getSource().getEntity() instanceof WitherSkeleton witherSkeleton) {
+        } else if (entity instanceof Skeleton && attack instanceof WitherSkeleton witherSkeleton) {
             CompoundTag skeletonTag = witherSkeleton.getPersistentData();
             if (skeletonTag.getBoolean(NBT_ENHANCED_SKELETON)) {
                 UUID ownerUUID = skeletonTag.getUUID(NBT_OWNER_UUID);
-                if (event.getEntity().level instanceof ServerLevel serverLevel) {
+                if (entity.level instanceof ServerLevel serverLevel) {
                     Player owner = serverLevel.getPlayerByUUID(ownerUUID);
                     if (owner != null) {
                         WitherSkeleton newSkeleton = EntityType.WITHER_SKELETON.create(serverLevel);
                         if (newSkeleton != null) {
                             newSkeleton.moveTo(
-                                    event.getEntity().getX(),
-                                    event.getEntity().getY(),
-                                    event.getEntity().getZ(),
-                                    event.getEntity().getYRot(),
+                                    entity.getX(),
+                                    entity.getY(),
+                                    entity.getZ(),
+                                    entity.getYRot(),
                                     0.0F
                             );
 
@@ -578,83 +581,38 @@ public class UltimateValkyrieEvents {
     public static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
         Player player = event.getPlayer();
 
-        if (player.level.isClientSide) {
-            return;
+        if (UltimateValkyrie.isFullSuit(player)) {
+            if (player.experienceLevel < 1){
+                player.displayClientMessage(Component.nullToEmpty("§c经验不足！"), true);
+                return;
+            }
+            Item item = player.getMainHandItem().getItem();
+            if (!player.getCooldowns().isOnCooldown(item)){
+                shootWitherSkull(player);
+                player.swing(InteractionHand.MAIN_HAND);
+                player.getCooldowns().addCooldown(item, 20);
+            }
         }
-
-        if (!UltimateValkyrie.isFullSuit(player)) {
-            return;
-        }
-
-        ItemStack handItem = player.getItemInHand(event.getHand());
-        if (!handItem.isEmpty()) {
-            return;
-        }
-
-        ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
-        CompoundTag tag = chestplate.getOrCreateTag();
-        long currentTime = player.level.getGameTime();
-
-        long skullCooldown = tag.getLong(NBT_SKULL_COOLDOWN);
-        if (currentTime < skullCooldown) {
-            return;
-        }
-
-        if (player.experienceLevel < 1 && player.experienceProgress <= 0.0F) {
-            player.displayClientMessage(
-                    Component.nullToEmpty("§c经验不足！"),
-                    true
-            );
-            return;
-        }
-
-        shootWitherSkull(player);
-        tag.putLong(NBT_SKULL_COOLDOWN, currentTime + SKULL_COOLDOWN);
-
-        event.setCanceled(true);
     }
 
-     /**
+    /**
      * 发射凋零骷髅头
      */
     private static void shootWitherSkull(Player player) {
-        Vec3 lookVec = player.getLookAngle();
-
-        WitherSkull skull = new WitherSkull(
-                player.level,
-                player,
-                lookVec.x * 1.5,
-                lookVec.y * 1.5,
-                lookVec.z * 1.5
-        );
-
-        Vec3 eyePos = player.getEyePosition(1.0F);
-        skull.setPos(
-                eyePos.x + lookVec.x,
-                eyePos.y,
-                eyePos.z + lookVec.z
-        );
-
+        Vec3 vec3 = player.getLookAngle();
+        WitherSkull skull = new WitherSkull(player.level, player, vec3.x, vec3.y, vec3.z);
+        Vec3 lookVec = player.getEyePosition(1.0f);
+        skull.setPosRaw(lookVec.x, lookVec.y, lookVec.z);
+        skull.setOwner(player);
         skull.setDangerous(true);
         player.level.addFreshEntity(skull);
-
-        player.level.playSound(
-                null,
-                player.blockPosition(),
-                SoundEvents.WITHER_SHOOT,
-                SoundSource.PLAYERS,
-                1.0F,
-                0.8F + player.level.random.nextFloat() * 0.4F
-        );
+        player.level.playSound(null, player.blockPosition(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 1.0F, 0.8F + player.level.random.nextFloat() * 0.4F);
 
         if (player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.giveExperiencePoints(-1);
+            serverPlayer.giveExperienceLevels(-1);
         }
 
-        player.displayClientMessage(
-                Component.nullToEmpty("§5§l凋零之力！"),
-                true
-        );
+        player.displayClientMessage(Component.nullToEmpty("§5§l凋零之力！"), true);
     }
 
     /**

@@ -33,11 +33,6 @@ import java.util.UUID;
 public class NidavellirForgeBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    protected static final VoxelShape SHAPE_NORTH = Block.box(1, 0, 3, 12, 12, 16);
-    protected static final VoxelShape SHAPE_SOUTH = Block.box(1, 0, 3, 12, 12, 15);
-    protected static final VoxelShape SHAPE_EAST = Block.box(0, 0, 1, 15, 12, 13);
-    protected static final VoxelShape SHAPE_WEST = Block.box(1, 0, 3, 16, 12, 13);
-
     public NidavellirForgeBlock(Properties properties) {
         super(Properties.of(Material.METAL)
                 .strength(3.0f, 10.0f)
