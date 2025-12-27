@@ -2,7 +2,6 @@ package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -28,7 +27,6 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.NidavellirFo
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class NidavellirForgeBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;

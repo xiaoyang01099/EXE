@@ -116,10 +116,6 @@ public class DeconTableScreen extends AbstractContainerScreen<DeconTableMenu> {
         return this.recipeIndex;
     }
 
-    public void setRecipeIndex(int recipeIndex) {
-        this.recipeIndex = recipeIndex;
-    }
-
     public class DeconButton extends Button {
         private final boolean mirrored;
         public String text = "";

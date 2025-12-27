@@ -99,6 +99,7 @@ public class ModBlockss {
 	public static final RegistryObject<Block> COSMIC_BLOCK = REGISTRY.register("cosmic_block", () -> new CosmicBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
 	public static final RegistryObject<Block> EXTREME_AUTO_CRAFTER = REGISTRY.register("extreme_auto_crafter", () -> new BlockExtremeAutoCrafter(Properties.of(Material.METAL).strength(50F, 2000F).requiresCorrectToolForDrops().sound(SoundType.GLASS)));
 	public static final RegistryObject<Block> INFINITY_COMPRESSOR = REGISTRY.register("infinity_compressor", () -> new BlockInfinityCompressor(BlockBehaviour.Properties.of(Material.METAL).strength(50F, 2000F).requiresCorrectToolForDrops().lightLevel((state) -> 15)));
+	public static final RegistryObject<Block> EXTREME_CRAFTING_DISASSEMBLY_TABLE = REGISTRY.register("extreme_crafting_disassembly_table", ExtremeCraftingDisassembly::new);
 
 
 	//其他

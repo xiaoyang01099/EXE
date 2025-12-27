@@ -51,7 +51,7 @@ public class AncientAlphirineCategory implements IRecipeCategory<AncientAlphirin
 
     @Nonnull
     @Override
-    public Class<? extends AncientAlphirineRecipe> getRecipeClass() {
+    public Class<? extends AncientAlphirineRecipe>getRecipeClass() {
         return AncientAlphirineRecipe.class;
     }
 

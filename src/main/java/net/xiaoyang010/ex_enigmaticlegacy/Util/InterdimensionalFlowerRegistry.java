@@ -20,20 +20,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InterdimensionalFlowerRegistry extends SavedData {
 
     private static final String DATA_NAME = "interdimensional_flower_registry";
-
-    // 存储格式: 维度 -> 花朵位置列表
     private final Map<ResourceKey<Level>, Set<BlockPos>> flowerPositions = new ConcurrentHashMap<>();
-
-    // 添加轮询索引，用于实现轮询传送
     private final Map<ResourceKey<Level>, Integer> dimensionRotationIndex = new ConcurrentHashMap<>();
 
     public InterdimensionalFlowerRegistry() {
         super();
     }
 
-    /**
-     * 获取注册表实例
-     */
     public static InterdimensionalFlowerRegistry getInstance(MinecraftServer server) {
         var serverLevel = server.overworld();
         return serverLevel.getDataStorage().computeIfAbsent(
@@ -43,9 +36,6 @@ public class InterdimensionalFlowerRegistry extends SavedData {
         );
     }
 
-    /**
-     * 注册花朵位置
-     */
     public synchronized void registerFlower(ResourceKey<Level> dimension, BlockPos pos) {
         Set<BlockPos> positions = flowerPositions.computeIfAbsent(dimension, k -> ConcurrentHashMap.newKeySet());
         boolean isNew = positions.add(pos);
@@ -57,15 +47,12 @@ public class InterdimensionalFlowerRegistry extends SavedData {
         }
     }
 
-    /**
-     * 注销花朵位置
-     */
     public synchronized void unregisterFlower(ResourceKey<Level> dimension, BlockPos pos) {
         Set<BlockPos> positions = flowerPositions.get(dimension);
         if (positions != null && positions.remove(pos)) {
             if (positions.isEmpty()) {
                 flowerPositions.remove(dimension);
-                dimensionRotationIndex.remove(dimension); // 清理轮询索引
+                dimensionRotationIndex.remove(dimension);
             }
             setDirty();
             System.out.println("[REGISTRY] Unregistered flower at " + pos + " in " + dimension.location());
@@ -73,18 +60,11 @@ public class InterdimensionalFlowerRegistry extends SavedData {
         }
     }
 
-    /**
-     * 获取指定维度的所有花朵位置
-     */
     public Set<BlockPos> getFlowersInDimension(ResourceKey<Level> dimension) {
         return flowerPositions.getOrDefault(dimension, Collections.emptySet());
     }
 
-    /**
-     * 查找目标花朵 - 修复后的智能查找算法
-     */
     public FlowerLocation findTargetFlower(ResourceKey<Level> excludeDimension) {
-        // 获取所有有花朵的维度（排除当前维度）
         List<ResourceKey<Level>> availableDimensions = new ArrayList<>();
 
         for (ResourceKey<Level> dimension : flowerPositions.keySet()) {
@@ -97,38 +77,27 @@ public class InterdimensionalFlowerRegistry extends SavedData {
             return null;
         }
 
-        // 如果只有一个可用维度，直接选择
         if (availableDimensions.size() == 1) {
             ResourceKey<Level> targetDim = availableDimensions.get(0);
             BlockPos pos = flowerPositions.get(targetDim).iterator().next();
             return new FlowerLocation(targetDim, pos);
         }
 
-        // 多个维度时，使用轮询算法确保均匀分布
         return selectTargetByRotation(excludeDimension, availableDimensions);
     }
 
-    /**
-     * 轮询选择目标维度
-     */
     private FlowerLocation selectTargetByRotation(ResourceKey<Level> sourceDimension, List<ResourceKey<Level>> availableDimensions) {
-        // 为稳定性，对维度列表排序
         availableDimensions.sort(Comparator.comparing(dim -> dim.location().toString()));
 
-        // 获取当前源维度的轮询索引
         int currentIndex = dimensionRotationIndex.getOrDefault(sourceDimension, 0);
 
-        // 确保索引在有效范围内
         currentIndex = currentIndex % availableDimensions.size();
 
-        // 选择目标维度
         ResourceKey<Level> targetDimension = availableDimensions.get(currentIndex);
 
-        // 更新轮询索引（下次选择下一个维度）
         dimensionRotationIndex.put(sourceDimension, (currentIndex + 1) % availableDimensions.size());
         setDirty();
 
-        // 获取目标位置
         Set<BlockPos> positions = flowerPositions.get(targetDimension);
         if (positions != null && !positions.isEmpty()) {
             BlockPos pos = positions.iterator().next();
@@ -142,23 +111,14 @@ public class InterdimensionalFlowerRegistry extends SavedData {
         return null;
     }
 
-    /**
-     * 获取所有已注册的花朵总数
-     */
     public int getTotalFlowerCount() {
         return flowerPositions.values().stream().mapToInt(Set::size).sum();
     }
 
-    /**
-     * 获取所有维度信息（用于调试）
-     */
     public Map<ResourceKey<Level>, Set<BlockPos>> getAllFlowers() {
         return Collections.unmodifiableMap(flowerPositions);
     }
 
-    /**
-     * 打印注册表状态
-     */
     public void printRegistryStatus() {
         System.out.println("=== Flower Registry Status ===");
         System.out.println("Total flowers: " + getTotalFlowerCount());
@@ -172,7 +132,6 @@ public class InterdimensionalFlowerRegistry extends SavedData {
                 int rotationIndex = dimensionRotationIndex.getOrDefault(entry.getKey(), 0);
                 System.out.println("  " + dimName + ": " + count + " flower(s) [rotation: " + rotationIndex + "]");
 
-                // 只打印前3个位置，避免日志过长
                 int printed = 0;
                 for (BlockPos pos : entry.getValue()) {
                     if (printed++ >= 3) {
@@ -185,8 +144,6 @@ public class InterdimensionalFlowerRegistry extends SavedData {
         }
         System.out.println("=== End Registry Status ===");
     }
-
-    // ==== NBT 序列化 ====
 
     @Override
     public CompoundTag save(CompoundTag tag) {
@@ -207,7 +164,6 @@ public class InterdimensionalFlowerRegistry extends SavedData {
 
             dimensionTag.put("positions", positionsList);
 
-            // 保存轮询索引
             int rotationIndex = dimensionRotationIndex.getOrDefault(entry.getKey(), 0);
             dimensionTag.putInt("rotationIndex", rotationIndex);
 
@@ -248,7 +204,6 @@ public class InterdimensionalFlowerRegistry extends SavedData {
                 if (!positions.isEmpty()) {
                     registry.flowerPositions.put(dimension, positions);
 
-                    // 加载轮询索引
                     if (dimensionTag.contains("rotationIndex")) {
                         int rotationIndex = dimensionTag.getInt("rotationIndex");
                         registry.dimensionRotationIndex.put(dimension, rotationIndex);
@@ -262,9 +217,6 @@ public class InterdimensionalFlowerRegistry extends SavedData {
         return registry;
     }
 
-    /**
-     * 花朵位置信息类
-     */
     public static class FlowerLocation {
         public final ResourceKey<Level> dimension;
         public final BlockPos position;

@@ -4,11 +4,9 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import morph.avaritia.api.ExtremeCraftingRecipe;
 import morph.avaritia.init.AvaritiaModContent;
-import morph.avaritia.recipe.ExtremeShapedRecipe;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerExtremeAutoCrafter;
 
 import java.util.List;

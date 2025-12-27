@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_top",
+  "textures": {
+    "side": "ex_enigmaticlegacy:blocks/extremebly/extreme_crafting_disassembly_table_side",
+    "top": "ex_enigmaticlegacy:blocks/extremebly/extreme_crafting_disassembly_table_top"
+  }
+}

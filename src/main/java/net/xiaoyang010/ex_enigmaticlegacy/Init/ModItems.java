@@ -138,6 +138,7 @@ public class ModItems {
 	public static final RegistryObject<Item> ENGINEER_HOPPER = block(ModBlockss.ENGINEER_HOPPER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> EXTREME_AUTO_CRAFTER = block(ModBlockss.EXTREME_AUTO_CRAFTER, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
 	public static final RegistryObject<Item> INFINITY_COMPRESSOR = block(ModBlockss.INFINITY_COMPRESSOR, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
+	public static final RegistryObject<Item> EXTREME_CRAFTING_DISASSEMBLY_TABLE = block(ModBlockss.EXTREME_CRAFTING_DISASSEMBLY_TABLE, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
 
 	//public static final RegistryObject<Item> STARLITSANCTUM = block(ModBlocks.STARLITSANCTUM, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
 
@@ -210,6 +211,10 @@ public class ModItems {
 	public static final RegistryObject<Item> DEAD_CORAL_INGOT = REGISTRY.register("dead_coral_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
 	public static final RegistryObject<Item> ETERNAL_CATALYST = REGISTRY.register("eternal_catalyst", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
 	public static final RegistryObject<Item> GLACIAL_INGOT = REGISTRY.register("glacial_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> HAOL_CATALYST = REGISTRY.register("halo_catalyst", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> RAINBOW_CATALYST = REGISTRY.register("rainbow_catalyst", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+	public static final RegistryObject<Item> FANTASTIC_CATALYST = REGISTRY.register("fantastic_catalyst", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
+
 
 
 

@@ -32,6 +32,8 @@ public class ModMenus {
 
     public static final MenuType<DeconTableMenu> DECON_TABLE_MENU = register("deconstruction_table", DeconTableMenu::new);
 
+    public static final MenuType<ExtremeDisassemblyMenu> EXTREME_CRAFTING_DISASSEMBLY_MENU = register("extreme_crafting_disassembly_table", ExtremeDisassemblyMenu::new);
+
     public static final MenuType<MagicTableMenu> MAGIC_TABLE_MENU = register("magic_table", MagicTableMenu::new);
 
     public static final MenuType<InfinityChestMenu> INFINITE_CHEST_SCREEN = register("infinite_chest_screen",

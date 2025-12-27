@@ -19,16 +19,15 @@ import net.minecraft.world.phys.Vec2;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.NidavellirForgeRecipe;
+import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.gui.HUDHandler;
 import vazkii.botania.client.integration.jei.PetalApothecaryRecipeCategory;
-import vazkii.botania.common.lib.ResourceLocationHelper;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
 
 public class NidavellirCategory implements IRecipeCategory<NidavellirForgeRecipe> {
     public static final ResourceLocation UID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "nidavellir_forge");
-//    public static final ResourceLocation TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "textures/gui/container/aludel.png");
 
     private final Component title;
     private final IDrawable background;

@@ -1,6 +1,5 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Event;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -8,6 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +17,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +24,6 @@ import net.minecraft.world.entity.projectile.WitherSkull;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
@@ -36,7 +34,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
-import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.UV.UltimateValkyrieBoots;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.UV.UltimateValkyrieChestplate;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.UltimateValkyrie;
 
@@ -47,16 +44,19 @@ import static net.xiaoyang010.ex_enigmaticlegacy.Item.armor.UltimateValkyrie.isF
 
 @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID)
 public class UltimateValkyrieEvents {
-
     private static final String NBT_SHIELD_COUNT = "ValkyrieShieldCount";
     private static final String NBT_COOLDOWN_TIME = "ValkyrieShieldCooldown";
     private static final String NBT_SKULL_COOLDOWN = "ValkyrieSkullCooldown";
     private static final String NBT_OWNER_UUID = "ValkyrieOwnerUUID";
     private static final String NBT_ENHANCED_SKELETON = "ValkyrieEnhanced";
     private static final String NBT_WITHER_KILL_MARK = "ValkyrieWitherKill";
+    private static final String NBT_BONUS_HEALTH = "ValkyrieBonusHealth";
+    private static final String NBT_SKELETON_COUNT = "ValkyrieSkeletonCount";
+    private static final float HEALTH_PER_SKELETON = 2.0F;
     private static final int MAX_SHIELD_COUNT = 25;
     private static final int SKULL_COOLDOWN = 10;
     private static final UUID DAMAGE_MODIFIER_UUID = UUID.fromString("6C5B2A4E-3D1F-4E9B-8A7C-1F2E3D4C5B6A");
+    private static final UUID HEALTH_MODIFIER_UUID = UUID.fromString("7D6C3B2A-4E1F-5F9C-9B8A-2F3F4E5D6C7B");
 
     public static class FriendlyWitherSkeletonTargetGoal extends Goal {
         private final WitherSkeleton skeleton;
@@ -191,6 +191,127 @@ public class UltimateValkyrieEvents {
     }
 
     /**
+     *** 更新玩家的血量上限
+    */
+    private static void updatePlayerMaxHealth(Player player) {
+        if (!UltimateValkyrie.isFullSuit(player)) {
+            removeHealthBonus(player);
+            return;
+        }
+
+        int skeletonCount = getAliveSkeletonCount(player);
+        ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
+        CompoundTag tag = chestplate.getOrCreateTag();
+        tag.putInt(NBT_SKELETON_COUNT, skeletonCount);
+
+        float bonusHealth = skeletonCount * HEALTH_PER_SKELETON;
+
+        var healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
+        if (healthAttr.getModifier(HEALTH_MODIFIER_UUID) != null) {
+            healthAttr.removeModifier(HEALTH_MODIFIER_UUID);
+        }
+
+        if (bonusHealth > 0) {
+            healthAttr.addTransientModifier(
+                    new AttributeModifier(HEALTH_MODIFIER_UUID, "Valkyrie Skeleton Health Bonus",
+                            bonusHealth, AttributeModifier.Operation.ADDITION)
+            );
+            tag.putFloat(NBT_BONUS_HEALTH, bonusHealth);
+        } else {
+            tag.remove(NBT_BONUS_HEALTH);
+        }
+    }
+
+    /**
+     * 移除血量加成
+     */
+    private static void removeHealthBonus(Player player) {
+        var healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
+        if (healthAttr.getModifier(HEALTH_MODIFIER_UUID) != null) {
+            healthAttr.removeModifier(HEALTH_MODIFIER_UUID);
+        }
+
+        ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
+        if (!chestplate.isEmpty()) {
+            CompoundTag tag = chestplate.getOrCreateTag();
+            tag.remove(NBT_BONUS_HEALTH);
+            tag.remove(NBT_SKELETON_COUNT);
+        }
+    }
+
+    /**
+     * 凋零骷髅死亡时更新玩家血量
+     */
+    @SubscribeEvent
+    public static void onSkeletonDeath(LivingDeathEvent event) {
+        if (event.getEntity() instanceof WitherSkeleton skeleton) {
+            CompoundTag tag = skeleton.getPersistentData();
+            if (tag.getBoolean(NBT_ENHANCED_SKELETON)) {
+                UUID ownerUUID = tag.getUUID(NBT_OWNER_UUID);
+                if (skeleton.level instanceof ServerLevel serverLevel) {
+                    Player owner = serverLevel.getPlayerByUUID(ownerUUID);
+                    if (owner != null) {
+                        serverLevel.getServer().execute(() -> {
+                            updatePlayerMaxHealth(owner);
+                            int remainingCount = getAliveSkeletonCount(owner);
+                            owner.displayClientMessage(
+                                    Component.nullToEmpty("§c凋零骷髅阵亡！剩余: §6" + remainingCount),
+                                    true
+                            );
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取存活的凋零骷髅数量
+     */
+    private static int getAliveSkeletonCount(Player player) {
+        if (!(player.level instanceof ServerLevel serverLevel)) {
+            return 0;
+        }
+
+        return (int) serverLevel.getEntitiesOfClass(WitherSkeleton.class,
+                        player.getBoundingBox().inflate(128.0D))
+                .stream()
+                .filter(skeleton -> {
+                    CompoundTag tag = skeleton.getPersistentData();
+                    if (!tag.getBoolean(NBT_ENHANCED_SKELETON)) {
+                        return false;
+                    }
+                    UUID ownerUUID = tag.getUUID(NBT_OWNER_UUID);
+                    return ownerUUID.equals(player.getUUID()) && skeleton.isAlive();
+                })
+                .count();
+    }
+
+    /**
+     * 玩家脱下装备时移除血量加成
+     */
+    @SubscribeEvent
+    public static void onArmorChange(LivingEquipmentChangeEvent event) {
+        if (event.getEntity() instanceof Player player && !player.level.isClientSide) {
+            if (event.getSlot().getType() == EquipmentSlot.Type.ARMOR) {
+                if (player.level instanceof ServerLevel serverLevel) {
+                    serverLevel.getServer().execute(() -> {
+                        if (!UltimateValkyrie.isFullSuit(player)) {
+                            removeHealthBonus(player);
+                            player.displayClientMessage(
+                                    Component.nullToEmpty("§c武神套装效果已失效！"),
+                                    true
+                            );
+                        } else {
+                            updatePlayerMaxHealth(player);
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    /**
      * 当主人被攻击时，命令附近的友军凋零骷髅反击
      */
     @SubscribeEvent
@@ -245,6 +366,7 @@ public class UltimateValkyrieEvents {
             if (UltimateValkyrie.isFullSuit(player)) {
                 if (event.getPotionEffect().getEffect() == MobEffects.WITHER) {
                     event.setResult(Event.Result.DENY);
+                    player.removeEffect(MobEffects.WITHER);
                 }
             }
         }
@@ -348,26 +470,6 @@ public class UltimateValkyrieEvents {
         }
     }
 
-//    @SubscribeEvent
-    public static void onChangeTarget(LivingChangeTargetEvent event){
-        if (event.getEntity() instanceof WitherSkeleton skeleton) {
-            CompoundTag tag = skeleton.getPersistentData();
-            boolean b = tag.getBoolean(NBT_ENHANCED_SKELETON);
-            if (event.getNewTarget() instanceof Player player) {
-                if (b) {
-                    if (!UltimateValkyrie.isFullSuit(player)){
-                        tag.putBoolean(NBT_ENHANCED_SKELETON, false);
-                    }
-                }else {
-                    if (UltimateValkyrie.isFullSuit(player)) {
-                        tag.putBoolean(NBT_ENHANCED_SKELETON, true);
-                        event.setCanceled(true);
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * 全套盔甲效果 - 凋零骷髅友军系统
      */
@@ -377,6 +479,7 @@ public class UltimateValkyrieEvents {
             return;
         }
         Player player = event.player;
+
         if (UltimateValkyrie.isFullSuit(player) && player.level instanceof ServerLevel serverLevel) {
             if (player.tickCount % 20 == 0) {
                 serverLevel.getEntitiesOfClass(WitherSkeleton.class,
@@ -398,6 +501,29 @@ public class UltimateValkyrieEvents {
             }
         }
     }
+
+//        else if (!UltimateValkyrie.isFullSuit(player) && player.level instanceof ServerLevel serverLevel) {
+//            if (player.tickCount % 20 == 0) {
+//                serverLevel.getEntitiesOfClass(WitherSkeleton.class,
+//                                player.getBoundingBox().inflate(32.0D))
+//                        .forEach(skeleton -> {
+//                            CompoundTag tag = skeleton.getPersistentData();
+//                            if (tag.getBoolean(NBT_ENHANCED_SKELETON)) {
+//                                UUID ownerUUID = tag.getUUID(NBT_OWNER_UUID);
+//                                if (ownerUUID.equals(player.getUUID())) {
+//                                    if (!tag.getBoolean("ShouldRestore")) {
+//                                        tag.putBoolean("ShouldRestore", true);
+//
+//                                        player.displayClientMessage(
+//                                                Component.nullToEmpty("§c§l警告：凋零骷髅失去控制！"),
+//                                                true
+//                                        );
+//
+//                                        restoreSkeletonHostile(skeleton);
+//                                    }
+//                                }
+//                            }
+//                        });
 
 
 
@@ -480,6 +606,8 @@ public class UltimateValkyrieEvents {
 
         skeleton.level.playSound(null, skeleton.blockPosition(),
                 SoundEvents.WITHER_SKELETON_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.5F);
+
+        updatePlayerMaxHealth(player);
     }
 
     /**
@@ -507,70 +635,91 @@ public class UltimateValkyrieEvents {
     }
 
     /**
+     * 清理过期的凋零击杀标记
+     */
+    @SubscribeEvent
+    public static void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+        if (event.getEntityLiving().tickCount % 20 == 0) {
+            LivingEntity entity = event.getEntityLiving();
+            CompoundTag tag = entity.getPersistentData();
+
+            if (tag.hasUUID(NBT_WITHER_KILL_MARK)) {
+                long markTime = tag.getLong(NBT_WITHER_KILL_MARK + "_Time");
+                long currentTime = entity.level.getGameTime();
+
+                if (currentTime - markTime > 200) {
+                    tag.remove(NBT_WITHER_KILL_MARK);
+                    tag.remove(NBT_WITHER_KILL_MARK + "_Time");
+                }
+            }
+        }
+    }
+
+    /**
      * 击杀普通骷髅时生成凋零骷髅
      */
     @SubscribeEvent
     public static void onSkeletonKilled(LivingDeathEvent event) {
-        Entity entity = event.getEntity();
-        Entity attack = event.getSource().getEntity();
-        if (entity instanceof Skeleton && !(attack instanceof WitherSkeleton)) {
-            if (attack instanceof Player player) {
-                if (UltimateValkyrie.isFullSuit(player) && player.level instanceof ServerLevel serverLevel) {
-                    WitherSkeleton witherSkeleton = EntityType.WITHER_SKELETON.create(serverLevel);
-                    if (witherSkeleton != null) {
-                        witherSkeleton.moveTo(
-                                entity.getX(),
-                                entity.getY(),
-                                entity.getZ(),
-                                entity.getYRot(),
-                                0.0F
-                        );
+        if (!(event.getEntity() instanceof Skeleton) || event.getEntity() instanceof WitherSkeleton) {
+            return;
+        }
 
-                        makeSkeletonFriendly(witherSkeleton, player);
+        Skeleton killedSkeleton = (Skeleton) event.getEntity();
+        Player owner = null;
 
-                        serverLevel.addFreshEntity(witherSkeleton);
-
-                        serverLevel.playSound(null, witherSkeleton.blockPosition(),
-                                SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 0.5F, 1.0F);
-
-                        player.displayClientMessage(
-                                Component.nullToEmpty("§5§l凋零骷髅已召唤！"),
-                                true
-                        );
-                    }
-                }
+        if (event.getSource().getEntity() instanceof Player player) {
+            if (UltimateValkyrie.isFullSuit(player) && player.level instanceof ServerLevel serverLevel) {
+                owner = player;
             }
-        } else if (entity instanceof Skeleton && attack instanceof WitherSkeleton witherSkeleton) {
+        }
+
+        else if (event.getSource().getEntity() instanceof WitherSkeleton witherSkeleton) {
             CompoundTag skeletonTag = witherSkeleton.getPersistentData();
             if (skeletonTag.getBoolean(NBT_ENHANCED_SKELETON)) {
                 UUID ownerUUID = skeletonTag.getUUID(NBT_OWNER_UUID);
-                if (entity.level instanceof ServerLevel serverLevel) {
-                    Player owner = serverLevel.getPlayerByUUID(ownerUUID);
-                    if (owner != null) {
-                        WitherSkeleton newSkeleton = EntityType.WITHER_SKELETON.create(serverLevel);
-                        if (newSkeleton != null) {
-                            newSkeleton.moveTo(
-                                    entity.getX(),
-                                    entity.getY(),
-                                    entity.getZ(),
-                                    entity.getYRot(),
-                                    0.0F
-                            );
+                if (killedSkeleton.level instanceof ServerLevel serverLevel) {
+                    owner = serverLevel.getPlayerByUUID(ownerUUID);
+                }
+            }
+        }
 
-                            makeSkeletonFriendly(newSkeleton, owner);
-                            serverLevel.addFreshEntity(newSkeleton);
-
-                            serverLevel.playSound(null, newSkeleton.blockPosition(),
-                                    SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 0.5F, 1.0F);
-
-                            owner.displayClientMessage(
-                                    Component.nullToEmpty("§5§l凋零骷髅已召唤！"),
-                                    true
-                            );
-                        }
+        else if (event.getSource().isMagic() || event.getSource() == DamageSource.WITHER) {
+            CompoundTag tag = killedSkeleton.getPersistentData();
+            if (tag.hasUUID(NBT_WITHER_KILL_MARK)) {
+                long markTime = tag.getLong(NBT_WITHER_KILL_MARK + "_Time");
+                long currentTime = killedSkeleton.level.getGameTime();
+                if (currentTime - markTime <= 100) { // 5秒 = 100 ticks
+                    UUID ownerUUID = tag.getUUID(NBT_WITHER_KILL_MARK);
+                    if (killedSkeleton.level instanceof ServerLevel serverLevel) {
+                        owner = serverLevel.getPlayerByUUID(ownerUUID);
                     }
                 }
             }
+        }
+
+        if (owner != null && killedSkeleton.level instanceof ServerLevel serverLevel) {
+            spawnWitherSkeleton(serverLevel, killedSkeleton, owner);
+        }
+    }
+
+    private static void spawnWitherSkeleton(ServerLevel serverLevel, Skeleton killedSkeleton, Player owner) {
+        WitherSkeleton witherSkeleton = EntityType.WITHER_SKELETON.create(serverLevel);
+        if (witherSkeleton != null) {
+            witherSkeleton.moveTo(
+                    killedSkeleton.getX(),
+                    killedSkeleton.getY(),
+                    killedSkeleton.getZ(),
+                    killedSkeleton.getYRot(),
+                    0.0F
+            );
+            makeSkeletonFriendly(witherSkeleton, owner);
+            serverLevel.addFreshEntity(witherSkeleton);
+            serverLevel.playSound(null, witherSkeleton.blockPosition(),
+                    SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 0.5F, 1.0F);
+            owner.displayClientMessage(
+                    Component.nullToEmpty("§5§l凋零骷髅已召唤！"),
+                    true
+            );
         }
     }
 
@@ -616,7 +765,7 @@ public class UltimateValkyrieEvents {
     }
 
     /**
-     * 致命伤害抵御效果 - 能量护甲
+     * 修改原有的致命伤害抵御效果
      */
     @SubscribeEvent
     public static void onDeathDefense(LivingDeathEvent event) {
@@ -624,51 +773,95 @@ public class UltimateValkyrieEvents {
             if (!isFullSuit(player)) {
                 return;
             }
-
             ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
             if (chestplate.isEmpty()) {
                 return;
             }
-
             CompoundTag tag = chestplate.getOrCreateTag();
             long currentTime = player.level.getGameTime();
-
             long cooldownEndTime = tag.getLong(NBT_COOLDOWN_TIME);
-            if (currentTime < cooldownEndTime) {
-                long remainingTicks = cooldownEndTime - currentTime;
-                int remainingSeconds = (int) (remainingTicks / 20);
-                player.displayClientMessage(
-                        Component.nullToEmpty("§c能量护甲冷却中: " + remainingSeconds + "秒"),
-                        true
-                );
-                return;
-            }
 
-            if (!tag.contains(NBT_SHIELD_COUNT)) {
-                tag.putInt(NBT_SHIELD_COUNT, MAX_SHIELD_COUNT);
-            }
+            if (player.level instanceof ServerLevel serverLevel) {
+                int skeletonCount = getAliveSkeletonCount(player);
+                if (skeletonCount > 0) {
+                    WitherSkeleton sacrificeSkeleton = serverLevel.getEntitiesOfClass(WitherSkeleton.class,
+                                    player.getBoundingBox().inflate(128.0D))
+                            .stream()
+                            .filter(skeleton -> {
+                                CompoundTag skeletonTag = skeleton.getPersistentData();
+                                if (!skeletonTag.getBoolean(NBT_ENHANCED_SKELETON)) {
+                                    return false;
+                                }
+                                UUID ownerUUID = skeletonTag.getUUID(NBT_OWNER_UUID);
+                                return ownerUUID.equals(player.getUUID()) && skeleton.isAlive();
+                            })
+                            .findFirst()
+                            .orElse(null);
 
-            int shieldCount = tag.getInt(NBT_SHIELD_COUNT);
+                    if (sacrificeSkeleton != null) {
+                        event.setCanceled(true);
+                        if (sacrificeSkeleton != null) {
+                            event.setCanceled(true);
 
-            if (shieldCount > 0) {
-                event.setCanceled(true);
+                            Vec3 skeletonPos = sacrificeSkeleton.position();
+                            sacrificeSkeleton.discard();
 
-                shieldCount--;
-                tag.putInt(NBT_SHIELD_COUNT, shieldCount);
+                            player.setHealth(player.getMaxHealth());
+                            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 4, false, true));
+                            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 2, false, true));
+                            player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 200, 0, false, true));
+                            player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 200, 3, false, true));
 
-                player.setHealth(player.getMaxHealth());
+                            player.level.playSound(null, player.blockPosition(),
+                                    SoundEvents.WITHER_DEATH, SoundSource.PLAYERS, 1.0F, 0.8F);
+                            player.level.playSound(null, player.blockPosition(),
+                                    SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
 
-                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 60, 4, false, true));
-                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 2, false, true));
-                player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 100, 0, false, true));
+                            serverLevel.playSound(null, skeletonPos.x, skeletonPos.y, skeletonPos.z,
+                                    SoundEvents.WITHER_SKELETON_DEATH, SoundSource.HOSTILE, 1.0F, 0.5F);
 
-                player.level.playSound(null, player.blockPosition(),
-                        SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
+                            serverLevel.getServer().execute(() -> {
+                                updatePlayerMaxHealth(player);
+                                int remainingCount = getAliveSkeletonCount(player);
+                                player.displayClientMessage(
+                                        Component.nullToEmpty("§5§l凋零骷髅献祭！§6你已复活！\n§c剩余骷髅: §6" + remainingCount),
+                                        false
+                                );
+                            });
 
-                player.displayClientMessage(
-                        Component.nullToEmpty("§e能量护甲已抵御致命伤害! 剩余次数: §6" + shieldCount + "§e/§6" + MAX_SHIELD_COUNT),
-                        true
-                );
+                            return;
+                        }
+                    }
+                }
+
+                if (currentTime < cooldownEndTime) {
+                    long remainingTicks = cooldownEndTime - currentTime;
+                    int remainingSeconds = (int) (remainingTicks / 20);
+                    player.displayClientMessage(
+                            Component.nullToEmpty("§c能量护甲冷却中: " + remainingSeconds + "秒"),
+                            true
+                    );
+                    return;
+                }
+                if (!tag.contains(NBT_SHIELD_COUNT)) {
+                    tag.putInt(NBT_SHIELD_COUNT, MAX_SHIELD_COUNT);
+                }
+                int shieldCount = tag.getInt(NBT_SHIELD_COUNT);
+                if (shieldCount > 0) {
+                    event.setCanceled(true);
+                    shieldCount--;
+                    tag.putInt(NBT_SHIELD_COUNT, shieldCount);
+                    player.setHealth(player.getMaxHealth());
+                    player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 60, 4, false, true));
+                    player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 2, false, true));
+                    player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 100, 0, false, true));
+                    player.level.playSound(null, player.blockPosition(),
+                            SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    player.displayClientMessage(
+                            Component.nullToEmpty("§e能量护甲已抵御致命伤害! 剩余次数: §6" + shieldCount + "§e/§6" + MAX_SHIELD_COUNT),
+                            true
+                    );
+                }
             }
         }
     }
@@ -680,6 +873,11 @@ public class UltimateValkyrieEvents {
         }
 
         Player player = event.player;
+
+        if (player.tickCount % 100 == 0 && isFullSuit(player)) {
+            updatePlayerMaxHealth(player);
+        }
+
 
         if (!isFullSuit(player)) {
             return;

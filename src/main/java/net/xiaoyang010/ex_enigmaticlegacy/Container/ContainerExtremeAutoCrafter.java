@@ -2,18 +2,14 @@ package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
 import morph.avaritia.api.ExtremeCraftingRecipe;
 import morph.avaritia.container.slot.OutputSlot;
-import morph.avaritia.init.AvaritiaModContent;
 import morph.avaritia.recipe.ExtremeShapedRecipe;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.client.Minecraft;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
@@ -33,7 +29,6 @@ import java.util.Optional;
 public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtremeAutoCrafter> implements IResourceShapedContainer, IGhostAcceptorContainer {
 
     private final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter;
-    private final Level level;
     private final int playerInventoryEnds, playerInventoryStarts, inventoryFull, result;
 
     public ContainerExtremeAutoCrafter(int containerId, Inventory inventory, @Nonnull final TileEntityExtremeAutoCrafter tileEntityExtremeAutoCrafter) {
@@ -46,8 +41,8 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
         for (int y = 0; y < 9; y++)
             for (int x = 0; x < 9; x++)
                 slotList.add((new ShapeSlot(tileEntityExtremeAutoCrafter, 81 + (y * 9 + x), 175 + (18 * x), 18 + (18 * y))));
-        slotList.add((new ShapeSlot(tileEntityExtremeAutoCrafter, 162, 247, 194))); //配方结果格
-        slotList.add((new OutputSlot(tileEntityExtremeAutoCrafter, 163, 247, 222)));
+        slotList.add((new SpecialSlot(tileEntityExtremeAutoCrafter, 162, 247, 222)));
+        slotList.add((new OutputSlot(tileEntityExtremeAutoCrafter, 163, 247, 194)));
         for (int y = 0; y < 3; y++)
             for (int x = 0; x < 9; x++)
                 slotList.add((new Slot(inventory, 9 + y * 9 + x, 43 + (18 * x), 194 + (18 * y))));
@@ -57,9 +52,8 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
         final int inventorySize = slots.size();
         playerInventoryEnds = inventorySize;
         playerInventoryStarts = inventorySize - 36;
-        inventoryFull = (playerInventoryStarts - 1) / 2;//81
-        result = inventoryFull * 2 + 1; //163 容器输出格
-        this.level = tileEntityExtremeAutoCrafter.getLevel();
+        inventoryFull = (playerInventoryStarts - 1) / 2;
+        result = inventoryFull * 2;
     }
 
     @Nonnull
@@ -67,7 +61,7 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
     public ItemStack quickMoveStack(@Nonnull final Player player, final int slotIndex) {
         ItemStack itemstack = ItemStack.EMPTY;
         final Slot actualSlot = this.slots.get(slotIndex);
-        if (actualSlot.hasItem()) {
+        if (actualSlot != null && actualSlot.hasItem()) {
             ItemStack itemstack1 = actualSlot.getItem();
             itemstack = itemstack1.copy();
             if (slotIndex >= playerInventoryStarts) {
@@ -86,7 +80,7 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
 
     @Override
     public void clicked(final int slotId, final int mouseButton, @Nonnull final ClickType clickType, @Nonnull final Player player) {
-        if (slotId >= inventoryFull && slotId < 162) {
+        if (slotId >= inventoryFull && slotId < result) {
             final Slot actualSlot = slots.get(slotId);
             if (clickType == ClickType.QUICK_MOVE) {
                 actualSlot.set(ItemStack.EMPTY);
@@ -101,26 +95,16 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
                     actualSlot.set(ItemStack.EMPTY);
             }
             tileEntityExtremeAutoCrafter.recipeShapeChanged();
-        } else if (slotId == 162){
+            return;
+        } else if (slotId == 163){
             if (clickType == ClickType.PICKUP) {
                 slots.get(slotId).set(ItemStack.EMPTY);
-                for (int i = inventoryFull; i <= 162; i++){
+                for (int i = 81; i <= 161; i++){
                     slots.get(i).set(ItemStack.EMPTY);
                 }
                 tileEntityExtremeAutoCrafter.recipeShapeChanged();
             }
         }else super.clicked(slotId, mouseButton, clickType, player);
-    }
-
-    @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-        //实时设置输出
-//        CraftingContainer craftingContainer = new CraftingContainer(this, 81, 161);
-//        Optional<ExtremeCraftingRecipe> recipeFor = this.level.getRecipeManager().getRecipeFor(AvaritiaModContent.EXTREME_CRAFTING_RECIPE_TYPE.get(), craftingContainer, level);
-//        if (recipeFor.isPresent()) {
-//            this.getSlot(162).set(recipeFor.get().getResultItem().copy());
-//        }else this.getSlot(162).set(ItemStack.EMPTY);
     }
 
     @Override
@@ -145,7 +129,8 @@ public final class ContainerExtremeAutoCrafter extends WContainer<TileEntityExtr
         clearShape(startsIn, endsIn);
         final List<Ingredient> inputs = extremeRecipe.getIngredients();
 
-        if (extremeRecipe instanceof ExtremeShapedRecipe shapedRecipe) {
+        if (extremeRecipe instanceof ExtremeShapedRecipe) {
+            ExtremeShapedRecipe shapedRecipe = (ExtremeShapedRecipe) extremeRecipe;
             int recipeWidth = shapedRecipe.getWidth();
             int recipeHeight = shapedRecipe.getHeight();
 

@@ -28,6 +28,8 @@ public class ModScreens {
             MenuScreens.register(ModMenus.MAGIC_TABLE_MENU, MagicTableScreen::new);
             MenuScreens.register(ModMenus.EXTREME_AUTO_CRAFTER_MENU, GuiExtremeAutoCrafter::new);
             MenuScreens.register(ModMenus.INFINITY_COMPRESSOR_MENU, GuiInfinityCompressor::new);
+            MenuScreens.register(ModMenus.EXTREME_CRAFTING_DISASSEMBLY_MENU, ExtremeDisassemblyScreen::new);
+
         });
     }
 }

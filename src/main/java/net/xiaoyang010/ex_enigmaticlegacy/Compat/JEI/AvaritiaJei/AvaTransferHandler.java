@@ -1,41 +1,25 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.JEI.AvaritiaJei;
 
-import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import mezz.jei.api.helpers.IStackHelper;
-import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
-import mezz.jei.common.network.IConnectionToServer;
-import mezz.jei.common.network.packets.PacketRecipeTransfer;
-import mezz.jei.common.transfer.BasicRecipeTransferHandler.InventoryState;
 import mezz.jei.common.transfer.RecipeTransferHandlerHelper;
-import mezz.jei.common.transfer.RecipeTransferOperationsResult;
-import mezz.jei.common.transfer.RecipeTransferUtil;
-import mezz.jei.common.util.StackHelper;
-import mezz.jei.common.util.StringUtil;
-import mezz.jei.forge.network.ConnectionToServer;
 import morph.avaritia.api.ExtremeCraftingRecipe;
 import morph.avaritia.recipe.ExtremeShapedRecipe;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerExtremeAutoCrafter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AvaTransferHandler implements IRecipeTransferHandler<ContainerExtremeAutoCrafter, ExtremeCraftingRecipe> {
     private static final Logger LOGGER = LogManager.getLogger();

@@ -1,7 +1,5 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Recipe;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -108,39 +106,5 @@ public class DeconRecipe {
 
             return clean;
         }
-    }
-
-    private ItemStack[] convertOreDict(Object[] input) {
-        try {
-            List<ItemStack> list = new ArrayList<>();
-
-            for(Object o : input) {
-                if (o != null) {
-                    if (o instanceof ItemStack) {
-                        list.add((ItemStack)o);
-                    } else if (o instanceof List) {
-                        List<?> l = (List<?>)o;
-                        Object o1 = l.get(0);
-                        ItemStack stack = (ItemStack)o1;
-                        list.add(stack.copy());
-                    }
-                } else {
-                    list.add(null);
-                }
-            }
-
-            return list.toArray(new ItemStack[list.size()]);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private void nullify() {
-        this.ingredients = null;
-        this.result = null;
-        this.width = -1;
-        this.height = -1;
-        this.size = -1;
     }
 }
