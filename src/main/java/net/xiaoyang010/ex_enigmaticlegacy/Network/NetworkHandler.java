@@ -69,6 +69,13 @@ public class NetworkHandler {
         );
         CHANNEL.registerMessage(
                 packetId++,
+                EXPacketIndex.class,
+                EXPacketIndex::encode,
+                EXPacketIndex::decode,
+                EXPacketIndex::handle
+        );
+        CHANNEL.registerMessage(
+                packetId++,
                 SpectatorModePacket.class,
                 SpectatorModePacket::encode,
                 SpectatorModePacket::decode,

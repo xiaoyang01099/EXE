@@ -42,8 +42,7 @@ public class ExtremeCraftingDeconstructionManager {
 
         for (Recipe<?> recipe : recipeManager.getRecipes()) {
             // 检查是否为极限合成配方
-            if (recipe instanceof ExtremeCraftingRecipe) {
-                ExtremeCraftingRecipe extremeRecipe = (ExtremeCraftingRecipe) recipe;
+            if (recipe instanceof ExtremeCraftingRecipe extremeRecipe) {
                 ExtremeDeconRecipe deconRecipe = ExtremeDeconRecipe.fromExtremeRecipe(extremeRecipe);
 
                 if (deconRecipe != null && deconRecipe.isValid()) {

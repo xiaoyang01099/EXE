@@ -48,6 +48,8 @@ public class AvaTransferHandler implements IRecipeTransferHandler<ContainerExtre
                     int width = shapedRecipe.getWidth();
                     if (width < 9){
                         NonNullList<Ingredient> ingredients = NonNullList.withSize(81, Ingredient.EMPTY);
+                        NonNullList<Ingredient> list = shapedRecipe.getIngredients();
+                        int size = list.size();
                         for (int h = 0; h < 9; h++){
                             for (int w = 0; w < 9; w++){
                                 int slot = h * 9 + w;//完整配方9*9格序数
@@ -55,7 +57,8 @@ public class AvaTransferHandler implements IRecipeTransferHandler<ContainerExtre
                                 if (w >= width){
                                     ingredients.set(slot, Ingredient.EMPTY);
                                 }else {
-                                    ingredients.set(slot, recipe.getIngredients().get(recipeSlot));
+                                    if (recipeSlot > size - 1) ingredients.set(slot, Ingredient.EMPTY);
+                                    else ingredients.set(slot, list.get(recipeSlot));
                                 }
                             }
                         }

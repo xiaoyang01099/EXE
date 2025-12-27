@@ -62,49 +62,43 @@ public class ExtremeDeconRecipe {
             String group = recipe.getGroup();
             ItemStack result = recipe.getResultItem().copy();
 
-            ItemStack[] ingredients = new ItemStack[81];
-            Arrays.fill(ingredients, ItemStack.EMPTY);
-
-            NonNullList<Ingredient> recipeIngredients = recipe.getIngredients();
+            ItemStack[] ingredients = new ItemStack[81]; //拆解配方
+            int width = 0;
+            int height = 0;
             boolean shapeless = false;
-            int width = 9;
-            int height = 9;
 
-            if (recipe instanceof ExtremeShapedRecipe shapedRecipe) {
-                // 处理有序配方
+            if (recipe instanceof ExtremeShapelessRecipe shapelessRecipe){
+                NonNullList<Ingredient> list = shapelessRecipe.getIngredients();
+                shapeless = true;
+                width = 9;
+                height = (int) Math.ceil(list.size() / 9.0f);
+                setIngredients(ingredients, list);
+            }else if (recipe instanceof ExtremeShapedRecipe shapedRecipe){
                 width = shapedRecipe.getWidth();
                 height = shapedRecipe.getHeight();
-                shapeless = false;
-
-                // 将有序配方的材料放到正确的位置
-                for (int i = 0; i < recipeIngredients.size() && i < 81; i++) {
-                    processIngredient(recipeIngredients.get(i), ingredients, i);
-                }
-            } else if (recipe instanceof ExtremeShapelessRecipe shapelessRecipe) {
-                // 处理无序配方
-                shapeless = true;
-
-                // 计算无序配方的最小矩形区域
-                int ingredientCount = recipeIngredients.size();
-                if (ingredientCount > 0) {
-                    // 根据材料数量计算合适的显示区域
-                    width = Math.min(9, Math.max(1, (int) Math.ceil(Math.sqrt(ingredientCount))));
-                    height = Math.min(9, Math.max(1, (int) Math.ceil((double) ingredientCount / width)));
-
-                    // 将材料按顺序排列在左上角
-                    for (int i = 0; i < ingredientCount && i < 81; i++) {
-                        int x = i % width;
-                        int y = i / width;
-                        int index = y * 9 + x;
-                        if (index < 81) {
-                            processIngredient(recipeIngredients.get(i), ingredients, index);
+                NonNullList<Ingredient> list = shapedRecipe.getIngredients();
+                if (width < 9){
+                    NonNullList<Ingredient> nullList = NonNullList.withSize(81, Ingredient.EMPTY);
+                    int size = list.size();
+                    for (int h = 0; h < 9; h++){
+                        for (int w = 0; w < 9; w++){
+                            int slot = h * 9 + w;//完整配方9*9格序数
+                            int recipeSlot = h * width + w;
+                            if (w >= width){
+                                nullList.set(slot, Ingredient.EMPTY);
+                            }else {
+                                if (recipeSlot > size - 1) nullList.set(slot, Ingredient.EMPTY);
+                                else nullList.set(slot, list.get(recipeSlot));
+                            }
                         }
                     }
+
+                    setIngredients(ingredients, nullList);
+                }else {
+                    setIngredients(ingredients, list);
                 }
-            } else {
-                ExEnigmaticlegacyMod.LOGGER.error("Unknown recipe type: {}", recipe.getClass().getName());
-                return null;
             }
+
 
             return new ExtremeDeconRecipe(recipeId, group, result, ingredients, width, height, shapeless);
 
@@ -112,6 +106,17 @@ public class ExtremeDeconRecipe {
             ExEnigmaticlegacyMod.LOGGER.error("Failed to convert extreme recipe to decon recipe: {}",
                     recipe.getId(), e);
             return null;
+        }
+    }
+
+    //配方设置
+    private static void setIngredients(ItemStack[] ingredients, NonNullList<Ingredient> list){
+        int slot = 0;
+        for (Ingredient ingredient : list) {
+            if (!ingredient.isEmpty() && slot < list.size()) {
+                ingredients[slot] = ingredient.getItems()[0];
+            }
+            slot++;
         }
     }
 

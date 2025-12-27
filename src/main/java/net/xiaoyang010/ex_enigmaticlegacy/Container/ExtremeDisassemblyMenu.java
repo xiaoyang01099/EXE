@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import javax.annotation.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -19,6 +23,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.network.FriendlyByteBuf;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.ExtremeDisassemblyScreen;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
@@ -28,11 +33,11 @@ import net.xiaoyang010.ex_enigmaticlegacy.Util.ExtremeCraftingDeconstructionMana
 
 public class ExtremeDisassemblyMenu extends AbstractContainerMenu {
     private int recipeIndex;
-    private Player player;
+    private final Player player;
     private final ContainerLevelAccess access;
     public SimpleContainer matrix = new SimpleContainer(81);
-    private Container in = new CraftingContainer(this, 1, 1);
-    private SimpleContainer enchantInv = new SimpleContainer(1) {
+    private final Container in = new CraftingContainer(this, 1, 1);
+    private final SimpleContainer enchantInv = new SimpleContainer(1) {
         @Override
         public int getMaxStackSize() {
             return 1;
@@ -49,7 +54,7 @@ public class ExtremeDisassemblyMenu extends AbstractContainerMenu {
         this.player = playerInventory.player;
         this.access = access;
 
-        this.addSlot(new Slot(this.in, 0, 8, 84) {
+        this.addSlot(new Slot(this.in, 0, 12, 80) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return ExtremeDisassemblyMenu.this.isExtremeCraftedItem(stack);
@@ -59,11 +64,11 @@ public class ExtremeDisassemblyMenu extends AbstractContainerMenu {
         this.addSlot(new Slot(this.enchantInv, 0, 8, 109) {
             @Override
             public boolean mayPlace(@Nullable ItemStack stack) {
-                return stack != ItemStack.EMPTY ? stack.is(Items.BOOK) : false;
+                return stack != ItemStack.EMPTY && stack.is(Items.BOOK);
             }
         });
 
-        int startX = 35;
+        int startX = 68;
         int startY = 8;
         for(int y = 0; y < 9; ++y) {
             for(int x = 0; x < 9; ++x) {
@@ -92,12 +97,12 @@ public class ExtremeDisassemblyMenu extends AbstractContainerMenu {
 
         for(int y = 0; y < 3; ++y) {
             for(int x = 0; x < 9; ++x) {
-                this.addSlot(new Slot(playerInventory, x + y * 9 + 9, 35 + x * 18, 176 + y * 18));
+                this.addSlot(new Slot(playerInventory, x + y * 9 + 9, 42 + x * 18, 174 + y * 18));
             }
         }
 
         for(int x = 0; x < 9; ++x) {
-            this.addSlot(new Slot(playerInventory, x, 35 + x * 18, 234));
+            this.addSlot(new Slot(playerInventory, x, 42 + x * 18, 232));
         }
     }
 
@@ -140,6 +145,10 @@ public class ExtremeDisassemblyMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player playerIn) {
+        Minecraft mc = Minecraft.getInstance();
+        Screen screen = mc.screen;
+        Gui gui = mc.gui;
+        if (!(screen instanceof ExtremeDisassemblyScreen)) return false;
         return stillValid(this.access, playerIn, ModBlockss.EXTREME_CRAFTING_DISASSEMBLY_TABLE.get());
     }
 
