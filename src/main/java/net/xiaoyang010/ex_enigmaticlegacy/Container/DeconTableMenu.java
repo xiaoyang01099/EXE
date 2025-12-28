@@ -32,7 +32,7 @@ public class DeconTableMenu extends AbstractContainerMenu {
     private Player player;
     private final ContainerLevelAccess access;
     public SimpleContainer matrix = new SimpleContainer(9);
-    private Container in = new CraftingContainer(this, 1, 1);
+    private SimpleContainer in = new SimpleContainer(1);
     private SimpleContainer enchantInv = new SimpleContainer(1) {
         @Override
         public int getMaxStackSize() {
@@ -95,6 +95,11 @@ public class DeconTableMenu extends AbstractContainerMenu {
         }
     }
 
+    @Override
+    public void slotsChanged(Container inventoryIn) {
+        super.slotsChanged(inventoryIn);
+    }
+
     private void decrementCurrentRecipe() {
         if (!this.enchantInv.getItem(0).isEmpty()) {
             this.handleEnchant(this.enchantInv, this.in);
@@ -136,8 +141,8 @@ public class DeconTableMenu extends AbstractContainerMenu {
         if (!recipes.isEmpty()) {
             if (this.getRecipeIndex() >= recipes.size()) {
                 this.setRecipeIndex(0);
-                NetworkHandler.CHANNEL.sendToServer(new PacketIndex(0));
-                if (!Minecraft.getInstance().level.isClientSide()) {
+                if (!this.player.level.isClientSide()) {
+                    NetworkHandler.CHANNEL.sendToServer(new PacketIndex(0));
                 }
             }
 
@@ -163,9 +168,10 @@ public class DeconTableMenu extends AbstractContainerMenu {
         } else {
             if (clickTypeIn == ClickType.QUICK_CRAFT) {
                 super.clicked(slotId, dragType, clickTypeIn, player);
+                return;
             }
 
-            if (slotId >= 0) {
+            if (slotId >= 0 && slotId < this.slots.size()) {
                 Slot clickSlot = this.slots.get(slotId);
                 if (slotId >= 0 && !clickSlot.getItem().isEmpty() && clickSlot.getItem().getItem() != Items.AIR) {
                     if (clickTypeIn == ClickType.PICKUP && slotId > 1 && slotId < 11) {
@@ -283,16 +289,29 @@ public class DeconTableMenu extends AbstractContainerMenu {
     @Override
     public void removed(Player playerIn) {
         super.removed(playerIn);
-        if (!this.in.getItem(0).isEmpty()) {
-            playerIn.drop(this.in.getItem(0), false);
-            this.in.setItem(0, ItemStack.EMPTY);
-        }
-
-        if (!this.enchantInv.getItem(0).isEmpty()) {
-            playerIn.drop(this.enchantInv.getItem(0), false);
-            this.enchantInv.setItem(0, ItemStack.EMPTY);
-        }
+        this.access.execute((level, pos) -> {
+            if (!this.in.getItem(0).isEmpty()) {
+                playerIn.drop(this.in.getItem(0), false);
+            }
+            if (!this.enchantInv.getItem(0).isEmpty()) {
+                playerIn.drop(this.enchantInv.getItem(0), false);
+            }
+        });
     }
+
+//    @Override
+//    public void removed(Player playerIn) {
+//        super.removed(playerIn);
+//        if (!this.in.getItem(0).isEmpty()) {
+//            playerIn.drop(this.in.getItem(0), false);
+//            this.in.setItem(0, ItemStack.EMPTY);
+//        }
+//
+//        if (!this.enchantInv.getItem(0).isEmpty()) {
+//            playerIn.drop(this.enchantInv.getItem(0), false);
+//            this.enchantInv.setItem(0, ItemStack.EMPTY);
+//        }
+//    }
 
     public void setRecipeIndex(int index) {
         this.recipeIndex = index;

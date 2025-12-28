@@ -36,7 +36,7 @@ public class ExtremeDisassemblyMenu extends AbstractContainerMenu {
     private final Player player;
     private final ContainerLevelAccess access;
     public SimpleContainer matrix = new SimpleContainer(81);
-    private final Container in = new CraftingContainer(this, 1, 1);
+    private SimpleContainer in = new SimpleContainer(1);
     private final SimpleContainer enchantInv = new SimpleContainer(1) {
         @Override
         public int getMaxStackSize() {
@@ -145,10 +145,6 @@ public class ExtremeDisassemblyMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        Minecraft mc = Minecraft.getInstance();
-        Screen screen = mc.screen;
-        Gui gui = mc.gui;
-        if (!(screen instanceof ExtremeDisassemblyScreen)) return false;
         return stillValid(this.access, playerIn, ModBlockss.EXTREME_CRAFTING_DISASSEMBLY_TABLE.get());
     }
 
@@ -162,7 +158,9 @@ public class ExtremeDisassemblyMenu extends AbstractContainerMenu {
         if (!recipes.isEmpty()) {
             if (this.getRecipeIndex() >= recipes.size()) {
                 this.setRecipeIndex(0);
-                NetworkHandler.CHANNEL.sendToServer(new EXPacketIndex(0));
+                if (!this.player.level.isClientSide()) {
+                    NetworkHandler.CHANNEL.sendToServer(new EXPacketIndex(0));
+                }
             }
 
             ExtremeDeconRecipe recipe = recipes.get(this.getRecipeIndex());
@@ -181,6 +179,11 @@ public class ExtremeDisassemblyMenu extends AbstractContainerMenu {
     }
 
     @Override
+    public void slotsChanged(Container inventoryIn) {
+        super.slotsChanged(inventoryIn);
+    }
+
+    @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
         if (clickTypeIn == ClickType.PICKUP_ALL) {
             return;
@@ -188,9 +191,10 @@ public class ExtremeDisassemblyMenu extends AbstractContainerMenu {
 
         if (clickTypeIn == ClickType.QUICK_CRAFT) {
             super.clicked(slotId, dragType, clickTypeIn, player);
+            return;
         }
 
-        if (slotId >= 0) {
+        if (slotId >= 0 && slotId < this.slots.size()) {
             Slot clickSlot = this.slots.get(slotId);
             if (slotId >= 0 && !clickSlot.getItem().isEmpty() && clickSlot.getItem().getItem() != Items.AIR) {
                 if (clickTypeIn == ClickType.PICKUP && slotId > 1 && slotId < 83) {
@@ -302,16 +306,29 @@ public class ExtremeDisassemblyMenu extends AbstractContainerMenu {
     @Override
     public void removed(Player playerIn) {
         super.removed(playerIn);
-        if (!this.in.getItem(0).isEmpty()) {
-            playerIn.drop(this.in.getItem(0), false);
-            this.in.setItem(0, ItemStack.EMPTY);
-        }
-
-        if (!this.enchantInv.getItem(0).isEmpty()) {
-            playerIn.drop(this.enchantInv.getItem(0), false);
-            this.enchantInv.setItem(0, ItemStack.EMPTY);
-        }
+        this.access.execute((level, pos) -> {
+            if (!this.in.getItem(0).isEmpty()) {
+                playerIn.drop(this.in.getItem(0), false);
+            }
+            if (!this.enchantInv.getItem(0).isEmpty()) {
+                playerIn.drop(this.enchantInv.getItem(0), false);
+            }
+        });
     }
+
+//    @Override
+//    public void removed(Player playerIn) {
+//        super.removed(playerIn);
+//        if (!this.in.getItem(0).isEmpty()) {
+//            playerIn.drop(this.in.getItem(0), false);
+//            this.in.setItem(0, ItemStack.EMPTY);
+//        }
+//
+//        if (!this.enchantInv.getItem(0).isEmpty()) {
+//            playerIn.drop(this.enchantInv.getItem(0), false);
+//            this.enchantInv.setItem(0, ItemStack.EMPTY);
+//        }
+//    }
 
     public void setRecipeIndex(int index) {
         this.recipeIndex = index;

@@ -1,61 +1,30 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Tile;
 
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import morph.avaritia.api.ExtremeCraftingRecipe;
-import morph.avaritia.init.AvaritiaModContent;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Mth;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraft.world.level.block.state.BlockState;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.BlockExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerExtremeAutoCrafter;
-import net.xiaoyang010.ex_enigmaticlegacy.Util.EComponent;
-import net.xiaoyang010.ex_enigmaticlegacy.api.ExtremeRecipeField;
-import net.xiaoyang010.ex_enigmaticlegacy.api.WanionApi.*;
 
-import net.xiaoyang010.ex_enigmaticlegacy.api.WanionApi.IF.IControl;
-import org.jetbrains.annotations.NotNull;
+import java.time.chrono.IsoChronology;
 
-import java.util.Collection;
-
-public final class TileEntityExtremeAutoCrafter extends WTileEntity implements MenuProvider {
-    private static final int POWER_MULTIPLIER = 10;
-    private static final int CAPACITY_MULTIPLIER = 100;
-
-    public final int full = getContainerSize() - 1, half = full / 2, powerConsumption = half * POWER_MULTIPLIER;
-    public final RedstoneControl redstoneControl;
-    public final EnergyControl energyControl;
-    private final ExtremeCraftingMatrix extremeCraftingMatrix = new ExtremeCraftingMatrix((int) Math.sqrt(half));
-    private final ControlController controlController = getController(ControlController.class);
-    private final Collection<IControl<?>> allControls = controlController.getInstances();
-    private final ExtremeRecipeField extremeRecipeField = new ExtremeRecipeField();
-    private Int2IntMap patternMap = null;
+public final class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
+    private NonNullList<ItemStack> items = NonNullList.withSize(164, ItemStack.EMPTY);
+    private boolean isPowered;
+    private String recipe;
 
     public TileEntityExtremeAutoCrafter(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        controlController.add((this.redstoneControl = new RedstoneControl(this)));
-        controlController.add((this.energyControl = new EnergyControl(powerConsumption * CAPACITY_MULTIPLIER, powerConsumption)));
-        getController(FieldController.class).add(extremeRecipeField);
-        addCapability(CapabilityEnergy.ENERGY, energyControl);
-        addCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemHandlerExtremeAutoCrafter(this));
-    }
-
-    public static void tick(TileEntityExtremeAutoCrafter tileEntity)
-    {
-        tileEntity.serverTick();
     }
 
     public void serverTick() {
@@ -98,158 +67,87 @@ public final class TileEntityExtremeAutoCrafter extends WTileEntity implements M
         setChanged();
     }
 
-    public ExtremeRecipeField getExtremeRecipeField()
-    {
-        return extremeRecipeField;
-    }
-
-    @NotNull
     @Override
-    public String getDefaultName() {
-        return "container.extreme_auto_crafter.name";
+    protected void saveAdditional(CompoundTag tag) {
+        tag.put("items", ContainerHelper.saveAllItems(tag, items));
+        tag.putBoolean("isPowered", isPowered);
+        tag.putString("recipe", recipe);
+        super.saveAdditional(tag);
     }
 
     @Override
-    public Component getDisplayName() {
-        return EComponent.translatable(getDefaultName());
-    }
-
-    private boolean notMatches(@NotNull final Int2IntMap inputMap, @NotNull final Int2IntMap patternMap) {
-        if (inputMap.size() >= patternMap.size() && inputMap.keySet().containsAll(patternMap.keySet())) {
-            for (final int key : patternMap.keySet())
-                if (inputMap.get(key) < patternMap.get(key))
-                    return true;
-            return false;
-        } else
-            return true;
-    }
-
-    private void cleanInput() {
-        final Int2IntMap patternMap = new Int2IntOpenHashMap(this.patternMap);
-        for (int i = 0; i < half && !patternMap.isEmpty(); i++) {
-            final ItemStack itemStack = itemStacks.get(i);
-            final int key = MetaItem.get(itemStack);
-            if (patternMap.containsKey(key)) {
-                final int total = patternMap.get(key);
-                final int dif = Mth.clamp(total, 1, itemStack.getCount());
-                if (itemStack.getItem() == Items.WATER_BUCKET || itemStack.getItem() == Items.LAVA_BUCKET) {
-                    setItem(i, new ItemStack(Items.BUCKET));
-                }
-                else if (itemStack.getItem().hasCraftingRemainingItem()) {
-                    ItemStack remainingItem = itemStack.getItem().getCraftingRemainingItem().getDefaultInstance();
-                    if (!remainingItem.isEmpty()) {
-                        setItem(i, remainingItem);
-                    } else {
-                        itemStack.setCount(itemStack.getCount() - dif);
-                    }
-                }
-                else {
-                    itemStack.setCount(itemStack.getCount() - dif);
-                }
-
-                if (dif - total == 0)
-                    patternMap.remove(key);
-                else
-                    patternMap.put(key, total - dif);
-                if (itemStack.getCount() == 0)
-                    itemStacks.set(i, ItemStack.EMPTY);
-            }
-        }
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ContainerHelper.loadAllItems(tag, items);
+        isPowered = tag.getBoolean("isPowered");
+        recipe = tag.getString("recipe");
     }
 
     @Override
-    public void readCustomNBT(@NotNull final CompoundTag compoundTag) {
-        super.readCustomNBT(compoundTag);
-        recipeShapeChanged();
+    protected Component getDefaultName() {
+        return Component.nullToEmpty("梦魇工作台");
     }
 
     @Override
-    public int getContainerSize()
-    {
+    protected AbstractContainerMenu createMenu(int i, Inventory inventory) {
+        return new ContainerExtremeAutoCrafter(i, inventory, this);
+    }
+
+    @Override
+    public int getContainerSize() {
         return 164;
     }
 
-    public void recipeShapeChanged() {
-        ExtremeCraftingRecipe matchedRecipe = null;
-        if (level != null) {
-            for (final ExtremeCraftingRecipe extremeRecipe : level.getRecipeManager().getAllRecipesFor(AvaritiaModContent.EXTREME_CRAFTING_RECIPE_TYPE.get())) {
-                if (extremeRecipe.matches(extremeCraftingMatrix, level)) {
-                    matchedRecipe = extremeRecipe;
-                    break;
-                }
-            }
-        }
-        extremeRecipeField.setExtremeRecipe(matchedRecipe);
-        if (matchedRecipe == null) itemStacks.set(162, ItemStack.EMPTY);
-        patternMap = null;
+    @Override
+    public boolean isEmpty() {
+        return items.subList(0, 81).isEmpty();
     }
 
     @Override
-    public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new ContainerExtremeAutoCrafter(containerId, playerInventory,this);
+    public ItemStack getItem(int i) {
+        return items.get(i);
     }
 
-    private final class ExtremeCraftingMatrix extends CraftingContainer {
-        final int square;
-
-        private ExtremeCraftingMatrix(final int squareRoot) {
-            super(new AbstractContainerMenu(null, -1) {
-                @Override
-                public @NotNull ItemStack quickMoveStack(@NotNull final Player player, final int index) {
-                    return ItemStack.EMPTY;
-                }
-
-                @Override
-                public boolean stillValid(@NotNull final Player player) {
-                    return false;
-                }
-            }, squareRoot, squareRoot);
-            this.square = squareRoot * squareRoot;
-        }
-
-        @Override
-        @NotNull
-        public ItemStack getItem(final int slot)
-        {
-            return itemStacks.get(square + slot);
-        }
+    @Override
+    public ItemStack removeItem(int i, int i1) {
+        return ContainerHelper.removeItem(items, i, i1);
     }
 
-    private static class ItemHandlerExtremeAutoCrafter extends InvWrapper {
-        private final TileEntityExtremeAutoCrafter tileEntityAutoBiggerCraftingTable;
+    @Override
+    public ItemStack removeItemNoUpdate(int i) {
+        return ContainerHelper.takeItem(items, i);
+    }
 
-        private ItemHandlerExtremeAutoCrafter(@NotNull final TileEntityExtremeAutoCrafter tileEntityAutoBiggerCraftingTable) {
-            super(tileEntityAutoBiggerCraftingTable);
-            this.tileEntityAutoBiggerCraftingTable = tileEntityAutoBiggerCraftingTable;
-        }
+    @Override
+    public void setItem(int i, ItemStack itemStack) {
+        if ((i > 0 && i < 81) || i == 163)
+            items.set(i, itemStack);
+    }
 
-        @NotNull
-        @Override
-        public ItemStack insertItem(final int slot, @NotNull final ItemStack stack, final boolean simulate) {
-            return slot >= tileEntityAutoBiggerCraftingTable.half ? stack : super.insertItem(slot, stack, simulate);
-        }
+    @Override
+    public boolean stillValid(Player player) {
+        BlockPos pos = this.getBlockPos();
+        return player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) <= 64;
+    }
 
-        @NotNull
-        @Override
-        public ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
-            boolean full = slot == tileEntityAutoBiggerCraftingTable.full;
-            final ItemStack slotStack = simulate ? getStackInSlot(slot).copy() : getStackInSlot(slot);
+    @Override
+    public void clearContent() {
+        items.clear();
+    }
 
-            if (full || slotStack.getItem() == Items.BUCKET) {
-                if (slotStack.isEmpty())
-                    return ItemStack.EMPTY;
-                final ItemStack newStack = slotStack.copy();
-                final int newStackSize = Mth.clamp(amount, 1, newStack.getCount());
-                newStack.setCount(newStackSize);
-                slotStack.setCount(slotStack.getCount() - newStackSize);
-                if (!simulate && slotStack.isEmpty()) {
-                    setStackInSlot(slot, ItemStack.EMPTY);
-                    getInv().setChanged();
-                }
-                return newStack;
-            } else {
-                return ItemStack.EMPTY;
-            }
-        }
+    public boolean isPowered() {
+        return isPowered;
+    }
+
+    public void setPowered(boolean powered) {
+        isPowered = powered;
+    }
+
+    public String getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(String recipe) {
+        this.recipe = recipe;
     }
 }
