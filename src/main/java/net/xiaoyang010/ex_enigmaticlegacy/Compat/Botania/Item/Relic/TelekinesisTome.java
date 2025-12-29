@@ -37,7 +37,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.PlayerMotionUpdat
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.TelekinesisAttackMessage;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.TelekinesisParticleMessage;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.TelekinesisUseMessage;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.IRelic;

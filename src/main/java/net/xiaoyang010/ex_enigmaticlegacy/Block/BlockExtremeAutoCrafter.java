@@ -76,7 +76,7 @@ public class BlockExtremeAutoCrafter extends BaseEntityBlock {
         if (!state.is(blockState.getBlock())) {
             BlockEntity blockentity = level.getBlockEntity(pos);
             if (blockentity instanceof TileEntityExtremeAutoCrafter tile) {
-                Containers.dropContents(level, pos, tile);
+                tile.dropContents();
                 level.updateNeighbourForOutputSignal(pos, this);
             }
 

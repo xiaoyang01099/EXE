@@ -15,6 +15,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.client.Minecraft;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.AutoCrafterPacket;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.AutoCrafterRecipePacket;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityExtremeAutoCrafter;
 
 import javax.annotation.Nonnull;
@@ -37,21 +40,19 @@ public final class ContainerExtremeAutoCrafter extends AbstractContainerMenu {
         this.autoCrafter = (TileEntityExtremeAutoCrafter) tileAutoCraft;
         this.player = inventory.player;
         this.level = player.level;
-        final List<Slot> slotList = new ArrayList<>();
         for (int y = 0; y < 9; y++)
             for (int x = 0; x < 9; x++)
-                slotList.add((new Slot(tileAutoCraft, y * 9 + x, 8 + (18 * x), 18 + (18 * y))));
+                this.addSlot((new Slot(autoCrafter, y * 9 + x, 8 + (18 * x), 18 + (18 * y))));
         for (int y = 0; y < 9; y++)
             for (int x = 0; x < 9; x++)
-                slotList.add((new AutoCraftSlot(tileAutoCraft, 81 + (y * 9 + x), 175 + (18 * x), 18 + (18 * y))));
-        slotList.add((new AutoCraftSlot(tileAutoCraft, 162, 247, 194))); //配方结果格
-        slotList.add((new OutputSlot(tileAutoCraft, 163, 247, 222)));
+                this.addSlot((new AutoCraftSlot(autoCrafter, 81 + (y * 9 + x), 175 + (18 * x), 18 + (18 * y))));
+        this.addSlot((new AutoCraftSlot(autoCrafter, 162, 247, 194))); //配方结果格
+        this.addSlot((new OutputSlot(autoCrafter, 163, 247, 222)));
         for (int y = 0; y < 3; y++)
             for (int x = 0; x < 9; x++)
-                slotList.add((new Slot(inventory, 9 + y * 9 + x, 43 + (18 * x), 194 + (18 * y))));
+                this.addSlot((new Slot(inventory, 9 + y * 9 + x, 43 + (18 * x), 194 + (18 * y))));
         for (int i = 0; i < 9; i++)
-            slotList.add((new Slot(inventory, i, 43 + (18 * i), 252)));
-        slotList.forEach(this::addSlot);
+            this.addSlot((new Slot(inventory, i, 43 + (18 * i), 252)));
     }
 
     @Nonnull
@@ -104,6 +105,14 @@ public final class ContainerExtremeAutoCrafter extends AbstractContainerMenu {
         }else super.clicked(slotId, mouseButton, clickType, player);
     }
 
+    public void setItem(int slot, ItemStack stack) {
+        NetworkHandler.CHANNEL.sendToServer(new AutoCrafterPacket(slot, this.autoCrafter.getBlockPos(), stack));
+    }
+
+    public void setRecipe(ExtremeCraftingRecipe recipe){
+        NetworkHandler.CHANNEL.sendToServer(new AutoCrafterRecipePacket(recipe == null ? ResourceLocation.tryParse("null") : recipe.getId(), this.autoCrafter.getBlockPos()));
+    }
+
     @Override
     public boolean stillValid(Player player) {
         return this.autoCrafter.stillValid(player);
@@ -111,14 +120,14 @@ public final class ContainerExtremeAutoCrafter extends AbstractContainerMenu {
 
     private void update(boolean flag){
         if (flag) {
-            autoCrafter.setRecipe("");
+            this.setRecipe(null);
             return;
         }
-        CraftingContainer craftingContainer = new CraftingContainer(this, 81, 161);
-        Optional<ExtremeCraftingRecipe> recipeFor = this.level.getRecipeManager().getRecipeFor(AvaritiaModContent.EXTREME_CRAFTING_RECIPE_TYPE.get(), craftingContainer, level);
-        if (recipeFor.isPresent()) {
-            this.getSlot(162).set(recipeFor.get().getResultItem().copy());
-            autoCrafter.setRecipe(recipeFor.get().getId().toString());
-        }else this.getSlot(162).set(ItemStack.EMPTY);
+//        CraftingContainer craftingContainer = new CraftingContainer(this, 81, 161);
+//        Optional<ExtremeCraftingRecipe> recipeFor = this.level.getRecipeManager().getRecipeFor(AvaritiaModContent.EXTREME_CRAFTING_RECIPE_TYPE.get(), craftingContainer, level);
+//        if (recipeFor.isPresent()) {
+//            this.getSlot(162).set(recipeFor.get().getResultItem().copy());
+//            this.setRecipe(recipeFor.get());
+//        }else this.getSlot(162).set(ItemStack.EMPTY);
     }
 }

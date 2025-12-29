@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Hud.ClientHelper;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.IBoundRender;
+import net.xiaoyang010.ex_enigmaticlegacy.api.IBoundRender;
 import vazkii.botania.api.block.IWandHUD;
 import vazkii.botania.api.block.IWandable;
 import vazkii.botania.common.item.ModItems;

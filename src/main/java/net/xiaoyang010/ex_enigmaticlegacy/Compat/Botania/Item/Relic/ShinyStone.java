@@ -20,7 +20,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.EntityShinyEnergy;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;

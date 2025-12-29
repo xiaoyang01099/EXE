@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.api.IFE;
+package net.xiaoyang010.ex_enigmaticlegacy.api;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

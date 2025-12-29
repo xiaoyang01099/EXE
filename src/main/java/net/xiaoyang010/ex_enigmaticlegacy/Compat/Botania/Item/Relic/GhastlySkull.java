@@ -39,7 +39,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModDamageSources;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;

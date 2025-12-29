@@ -35,6 +35,20 @@ public class NetworkHandler {
         );
         CHANNEL.registerMessage(
                 packetId++,
+                AutoCrafterPacket.class,
+                AutoCrafterPacket::toBytes,
+                AutoCrafterPacket::new,
+                AutoCrafterPacket::handler
+        );
+        CHANNEL.registerMessage(
+                packetId++,
+                AutoCrafterRecipePacket.class,
+                AutoCrafterRecipePacket::toBytes,
+                AutoCrafterRecipePacket::new,
+                AutoCrafterRecipePacket::handler
+        );
+        CHANNEL.registerMessage(
+                packetId++,
                 PageChestPacket.class,
                 PageChestPacket::encode,
                 PageChestPacket::decode,

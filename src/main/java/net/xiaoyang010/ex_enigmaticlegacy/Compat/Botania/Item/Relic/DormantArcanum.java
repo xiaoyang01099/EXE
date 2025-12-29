@@ -28,7 +28,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModDamageSources;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;

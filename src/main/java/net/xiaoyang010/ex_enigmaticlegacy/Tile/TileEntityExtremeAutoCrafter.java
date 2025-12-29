@@ -4,31 +4,41 @@ import morph.avaritia.api.ExtremeCraftingRecipe;
 import morph.avaritia.init.AvaritiaModContent;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.items.ItemStackHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.BlockExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Stream;
 
-public final class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
-    private NonNullList<ItemStack> items = NonNullList.withSize(164, ItemStack.EMPTY);
+public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
+    private NonNullList<ItemStack> inputItems = NonNullList.withSize(164, ItemStack.EMPTY);
     private boolean isPowered;
-    private String recipe;
+    private ExtremeCraftingRecipe recipe;
+    private ResourceLocation recipeId;
 
     public TileEntityExtremeAutoCrafter(BlockPos pos, BlockState state) {
         super(ModBlockEntities.EXTREME_AUTO_CRAFTER_TILE.get(), pos, state);
@@ -37,49 +47,63 @@ public final class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity
     public static void serverTick(Level level, BlockPos pos, BlockState state, TileEntityExtremeAutoCrafter tile) {
         if (level == null || level.isClientSide)
             return;
+
+        // 解析配方
+        tile.resolveRecipe();
+
         BlockState blockState = level.getBlockState(pos);
         tile.isPowered = blockState.getValue(BlockExtremeAutoCrafter.POWERED);
         if (!tile.isPowered) return;
-        if (tile.recipe == null || tile.recipe.isEmpty()) return;
+        if (tile.recipe == null) return;
 
-        Stream<ExtremeCraftingRecipe> recipeStream = level.getRecipeManager().getAllRecipesFor(AvaritiaModContent.EXTREME_CRAFTING_RECIPE_TYPE.get()).stream().filter(e -> e.getId().compareTo(new ResourceLocation(tile.getRecipe())) == 0);
-        if (recipeStream.findFirst().isPresent()) {
-            ExtremeCraftingRecipe recipe = recipeStream.findFirst().get();
-            ItemStack recipeOut = recipe.getResultItem();
-            ItemStack outItem = tile.getItem(163);
-            if (recipeOut.isEmpty()) return;
+        // 验证配方仍然存在
+        Optional<ExtremeCraftingRecipe> currentRecipe = (Optional<ExtremeCraftingRecipe>) level.getRecipeManager().byKey(tile.recipeId);
+        if (!currentRecipe.isPresent()) {
+            tile.recipe = null;
+            tile.setChanged();
+            return;
+        }
 
-            NonNullList<Ingredient> ingredients = recipe.getIngredients();
-            Map<ItemStack, Integer> inputItems = getRecipes(ingredients);
+        ItemStack recipeOut = tile.recipe.getResultItem().copy();
+        ItemStack outItem = tile.getItem(163);
+        if (recipeOut.isEmpty()) return;
 
-            if (isInputItem(tile, inputItems)){
-                if (!outItem.isEmpty() && outItem.getItem() != recipeOut.getItem()) return;
+        NonNullList<Ingredient> ingredients = tile.recipe.getIngredients();
+        Map<CompoundTag, Integer> inputItems = getRecipes(ingredients);
 
-                removeInputItem(tile, inputItems);
-                if (outItem.isEmpty()) tile.setItem(163, recipeOut);
-                else {
-                    outItem.setCount(outItem.getCount() + recipeOut.getCount());
+        if (isInputItem(tile, inputItems)){
+            if (!outItem.isEmpty() && !ItemStack.isSameItemSameTags(outItem, recipeOut)) return;
+
+            if (outItem.isEmpty()) {
+                tile.setItem(163, recipeOut);
+            }else if (outItem.getCount() == 1 && outItem.getMaxStackSize() == 1){
+                return;
+            }else {
+                int newCount = outItem.getCount() + recipeOut.getCount();
+                if (newCount <= outItem.getMaxStackSize()) {
+                    outItem.setCount(newCount);
                     tile.setItem(163, outItem);
                 }
-                setChanged(level, pos, state);
             }
-
+            removeInputItem(tile, inputItems);
+            tile.setChanged();
         }
     }
 
     //判断输入是否匹配
-    private static void removeInputItem(TileEntityExtremeAutoCrafter tile, Map<ItemStack, Integer> inputItems){
+    private static void removeInputItem(TileEntityExtremeAutoCrafter tile, Map<CompoundTag, Integer> inputItems){
         for (int i = 0; i < 81; ++i){
             ItemStack stack = tile.getItem(i);
             if (!stack.isEmpty()){
-                if (inputItems.containsKey(stack)){
-                    Integer integer = inputItems.get(stack);
+                CompoundTag tag = createItemTag(stack);
+                if (inputItems.containsKey(tag)){
+                    Integer integer = inputItems.get(tag);
                     if (integer > stack.getCount()){ //输入数量不够
-                        inputItems.put(stack, Math.max(integer - stack.getCount(), 0));
+                        inputItems.put(tag, Math.max(integer - stack.getCount(), 0));
                         tile.removeItemNoUpdate(i);
                     }else {
                         tile.removeItem(i, integer);
-                        inputItems.remove(stack);
+                        inputItems.remove(tag);
                     }
                 }
             }
@@ -87,19 +111,20 @@ public final class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity
     }
 
     //判断输入是否匹配
-    private static boolean isInputItem(TileEntityExtremeAutoCrafter tile, Map<ItemStack, Integer> inputItems){
-        Map<ItemStack, Integer> maps = new HashMap<>();
+    private static boolean isInputItem(TileEntityExtremeAutoCrafter tile, Map<CompoundTag, Integer> inputItems){
+        Map<CompoundTag, Integer> maps = new HashMap<>();
         for (int i = 0; i < 81; ++i){
             ItemStack stack = tile.getItem(i);
             if (!stack.isEmpty()){
-                if (maps.containsKey(stack)){
-                    maps.put(stack, maps.get(stack) + stack.getCount());
-                }else maps.put(stack, stack.getCount());
+                CompoundTag tag = createItemTag(stack);
+                if (maps.containsKey(tag)){
+                    maps.put(tag, maps.get(tag) + stack.getCount());
+                }else maps.put(tag, stack.getCount());
             }
         }
 
         int num = 0;
-        for (Entry<ItemStack, Integer> entry : inputItems.entrySet()) {
+        for (Entry<CompoundTag, Integer> entry : inputItems.entrySet()) {
             if (maps.containsKey(entry.getKey())){
                 if (maps.get(entry.getKey()) >= entry.getValue()){
                     num++;
@@ -113,34 +138,96 @@ public final class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity
     /**
      * 将配方输入转为类型map
      */
-    private static Map<ItemStack, Integer> getRecipes(NonNullList<Ingredient> ingredients){
-        Map<ItemStack, Integer> inputItems = new HashMap<>();
+    private static Map<CompoundTag, Integer> getRecipes(NonNullList<Ingredient> ingredients){
+        Map<CompoundTag, Integer> inputItems = new HashMap<>();
         for (Ingredient ingredient : ingredients) {
             if (!ingredient.isEmpty()){
                 ItemStack stack = ingredient.getItems()[0];
-                if (inputItems.containsKey(stack)) {
-                    inputItems.put(stack, inputItems.get(stack) + 1);
-                }else inputItems.put(stack, 1);
+                CompoundTag tag  = createItemTag(stack);
+                if (inputItems.containsKey(tag)) {
+                    inputItems.put(tag, inputItems.get(tag) + 1);
+                }else inputItems.put(tag, 1);
             }
         }
 
         return inputItems;
     }
 
+    /**
+     * 创建物品的NBT标签（用于比较）
+     */
+    private static CompoundTag createItemTag(ItemStack stack) {
+        ItemStack copy = stack.copy();
+        copy.setCount(1);
+        CompoundTag tag = new CompoundTag();
+        copy.save(tag);
+        return tag;
+    }
+
+    /**
+     * 在tick或需要时解析配方
+     */
+    private void resolveRecipe() {
+        if (this.level != null && this.recipeId != null && this.recipe == null) {
+            RecipeManager recipeManager = this.level.getRecipeManager();
+            Optional<ExtremeCraftingRecipe> optionalRecipe = (Optional<ExtremeCraftingRecipe>) recipeManager.byKey(this.recipeId);
+            if (optionalRecipe.isPresent() && optionalRecipe.get() instanceof ExtremeCraftingRecipe) {
+                this.recipe = optionalRecipe.get();
+            } else {
+                this.recipeId = null; // 配方不存在，清除ID
+            }
+        }
+    }
+
     @Override
     protected void saveAdditional(CompoundTag tag) {
-        tag.put("items", ContainerHelper.saveAllItems(tag, items));
+        ContainerHelper.saveAllItems(tag, inputItems);
         tag.putBoolean("isPowered", isPowered);
-        tag.putString("recipe", recipe);
+        // 保存配方ID
+        if (recipe != null) {
+            tag.putString("RecipeId", recipe.getId().toString());
+        } else if (recipeId != null) {
+            tag.putString("RecipeId", recipeId.toString());
+        }
         super.saveAdditional(tag);
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        ContainerHelper.loadAllItems(tag, items);
+        this.inputItems = NonNullList.withSize(164, ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(tag, inputItems);
         isPowered = tag.getBoolean("isPowered");
-        recipe = tag.getString("recipe");
+        // 加载配方ID，稍后在需要时解析
+        if (tag.contains("RecipeId", Tag.TAG_STRING)) {
+            String recipeIdStr = tag.getString("RecipeId");
+            this.recipeId = new ResourceLocation(recipeIdStr);
+            // 注意：这里不立即解析配方，因为level可能为null
+        }
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        if (pkt.getTag() != null) {
+            load(pkt.getTag());
+        }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveAdditional(tag);
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        load(tag);
     }
 
     @Override
@@ -160,28 +247,27 @@ public final class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity
 
     @Override
     public boolean isEmpty() {
-        return items.subList(0, 81).isEmpty();
+        return inputItems.subList(0, 81).isEmpty();
     }
 
     @Override
     public ItemStack getItem(int i) {
-        return items.get(i);
+        return inputItems.get(i);
     }
 
     @Override
     public ItemStack removeItem(int i, int i1) {
-        return ContainerHelper.removeItem(items, i, i1);
+        return ContainerHelper.removeItem(inputItems, i, i1);
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int i) {
-        return ContainerHelper.takeItem(items, i);
+        return ContainerHelper.takeItem(inputItems, i);
     }
 
     @Override
     public void setItem(int i, ItemStack itemStack) {
-        if ((i > 0 && i < 81) || i == 163)
-            items.set(i, itemStack);
+        inputItems.set(i, itemStack);
     }
 
     @Override
@@ -192,7 +278,7 @@ public final class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity
 
     @Override
     public void clearContent() {
-        items.clear();
+        inputItems.clear();
     }
 
     public boolean isPowered() {
@@ -203,11 +289,27 @@ public final class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity
         isPowered = powered;
     }
 
-    public String getRecipe() {
+    public ExtremeCraftingRecipe getRecipe() {
         return recipe;
     }
 
-    public void setRecipe(String recipe) {
+    public void setRecipe(ExtremeCraftingRecipe recipe) {
         this.recipe = recipe;
+    }
+
+    public ResourceLocation getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(ResourceLocation recipeId) {
+        this.recipeId = recipeId;
+    }
+
+    public void dropContents() {
+        BlockPos pos = this.getBlockPos();
+        for(int i = 0; i < 81; ++i) {
+            Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), this.getItem(i));
+        }
+        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), this.getItem(163));
     }
 }

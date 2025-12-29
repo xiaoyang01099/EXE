@@ -16,7 +16,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.IPolychromeRecipe;
+import net.xiaoyang010.ex_enigmaticlegacy.api.IPolychromeRecipe;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.common.crafting.RecipeSerializerBase;
 import vazkii.botania.common.crafting.recipe.RecipeUtils;

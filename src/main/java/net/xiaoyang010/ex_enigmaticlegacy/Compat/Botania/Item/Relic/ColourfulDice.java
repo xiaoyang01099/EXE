@@ -28,17 +28,15 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.IRelic;
 import vazkii.botania.client.gui.TooltipHandler;
 import vazkii.botania.common.handler.ModSounds;
-import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.botania.common.item.relic.ItemRelic;
 import vazkii.botania.common.item.relic.RelicImpl;
 import vazkii.botania.common.lib.ResourceLocationHelper;
-import vazkii.botania.xplat.IXplatAbstractions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.api.IFE;
+package net.xiaoyang010.ex_enigmaticlegacy.api;
 
 import net.minecraft.core.BlockPos;
 import vazkii.botania.api.block.IWandBindable;

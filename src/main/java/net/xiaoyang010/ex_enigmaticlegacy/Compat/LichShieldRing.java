@@ -1,6 +1,6 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Compat.Curio;
+package net.xiaoyang010.ex_enigmaticlegacy.Compat;
 
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -26,10 +26,11 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import twilightforest.capabilities.CapabilityList;
+
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class LichShieldRing extends Item implements ICurioItem {
+public class LichShieldRing  extends Item implements ICurioItem {
     public static final int SHIELD_STRENGTH = 6;
 
     public LichShieldRing() {
@@ -121,7 +122,7 @@ public class LichShieldRing extends Item implements ICurioItem {
 
             if (shieldStack.isEmpty()) return;
 
-            int shieldStrength = LichShieldRing.getShieldStrength(shieldStack);
+            int shieldStrength = getShieldStrength(shieldStack);
             if (shieldStrength <= 0) return;
 
             renderLichShield(player, shieldStrength, event.getPoseStack(), event.getPartialTick());

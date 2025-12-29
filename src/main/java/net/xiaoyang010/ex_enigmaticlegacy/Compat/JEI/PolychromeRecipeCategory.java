@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.EComponent;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.IPolychromeRecipe;
+import net.xiaoyang010.ex_enigmaticlegacy.api.IPolychromeRecipe;
 import vazkii.botania.client.gui.HUDHandler;
 import vazkii.botania.common.block.ModBlocks;
 

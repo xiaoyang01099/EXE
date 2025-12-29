@@ -31,7 +31,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.RelicsEventHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.ManaitaArmor;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.IRelic;

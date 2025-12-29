@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.api.IFE;
+package net.xiaoyang010.ex_enigmaticlegacy.api;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;

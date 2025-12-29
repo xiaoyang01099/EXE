@@ -21,7 +21,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.BlockEntityBase;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.IPolychromeRecipe;
+import net.xiaoyang010.ex_enigmaticlegacy.api.IPolychromeRecipe;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.internal.VanillaPacketDispatcher;

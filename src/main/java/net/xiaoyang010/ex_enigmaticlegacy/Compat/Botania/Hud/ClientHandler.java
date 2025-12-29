@@ -18,7 +18,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.IRankItem;
+import net.xiaoyang010.ex_enigmaticlegacy.api.IRankItem;
 import vazkii.botania.client.core.handler.ClientTickHandler;
 import vazkii.botania.mixin.client.AccessorAbstractContainerScreen;
 

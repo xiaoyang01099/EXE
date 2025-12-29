@@ -19,14 +19,13 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.ModParticleTypes;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.shader.AvaritiaShaders;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.NoEMCCommandInterceptor;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.NoEMCEventHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.TooltipEvent;
-import net.xiaoyang010.ex_enigmaticlegacy.Util.SkeletonGoalReplacer;
-import net.xiaoyang010.ex_enigmaticlegacy.api.emc.NoEMCCommandInterceptor;
-import net.xiaoyang010.ex_enigmaticlegacy.api.emc.NoEMCEventHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

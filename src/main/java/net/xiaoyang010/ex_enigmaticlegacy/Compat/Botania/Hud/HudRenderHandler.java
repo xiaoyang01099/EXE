@@ -15,7 +15,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.IRenderHud;
+import net.xiaoyang010.ex_enigmaticlegacy.api.IRenderHud;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.TileEngineerHopper;
 import vazkii.botania.common.item.ItemTwigWand;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.BlackHalo;

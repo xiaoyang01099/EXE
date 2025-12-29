@@ -42,7 +42,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.BanishmentCasting
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.InfernalParticleMessage;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.LightningBoltMessage;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.OverthrowChatMessage;
-import net.xiaoyang010.ex_enigmaticlegacy.api.IFE.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.IRelic;

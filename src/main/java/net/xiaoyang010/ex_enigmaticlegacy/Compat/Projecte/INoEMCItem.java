@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.api.IFE;
+package net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte;
 
 public interface INoEMCItem {
     /**
