@@ -2,6 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
 import morph.avaritia.api.ExtremeCraftingRecipe;
 import morph.avaritia.container.slot.OutputSlot;
+import morph.avaritia.init.AvaritiaModContent;
 import morph.avaritia.recipe.ExtremeShapedRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
@@ -90,15 +91,15 @@ public final class ContainerExtremeAutoCrafter extends AbstractContainerMenu {
                     actualSlot.set(newSlotStack);
                 } else if (playerStack.isEmpty() && slotHasStack || !playerStack.isEmpty() && ItemStack.isSameItemSameTags(playerStack, actualSlot.getItem()))
                     actualSlot.set(ItemStack.EMPTY);
+                update(false);
             }
-            autoCrafter.recipeShapeChanged();
         } else if (slotId == 162){
             if (clickType == ClickType.PICKUP) {
                 slots.get(slotId).set(ItemStack.EMPTY);
                 for (int i = inventoryFull; i <= 162; i++){
                     slots.get(i).set(ItemStack.EMPTY);
                 }
-                autoCrafter.recipeShapeChanged();
+                update(true);
             }
         }else super.clicked(slotId, mouseButton, clickType, player);
     }
@@ -108,14 +109,16 @@ public final class ContainerExtremeAutoCrafter extends AbstractContainerMenu {
         return this.autoCrafter.stillValid(player);
     }
 
-    @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-        //实时设置输出
-//        CraftingContainer craftingContainer = new CraftingContainer(this, 81, 161);
-//        Optional<ExtremeCraftingRecipe> recipeFor = this.level.getRecipeManager().getRecipeFor(AvaritiaModContent.EXTREME_CRAFTING_RECIPE_TYPE.get(), craftingContainer, level);
-//        if (recipeFor.isPresent()) {
-//            this.getSlot(162).set(recipeFor.get().getResultItem().copy());
-//        }else this.getSlot(162).set(ItemStack.EMPTY);
+    private void update(boolean flag){
+        if (flag) {
+            autoCrafter.setRecipe("");
+            return;
+        }
+        CraftingContainer craftingContainer = new CraftingContainer(this, 81, 161);
+        Optional<ExtremeCraftingRecipe> recipeFor = this.level.getRecipeManager().getRecipeFor(AvaritiaModContent.EXTREME_CRAFTING_RECIPE_TYPE.get(), craftingContainer, level);
+        if (recipeFor.isPresent()) {
+            this.getSlot(162).set(recipeFor.get().getResultItem().copy());
+            autoCrafter.setRecipe(recipeFor.get().getId().toString());
+        }else this.getSlot(162).set(ItemStack.EMPTY);
     }
 }

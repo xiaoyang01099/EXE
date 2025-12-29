@@ -1,5 +1,9 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -14,6 +18,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.CosmicBlockEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Hybrid.TileEntityAquaticAnglerNarcissus;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.TileEntityRuneFlower;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.BlockItemManaBox;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.AstralBlockEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Functional.*;
@@ -36,8 +41,9 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<AstralBlockEntity>> ASTRAL_BLOCK_ENTITY = REGISTRY.register("astral_block", () -> BlockEntityType.Builder.of((pos, state) -> new AstralBlockEntity(ModBlockEntities.ASTRAL_BLOCK_ENTITY.get(), pos, state), ModBlockss.ASTRAL_BLOCK.get()).build(null));
 //    public static final RegistryObject<BlockEntityType<MagicTableBlockEntity>> MAGIC_TABLE_TILE = REGISTRY.register("magic_table_tile", () -> BlockEntityType.Builder.of(MagicTableBlockEntity::new, ModBlockss.MAGIC_TABLE.get()).build(null));
     public static final RegistryObject<BlockEntityType<CosmicBlockEntity>> COSMIC_BLOCK_ENTITY = REGISTRY.register("cosmic_block", () -> BlockEntityType.Builder.of((pos, state) -> new CosmicBlockEntity(ModBlockEntities.COSMIC_BLOCK_ENTITY.get(), pos, state), ModBlockss.COSMIC_BLOCK.get()).build(null));
-    public static final RegistryObject<BlockEntityType<TileEntityExtremeAutoCrafter>> EXTREME_AUTO_CRAFTER_TILE = REGISTRY.register("extreme_auto_crafter_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityExtremeAutoCrafter(ModBlockEntities.EXTREME_AUTO_CRAFTER_TILE.get(), pos, state), ModBlockss.EXTREME_AUTO_CRAFTER.get()).build(null));
-    public static final RegistryObject<BlockEntityType<TileEntityInfinityCompressor>> INFINITY_COMPRESSOR_TILE = REGISTRY.register("infinity_compressor_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityInfinityCompressor(ModBlockEntities.INFINITY_COMPRESSOR_TILE.get(), pos, state), ModBlockss.INFINITY_COMPRESSOR.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileEntityExtremeAutoCrafter>> EXTREME_AUTO_CRAFTER_TILE = REGISTRY.register("extreme_auto_crafter_tile", () -> BlockEntityType.Builder.of(TileEntityExtremeAutoCrafter::new, ModBlockss.EXTREME_AUTO_CRAFTER.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileEntityInfinityCompressor>> INFINITY_COMPRESSOR_TILE = REGISTRY.register("infinity_compressor_tile", () -> BlockEntityType.Builder.of(TileEntityInfinityCompressor::new, ModBlockss.INFINITY_COMPRESSOR.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileManaBox>> MANA_BOX_TILE = REGISTRY.register("mana_box_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileManaBox(ModBlockEntities.MANA_BOX_TILE.get(), pos, state), ModBlockss.MANA_BOX.get()).build(null));
 
 
 
@@ -121,6 +127,30 @@ public class ModBlockEntities {
 
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
+            event.enqueueWork(() -> {
+                ItemBlockRenderTypes.setRenderLayer(ModBlockss.MANA_BOX.get(), RenderType.translucent());
+
+                Minecraft.getInstance().getBlockColors().register(
+                        (state, reader, pos, tintIndex) -> {
+                            if (reader != null && pos != null) {
+                                BlockEntity be = reader.getBlockEntity(pos);
+                                if (be instanceof TileManaBox box) {
+                                    return box.getColor().getTextColor();
+                                }
+                            }
+                            return -1;
+                        },
+                        ModBlockss.MANA_BOX.get()
+                );
+
+                Minecraft.getInstance().getItemColors().register(
+                        (stack, tintIndex) -> {
+                            DyeColor color = BlockItemManaBox.getColor(stack);
+                            return color.getTextColor();
+                        },
+                        ModItems.MANA_BOX_ITEM.get()
+                );
+            });
         }
     }
 }

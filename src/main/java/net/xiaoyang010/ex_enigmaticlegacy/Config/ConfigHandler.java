@@ -18,6 +18,8 @@ public class ConfigHandler {
     public static int limitXZCoords = 30000;
     public static int maxDictariusCount = 64;
     public static int sprawlRodMaxArea = 64;
+    public static int emcFlowerManaPerEMC = 10;
+    public static int emcFlowerMaxMana = 10000;
     public static double sprawlRodSpeed = 1.5;
 
     // AstralKillop 配置静态字段
@@ -36,6 +38,8 @@ public class ConfigHandler {
     private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
     private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
 
+    public static ForgeConfigSpec.IntValue emcFlowerManaPerEMCConfig;
+    public static ForgeConfigSpec.IntValue emcFlowerMaxManaConfig;
     public static ForgeConfigSpec.DoubleValue sprawlRodSpeedConfig;
     public static ForgeConfigSpec.IntValue sprawlRodMaxAreaConfig;
     public static ForgeConfigSpec.IntValue MANA_COST_PER_DAMAGE;
@@ -203,6 +207,18 @@ public class ConfigHandler {
 
         COMMON_BUILDER.pop(); // common
         COMMON_SPEC = COMMON_BUILDER.build();
+
+        COMMON_BUILDER.comment("EMCFlower Settings").push("emcFlower");
+
+        emcFlowerManaPerEMCConfig = COMMON_BUILDER
+                .comment("Mana generated per EMC consumed by EMCFlower")
+                .defineInRange("manaPerEMC", 10, 1, 1000);
+
+        emcFlowerMaxManaConfig = COMMON_BUILDER
+                .comment("Maximum mana capacity for EMCFlower")
+                .defineInRange("maxMana", 1000, 100, 100000);
+
+        COMMON_BUILDER.pop();
     }
 
     public static void register() {
@@ -228,6 +244,8 @@ public class ConfigHandler {
     }
 
     public static void syncCommonConfig() {
+        emcFlowerManaPerEMC = emcFlowerManaPerEMCConfig.get();
+        emcFlowerMaxMana = emcFlowerMaxManaConfig.get();
         lockWorldNameNebulaRod = new ArrayList<>(lockWorldNameNebulaRodConfig.get());
         nebulaWandCooldownTick = nebulaWandCooldownTickConfig.get();
         nebulaRodManaCost = nebulaRodManaCostConfig.get();
@@ -284,6 +302,14 @@ public class ConfigHandler {
     public static class FlowerConfig {
         public static int getMaxDictariusCount() {
             return maxDictariusCount;
+        }
+
+        public static int getEMCFlowerManaPerEMC() {
+            return emcFlowerManaPerEMC;
+        }
+
+        public static int getEMCFlowerMaxMana() {
+            return emcFlowerMaxMana;
         }
 
         // AstralKillop 配置获取方法

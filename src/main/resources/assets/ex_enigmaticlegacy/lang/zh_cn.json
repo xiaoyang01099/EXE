@@ -6,6 +6,7 @@
   "advancements.zhen_gui_zhi_wu.descr": "§6获得一个铂锭",
   "advancements.zhen_gui_zhi_wu.title": "§5Apple Of My Eye",
 
+  "block.ex_enigmaticlegacy.emc_flower": "EMC转换魔力花",
   "block.ex_enigmaticlegacy.extreme_crafting_disassembly_table": "无尽解构台",
   "block.ex_enigmaticlegacy.infinity_compressor": "无尽压缩机(WIP)",
   "block.ex_enigmaticlegacy.extreme_auto_crafter": "梦魇工作台(WIP)",
@@ -101,7 +102,9 @@
   "block.ex_enigmaticlegacy.spectrite_ore": "七彩生辉矿",
   "block.ex_enigmaticlegacy.polychrome_collapse_prism": "多谱坍缩棱镜",
   "block.ex_enigmaticlegacy.deconstruction_table": "解构台",
+  "block.ex_enigmaticlegacy.mana_box": "魔力盒",
 
+  "item.ex_enigmaticlegacy.aesir_ring": "诸神之戒",
   "item.ex_enigmaticlegacy.rainbow_catalyst": "彩虹催化剂",
   "item.ex_enigmaticlegacy.fantastic_catalyst": "梦幻催化剂",
   "item.ex_enigmaticlegacy.halo_catalyst": "黑洞催化剂",

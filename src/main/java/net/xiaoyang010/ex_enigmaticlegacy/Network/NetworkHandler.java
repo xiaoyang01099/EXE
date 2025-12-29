@@ -11,10 +11,6 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputPacket.*;
-import net.xiaoyang010.ex_enigmaticlegacy.api.WanionApi.DefineShapeMessage;
-import net.xiaoyang010.ex_enigmaticlegacy.api.WanionApi.ExtremeAutoCrafterGhostTransferMessage;
-import net.xiaoyang010.ex_enigmaticlegacy.api.WanionApi.NBTMessage;
-import net.xiaoyang010.ex_enigmaticlegacy.api.WanionApi.SmartNBTMessage;
 
 import java.util.Optional;
 
@@ -232,39 +228,6 @@ public class NetworkHandler {
 
         CHANNEL.registerMessage(
                 packetId++,
-                NBTMessage.class,
-                NBTMessage::encode,
-                NBTMessage::decode,
-                NBTMessage::handle,
-                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
-        );
-
-        CHANNEL.registerMessage(
-                packetId++,
-                SmartNBTMessage.class,
-                SmartNBTMessage::encode,
-                SmartNBTMessage::decode,
-                SmartNBTMessage::handle,
-                Optional.of(NetworkDirection.PLAY_TO_SERVER)
-        );
-
-        CHANNEL.registerMessage(
-                packetId++,
-                DefineShapeMessage.class,
-                DefineShapeMessage::encode,
-                DefineShapeMessage::decode,
-                DefineShapeMessage::handle
-        );
-
-        CHANNEL.registerMessage(
-                packetId++,
-                ExtremeAutoCrafterGhostTransferMessage.class,
-                ExtremeAutoCrafterGhostTransferMessage::encode,
-                ExtremeAutoCrafterGhostTransferMessage::decode,
-                ExtremeAutoCrafterGhostTransferMessage::handle
-        );
-        CHANNEL.registerMessage(
-                packetId++,
                 StepHeightMessage.class,
                 StepHeightMessage::encode,
                 StepHeightMessage::decode,
@@ -316,11 +279,5 @@ public class NetworkHandler {
 
     public static void sendOverthrowMessage(OverthrowChatMessage packet) {
 
-    }
-
-    public static void sendToPlayer(NBTMessage nbtMessage, ServerPlayer serverPlayer) {
-    }
-
-    public static void sendToPlayer(SmartNBTMessage smartNBTMessage, ServerPlayer containerListener) {
     }
 }

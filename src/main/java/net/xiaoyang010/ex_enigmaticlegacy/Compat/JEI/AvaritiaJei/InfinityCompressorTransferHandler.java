@@ -7,7 +7,6 @@ import morph.avaritia.api.CompressorRecipe;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerInfinityCompressor;
-import net.xiaoyang010.ex_enigmaticlegacy.api.WanionApi.DefineShapeMessage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,20 +15,12 @@ public class InfinityCompressorTransferHandler implements IRecipeTransferHandler
 
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(
-            ContainerInfinityCompressor container,
-            CompressorRecipe recipe,
-            IRecipeSlotsView recipeSlots,
-            Player player,
-            boolean maxTransfer,
-            boolean doTransfer) {
+    public IRecipeTransferError transferRecipe(ContainerInfinityCompressor container, CompressorRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
 
-        if (!doTransfer)
-            return null;
+        if (!doTransfer) return null;
 
         ResourceLocation recipeId = recipe.getId();
         if (recipeId != null) {
-            DefineShapeMessage.sendToServer(container, recipeId);
         }
 
         return null;

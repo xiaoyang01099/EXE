@@ -28,6 +28,7 @@
   "entity.ex_enigmaticlegacy.spotted_garden_eel_bucket": "Spotted Garden Eel",
 
   "block.ex_enigmaticlegacy.extreme_crafting_disassembly_table": "Extreme Crafting Disassembly Table",
+  "block.ex_enigmaticlegacy.emc_flower": "EMCFlower",
   "block.ex_enigmaticlegacy.rune_flower": "RuneFlower",
   "block.ex_enigmaticlegacy.infinity_compressor": "Infinity Compressor(WIP)",
   "block.ex_enigmaticlegacy.aquatic_angler_narcissus": "Aquatic Angler Narcissus",
@@ -122,6 +123,9 @@
   "block.ex_enigmaticlegacy.bronze_ore": "Bronze Ore",
   "block.ex_enigmaticlegacy.arcane_ice_chunk": "Arcane Ice Chunk",
   "block.ex_enigmaticlegacy.opal_ore": "Opal Ore",
+  "block.ex_enigmaticlegacy.mana_box": "Mana Box",
+
+
 
   "death.attack.trueDamage.player":"%1$s was judged to death by %2$s",
   "death.attack.trueDamageUndef.player":"%1$s was judged to death",
@@ -387,6 +391,7 @@
   "item.ex_enigmaticlegacy.overthrower": "Edict of Eternal Banishment",
   "item.ex_enigmaticlegacy.dead_coral_ingot": "Dead Coral Ingot",
   "item.ex_enigmaticlegacy.eternal_catalyst": "Eternal Catalyst",
+  "item.ex_enigmaticlegacy.aesir_ring": "Aesir Ring",
 
 
   "itemGroup.ex_enigmaticlegacy": "§1EXENIGMATICLEGACY_ITEM",

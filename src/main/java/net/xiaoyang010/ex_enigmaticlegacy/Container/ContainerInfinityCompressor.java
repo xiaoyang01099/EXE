@@ -1,23 +1,29 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
-import morph.avaritia.recipe.CompressorRecipeHelper;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityInfinityCompressor;
-import net.xiaoyang010.ex_enigmaticlegacy.api.WanionApi.IF.IResourceShapedContainer;
-import net.xiaoyang010.ex_enigmaticlegacy.api.WanionApi.WContainer;
 
 import javax.annotation.Nonnull;
 
-public class ContainerInfinityCompressor extends WContainer<TileEntityInfinityCompressor> implements IResourceShapedContainer {
-    public ContainerInfinityCompressor(MenuType<?> menuType, int containerId, @Nonnull final TileEntityInfinityCompressor wTileEntity, final Inventory playerInventory) {
-        super(menuType, containerId, wTileEntity);
+public class ContainerInfinityCompressor extends AbstractContainerMenu {
+    private final TileEntityInfinityCompressor compressor;
+    private final Player player;
+    private final Level level;
 
+    public ContainerInfinityCompressor(int containerId, Inventory playerInventory, BlockEntity tile) {
+        super(ModMenus.INFINITY_COMPRESSOR_MENU, containerId);
+        this.compressor = (TileEntityInfinityCompressor) tile;
+        this.player = playerInventory.player;
+        this.level = player.level;
         for (int y = 0; y < 3; y++)
             for (int x = 0; x < 9; x++)
                 addSlot(new Slot(playerInventory, 9 + y * 9 + x, 8 + (18 * x), 84 + (18 * y)));
@@ -26,8 +32,8 @@ public class ContainerInfinityCompressor extends WContainer<TileEntityInfinityCo
             addSlot(new Slot(playerInventory, i, 8 + (18 * i), 142));
     }
 
-    public ContainerInfinityCompressor(int containerId, Inventory playerInventory, @Nonnull final TileEntityInfinityCompressor wTileEntity) {
-        this(ModMenus.INFINITY_COMPRESSOR_MENU, containerId, wTileEntity, playerInventory);
+    public ContainerInfinityCompressor(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
+        this(containerId, playerInventory, playerInventory.player.level.getBlockEntity(buf.readBlockPos()));
     }
 
     @Nonnull
@@ -35,7 +41,7 @@ public class ContainerInfinityCompressor extends WContainer<TileEntityInfinityCo
     public ItemStack quickMoveStack(@Nonnull final Player player, final int slotIndex) {
         ItemStack itemstack = ItemStack.EMPTY;
         final Slot actualSlot = this.slots.get(slotIndex);
-        if (actualSlot != null && actualSlot.hasItem()) {
+        if (actualSlot.hasItem()) {
             ItemStack itemstack1 = actualSlot.getItem();
             itemstack = itemstack1.copy();
             if (slotIndex < 27) {
@@ -53,16 +59,8 @@ public class ContainerInfinityCompressor extends WContainer<TileEntityInfinityCo
     }
 
     @Override
-    public void defineShape(@Nonnull final ResourceLocation resourceLocation) {
-        if (getTile().getLevel() != null) {
-            var recipeMap = CompressorRecipeHelper.getRecipeMap(getTile().getLevel());
-            var recipe = recipeMap.get(resourceLocation);
-            getTile().compressorRecipeField.setCompressorRecipe(recipe);
-        }
+    public boolean stillValid(Player player) {
+        return this.compressor.stillValid(player);
     }
 
-    @Override
-    public void clearShape() {
-        getTile().compressorRecipeField.setCompressorRecipe(null);
-    }
 }

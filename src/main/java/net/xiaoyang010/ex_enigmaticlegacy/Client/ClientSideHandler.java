@@ -16,6 +16,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Block.FluffyDandelionBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.custom.CustomSaplingBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.AsgardandelionParticle;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.DandelionFluffParticle;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Generating.EMCFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Hybrid.AquaticAnglerNarcissus;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Generating.*;
@@ -92,6 +93,7 @@ public class ClientSideHandler {
             AlchemySunflower.registerRenderLayer();
             AlchemyAzalea.registerRenderLayer();
             CelestialBlueHyacinth.registerRenderLayer();
+            EMCFlower.registerRenderLayer();
         }
 
         if (ModList.get().isLoaded("create")){

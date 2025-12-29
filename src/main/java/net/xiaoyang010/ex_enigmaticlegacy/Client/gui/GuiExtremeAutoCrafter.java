@@ -1,44 +1,33 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Client.gui;
 
-import net.minecraft.client.resources.language.I18n;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityExtremeAutoCrafter;
-import net.xiaoyang010.ex_enigmaticlegacy.Util.EComponent;
-import net.xiaoyang010.ex_enigmaticlegacy.api.WanionApi.*;
-import net.xiaoyang010.ex_enigmaticlegacy.api.WanionApi.IF.ITooltipSupplier;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerExtremeAutoCrafter;
 import org.jetbrains.annotations.NotNull;
-import java.util.List;
-import java.util.function.Supplier;
+
 import static net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod.MODID;
 
-public final class GuiExtremeAutoCrafter extends WGuiContainer<TileEntityExtremeAutoCrafter> {
-    private static final ResourceLocation guiTexture = new ResourceLocation(MODID, "textures/gui/extreme_auto_crafter.png");
-    private static final ITooltipSupplier extremeTooltipSupplier = new ExtremeTooltipSupplier();
+public final class GuiExtremeAutoCrafter extends AbstractContainerScreen<ContainerExtremeAutoCrafter> {
+    private static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(MODID, "textures/gui/extreme_auto_crafter.png");
 
-    public GuiExtremeAutoCrafter(@NotNull final WContainer<TileEntityExtremeAutoCrafter> container,
-                                 @NotNull final Inventory playerInventory,
-                                 @NotNull final Component title) {
-        super(container, guiTexture, title, 343, 276);
-
-        final TileEntityExtremeAutoCrafter tileEntity = getContainer().getTile();
-        final Slot slot = menu.slots.get(tileEntity.full);
-        addElement(new RecipeResultItemBox(() -> getTile().getExtremeRecipeField().getExtremeRecipeOutput(),
-                this, slot.x - 1, slot.y - 29).setTooltipSupplier(extremeTooltipSupplier));
-//        addElement(new RedstoneControlWButton(getControl(RedstoneControl.class),
-//                this, imageWidth - 25, imageHeight - 25));
-//        addElement(new EnergyElement(getControl(EnergyControl.class),
-//                this, imageWidth - 25, imageHeight - 83));
+    public GuiExtremeAutoCrafter(ContainerExtremeAutoCrafter container, Inventory inventory, Component title) {
+        super(container, inventory, title);
+        this.imageWidth = 343;
+        this.imageHeight = 276;
     }
 
     @Override
     protected void renderBg(@NotNull PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
-        super.renderBg(poseStack, partialTick, mouseX, mouseY);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderTexture(0, RESOURCE_LOCATION);
+        this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        RenderSystem.disableBlend();
     }
 
     @Override
@@ -48,13 +37,4 @@ public final class GuiExtremeAutoCrafter extends WGuiContainer<TileEntityExtreme
         this.renderTooltip(poseStack, mouseX, mouseY);
     }
 
-    private static final class ExtremeTooltipSupplier implements ITooltipSupplier {
-        @Override
-        public List<Component> getTooltip(@NotNull final WInteraction wInteraction, @NotNull final Supplier<ItemStack> supplier) {
-            final List<Component> tooltip = ItemElement.DEFAULT_ITEMSTACK_TOOLTIP_SUPPLIER.getTooltip(wInteraction, supplier);
-            tooltip.add(EComponent.empty());
-            tooltip.add(EComponent.literal(I18n.get("ex_enigmaticlegacy.clear.recipe")).withStyle(ChatFormatting.GOLD));
-            return tooltip;
-        }
-    }
 }
