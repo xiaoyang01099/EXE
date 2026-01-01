@@ -13,7 +13,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerInfinityCompressor;
 
 public class GuiInfinityCompressor extends AnimScreenBase<ContainerInfinityCompressor> {
     public static final ResourceLocation TEXTURE = new ResourceLocation("avaritia", "textures/gui/compressor.png");
-    public static final TranslatableComponent TITLE = new TranslatableComponent("avaritia:container.neutronium_compressor.title");
+    public static final TranslatableComponent TITLE = new TranslatableComponent("container.ex_enigmaticlegacy.infinity_compressor.name");
 
     public GuiInfinityCompressor(ContainerInfinityCompressor menu, Inventory playerInv, Component title) {
         super(menu, playerInv, TITLE);
@@ -21,12 +21,12 @@ public class GuiInfinityCompressor extends AnimScreenBase<ContainerInfinityCompr
         this.addDrawable().location(62, 35).size(176, 0, 22, 16).animationDirection(AnimationDirection.LEFT_RIGHT).renderPredicate(() -> {
             return menu.machineTile.getConsumptionProgress() > 0;
         }).progressSupplier(() -> {
-            return (double)(menu.machineTile).getConsumptionProgress() / (double)(menu.machineTile).getConsumptionTarget();
+            return Math.min(1.0d, (double)(menu.machineTile).getConsumptionProgress() / (double)(menu.machineTile).getConsumptionTarget());
         }).add();
         this.addDrawable().location(90, 35).size(176, 16, 16, 16).animationDirection(AnimationDirection.BOTTOM_UP).renderPredicate(() -> {
             return (menu.machineTile).getCompressionProgress() > 0;
         }).progressSupplier(() -> {
-            return (double)(menu.machineTile).getCompressionProgress() / (double)(menu.machineTile).getCompressionTarget();
+            return Math.min(1.0d, (double)(menu.machineTile).getCompressionProgress() / (double)(menu.machineTile).getCompressionTarget());
         }).tooltipSupplier(() -> {
             return new TextComponent(String.format("%.2f%%", 100.0 * ((double)(menu.machineTile).getCompressionProgress() / (double)(menu.machineTile).getCompressionTarget())));
         }).add();

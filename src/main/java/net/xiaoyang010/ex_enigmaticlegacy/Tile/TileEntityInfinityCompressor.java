@@ -132,18 +132,22 @@ public class TileEntityInfinityCompressor extends MachineTileBase {
         }
 
         if (this.compressionProgress >= this.compressionTarget) {
-            this.compressionProgress = 0;
             ItemStack output = this.inventory.getOutput();
             if (output.isEmpty()) {
                 this.inventory.setItem(1, ItemUtils.copyStack(this.targetStack, 1));
+                this.compressionProgress -= this.compressionTarget;
+                this.targetStack = ItemStack.EMPTY;
+                this.fullContainerSync = true;
             } else {
-                this.inventory.setItem(1, ItemUtils.copyStack(output, output.getCount() + 1));
+                if (!output.equals(targetStack, true)){
+                } else {
+                    this.inventory.setItem(1, ItemUtils.copyStack(output, output.getCount() + 1));
+                    this.compressionProgress -= this.compressionTarget;
+                    this.targetStack = ItemStack.EMPTY;
+                    this.fullContainerSync = true;
+                }
             }
-
-            this.targetStack = ItemStack.EMPTY;
-            this.fullContainerSync = true;
         }
-
     }
 
     protected void onWorkStopped() {

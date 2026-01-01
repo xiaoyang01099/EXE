@@ -30,24 +30,9 @@ public class NeutroniumDecompressorMenu extends AbstractContainerMenu {
     public NeutroniumDecompressorMenu(int id, Inventory playerInv, NeutroniumDecompressorTile tile) {
         super(ModMenus.NEUTRONIUM_DECOMPRESSOR_MENU, id);
         this.tile = tile;
-
-        this.data = new SimpleContainerData(2) {
-            @Override
-            public int get(int index) {
-                return switch (index) {
-                    case 0 -> tile.getProgress();
-                    case 1 -> tile.getMaxProgress();
-                    default -> 0;
-                };
-            }
-
-            @Override
-            public void set(int index, int value) {
-            }
-        };
+        this.data = tile.data;
 
         addSlots(playerInv);
-
         addDataSlots(this.data);
     }
 
@@ -144,6 +129,10 @@ public class NeutroniumDecompressorMenu extends AbstractContainerMenu {
 
     public int getProgress() {
         return this.data.get(0);
+    }
+
+    public int getMaxProgress() {
+        return 100;
     }
 
     public NeutroniumDecompressorTile getTile() {

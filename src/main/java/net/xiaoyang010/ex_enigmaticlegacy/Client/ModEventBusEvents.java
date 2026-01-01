@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
@@ -40,6 +39,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.SpecialMiscellane
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
+import net.xiaoyang010.ex_enigmaticlegacy.api.EndPortalHaloLoader;
 import vazkii.botania.forge.mixin.client.ForgeAccessorModelBakery;
 import vazkii.botania.mixin.client.AccessorModelBakery;
 import vazkii.botania.mixin.client.AccessorRenderBuffers;
@@ -209,6 +209,7 @@ public class ModEventBusEvents {
         materials.add(SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay);
 
         ModelLoaderRegistry.registerLoader(new ResourceLocation("ex_enigmaticlegacy", "cosmic"), new CosmicModelLoader());
+        ModelLoaderRegistry.registerLoader(new ResourceLocation("ex_enigmaticlegacy", "end_portal_halo"), new EndPortalHaloLoader());
 
         ResourceManager resourceManager = null;
         if (ForgeModelBakery.instance() != null) {

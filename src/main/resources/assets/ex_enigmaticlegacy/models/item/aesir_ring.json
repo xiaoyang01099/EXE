@@ -1,6 +1,13 @@
 {
   "parent": "item/generated",
+  "loader": "ex_enigmaticlegacy:end_portal_halo",
   "textures": {
     "layer0": "ex_enigmaticlegacy:items/properties/aesir_ring"
+  },
+  "portal_halo": {
+    "size": 6,
+    "pulse": true,
+    "animated": true,
+    "mask": "ex_enigmaticlegacy:items/properties/aesir_ring_mask"
   }
 }

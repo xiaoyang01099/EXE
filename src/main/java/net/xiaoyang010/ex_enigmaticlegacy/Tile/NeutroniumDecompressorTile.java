@@ -3,6 +3,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Tile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -46,8 +47,25 @@ public class NeutroniumDecompressorTile extends BlockEntity {
         }
     };
 
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> inventory);
-    private int decompressProgress = 0;
+    private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> inventory);
+    public final ContainerData data = new ContainerData() {
+        private int decompressProgress = 0;
+        @Override
+        public int get(int i) {
+            return this.decompressProgress;
+        }
+
+        @Override
+        public void set(int i, int i1) {
+            this.decompressProgress = i1;
+        }
+
+        @Override
+        public int getCount() {
+            return 1;
+        }
+    };
+
 
     public NeutroniumDecompressorTile(@NotNull BlockEntityType<NeutroniumDecompressorTile> ne, BlockPos pos, BlockState state) {
         super(ModBlockEntities.NEUTRONIUM_DECOMPRESSOR_TILE.get(), pos, state);
@@ -59,11 +77,11 @@ public class NeutroniumDecompressorTile extends BlockEntity {
         boolean wasWorking = isWorking();
 
         if (canDecompress()) {
-            decompressProgress++;
+            data.set(0, data.get(0) + 1);
 
-            if (decompressProgress >= DECOMPRESS_TICKS) {
+            if (data.get(0) >= DECOMPRESS_TICKS) {
                 finishDecompress();
-                decompressProgress = 0;
+                data.set(0, 0);
             }
         } else {
             resetProgress();
@@ -119,18 +137,18 @@ public class NeutroniumDecompressorTile extends BlockEntity {
     }
 
     private void resetProgress() {
-        if (decompressProgress > 0) {
-            decompressProgress = 0;
+        if (data.get(0) > 0) {
+            data.set(0, 0);
             setChanged();
         }
     }
 
     public boolean isWorking() {
-        return decompressProgress > 0;
+        return data.get(0) > 0;
     }
 
     public int getProgress() {
-        return decompressProgress;
+        return data.get(0);
     }
 
     public int getMaxProgress() {
@@ -141,14 +159,14 @@ public class NeutroniumDecompressorTile extends BlockEntity {
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         tag.put("Inventory", inventory.serializeNBT());
-        tag.putInt("Progress", decompressProgress);
+        tag.putInt("Progress", data.get(0));
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
         inventory.deserializeNBT(tag.getCompound("Inventory"));
-        decompressProgress = tag.getInt("Progress");
+        data.set(0, tag.getInt("Progress"));
     }
 
     @NotNull

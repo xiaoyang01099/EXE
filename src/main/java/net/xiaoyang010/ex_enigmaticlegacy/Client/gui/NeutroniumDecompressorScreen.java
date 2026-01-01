@@ -2,6 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.FurnaceScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -58,7 +59,7 @@ public class NeutroniumDecompressorScreen extends AbstractContainerScreen<Neutro
         if (recipe != null) {
             String info = "1x → " + recipe.getCount() + "x";
             int infoX = this.imageWidth / 2 - this.font.width(info) / 2;
-            this.font.draw(pStack, info, (float) infoX, 48.0F, 0x808080);
+            this.font.draw(pStack, info, (float) infoX, 51.0F, 0x808080);
         }
     }
 
@@ -76,13 +77,14 @@ public class NeutroniumDecompressorScreen extends AbstractContainerScreen<Neutro
     }
 
     private void renderProgressArrow(PoseStack pStack, int x, int y) {
-        NeutroniumDecompressorTile tile = this.menu.getTile();
-        int progress = tile.getProgress();
-        int maxProgress = tile.getMaxProgress();
+        int progress = menu.getProgress();
+        int maxProgress = menu.getMaxProgress();
 
         if (maxProgress > 0 && progress > 0) {
-            int arrowWidth = (int) (24.0F * progress / maxProgress);
-            this.blit(pStack, x + 79, y + 35, 176, 14, arrowWidth, 17);
+            int arrowWidth = (int) Math.floor(progress * 16.0f / maxProgress);
+            int w = (int) Math.floor(progress * 22.0f / maxProgress);
+            this.blit(pStack, x + 62, y + 35, 176, 0, w, 16);
+            this.blit(pStack, x + 90, y + 35 + 16 - arrowWidth, 176, 16 + 16 - arrowWidth, 16, arrowWidth);
         }
     }
 
@@ -94,9 +96,8 @@ public class NeutroniumDecompressorScreen extends AbstractContainerScreen<Neutro
         int y = (this.height - this.imageHeight) / 2;
 
         if (isHovering(79, 35, 24, 17, mouseX, mouseY)) {
-            NeutroniumDecompressorTile tile = this.menu.getTile();
-            int progress = tile.getProgress();
-            int maxProgress = tile.getMaxProgress();
+            int progress = menu.getProgress();
+            int maxProgress = menu.getMaxProgress();
 
             if (maxProgress > 0) {
                 String tooltip = String.format("Progress: %d / %d ticks", progress, maxProgress);
