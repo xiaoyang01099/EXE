@@ -1,41 +1,57 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import morph.avaritia.client.gui.AnimScreenBase;
+import morph.avaritia.client.gui.DrawableElement.AnimationDirection;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.fml.ModList;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerInfinityCompressor;
-import org.jetbrains.annotations.NotNull;
 
-import static net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod.MODID;
 
-public class GuiInfinityCompressor extends AbstractContainerScreen<ContainerInfinityCompressor> {
-    private static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(MODID, "textures/gui/infinity_compressor.png");
-    private static final boolean JEI_PRESENT = ModList.get().isLoaded("jei");
+public class GuiInfinityCompressor extends AnimScreenBase<ContainerInfinityCompressor> {
+    public static final ResourceLocation TEXTURE = new ResourceLocation("avaritia", "textures/gui/compressor.png");
+    public static final TranslatableComponent TITLE = new TranslatableComponent("avaritia:container.neutronium_compressor.title");
 
-    public GuiInfinityCompressor(ContainerInfinityCompressor container, Inventory playerInventory, Component title) {
-        super(container, playerInventory, title);
-        this.imageHeight = 176;
-        this.imageWidth = 166;
+    public GuiInfinityCompressor(ContainerInfinityCompressor menu, Inventory playerInv, Component title) {
+        super(menu, playerInv, TITLE);
+        this.setBackgroundTexture(TEXTURE);
+        this.addDrawable().location(62, 35).size(176, 0, 22, 16).animationDirection(AnimationDirection.LEFT_RIGHT).renderPredicate(() -> {
+            return menu.machineTile.getConsumptionProgress() > 0;
+        }).progressSupplier(() -> {
+            return (double)(menu.machineTile).getConsumptionProgress() / (double)(menu.machineTile).getConsumptionTarget();
+        }).add();
+        this.addDrawable().location(90, 35).size(176, 16, 16, 16).animationDirection(AnimationDirection.BOTTOM_UP).renderPredicate(() -> {
+            return (menu.machineTile).getCompressionProgress() > 0;
+        }).progressSupplier(() -> {
+            return (double)(menu.machineTile).getCompressionProgress() / (double)(menu.machineTile).getCompressionTarget();
+        }).tooltipSupplier(() -> {
+            return new TextComponent(String.format("%.2f%%", 100.0 * ((double)(menu.machineTile).getCompressionProgress() / (double)(menu.machineTile).getCompressionTarget())));
+        }).add();
     }
 
-    @Override
-    protected void renderBg(@NotNull PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderTexture(0, RESOURCE_LOCATION);
-        this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
-        RenderSystem.disableBlend();
+    public void render(PoseStack pStack, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(pStack);
+        super.render(pStack, mouseX, mouseY, partialTicks);
+        this.renderTooltip(pStack, mouseX, mouseY);
     }
 
-    @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(poseStack);
-        super.render(poseStack, mouseX, mouseY, partialTick);
-        this.renderTooltip(poseStack, mouseX, mouseY);
+    protected void renderLabels(PoseStack pStack, int mouseX, int mouseY) {
+        this.titleLabelX = this.imageWidth / 2 - this.font.width(this.title) / 2;
+        super.renderLabels(pStack, mouseX, mouseY);
+        if (((this.menu).machineTile).getCompressionProgress() > 0) {
+            int var10000 = ((this.menu).machineTile).getCompressionProgress();
+            String s = "" + var10000 + " / " + ((this.menu).machineTile).getCompressionTarget();
+            int x = this.imageWidth / 2 - this.font.width(s) / 2;
+            this.font.draw(pStack, s, (float)x, 60.0F, 4210752);
+        }
+
+    }
+
+    protected void renderBg(PoseStack pStack, float partialTicks, int mouseX, int mouseY) {
+        this.drawBackground(pStack);
+        super.renderBg(pStack, partialTicks, mouseX, mouseY);
     }
 }

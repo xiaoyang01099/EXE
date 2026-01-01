@@ -9,7 +9,6 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.BlockExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
@@ -31,8 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
     private NonNullList<ItemStack> inputItems = NonNullList.withSize(164, ItemStack.EMPTY);
@@ -48,21 +44,12 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
         if (level == null || level.isClientSide)
             return;
 
-        // 解析配方
         tile.resolveRecipe();
 
         BlockState blockState = level.getBlockState(pos);
         tile.isPowered = blockState.getValue(BlockExtremeAutoCrafter.POWERED);
         if (!tile.isPowered) return;
         if (tile.recipe == null) return;
-
-        // 验证配方仍然存在
-        Optional<ExtremeCraftingRecipe> currentRecipe = (Optional<ExtremeCraftingRecipe>) level.getRecipeManager().byKey(tile.recipeId);
-        if (!currentRecipe.isPresent()) {
-            tile.recipe = null;
-            tile.setChanged();
-            return;
-        }
 
         ItemStack recipeOut = tile.recipe.getResultItem().copy();
         ItemStack outItem = tile.getItem(163);
@@ -83,6 +70,8 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
                 if (newCount <= outItem.getMaxStackSize()) {
                     outItem.setCount(newCount);
                     tile.setItem(163, outItem);
+                } else {
+                    return;
                 }
             }
             removeInputItem(tile, inputItems);
@@ -90,7 +79,6 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
         }
     }
 
-    //判断输入是否匹配
     private static void removeInputItem(TileEntityExtremeAutoCrafter tile, Map<CompoundTag, Integer> inputItems){
         for (int i = 0; i < 81; ++i){
             ItemStack stack = tile.getItem(i);
@@ -98,7 +86,7 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
                 CompoundTag tag = createItemTag(stack);
                 if (inputItems.containsKey(tag)){
                     Integer integer = inputItems.get(tag);
-                    if (integer > stack.getCount()){ //输入数量不够
+                    if (integer > stack.getCount()){
                         inputItems.put(tag, Math.max(integer - stack.getCount(), 0));
                         tile.removeItemNoUpdate(i);
                     }else {
@@ -110,7 +98,6 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
         }
     }
 
-    //判断输入是否匹配
     private static boolean isInputItem(TileEntityExtremeAutoCrafter tile, Map<CompoundTag, Integer> inputItems){
         Map<CompoundTag, Integer> maps = new HashMap<>();
         for (int i = 0; i < 81; ++i){
@@ -135,9 +122,6 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
         return num == inputItems.size();
     }
 
-    /**
-     * 将配方输入转为类型map
-     */
     private static Map<CompoundTag, Integer> getRecipes(NonNullList<Ingredient> ingredients){
         Map<CompoundTag, Integer> inputItems = new HashMap<>();
         for (Ingredient ingredient : ingredients) {
@@ -153,9 +137,6 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
         return inputItems;
     }
 
-    /**
-     * 创建物品的NBT标签（用于比较）
-     */
     private static CompoundTag createItemTag(ItemStack stack) {
         ItemStack copy = stack.copy();
         copy.setCount(1);
@@ -165,30 +146,57 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
     }
 
     /**
-     * 在tick或需要时解析配方
+     * ✅ 正确的配方解析方法
      */
     private void resolveRecipe() {
-        if (this.level != null && this.recipeId != null && this.recipe == null) {
-            RecipeManager recipeManager = this.level.getRecipeManager();
-            Optional<ExtremeCraftingRecipe> optionalRecipe = (Optional<ExtremeCraftingRecipe>) recipeManager.byKey(this.recipeId);
-            if (optionalRecipe.isPresent() && optionalRecipe.get() instanceof ExtremeCraftingRecipe) {
-                this.recipe = optionalRecipe.get();
-            } else {
-                this.recipeId = null; // 配方不存在，清除ID
-            }
+        if (this.level == null || this.recipeId == null || this.recipe != null) {
+            return;
         }
+
+        RecipeManager recipeManager = this.level.getRecipeManager();
+
+        // 方法1：使用byKey（推荐）
+        recipeManager.byKey(this.recipeId).ifPresentOrElse(
+                recipe -> {
+                    if (recipe instanceof ExtremeCraftingRecipe extremeRecipe) {
+                        this.recipe = extremeRecipe;
+                        System.out.println("成功找到配方: " + this.recipeId);
+                    } else {
+                        System.err.println("配方类型不匹配: " + this.recipeId);
+                        this.recipeId = null;
+                    }
+                },
+                () -> {
+                    // 方法2：遍历所有极限合成配方（后备方案）
+                    System.err.println("byKey找不到，尝试遍历: " + this.recipeId);
+                    List<ExtremeCraftingRecipe> recipes = recipeManager
+                            .getAllRecipesFor(AvaritiaModContent.EXTREME_CRAFTING_RECIPE_TYPE.get());
+
+                    for (ExtremeCraftingRecipe recipe : recipes) {
+                        if (recipe.getId().equals(this.recipeId)) {
+                            this.recipe = recipe;
+                            System.out.println("通过遍历找到配方: " + this.recipeId);
+                            return;
+                        }
+                    }
+
+                    System.err.println("完全找不到配方: " + this.recipeId);
+                    this.recipeId = null;
+                }
+        );
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
         ContainerHelper.saveAllItems(tag, inputItems);
         tag.putBoolean("isPowered", isPowered);
-        // 保存配方ID
-        if (recipe != null) {
+
+        if (recipe != null && recipe.getId() != null) {
             tag.putString("RecipeId", recipe.getId().toString());
         } else if (recipeId != null) {
             tag.putString("RecipeId", recipeId.toString());
         }
+
         super.saveAdditional(tag);
     }
 
@@ -198,11 +206,14 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
         this.inputItems = NonNullList.withSize(164, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, inputItems);
         isPowered = tag.getBoolean("isPowered");
-        // 加载配方ID，稍后在需要时解析
+
         if (tag.contains("RecipeId", Tag.TAG_STRING)) {
             String recipeIdStr = tag.getString("RecipeId");
             this.recipeId = new ResourceLocation(recipeIdStr);
-            // 注意：这里不立即解析配方，因为level可能为null
+        }
+
+        if (this.level != null) {
+            resolveRecipe();
         }
     }
 
@@ -295,6 +306,7 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
 
     public void setRecipe(ExtremeCraftingRecipe recipe) {
         this.recipe = recipe;
+        this.recipeId = recipe != null ? recipe.getId() : null;
     }
 
     public ResourceLocation getRecipeId() {
@@ -303,6 +315,7 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
 
     public void setRecipeId(ResourceLocation recipeId) {
         this.recipeId = recipeId;
+        this.recipe = null;
     }
 
     public void dropContents() {

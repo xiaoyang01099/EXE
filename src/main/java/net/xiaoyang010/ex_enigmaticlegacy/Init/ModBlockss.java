@@ -29,6 +29,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Block.portal.AnotherPortalBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.portal.MinersHeavenPortalBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.BlockExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.BlockInfinityCompressor;
+import net.xiaoyang010.ex_enigmaticlegacy.Block.NeutroniumDecompressorBlock;
 import vazkii.botania.common.block.BlockSpecialFlower;
 import static vazkii.botania.common.block.ModBlocks.livingrock;
 
@@ -78,29 +79,29 @@ public class ModBlockss {
 
 
 
-
-	public static final RegistryObject<Block> GAME_BOARD = REGISTRY.register("game_board", () -> new BlockBoardFate(Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
-	public static final RegistryObject<Block> BOARD_FATE = REGISTRY.register("board_fate", () -> new BlockBoardFate(Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
-	public static final RegistryObject<Block> FULL_ALTAR = REGISTRY.register("full_altar", () -> new FullAltarBlock(Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
-	public static final RegistryObject<Block> infinitySpreader = REGISTRY.register("infinity_spreader", () -> new InfinityGaiaSpreader(VariantE.INFINITY, Properties.copy(Blocks.BIRCH_WOOD).isValidSpawn(NO_SPAWN)));
-	public static final RegistryObject<Block> NIDAVELLIR_FORGE = REGISTRY.register("nidavellir_forge", () -> new NidavellirForgeBlock(Properties.of(Material.STONE).strength(3.0f, 10.0f).sound(SoundType.METAL).noOcclusion()));
-	public static final RegistryObject<Block> MANA_CHARGER = REGISTRY.register("mana_charger", () -> new ManaChargerBlock(Properties.of(Material.STONE).strength(3.0f, 10.0f).sound(SoundType.METAL)));
-	public static final RegistryObject<Block> MANA_CRYSTAL = REGISTRY.register("mana_crystal", () -> new ManaCrystalCubeBlock(Properties.of(Material.STONE).strength(3.0f, 10.0f).sound(SoundType.METAL)));
-	public static final RegistryObject<Block> INFINITY_POTATO = REGISTRY.register("infinity_potato", InfinityPotato::new);
-	public static final RegistryObject<Block> POLYCHROME_COLLAPSE_PRISM = REGISTRY.register("polychrome_collapse_prism", () -> new PolychromeCollapsePrism(Properties.of(Material.STONE).strength(3.0f, 10.0f).sound(SoundType.METAL)));
-	public static final RegistryObject<Block> MANA_CONTAINER = REGISTRY.register("mana_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.DEFAULT, Properties.copy(livingrock)));
-	public static final RegistryObject<Block> CREATIVE_CONTAINER = REGISTRY.register("creative_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.CREATIVE, Properties.copy(livingrock)));
-	public static final RegistryObject<Block> TERRA_FARMLAND = REGISTRY.register("terra_farmland", TerraFarmland::new);
-	public static final RegistryObject<Block> DILUTED_CONTAINER = REGISTRY.register("diluted_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.DILUTED, Properties.copy(livingrock)));
-	//public static final RegistryObject<Block> FABULOUS_CONTAINER = REGISTRY.register("fabulous_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.FABULOUS, BlockBehaviour.Properties.copy(livingrock)));
-	public static final RegistryObject<Block> ASTRAL_BLOCK = REGISTRY.register("astral_block", () -> new AstralBlock(Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
-	public static final RegistryObject<Block> MANA_BRACKET = REGISTRY.register("mana_bracket", () -> new ManaBracket(Properties.of(Material.STONE).strength(1.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
-	public static final RegistryObject<Block> ENGINEER_HOPPER = REGISTRY.register("engineer_hopper", () -> new BlockEngineerHopper(Properties.of(Material.METAL).strength(3.5F, 8.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion()));
-	public static final RegistryObject<Block> COSMIC_BLOCK = REGISTRY.register("cosmic_block", () -> new CosmicBlock(Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
-	public static final RegistryObject<Block> EXTREME_AUTO_CRAFTER = REGISTRY.register("extreme_auto_crafter", () -> new BlockExtremeAutoCrafter(Properties.of(Material.METAL).strength(50F, 2000F).requiresCorrectToolForDrops().sound(SoundType.GLASS)));
-	public static final RegistryObject<Block> INFINITY_COMPRESSOR = REGISTRY.register("infinity_compressor", () -> new BlockInfinityCompressor(Properties.of(Material.METAL).strength(50F, 2000F).requiresCorrectToolForDrops().lightLevel((state) -> 15)));
-	public static final RegistryObject<Block> EXTREME_CRAFTING_DISASSEMBLY_TABLE = REGISTRY.register("extreme_crafting_disassembly_table", ExtremeCraftingDisassembly::new);
 	public static final RegistryObject<Block> MANA_BOX = REGISTRY.register("mana_box", BlockManaBox::new);
+	public static final RegistryObject<Block> GAME_BOARD = REGISTRY.register("game_board", () -> new BlockBoardFate(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
+	public static final RegistryObject<Block> BOARD_FATE = REGISTRY.register("board_fate", () -> new BlockBoardFate(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
+	public static final RegistryObject<Block> FULL_ALTAR = REGISTRY.register("full_altar", () -> new FullAltarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
+	public static final RegistryObject<Block> infinitySpreader = REGISTRY.register("infinity_spreader", () -> new InfinityGaiaSpreader(VariantE.INFINITY, Properties.copy(Blocks.BIRCH_WOOD).isValidSpawn(NO_SPAWN)));
+	public static final RegistryObject<Block> NIDAVELLIR_FORGE = REGISTRY.register("nidavellir_forge", () -> new NidavellirForgeBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 10.0f).sound(SoundType.METAL).noOcclusion()));
+	public static final RegistryObject<Block> MANA_CHARGER = REGISTRY.register("mana_charger", () -> new ManaChargerBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 10.0f).sound(SoundType.METAL)));
+	public static final RegistryObject<Block> MANA_CRYSTAL = REGISTRY.register("mana_crystal", () -> new ManaCrystalCubeBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 10.0f).sound(SoundType.METAL)));
+	public static final RegistryObject<Block> INFINITY_POTATO = REGISTRY.register("infinity_potato", InfinityPotato::new);
+	public static final RegistryObject<Block> POLYCHROME_COLLAPSE_PRISM = REGISTRY.register("polychrome_collapse_prism", () -> new PolychromeCollapsePrism(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 10.0f).sound(SoundType.METAL)));
+	public static final RegistryObject<Block> MANA_CONTAINER = REGISTRY.register("mana_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.DEFAULT, BlockBehaviour.Properties.copy(livingrock)));
+	public static final RegistryObject<Block> CREATIVE_CONTAINER = REGISTRY.register("creative_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.CREATIVE, BlockBehaviour.Properties.copy(livingrock)));
+	public static final RegistryObject<Block> TERRA_FARMLAND = REGISTRY.register("terra_farmland", TerraFarmland::new);
+	public static final RegistryObject<Block> DILUTED_CONTAINER = REGISTRY.register("diluted_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.DILUTED, BlockBehaviour.Properties.copy(livingrock)));
+	//public static final RegistryObject<Block> FABULOUS_CONTAINER = REGISTRY.register("fabulous_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.FABULOUS, BlockBehaviour.Properties.copy(livingrock)));
+	public static final RegistryObject<Block> ASTRAL_BLOCK = REGISTRY.register("astral_block", () -> new AstralBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
+	public static final RegistryObject<Block> MANA_BRACKET = REGISTRY.register("mana_bracket", () -> new ManaBracket(BlockBehaviour.Properties.of(Material.STONE).strength(1.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
+	public static final RegistryObject<Block> ENGINEER_HOPPER = REGISTRY.register("engineer_hopper", () -> new BlockEngineerHopper(BlockBehaviour.Properties.of(Material.METAL).strength(3.5F, 8.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion()));
+	public static final RegistryObject<Block> COSMIC_BLOCK = REGISTRY.register("cosmic_block", () -> new CosmicBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
+	public static final RegistryObject<Block> EXTREME_AUTO_CRAFTER = REGISTRY.register("extreme_auto_crafter", () -> new BlockExtremeAutoCrafter(Properties.of(Material.METAL).strength(50F, 2000F).requiresCorrectToolForDrops().sound(SoundType.GLASS)));
+	public static final RegistryObject<Block> INFINITY_COMPRESSOR = REGISTRY.register("infinity_compressor", () -> new BlockInfinityCompressor(BlockBehaviour.Properties.of(Material.METAL).strength(50F, 2000F).requiresCorrectToolForDrops().lightLevel((state) -> 15)));
+	public static final RegistryObject<Block> EXTREME_CRAFTING_DISASSEMBLY_TABLE = REGISTRY.register("extreme_crafting_disassembly_table", ExtremeCraftingDisassembly::new);
+	public static final RegistryObject<Block> NEUTRONIUM_DECOMPRESSOR = REGISTRY.register("neutronium_decompressor", NeutroniumDecompressorBlock::new);
 
 
 	//其他
@@ -122,8 +123,8 @@ public class ModBlockss {
 	public static final RegistryObject<Block> DECAY_BLOCK = REGISTRY.register("decay_block", DecayBlock::new);
 	public static final RegistryObject<Block> ARCANE_ICE_CHUNK = REGISTRY.register("arcane_ice_chunk", ArcaneIceChunk::new);
 	public static final RegistryObject<Block> PAGED_CHEST = REGISTRY.register("paged_chest", () -> new PagedChestBlock(Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD).noOcclusion()));
-	public static final RegistryObject<Block> RAINBOW_TABLE = REGISTRY.register("rainbow_table", () -> new RainbowTable(Properties.of(Material.METAL).strength(3.5F).requiresCorrectToolForDrops().noOcclusion()));
-	public static final RegistryObject<Block> CUSTOM_SAPLING = REGISTRY.register("custom_sapling", () -> new CustomSaplingBlock(Properties.of(Material.PLANT).noCollission().instabreak()));
+	public static final RegistryObject<Block> RAINBOW_TABLE = REGISTRY.register("rainbow_table", () -> new RainbowTable(BlockBehaviour.Properties.of(Material.METAL).strength(3.5F).requiresCorrectToolForDrops().noOcclusion()));
+	public static final RegistryObject<Block> CUSTOM_SAPLING = REGISTRY.register("custom_sapling", () -> new CustomSaplingBlock(BlockBehaviour.Properties.of(Material.PLANT).noCollission().instabreak()));
 	public static final RegistryObject<Block> GAIA_BLOCK = REGISTRY.register("gaia_block", GaiaBlock::new);
 	public static final RegistryObject<Block> MITHRILL_BLOCK = REGISTRY.register("mithrill_block", MithrillBlock::new);
 	public static final RegistryObject<Block> DRAGON_CRYSTALS_BLOCK = REGISTRY.register("dragon_crystal_block", DragonCrystalBlock::new);

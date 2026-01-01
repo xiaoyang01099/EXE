@@ -2,18 +2,14 @@ package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
 import morph.avaritia.api.ExtremeCraftingRecipe;
 import morph.avaritia.container.slot.OutputSlot;
-import morph.avaritia.init.AvaritiaModContent;
-import morph.avaritia.recipe.ExtremeShapedRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraft.client.Minecraft;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.AutoCrafterPacket;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.AutoCrafterRecipePacket;
@@ -21,9 +17,6 @@ import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityExtremeAutoCrafter;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 public final class ContainerExtremeAutoCrafter extends AbstractContainerMenu {
     private final TileEntityExtremeAutoCrafter autoCrafter;
@@ -123,11 +116,5 @@ public final class ContainerExtremeAutoCrafter extends AbstractContainerMenu {
             this.setRecipe(null);
             return;
         }
-//        CraftingContainer craftingContainer = new CraftingContainer(this, 81, 161);
-//        Optional<ExtremeCraftingRecipe> recipeFor = this.level.getRecipeManager().getRecipeFor(AvaritiaModContent.EXTREME_CRAFTING_RECIPE_TYPE.get(), craftingContainer, level);
-//        if (recipeFor.isPresent()) {
-//            this.getSlot(162).set(recipeFor.get().getResultItem().copy());
-//            this.setRecipe(recipeFor.get());
-//        }else this.getSlot(162).set(ItemStack.EMPTY);
     }
 }

@@ -10,6 +10,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Hud.TChest.GuiItemChest;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.GuiExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.GuiInfinityCompressor;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.NeutroniumDecompressorScreen;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ModScreens {
@@ -29,7 +30,7 @@ public class ModScreens {
             MenuScreens.register(ModMenus.EXTREME_AUTO_CRAFTER_MENU, GuiExtremeAutoCrafter::new);
             MenuScreens.register(ModMenus.INFINITY_COMPRESSOR_MENU, GuiInfinityCompressor::new);
             MenuScreens.register(ModMenus.EXTREME_CRAFTING_DISASSEMBLY_MENU, ExtremeDisassemblyScreen::new);
-
+            MenuScreens.register(ModMenus.NEUTRONIUM_DECOMPRESSOR_MENU, NeutroniumDecompressorScreen::new);
         });
     }
 }

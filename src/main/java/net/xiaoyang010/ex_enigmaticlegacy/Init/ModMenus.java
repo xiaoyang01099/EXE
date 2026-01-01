@@ -16,8 +16,10 @@ import net.xiaoyang010.ex_enigmaticlegacy.Container.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.SpectriteChestTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityExtremeAutoCrafter;
-import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerInfinityCompressor;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityInfinityCompressor;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.NeutroniumDecompressorMenu;
+//import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerInfinityCompressor;
+//import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityInfinityCompressor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,8 @@ public class ModMenus {
     public static final MenuType<DeconTableMenu> DECON_TABLE_MENU = register("deconstruction_table", DeconTableMenu::new);
 
     public static final MenuType<ExtremeDisassemblyMenu> EXTREME_CRAFTING_DISASSEMBLY_MENU = register("extreme_crafting_disassembly_table", ExtremeDisassemblyMenu::new);
+
+    public static final MenuType<NeutroniumDecompressorMenu> NEUTRONIUM_DECOMPRESSOR_MENU = register("neutronium_decompressor", NeutroniumDecompressorMenu::new);
 
     public static final MenuType<MagicTableMenu> MAGIC_TABLE_MENU = register("magic_table", MagicTableMenu::new);
 

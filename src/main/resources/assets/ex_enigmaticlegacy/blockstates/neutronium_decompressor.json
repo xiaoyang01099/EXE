@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "active=false,facing=north": {
+      "model": "ex_enigmaticlegacy:block/neutronium_decompressor_inactive"
+    },
+    "active=true,facing=north": {
+      "model": "ex_enigmaticlegacy:block/neutronium_decompressor"
+    },
+    "active=false,facing=south": {
+      "model": "ex_enigmaticlegacy:block/neutronium_decompressor_inactive",
+      "y": 180
+    },
+    "active=true,facing=south": {
+      "model": "ex_enigmaticlegacy:block/neutronium_decompressor",
+      "y": 180
+    },
+    "active=false,facing=west": {
+      "model": "ex_enigmaticlegacy:block/neutronium_decompressor_inactive",
+      "y": 270
+    },
+    "active=true,facing=west": {
+      "model": "ex_enigmaticlegacy:block/neutronium_decompressor",
+      "y": 270
+    },
+    "active=false,facing=east": {
+      "model": "ex_enigmaticlegacy:block/neutronium_decompressor_inactive",
+      "y": 90
+    },
+    "active=true,facing=east": {
+      "model": "ex_enigmaticlegacy:block/neutronium_decompressor",
+      "y": 90
+    }
+  }
+}

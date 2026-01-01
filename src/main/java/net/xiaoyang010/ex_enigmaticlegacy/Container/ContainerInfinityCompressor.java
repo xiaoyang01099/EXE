@@ -1,66 +1,93 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
+import codechicken.lib.data.MCDataInput;
+import morph.avaritia.container.MachineMenu;
+import morph.avaritia.container.slot.OutputSlot;
+import morph.avaritia.container.slot.ScrollingFakeSlot;
+import morph.avaritia.container.slot.StaticFakeSlot;
+import morph.avaritia.init.AvaritiaModContent;
+import morph.avaritia.tile.NeutroniumCompressorTile;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.items.SlotItemHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.NeutroniumDecompressorTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityInfinityCompressor;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
-public class ContainerInfinityCompressor extends AbstractContainerMenu {
-    private final TileEntityInfinityCompressor compressor;
-    private final Player player;
-    private final Level level;
+public class ContainerInfinityCompressor extends MachineMenu<TileEntityInfinityCompressor> {
+    private static final int CRAFT_SLOT = 0;
+    private static final int RESULT_SLOT = 1;
+    private static final int INV_SLOT_START = 2;
+    private static final int INV_SLOT_END = 29;
+    private static final int USE_ROW_SLOT_START = 29;
+    private static final int USE_ROW_SLOT_END = 38;
 
-    public ContainerInfinityCompressor(int containerId, Inventory playerInventory, BlockEntity tile) {
-        super(ModMenus.INFINITY_COMPRESSOR_MENU, containerId);
-        this.compressor = (TileEntityInfinityCompressor) tile;
-        this.player = playerInventory.player;
-        this.level = player.level;
-        for (int y = 0; y < 3; y++)
-            for (int x = 0; x < 9; x++)
-                addSlot(new Slot(playerInventory, 9 + y * 9 + x, 8 + (18 * x), 84 + (18 * y)));
-
-        for (int i = 0; i < 9; i++)
-            addSlot(new Slot(playerInventory, i, 8 + (18 * i), 142));
+    public ContainerInfinityCompressor(int windowId, Inventory playerInv, MCDataInput packet) {
+        this(windowId, playerInv, (TileEntityInfinityCompressor)playerInv.player.level.getBlockEntity(packet.readPos()));
     }
 
-    public ContainerInfinityCompressor(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
-        this(containerId, playerInventory, playerInventory.player.level.getBlockEntity(buf.readBlockPos()));
+    public ContainerInfinityCompressor(int windowId, Inventory playerInv, TileEntityInfinityCompressor machineTile) {
+        super(ModMenus.INFINITY_COMPRESSOR_MENU, windowId, playerInv, machineTile);
+        this.addSlot(new Slot(machineTile.inventory, 0, 39, 35));
+        this.addSlot(new OutputSlot(machineTile.inventory, 1, 117, 35));
+        this.addPlayerInv(8, 84);
+        Objects.requireNonNull(machineTile);
+        this.addSlot(new StaticFakeSlot(147, 35, machineTile::getTargetStack));
+        Objects.requireNonNull(machineTile);
+        this.addSlot(new ScrollingFakeSlot(13, 35, machineTile::getInputItems));
     }
 
-    @Nonnull
-    @Override
-    public ItemStack quickMoveStack(@Nonnull final Player player, final int slotIndex) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        final Slot actualSlot = this.slots.get(slotIndex);
-        if (actualSlot.hasItem()) {
-            ItemStack itemstack1 = actualSlot.getItem();
-            itemstack = itemstack1.copy();
-            if (slotIndex < 27) {
-                if (!moveItemStackTo(itemstack1, 27, 36, false))
+    public ItemStack quickMoveStack(Player p_39391_, int index) {
+        ItemStack resultStack = ItemStack.EMPTY;
+        Slot slot = (Slot)this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack slotStack = slot.getItem();
+            resultStack = slotStack.copy();
+            if (index == 1) {
+                if (!this.moveItemStackTo(slotStack, 2, 38, true)) {
                     return ItemStack.EMPTY;
-            } else {
-                if (!moveItemStackTo(itemstack1, 0, 27, false))
-                    return ItemStack.EMPTY;
+                }
+
+                slot.onQuickCraft(slotStack, resultStack);
+            } else if (index >= 2 && index < 38) {
+                if (!this.machineTile.inventory.canPlaceItem(0, slotStack) || !this.moveItemStackTo(slotStack, 0, 1, false)) {
+                    if (index < 29) {
+                        if (!this.moveItemStackTo(slotStack, 29, 38, false)) {
+                            return ItemStack.EMPTY;
+                        }
+                    } else if (!this.moveItemStackTo(slotStack, 2, 29, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+            } else if (!this.moveItemStackTo(slotStack, 2, 38, false)) {
+                return ItemStack.EMPTY;
             }
-            if (itemstack1.getCount() == 0)
-                actualSlot.set(ItemStack.EMPTY);
-            actualSlot.setChanged();
+
+            if (slotStack.isEmpty()) {
+                slot.set(ItemStack.EMPTY);
+            } else {
+                slot.setChanged();
+            }
+
+            if (slotStack.getCount() == resultStack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onTake(p_39391_, slotStack);
+            if (index == 0) {
+                p_39391_.drop(slotStack, false);
+            }
         }
-        return itemstack;
-    }
 
-    @Override
-    public boolean stillValid(Player player) {
-        return this.compressor.stillValid(player);
+        return resultStack;
     }
-
 }

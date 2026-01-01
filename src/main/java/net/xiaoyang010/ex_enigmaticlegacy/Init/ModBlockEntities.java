@@ -26,7 +26,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Gener
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityExtremeAutoCrafter;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityInfinityCompressor;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.NeutroniumDecompressorTile;
 
 
 public class ModBlockEntities {
@@ -44,6 +44,7 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<TileEntityExtremeAutoCrafter>> EXTREME_AUTO_CRAFTER_TILE = REGISTRY.register("extreme_auto_crafter_tile", () -> BlockEntityType.Builder.of(TileEntityExtremeAutoCrafter::new, ModBlockss.EXTREME_AUTO_CRAFTER.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileEntityInfinityCompressor>> INFINITY_COMPRESSOR_TILE = REGISTRY.register("infinity_compressor_tile", () -> BlockEntityType.Builder.of(TileEntityInfinityCompressor::new, ModBlockss.INFINITY_COMPRESSOR.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileManaBox>> MANA_BOX_TILE = REGISTRY.register("mana_box_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileManaBox(ModBlockEntities.MANA_BOX_TILE.get(), pos, state), ModBlockss.MANA_BOX.get()).build(null));
+    public static final RegistryObject<BlockEntityType<NeutroniumDecompressorTile>> NEUTRONIUM_DECOMPRESSOR_TILE = REGISTRY.register("neutronium_decompressor_tile", () -> BlockEntityType.Builder.of((pos, state) -> new NeutroniumDecompressorTile(ModBlockEntities.NEUTRONIUM_DECOMPRESSOR_TILE.get(), pos, state), ModBlockss.NEUTRONIUM_DECOMPRESSOR.get()).build(null));
 
 
 

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "ex_enigmaticlegacy:blocks/decompressor/neutronium_decompressor_side",
+    "up": "ex_enigmaticlegacy:blocks/decompressor/neutronium_decompressor_top",
+    "north": "ex_enigmaticlegacy:blocks/decompressor/neutronium_decompressor_inactive",
+    "south": "ex_enigmaticlegacy:blocks/decompressor/neutronium_decompressor_side",
+    "east": "ex_enigmaticlegacy:blocks/decompressor/neutronium_decompressor_side",
+    "west": "ex_enigmaticlegacy:blocks/decompressor/neutronium_decompressor_side",
+    "particle": "ex_enigmaticlegacy:blocks/decompressor/neutronium_decompressor_inactive"
+  }
+}

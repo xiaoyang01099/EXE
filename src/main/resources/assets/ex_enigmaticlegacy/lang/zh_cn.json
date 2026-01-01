@@ -103,6 +103,8 @@
   "block.ex_enigmaticlegacy.polychrome_collapse_prism": "多谱坍缩棱镜",
   "block.ex_enigmaticlegacy.deconstruction_table": "解构台",
   "block.ex_enigmaticlegacy.mana_box": "魔力盒",
+  "block.ex_enigmaticlegacy.neutronium_decompressor": "中子还原器",
+
 
   "item.ex_enigmaticlegacy.aesir_ring": "诸神之戒",
   "item.ex_enigmaticlegacy.rainbow_catalyst": "彩虹催化剂",
@@ -694,6 +696,7 @@
   "tooltip.manaita.warning": "§c警告：未授权使用将面临严重后果",
   "message.manaita.unauthorized": "§4你没有权限使用此圣物！享受虚空吧！",
   "message.manaita.cannot_pickup": "§c此圣物拒绝被你拾取。",
+  "container.ex_enigmaticlegacy.neutronium_decompressor": "中子还原器",
 
   "item.ex_enigmaticlegacy.crimson_spell.lore1": "召唤深红法球",
   "item.ex_enigmaticlegacy.crimson_spell.lore2": "法球试图瞄准你视线中的实体，",
