@@ -14,6 +14,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.StarlitSanctumRecipe;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.EComponent;
 
@@ -40,7 +40,7 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
     private static final int TEX_WIDTH = 539;
     private static final int TEX_HEIGHT = 431;
 
-    private static final float SCALE = 0.7f;
+    private static final float SCALE = 0.35f;
 
     private final int scaledWidth = (int) (TEX_WIDTH * SCALE);
     private final int scaledHeight = (int) (TEX_HEIGHT * SCALE);
@@ -55,9 +55,9 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
                         TEX_HEIGHT
                 )
                 .setTextureSize(TEX_WIDTH, TEX_HEIGHT)
-                .build();
+                .build();;
 
-        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModItems.STARLIT_SANCTUM.get()));
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(net.minecraft.world.item.Items.DIAMOND));
         this.localizedName = EComponent.translatable("jei.ex_enigmaticlegacy.starlit_crafting");
         this.emptyDrawable = guiHelper.createBlankDrawable(0, 0);
     }
@@ -100,6 +100,41 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, StarlitSanctumRecipe recipe, IFocusGroup focuses) {
+        int blockStartY = 85;
+        int[] blockStartX = {23, 188, 355};
+
+        List<NonNullList<Ingredient>> patternGroups = recipe.getPatternGroups();
+
+        for (int row = 0; row < 18; row++) {
+            for (int col = 0; col < 27; col++) {
+
+                int drawX;
+                int drawY = blockStartY + row * 18;
+
+                if (col < 9) {
+                    drawX = blockStartX[0] + col * 18;
+                } else if (col < 18) {
+                    drawX = blockStartX[1] + (col - 9) * 18;
+                } else {
+                    drawX = blockStartX[2] + (col - 18) * 18;
+                }
+
+                Ingredient ing = Ingredient.EMPTY;
+
+                int blockIndex = col / 9;
+                int colInBlock = col % 9;
+
+                if (blockIndex < patternGroups.size()) {
+                    List<Ingredient> pattern = patternGroups.get(blockIndex);
+                    int indexInPattern = row * 9 + colInBlock;
+
+                    if (indexInPattern < pattern.size()) {
+                        ing = pattern.get(indexInPattern);
+                    }
+                }
+                addScaledSlot(builder, ing, drawX, drawY, RecipeIngredientRole.INPUT);
+            }
+        }
 
         addScaledSlot(builder, recipe.getLeftInput(), 96, 32, RecipeIngredientRole.INPUT)
                 .addTooltipCallback((view, tooltip) -> tooltip.add(new TextComponent("Count: " + recipe.getLeftInputCount())));
@@ -108,39 +143,21 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
                 .addTooltipCallback((view, tooltip) -> tooltip.add(new TextComponent("Count: " + recipe.getRightInputCount())));
 
         addScaledSlot(builder, Ingredient.of(recipe.getResultItem()), 261, 32, RecipeIngredientRole.OUTPUT);
-
-        int[] blockStartX = {23, 188, 355};
-        int blockStartY = 85;
-
-        List<net.minecraft.core.NonNullList<Ingredient>> patternGroups = recipe.getPatternGroups();
-
-        for (int i = 0; i < 3; i++) {
-            if (i >= patternGroups.size()) break;
-            List<Ingredient> pattern = patternGroups.get(i);
-            int startX = blockStartX[i];
-
-            for (int row = 0; row < 18; row++) {
-                for (int col = 0; col < 9; col++) {
-                    int index = row * 9 + col;
-                    if (index >= pattern.size()) break;
-                    Ingredient ing = pattern.get(index);
-
-                    if (!ing.isEmpty()) {
-                        addScaledSlot(builder, ing, startX + col * 18, blockStartY + row * 18, RecipeIngredientRole.INPUT);
-                    }
-                }
-            }
-        }
     }
 
     private IRecipeSlotBuilder addScaledSlot(IRecipeLayoutBuilder builder, Ingredient ingredient, int originalX, int originalY, RecipeIngredientRole role) {
         int finalX = (int) (originalX * SCALE);
         int finalY = (int) (originalY * SCALE);
 
-        return builder.addSlot(role, finalX, finalY)
-                .addIngredients(ingredient)
+        IRecipeSlotBuilder slotBuilder = builder.addSlot(role, finalX, finalY)
                 .setBackground(this.emptyDrawable, 0, 0)
                 .setCustomRenderer(VanillaTypes.ITEM_STACK, new ScaledItemRenderer(SCALE));
+
+        if (ingredient != null && !ingredient.isEmpty()) {
+            slotBuilder.addIngredients(ingredient);
+        }
+
+        return slotBuilder;
     }
 
     private static class ScaledItemRenderer implements IIngredientRenderer<ItemStack> {

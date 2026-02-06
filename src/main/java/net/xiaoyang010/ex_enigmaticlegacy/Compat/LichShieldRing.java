@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Compat.Curio;
+package net.xiaoyang010.ex_enigmaticlegacy.Compat;
 
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.ChatFormatting;

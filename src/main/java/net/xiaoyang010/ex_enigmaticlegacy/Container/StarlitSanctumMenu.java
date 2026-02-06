@@ -2,26 +2,19 @@ package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
+import net.minecraftforge.items.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.StarlitSanctumTile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,20 +26,17 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
     public final Player entity;
     private final DataSlot mana = DataSlot.standalone();
     private final DataSlot maxMana = DataSlot.standalone();
-    private final DataSlot craftingProgress = DataSlot.standalone();
 
-    // 左侧输入槽指定的Tag
-    private static final TagKey<Item> ALLOWED_TAG = ItemTags.create(new ResourceLocation("ex_enigmaticlegacy", "starlit"));
+    // private static final TagKey<Item> ALLOWED_TAG = ItemTags.BEACON_PAYMENT_ITEMS;
     private final ContainerLevelAccess access;
 
     private IItemHandler internal;
     private final Map<Integer, Slot> customSlots = new HashMap<>();
-    private StarlitSanctumTile tileEntity;
 
     private static final int MAIN_GRID_SLOTS = 486;
     private static final int INPUT_LEFT_SLOT = 486;
-    private static final int OUTPUT_SLOT = 487;
-    private static final int INPUT_RIGHT_SLOT = 488;
+    private static final int OUTPUT_SLOT = 488;
+    private static final int INPUT_RIGHT_SLOT = 487;
     private static final int TOTAL_CUSTOM_SLOTS = 489;
 
 
@@ -66,16 +56,18 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
             this.access = ContainerLevelAccess.create(world, pos);
             BlockEntity blockEntity = world.getBlockEntity(pos);
 
-            if (blockEntity instanceof StarlitSanctumTile tile) {
-                this.tileEntity = tile;
+            if (blockEntity != null) {
                 blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
-                    this.internal = handler;
+                    if (world.isClientSide) {
+                        this.internal = new ClientPermissiveHandler(handler);
+                    } else {
+                        this.internal = handler;
+                    }
                 });
             }
         } else {
             this.access = ContainerLevelAccess.NULL;
         }
-
         setupSlots();
         setupPlayerInventory(inv);
 
@@ -99,15 +91,6 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
         //setupPlayerInventory(inv);
     }
 
-    @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-        if (tileEntity != null && !world.isClientSide) {
-            updateMana(tileEntity.getCurrentMana(), tileEntity.getMaxMana());
-            this.craftingProgress.set(tileEntity.getCraftingProgressPercent());
-        }
-    }
-
     private void setupSlots() {
         int inputLeftX = 95;   int inputLeftY = 31;
         int outputX = 259;     int outputY = 31;
@@ -121,17 +104,6 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
 
         int rightBlockX = 353;
         int rightBlockY = 84;
-
-
-        this.customSlots.put(INPUT_LEFT_SLOT, this.addSlot(new SlotItemHandler(internal, INPUT_LEFT_SLOT, inputLeftX, inputLeftY) {
-            @Override public boolean mayPlace(ItemStack stack) {return stack.is(ALLOWED_TAG);}
-        }));
-        this.customSlots.put(OUTPUT_SLOT, this.addSlot(new SlotItemHandler(internal, OUTPUT_SLOT, outputX, outputY) {
-            @Override public boolean mayPlace(ItemStack stack) { return false; }
-        }));
-        this.customSlots.put(INPUT_RIGHT_SLOT, this.addSlot(new SlotItemHandler(internal, INPUT_RIGHT_SLOT, inputRightX, inputRightY) {
-            @Override public boolean mayPlace(ItemStack stack) { return true; }
-        }));
 
         for (int row = 0; row < 18; row++) {
             for (int col = 0; col < 27; col++) {
@@ -154,10 +126,16 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
                     actualY = rightBlockY + row * 18;
                 }
                 if (index < internal.getSlots()) {
-                    this.addSlot(new SlotItemHandler(internal, index, actualX, actualY));
+                    this.addSlot(new BSlot(internal, index, actualX, actualY));
                 }
             }
         }
+        this.customSlots.put(INPUT_LEFT_SLOT, this.addSlot(new BSlot(internal, INPUT_LEFT_SLOT, inputLeftX, inputLeftY)));
+        this.customSlots.put(INPUT_RIGHT_SLOT, this.addSlot(new BSlot(internal, INPUT_RIGHT_SLOT, inputRightX, inputRightY)));
+        this.customSlots.put(OUTPUT_SLOT, this.addSlot(new SlotItemHandler(internal, OUTPUT_SLOT, outputX, outputY) {
+            @Override public boolean mayPlace(ItemStack stack) { return false; }
+        }));
+
     }
 
     private void setupPlayerInventory(Inventory inv) {
@@ -184,75 +162,47 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        ItemStack result = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
+    public ItemStack quickMoveStack(Player playerIn, int index) {
+        ItemStack sourceStack = ItemStack.EMPTY;
+        Slot sourceSlot = this.slots.get(index);
 
-        if (slot == null || !slot.hasItem()) {
-            return result;
-        }
+        if (sourceSlot != null && sourceSlot.hasItem()) {
+            ItemStack slotStack = sourceSlot.getItem();
+            sourceStack = slotStack.copy();
+            int gridStart = 3;
+            int gridEnd = 489;
+            int playerStart = 489;
+            int playerEnd = 525;
 
-        ItemStack stackInSlot = slot.getItem();
-        result = stackInSlot.copy();
-
-        int customSlotsEnd = TOTAL_CUSTOM_SLOTS;
-        int playerInventoryStart = customSlotsEnd;
-        int playerInventoryEnd = playerInventoryStart + 27;
-        int hotbarStart = playerInventoryEnd;
-        int hotbarEnd = hotbarStart + 9;
-
-        if (index == OUTPUT_SLOT) {
-            if (!this.moveItemStackTo(stackInSlot, playerInventoryStart, hotbarEnd, true)) {
-                return ItemStack.EMPTY;
-            }
-            slot.onQuickCraft(stackInSlot, result);
-        }
-        else if (index == INPUT_LEFT_SLOT || index == INPUT_RIGHT_SLOT) {
-            if (!this.moveItemStackTo(stackInSlot, playerInventoryStart, hotbarEnd, false)) {
-                return ItemStack.EMPTY;
-            }
-        }
-        else if (index < MAIN_GRID_SLOTS) {
-            if (!this.moveItemStackTo(stackInSlot, playerInventoryStart, hotbarEnd, false)) {
-                return ItemStack.EMPTY;
-            }
-        }
-        else if (index >= playerInventoryStart && index < hotbarEnd) {
-            if (stackInSlot.is(ALLOWED_TAG)) {
-                if (!this.moveItemStackTo(stackInSlot, INPUT_LEFT_SLOT, INPUT_LEFT_SLOT + 1, false)) {
-                    if (!this.moveItemStackTo(stackInSlot, 0, MAIN_GRID_SLOTS, false)) {
-                        return ItemStack.EMPTY;
-                    }
+            if (index < playerStart) {
+                if (!this.moveItemStackTo(slotStack, playerStart, playerEnd, true)) {
+                    return ItemStack.EMPTY;
                 }
+
+                if (index == OUTPUT_SLOT) {
+                    sourceSlot.onQuickCraft(slotStack, sourceStack);
+                }
+            }
+            else {
+                if (!this.moveItemStackTo(slotStack, gridStart, gridEnd, false)) {
+                    return ItemStack.EMPTY;
+                }
+            }
+
+            if (slotStack.isEmpty()) {
+                sourceSlot.set(ItemStack.EMPTY);
             } else {
-                if (!this.moveItemStackTo(stackInSlot, INPUT_RIGHT_SLOT, INPUT_RIGHT_SLOT + 1, false)) {
-                    if (!this.moveItemStackTo(stackInSlot, 0, MAIN_GRID_SLOTS, false)) {
-                        if (index < hotbarStart) {
-                            if (!this.moveItemStackTo(stackInSlot, hotbarStart, hotbarEnd, false)) {
-                                return ItemStack.EMPTY;
-                            }
-                        } else {
-                            if (!this.moveItemStackTo(stackInSlot, playerInventoryStart, hotbarStart, false)) {
-                                return ItemStack.EMPTY;
-                            }
-                        }
-                    }
-                }
+                sourceSlot.setChanged();
             }
+
+            if (slotStack.getCount() == sourceStack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+            sourceSlot.onTake(playerIn, slotStack);
         }
 
-        if (stackInSlot.isEmpty()) {
-            slot.set(ItemStack.EMPTY);
-        } else {
-            slot.setChanged();
-        }
-
-        if (stackInSlot.getCount() == result.getCount()) {
-            return ItemStack.EMPTY;
-        }
-
-        slot.onTake(player, stackInSlot);
-        return result;
+        return sourceStack;
     }
 
     @Override
@@ -260,21 +210,108 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
         return customSlots;
     }
 
+    private static class ClientPermissiveHandler implements IItemHandlerModifiable {
+        private final IItemHandler parent;
 
+        public ClientPermissiveHandler(IItemHandler parent) {
+            this.parent = parent;
+        }
+
+        @Override public boolean isItemValid(int slot, ItemStack stack) { return true; }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override public int getSlots() { return parent.getSlots(); }
+        @Override public ItemStack getStackInSlot(int slot) { return parent.getStackInSlot(slot); }
+        @Override public ItemStack extractItem(int slot, int amount, boolean simulate) { return parent.extractItem(slot, amount, simulate); }
+        @Override public int getSlotLimit(int slot) { return 64; }
+
+        @Override
+        public void setStackInSlot(int slot, ItemStack stack) {
+            if (parent instanceof IItemHandlerModifiable) {
+                ((IItemHandlerModifiable) parent).setStackInSlot(slot, stack);
+            }
+        }
+    }
+
+    public static class BSlot extends Slot {
+        private final IItemHandler handler;
+        private final int index;
+
+        public BSlot(IItemHandler handler, int index, int x, int y) {
+            super(new SimpleContainer(handler.getSlots()), index, x, y);
+            this.handler = handler;
+            this.index = index;
+        }
+
+        @Override
+        public boolean mayPlace(ItemStack stack) {
+            return true;
+        }
+
+        @Override
+        public ItemStack getItem() {
+            return handler.getStackInSlot(index);
+        }
+
+        @Override
+        public void set(ItemStack stack) {
+            if (handler instanceof IItemHandlerModifiable) {
+                ((IItemHandlerModifiable) handler).setStackInSlot(index, stack);
+            }
+            this.setChanged();
+        }
+
+        @Override
+        public int getMaxStackSize(ItemStack stack) {
+            ItemStack maxAdd = stack.copy();
+            int maxInput = stack.getMaxStackSize();
+            maxAdd.setCount(maxInput);
+
+            int handlerLimit = handler.getSlotLimit(index);
+
+            return Math.min(maxInput, handlerLimit);
+        }
+
+        @Override
+        public int getMaxStackSize() {
+            return handler.getSlotLimit(index);
+        }
+
+        @Override
+        public ItemStack remove(int amount) {
+            return handler.extractItem(index, amount, false);
+        }
+
+        @Override
+        public void setChanged() {
+            super.setChanged();
+        }
+
+    }
+
+    // 预留接口
+    /**
+     * 获取当前魔力值
+     */
     public int getMana() {
         return this.mana.get();
     }
 
-
+    /**
+     * 获取最大魔力值
+     */
     public int getMaxMana() {
         int m = this.maxMana.get();
         return m == 0 ? 1 : m;
     }
 
-    public int getCraftingProgress() {
-        return this.craftingProgress.get();
-    }
-
+    /**
+     * 更新魔力值
+     */
     public void updateMana(int current, int max) {
         this.mana.set(current);
         this.maxMana.set(max);

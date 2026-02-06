@@ -7,9 +7,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +33,6 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
     private static final int BAR_POS_X = 550;
     private static final int BAR_POS_Y = 10;
 
-    private static final int PROGRESS_BAR_X = 245;
-    private static final int PROGRESS_BAR_Y = 55;
-    private static final int PROGRESS_BAR_WIDTH = 30;
-    private static final int PROGRESS_BAR_HEIGHT = 4;
 
     public StarlitSanctumScreen(StarlitSanctumMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
@@ -79,7 +77,6 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
 
             if (slot.isActive()) {
                 RenderSlot(ms, slot);
-
                 if (isHovering(slot, logicMouseX, logicMouseY)) {
                     this.hoveredSlot = slot;
                     ms.pushPose();
@@ -90,6 +87,7 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
                 }
             }
         }
+
 
         ItemStack carried = this.menu.getCarried();
         if (!carried.isEmpty()) {
@@ -109,6 +107,25 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
 
     private void RenderSlot(PoseStack ms, Slot slot) {
         ItemStack itemstack = slot.getItem();
+        String countString = null;
+        ItemStack carried = this.menu.getCarried();
+        if (this.isQuickCrafting && this.quickCraftSlots.contains(slot) && !carried.isEmpty()) {
+
+            if (this.quickCraftSlots.size() > 1 && AbstractContainerMenu.canItemQuickReplace(slot, carried, true) && this.menu.canDragTo(slot)) {
+                ItemStack fakeStack = carried.copy();
+                int existingCount = slot.getItem().isEmpty() ? 0 : slot.getItem().getCount();
+                AbstractContainerMenu.getQuickCraftSlotCount(this.quickCraftSlots, this.quickCraftingType, fakeStack, existingCount);
+
+                int limit = Math.min(fakeStack.getMaxStackSize(), slot.getMaxStackSize(fakeStack));
+                if (fakeStack.getCount() > limit) {
+                    countString = net.minecraft.ChatFormatting.YELLOW.toString() + limit;
+                    fakeStack.setCount(limit);
+                }
+
+                itemstack = fakeStack;
+            }
+        }
+
         if (itemstack.isEmpty()) return;
 
         float itemScreenX = getXOffset() + (slot.x * scale);
@@ -116,14 +133,13 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
 
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
-
         modelViewStack.translate(itemScreenX, itemScreenY, 0);
         modelViewStack.scale(scale, scale, 1.0F);
-
         RenderSystem.applyModelViewMatrix();
 
+
         this.itemRenderer.renderAndDecorateItem(itemstack, 0, 0);
-        this.itemRenderer.renderGuiItemDecorations(this.font, itemstack, 0, 0, null);
+        this.itemRenderer.renderGuiItemDecorations(this.font, itemstack, 0, 0, countString);
 
         modelViewStack.popPose();
         RenderSystem.applyModelViewMatrix();
@@ -181,27 +197,6 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
                     BAR_WIDTH, fillHeight,
                     TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
-        int progress = this.menu.getCraftingProgress();
-        if (progress > 0) {
-            fill(ms, PROGRESS_BAR_X - 1, PROGRESS_BAR_Y - 1,
-                    PROGRESS_BAR_X + PROGRESS_BAR_WIDTH + 1, PROGRESS_BAR_Y + PROGRESS_BAR_HEIGHT + 1,
-                    0xFF000000);
-            fill(ms, PROGRESS_BAR_X, PROGRESS_BAR_Y,
-                    PROGRESS_BAR_X + PROGRESS_BAR_WIDTH, PROGRESS_BAR_Y + PROGRESS_BAR_HEIGHT,
-                    0xFF3C3C3C);
-            int filledWidth = (PROGRESS_BAR_WIDTH * progress) / 100;
-            if (filledWidth > 0) {
-                int color1 = 0xFF00FF00;
-                int color2 = 0xFF00CC00;
-                fillGradient(ms, PROGRESS_BAR_X, PROGRESS_BAR_Y,
-                        PROGRESS_BAR_X + filledWidth, PROGRESS_BAR_Y + PROGRESS_BAR_HEIGHT,
-                        color1, color2);
-            }
-            String progressText = progress + "%";
-            int textX = PROGRESS_BAR_X + (PROGRESS_BAR_WIDTH - this.font.width(progressText)) / 2;
-            int textY = PROGRESS_BAR_Y + PROGRESS_BAR_HEIGHT + 2;
-            this.font.draw(ms, progressText, textX, textY, 0xFFFFFFFF);
-        }
     }
 
     private boolean isHovering(net.minecraft.world.inventory.Slot slot, double mouseX, double mouseY) {
@@ -211,6 +206,7 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
     private boolean isHovering(int rectX, int rectY, int rectW, int rectH, int mouseX, int mouseY) {
         return mouseX >= rectX && mouseX < rectX + rectW && mouseY >= rectY && mouseY < rectY + rectH;
     }
+
 
     private double getLogicX(double mouseX) {
         return (mouseX - getXOffset()) / scale;
@@ -246,6 +242,6 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
+    public void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
     }
 }

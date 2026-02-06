@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StarlitSanctumRecipe implements Recipe<Container> {
+    public static final String RECIPE_ID = "starlit_crafting";
     private final ResourceLocation id;
 
     private final int manaCost;
@@ -35,7 +36,7 @@ public class StarlitSanctumRecipe implements Recipe<Container> {
     private final List<NonNullList<Ingredient>> patternGroups;
 
     private static final int INPUT_LEFT_SLOT = 486;
-    private static final int INPUT_RIGHT_SLOT = 488;
+    private static final int INPUT_RIGHT_SLOT = 487;
     private static final int GRID_ROWS = 18;
     private static final int GRID_COLS_PER_BLOCK = 9;
     private static final int TOTAL_ROW_WIDTH = 27;
@@ -68,14 +69,26 @@ public class StarlitSanctumRecipe implements Recipe<Container> {
     public List<NonNullList<Ingredient>> getPatternGroups() { return patternGroups; }
 
     @Override
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+        ingredients.add(leftInput);
+        ingredients.add(rightInput);
+        for (NonNullList<Ingredient> patternGroup : patternGroups) {
+            ingredients.addAll(patternGroup);
+        }
+
+        return Recipe.super.getIngredients();
+    }
+
+    @Override
     public boolean matches(Container pContainer, Level pLevel) {
         ItemStack leftStack = pContainer.getItem(INPUT_LEFT_SLOT);
-        if (!leftInput.test(leftStack) || leftStack.getCount() < leftInputCount) {
+        if (!leftInput.test(leftStack)) {
             return false;
         }
 
         ItemStack rightStack = pContainer.getItem(INPUT_RIGHT_SLOT);
-        if (!rightInput.test(rightStack) || rightStack.getCount() < rightInputCount) {
+        if (!rightInput.test(rightStack)) {
             return false;
         }
 
@@ -144,7 +157,7 @@ public class StarlitSanctumRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack getResultItem() {
-        return result;
+        return result.copy();
     }
 
     @Override

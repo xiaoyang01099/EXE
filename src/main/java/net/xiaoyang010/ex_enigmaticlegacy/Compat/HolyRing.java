@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Compat.Curio;
+package net.xiaoyang010.ex_enigmaticlegacy.Compat;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;

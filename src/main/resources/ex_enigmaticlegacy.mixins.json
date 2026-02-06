@@ -5,32 +5,8 @@
   "minVersion": "0.8",
   "refmap": "ex_enigmaticlegacy.refmap.json",
   "mixins": [
-    "BlockBehaviourMixin",
-    "BlockMixin",
-    "CraftingTableBlockMixin",
-    "EntityMixin",
-    "GeneratingFlowersWandHudMixin",
-    "HopperBlockEntityMixin",
-    "HUDHandlerMixin",
-    "InfinityArmorMixin",
-    "ItemStackMixin",
-    "LivingEntityMixin",
-    "ManaPoolRecipeCategoryMixin",
-    "ManaSpreaderBlockEntityAccessor",
-    "MobMixin",
-    "PoolWandHudMixin",
-    "RunicAltarRecipeCategoryMixin",
-    "SpreaderWandHudMixin",
-    "TilePoolMixin",
-    "TimeStop$EntityMixin",
-    "TimeStop$LivingMixin",
-    "TimeStop$ServerLevelMixin",
-    "WitherBossMixin"
   ],
   "client": [
-    "PlayerRendererMixin",
-    "TimeStop$ClientMixin",
-    "TimeStop$GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
