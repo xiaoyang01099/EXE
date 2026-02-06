@@ -5,22 +5,13 @@ import morph.avaritia.container.MachineMenu;
 import morph.avaritia.container.slot.OutputSlot;
 import morph.avaritia.container.slot.ScrollingFakeSlot;
 import morph.avaritia.container.slot.StaticFakeSlot;
-import morph.avaritia.init.AvaritiaModContent;
-import morph.avaritia.tile.NeutroniumCompressorTile;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.SlotItemHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.NeutroniumDecompressorTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityInfinityCompressor;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
 public class ContainerInfinityCompressor extends MachineMenu<TileEntityInfinityCompressor> {

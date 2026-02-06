@@ -44,6 +44,18 @@ public class EMCFlowerTile extends TileEntityGeneratingFlower {
             return;
         }
 
+        Player nearestPlayer = level.getNearestPlayer(
+                worldPosition.getX(),
+                worldPosition.getY(),
+                worldPosition.getZ(),
+                16.0,
+                false
+        );
+
+        if (nearestPlayer == null) {
+            return;
+        }
+
         int maxMana = getMaxMana();
 
         if (ticksExisted % 5 == 0 && getMana() < maxMana) {

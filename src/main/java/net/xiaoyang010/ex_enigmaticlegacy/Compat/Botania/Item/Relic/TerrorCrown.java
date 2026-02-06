@@ -1,5 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic;
 
+import com.integral.enigmaticlegacy.api.items.ICursed;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -31,7 +32,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.RelicsEventHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.ManaitaArmor;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.api.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.IRelic;
@@ -42,7 +43,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy")
-public class TerrorCrown extends ArmorItem implements INoEMCItem {
+public class TerrorCrown extends ArmorItem implements INoEMCItem, ICursed {
 
     public TerrorCrown(ArmorMaterial material, EquipmentSlot slot) {
         super(material, slot, ManaitaArmor.MANAITA_ARMOR);

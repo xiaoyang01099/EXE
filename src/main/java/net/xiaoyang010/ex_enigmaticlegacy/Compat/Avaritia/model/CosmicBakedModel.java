@@ -108,7 +108,6 @@ public class CosmicBakedModel extends WrappedItemModel implements IItemRenderer 
             }
         }
 
-        // 渲染覆盖四边形
         mc.getItemRenderer().renderQuadList(mStack, cosmicConsumer, overlayQuads, stack, light, overlay);
     }
 

@@ -1,14 +1,16 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.slot.PagedSlot;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
-import net.xiaoyang010.ex_enigmaticlegacy.Util.PagedSlot;
 
 public class PagedChestContainer extends AbstractContainerMenu {
     private final Container container;
@@ -16,9 +18,19 @@ public class PagedChestContainer extends AbstractContainerMenu {
     private static final int SLOTS_PER_PAGE = 117;
     private static ContainerData pageData;
 
+    public PagedChestContainer(int windowId, Inventory playerInventory) {
+        this(windowId, playerInventory, new SimpleContainer(585), new SimpleContainerData(1));
+    }
+
     public PagedChestContainer(int windowId, Inventory playerInventory, Container container) {
+        this(windowId, playerInventory, container, new SimpleContainerData(1));
+    }
+
+    public PagedChestContainer(int windowId, Inventory playerInventory, Container container, ContainerData data) {
         super(ModMenus.PAGED_CHEST, windowId);
         this.container = container;
+        checkContainerSize(container, 585);
+        container.startOpen(playerInventory.player);
 
         this.pageData = new ContainerData() {
             private int page;
@@ -99,6 +111,13 @@ public class PagedChestContainer extends AbstractContainerMenu {
     public boolean stillValid(Player player) {
         return container.stillValid(player);
     }
+
+    @Override
+    public void removed(Player player) {
+        super.removed(player);
+        this.container.stopOpen(player);
+    }
+
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;

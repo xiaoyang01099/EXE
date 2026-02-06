@@ -23,8 +23,8 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
-import net.xiaoyang010.ex_enigmaticlegacy.Container.NeutroniumDecompressorMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.NeutroniumDecompressorMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.NeutroniumDecompressorTile;
 import org.jetbrains.annotations.Nullable;
 

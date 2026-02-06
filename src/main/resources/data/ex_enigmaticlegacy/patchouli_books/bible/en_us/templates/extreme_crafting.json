@@ -1,0 +1,540 @@
+{
+  "processor": "net.xiaoyang010.ex_enigmaticlegacy.Compat.Patchouli.ExtremeCraftingProcessor",
+  "components": [
+    {
+      "type": "patchouli:header",
+      "text": "#recipe_name",
+      "x": 0,
+      "y": 0,
+      "color": "gold"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Extreme Crafting Table - #recipe_type$()$(br)#text",
+      "x": 0,
+      "y": 15
+    },
+    {
+      "type": "patchouli:separator",
+      "x": 0,
+      "y": 35
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)9x9 Crafting Grid:$",
+      "x": 0,
+      "y": 40
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#grid0",
+      "x": 10,
+      "y": 60
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid1",
+      "x": 26,
+      "y": 60
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid2",
+      "x": 42,
+      "y": 60
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid3",
+      "x": 58,
+      "y": 60
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid4",
+      "x": 74,
+      "y": 60
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid5",
+      "x": 90,
+      "y": 60
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid6",
+      "x": 106,
+      "y": 60
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid7",
+      "x": 122,
+      "y": 60
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid8",
+      "x": 138,
+      "y": 60
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#grid9",
+      "x": 10,
+      "y": 76
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid10",
+      "x": 26,
+      "y": 76
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid11",
+      "x": 42,
+      "y": 76
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid12",
+      "x": 58,
+      "y": 76
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid13",
+      "x": 74,
+      "y": 76
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid14",
+      "x": 90,
+      "y": 76
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid15",
+      "x": 106,
+      "y": 76
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid16",
+      "x": 122,
+      "y": 76
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid17",
+      "x": 138,
+      "y": 76
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#grid18",
+      "x": 10,
+      "y": 92
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid19",
+      "x": 26,
+      "y": 92
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid20",
+      "x": 42,
+      "y": 92
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid21",
+      "x": 58,
+      "y": 92
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid22",
+      "x": 74,
+      "y": 92
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid23",
+      "x": 90,
+      "y": 92
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid24",
+      "x": 106,
+      "y": 92
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid25",
+      "x": 122,
+      "y": 92
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid26",
+      "x": 138,
+      "y": 92
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#grid27",
+      "x": 10,
+      "y": 108
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid28",
+      "x": 26,
+      "y": 108
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid29",
+      "x": 42,
+      "y": 108
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid30",
+      "x": 58,
+      "y": 108
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid31",
+      "x": 74,
+      "y": 108
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid32",
+      "x": 90,
+      "y": 108
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid33",
+      "x": 106,
+      "y": 108
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid34",
+      "x": 122,
+      "y": 108
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid35",
+      "x": 138,
+      "y": 108
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#grid36",
+      "x": 10,
+      "y": 124
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid37",
+      "x": 26,
+      "y": 124
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid38",
+      "x": 42,
+      "y": 124
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid39",
+      "x": 58,
+      "y": 124
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid40",
+      "x": 74,
+      "y": 124
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid41",
+      "x": 90,
+      "y": 124
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid42",
+      "x": 106,
+      "y": 124
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid43",
+      "x": 122,
+      "y": 124
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid44",
+      "x": 138,
+      "y": 124
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#grid45",
+      "x": 10,
+      "y": 140
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid46",
+      "x": 26,
+      "y": 140
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid47",
+      "x": 42,
+      "y": 140
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid48",
+      "x": 58,
+      "y": 140
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid49",
+      "x": 74,
+      "y": 140
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid50",
+      "x": 90,
+      "y": 140
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid51",
+      "x": 106,
+      "y": 140
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid52",
+      "x": 122,
+      "y": 140
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid53",
+      "x": 138,
+      "y": 140
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#grid54",
+      "x": 10,
+      "y": 156
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid55",
+      "x": 26,
+      "y": 156
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid56",
+      "x": 42,
+      "y": 156
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid57",
+      "x": 58,
+      "y": 156
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid58",
+      "x": 74,
+      "y": 156
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid59",
+      "x": 90,
+      "y": 156
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid60",
+      "x": 106,
+      "y": 156
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid61",
+      "x": 122,
+      "y": 156
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid62",
+      "x": 138,
+      "y": 156
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#grid63",
+      "x": 10,
+      "y": 172
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid64",
+      "x": 26,
+      "y": 172
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid65",
+      "x": 42,
+      "y": 172
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid66",
+      "x": 58,
+      "y": 172
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid67",
+      "x": 74,
+      "y": 172
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid68",
+      "x": 90,
+      "y": 172
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid69",
+      "x": 106,
+      "y": 172
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid70",
+      "x": 122,
+      "y": 172
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid71",
+      "x": 138,
+      "y": 172
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#grid72",
+      "x": 10,
+      "y": 188
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid73",
+      "x": 26,
+      "y": 188
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid74",
+      "x": 42,
+      "y": 188
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid75",
+      "x": 58,
+      "y": 188
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid76",
+      "x": 74,
+      "y": 188
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid77",
+      "x": 90,
+      "y": 188
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid78",
+      "x": 106,
+      "y": 188
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid79",
+      "x": 122,
+      "y": 188
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#grid80",
+      "x": 138,
+      "y": 188
+    },
+
+    {
+      "type": "patchouli:text",
+      "text": "$(l)→$",
+      "x": 160,
+      "y": 125,
+      "color": "aqua"
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#output",
+      "x": 175,
+      "y": 120,
+      "link_recipe": true
+    }
+  ]
+}

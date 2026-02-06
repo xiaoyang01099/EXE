@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:rainbow_table",
+  "ingredients": [
+    {
+      "item": "ex_enigmaticlegacy:dyeable_redstone",
+      "count": 10
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 64
+    },
+    {
+      "item": "minecraft:glowstone_dust",
+      "count": 64
+    },
+    {
+      "item": "ex_enigmaticlegacy:white_dust",
+      "count": 32
+    }
+  ],
+  "output": {
+    "item": "ex_enigmaticlegacy:spectrite_dust",
+     "count": 5
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "botania:block/shapes/pool_full",
+  "textures": {
+    "all": "ex_enigmaticlegacy:blocks/cursed_mana_pool",
+    "liquid": "ex_enigmaticlegacy:blocks/mana_water/evil_water"
+  }
+}

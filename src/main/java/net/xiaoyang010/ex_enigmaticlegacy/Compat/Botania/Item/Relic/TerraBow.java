@@ -2,7 +2,6 @@ package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -28,7 +27,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.Util.LinkTimeManager;
+import net.xiaoyang010.ex_enigmaticlegacy.api.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.IRelic;
@@ -45,6 +45,7 @@ public class TerraBow extends ItemLivingwoodBow implements INoEMCItem {
     private static final int ARROW_COLS = 3;
     private static final double ARROW_BASE_DAMAGE = 10.0;
     private static final double INSTANT_KILL_CHANCE = 0.05;
+    private static final int TIME_COMPENSATION = 4;
 
     public TerraBow(Properties builder) {
         super(builder);
@@ -117,7 +118,6 @@ public class TerraBow extends ItemLivingwoodBow implements INoEMCItem {
     public InteractionResultHolder<ItemStack> use(@Nonnull Level level, Player player,
                                                   @Nonnull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-
         var relicCap = itemstack.getCapability(BotaniaForgeCapabilities.RELIC);
         if (relicCap.isPresent()) {
             IRelic relic = relicCap.orElse(null);
@@ -125,15 +125,12 @@ public class TerraBow extends ItemLivingwoodBow implements INoEMCItem {
                 return InteractionResultHolder.fail(itemstack);
             }
         }
-
         boolean flag = canFire(itemstack, player);
-
         InteractionResultHolder<ItemStack> ret = ForgeEventFactory.onArrowNock(itemstack, level,
                 player, hand, flag);
         if (ret != null) {
             return ret;
         }
-
         if (!player.getAbilities().instabuild && !flag) {
             if (!level.isClientSide) {
                 player.displayClientMessage(
@@ -141,115 +138,102 @@ public class TerraBow extends ItemLivingwoodBow implements INoEMCItem {
                                 .withStyle(ChatFormatting.RED), true);
             }
             return InteractionResultHolder.fail(itemstack);
-        } else {
-            player.startUsingItem(hand);
-            return InteractionResultHolder.consume(itemstack);
         }
+        player.startUsingItem(hand);
+
+        if (!level.isClientSide) {
+            LinkTimeManager.activate(player);
+        }
+
+        return InteractionResultHolder.consume(itemstack);
     }
 
     @Override
     public void releaseUsing(@Nonnull ItemStack stack, @Nonnull Level level, @NotNull LivingEntity entityLiving,
                              int timeLeft) {
-        if (entityLiving instanceof Player) {
-            Player player = (Player) entityLiving;
-            boolean flag = canFire(stack, player);
-            ItemStack itemstack = player.getProjectile(stack);
+        if (!level.isClientSide && entityLiving instanceof Player player) {
+            LinkTimeManager.deactivate(player);
+        }
 
-            int i = (int) ((getUseDuration(stack) - timeLeft) * chargeVelocityMultiplier());
-            i = ForgeEventFactory.onArrowLoose(stack, level, player, i,
-                    !itemstack.isEmpty() || flag);
-            if (i < 0)
-                return;
+        if (!(entityLiving instanceof Player player)) return;
 
-            if (!itemstack.isEmpty() || flag) {
-                if (itemstack.isEmpty()) {
-                    itemstack = new ItemStack(Items.ARROW);
-                }
-
-                float f = getPowerForTime(i);
-                if (!((double) f < 0.1D)) {
-                    boolean flag1 = player.getAbilities().instabuild || (itemstack.getItem() instanceof ArrowItem
-                            && ((ArrowItem) itemstack.getItem()).isInfinite(itemstack, stack, player));
-                    if (!level.isClientSide) {
-                        ArrowItem arrowitem = (ArrowItem) (itemstack.getItem() instanceof ArrowItem
-                                ? itemstack.getItem()
-                                : Items.ARROW);
-
-                        boolean hasInstantKill = false;
-                        int arrowCount = 0;
-
-                        int row = 0;
-                        while (row < ARROW_ROWS) {
-                            int col = 0;
-                            while (col < ARROW_COLS) {
-                                float pitchAddition = (row - ARROW_ROWS / 2) * 3F;
-                                float yawAddition = (col - ARROW_COLS / 2) * 3F;
-                                AbstractArrow abstractarrowentity = arrowitem.createArrow(level, itemstack,
-                                        player);
-
-                                abstractarrowentity = customArrow(abstractarrowentity);
-
-                                abstractarrowentity.setBaseDamage(ARROW_BASE_DAMAGE);
-
-                                if (level.random.nextDouble() < (INSTANT_KILL_CHANCE / 9)) {
-                                    abstractarrowentity.setBaseDamage(Float.MAX_VALUE);
-                                    abstractarrowentity.addTag("terra_bow_instant_kill");
-                                    hasInstantKill = true;
-                                }
-
-                                abstractarrowentity.shootFromRotation(player,
-                                        player.getXRot() + pitchAddition,
-                                        player.getYRot() + yawAddition, 0.0F, f * 3.0F, 1.0F);
-                                if (f == 1.0F) {
-                                    abstractarrowentity.setCritArrow(true);
-                                }
-
-                                int j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-                                if (j > 0 && !abstractarrowentity.getTags().contains("terra_bow_instant_kill")) {
-                                    abstractarrowentity
-                                            .setBaseDamage(abstractarrowentity.getBaseDamage() + (double) j * 0.5D + 0.5D);
-                                }
-
-                                int k = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, stack);
-                                if (k > 0) {
-                                    abstractarrowentity.setKnockback(k);
-                                }
-
-                                if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, stack) > 0) {
-                                    abstractarrowentity.setSecondsOnFire(100);
-                                }
-
-                                onFire(stack, player, flag1, abstractarrowentity);
-
-                                stack.hurtAndBreak(1, player, (p_220009_1_) -> {
-                                    p_220009_1_.broadcastBreakEvent(player.getUsedItemHand());
-                                });
-                                if (flag1 || player.getAbilities().instabuild
-                                        && (itemstack.getItem() == Items.SPECTRAL_ARROW
-                                        || itemstack.getItem() == Items.TIPPED_ARROW)) {
-                                    abstractarrowentity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
-                                }
-
-                                level.addFreshEntity(abstractarrowentity);
-                                arrowCount++;
-                                col++;
-                            }
-                            row++;
-                        }
-
-                        if (hasInstantKill) {
-                            player.displayClientMessage(
-                                    new TranslatableComponent("item.ex_enigmaticlegacy.terra_bow.instant_kill_triggered")
-                                            .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD), true);
-                        }
+        boolean flag = canFire(stack, player);
+        ItemStack itemstack = player.getProjectile(stack);
+        int chargeTime = (int) ((getUseDuration(stack) - timeLeft) * chargeVelocityMultiplier() * TIME_COMPENSATION);
+        chargeTime = ForgeEventFactory.onArrowLoose(stack, level, player, chargeTime,
+                !itemstack.isEmpty() || flag);
+        if (chargeTime < 0) return;
+        if (itemstack.isEmpty() && flag) {
+            itemstack = new ItemStack(Items.ARROW);
+        }
+        float power = getPowerForTime(chargeTime);
+        if (power < 0.1D) return;
+        boolean infiniteArrows = player.getAbilities().instabuild ||
+                (itemstack.getItem() instanceof ArrowItem arrowItem &&
+                        arrowItem.isInfinite(itemstack, stack, player));
+        if (!level.isClientSide) {
+            ArrowItem arrowitem = (ArrowItem) (itemstack.getItem() instanceof ArrowItem ?
+                    itemstack.getItem() : Items.ARROW);
+            boolean hasInstantKill = false;
+            for (int row = 0; row < ARROW_ROWS; row++) {
+                for (int col = 0; col < ARROW_COLS; col++) {
+                    float pitchOffset = (row - ARROW_ROWS / 2) * 3F;
+                    float yawOffset = (col - ARROW_COLS / 2) * 3F;
+                    AbstractArrow arrow = arrowitem.createArrow(level, itemstack, player);
+                    arrow = customArrow(arrow);
+                    arrow.setBaseDamage(ARROW_BASE_DAMAGE);
+                    if (level.random.nextDouble() < (INSTANT_KILL_CHANCE / 9)) {
+                        arrow.setBaseDamage(Float.MAX_VALUE);
+                        arrow.addTag("instant_kill");
+                        hasInstantKill = true;
                     }
-
-                    level.playSound((Player) null, player.getX(), player.getY(),
-                            player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F,
-                            1.0F / (level.random.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-                    player.awardStat(Stats.ITEM_USED.get(this));
+                    arrow.shootFromRotation(player,
+                            player.getXRot() + pitchOffset,
+                            player.getYRot() + yawOffset,
+                            0.0F, power * 3.0F, 1.0F);
+                    arrow.setNoGravity(true);
+                    arrow.setInvisible(true);
+                    if (power == 1.0F) {
+                        arrow.setCritArrow(true);
+                    }
+                    applyEnchantments(stack, arrow);
+                    onFire(stack, player, infiniteArrows, arrow);
+                    stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(player.getUsedItemHand()));
+                    if (infiniteArrows) {
+                        arrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
+                    }
+                    level.addFreshEntity(arrow);
                 }
             }
+            if (hasInstantKill) {
+                player.displayClientMessage(
+                        new TranslatableComponent("item.ex_enigmaticlegacy.terra_bow.instant_kill_triggered")
+                                .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD), true);
+            }
+        }
+        level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F,
+                1.0F / (level.random.nextFloat() * 0.4F + 1.2F) + power * 0.5F);
+        if (!infiniteArrows && !player.getAbilities().instabuild) {
+            itemstack.shrink(1);
+            if (itemstack.isEmpty()) {
+                player.getInventory().removeItem(itemstack);
+            }
+        }
+        player.awardStat(Stats.ITEM_USED.get(this));
+    }
+
+    private void applyEnchantments(ItemStack bow, AbstractArrow arrow) {
+        int power = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, bow);
+        if (power > 0 && !arrow.getTags().contains("instant_kill")) {
+            arrow.setBaseDamage(arrow.getBaseDamage() + power * 0.5D + 0.5D);
+        }
+        int punch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, bow);
+        if (punch > 0) {
+            arrow.setKnockback(punch);
+        }
+        if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, bow) > 0) {
+            arrow.setSecondsOnFire(100);
         }
     }
 

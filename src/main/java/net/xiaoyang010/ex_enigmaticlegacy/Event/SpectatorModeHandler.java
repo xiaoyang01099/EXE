@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import morph.avaritia.item.InfinityArmorItem;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;

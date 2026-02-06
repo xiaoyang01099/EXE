@@ -41,6 +41,12 @@ public class ModArmors {
     public static final RegistryObject<Item> dragonArmorLegs = REGISTRY.register("dragon_leggings", () -> new DragonCrystalArmor(ArmorMaterials.NETHERITE, EquipmentSlot.LEGS));
     public static final RegistryObject<Item> dragonArmorBoots = REGISTRY.register("dragon_boots", () -> new DragonCrystalArmor(ArmorMaterials.NETHERITE, EquipmentSlot.FEET));
 
+    public static final RegistryObject<Item> ENTITY_STANDABLE_BOOTS = REGISTRY.register("entity_standable_boots",
+            () -> new EntityStandableBoots(
+                    ArmorMaterials.NETHERITE,
+                    new Item.Properties()//.tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
+            ));
+
     public static final RegistryObject<Item> ULTIMATE_VALKYRIE_HELMET = REGISTRY.register("ultimate_valkyrie_helmet",
             () -> new UltimateValkyrieHelmet(
                     new Item.Properties()

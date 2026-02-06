@@ -1,5 +1,7 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic;
 
+import com.integral.enigmaticlegacy.api.items.ICursed;
+import com.integral.enigmaticlegacy.helpers.ItemLoreHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Direction;
@@ -37,7 +39,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CrimsonSpell extends Item {
+public class CrimsonSpell extends Item implements ICursed {
 
     private static final float CRIMSON_SPELL_DAMAGE_MIN = 42.0f;
     private static final float CRIMSON_SPELL_DAMAGE_MAX = 100.0f;
@@ -83,6 +85,7 @@ public class CrimsonSpell extends Item {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        ItemLoreHelper.indicateCursedOnesOnly(tooltip);
         RelicImpl.addDefaultTooltip(stack, tooltip);
 
         if (Screen.hasShiftDown()) {

@@ -1,0 +1,10 @@
+{
+  "type": "ex_enigmaticlegacy:ancient_alphirine",
+  "input": {
+    "item": "ex_enigmaticlegacy:nebula_fragment"
+  },
+  "output": {
+    "item": "ex_enigmaticlegacy:nebula_ingot"
+  },
+  "chance": 25
+}

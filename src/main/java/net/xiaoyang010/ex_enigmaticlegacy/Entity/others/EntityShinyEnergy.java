@@ -6,6 +6,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
@@ -16,7 +17,6 @@ import net.minecraftforge.network.NetworkHooks;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
 import vazkii.botania.api.BotaniaAPI;
-import vazkii.botania.client.fx.WispParticleData;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -70,40 +70,16 @@ public class EntityShinyEnergy extends ThrowableProjectile implements IEntityAdd
     @Override
     public void readSpawnData(FriendlyByteBuf buffer) {
         int id = buffer.readInt();
-        try {
-            if (id >= 0) {
-                this.target = (LivingEntity) this.level.getEntity(id);
+        if (id >= 0) {
+            Entity entity = this.level.getEntity(id);
+            if (entity instanceof LivingEntity living) {
+                this.target = living;
                 this.entityData.set(TARGET_ID, id);
             }
-        } catch (Exception e) {
         }
         this.entityData.set(LOCK_X, buffer.readFloat());
         this.entityData.set(LOCK_Y, buffer.readFloat());
         this.entityData.set(LOCK_Z, buffer.readFloat());
-    }
-
-    public void particleExplosion() {
-        double lockX = this.entityData.get(LOCK_X);
-        double lockY = this.entityData.get(LOCK_Y);
-        double lockZ = this.entityData.get(LOCK_Z);
-
-        for (int i = 0; i < 24; ++i) {
-            float r = 0.0F;
-            float g = 0.8F + (float) Math.random() * 0.2F;
-            float b = 0.4F + (float) Math.random() * 0.6F;
-            float s = 0.3F + (float) Math.random() * 0.3F;
-            float m = 0.4F;
-            double xm = (Math.random() - 0.5D) * m;
-            double ym = (Math.random() - 0.5D) * m;
-            double zm = (Math.random() - 0.5D) * m;
-
-            WispParticleData data = WispParticleData.wisp(s, r, g, b, 1.0F, false);
-            this.level.addParticle(data,
-                    lockX + 0.5D + xm,
-                    lockY + 1.25D + ym,
-                    lockZ + 0.5D + zm,
-                    -xm * 0.1D, -ym * 0.1D, -zm * 0.1D);
-        }
     }
 
     @Override
@@ -122,7 +98,13 @@ public class EntityShinyEnergy extends ThrowableProjectile implements IEntityAdd
         if (this.target == null || this.target.isRemoved()) {
             int targetId = this.entityData.get(TARGET_ID);
             if (targetId >= 0) {
-                this.target = (LivingEntity) this.level.getEntity(targetId);
+                Entity entity = this.level.getEntity(targetId);
+                if (entity instanceof LivingEntity living) {
+                    this.target = living;
+                } else {
+                    this.discard();
+                    return;
+                }
             }
             if (this.target == null || this.target.isRemoved()) {
                 this.discard();

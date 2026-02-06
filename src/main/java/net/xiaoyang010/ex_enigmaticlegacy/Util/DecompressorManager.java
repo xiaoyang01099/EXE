@@ -59,11 +59,6 @@ public class DecompressorManager {
         recipeMap.put(key, new DecompressRecipeData(ingredient.copy(), cost));
     }
 
-    /**
-     * 获取拆解配方
-     * @param compressed 压缩后的物品
-     * @return 拆解数据（原材料和数量）
-     */
     public DecompressRecipeData getRecipe(ItemStack compressed) {
         if (!isInitialized) {
             loadRecipes();
@@ -76,9 +71,6 @@ public class DecompressorManager {
         return recipeMap.get(getKey(compressed));
     }
 
-    /**
-     * 检查是否可以拆解
-     */
     public boolean canDecompress(ItemStack stack) {
         return getRecipe(stack) != null;
     }
@@ -111,9 +103,6 @@ public class DecompressorManager {
         instance.loadRecipes();
     }
 
-    /**
-     * 拆解配方数据
-     */
     public static class DecompressRecipeData {
         private final ItemStack ingredient;
         private final int count;

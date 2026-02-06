@@ -1,5 +1,7 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic;
 
+import com.integral.enigmaticlegacy.api.items.ICursed;
+import com.integral.enigmaticlegacy.helpers.ItemLoreHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +28,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.EntitySoulEnergy;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModDamageSources;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
+import net.xiaoyang010.ex_enigmaticlegacy.api.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.IRelic;
@@ -36,7 +39,7 @@ import vazkii.botania.xplat.IXplatAbstractions;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class SoulTome extends Item {
+public class SoulTome extends Item implements ICursed, INoEMCItem {
     private static final float SOUL_TOME_DIVISOR = 10.0F;
 
     public SoulTome(Properties properties) {
@@ -66,6 +69,7 @@ public class SoulTome extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        ItemLoreHelper.indicateCursedOnesOnly(tooltip);
         RelicImpl.addDefaultTooltip(stack, tooltip);
 
         if (Screen.hasShiftDown()) {

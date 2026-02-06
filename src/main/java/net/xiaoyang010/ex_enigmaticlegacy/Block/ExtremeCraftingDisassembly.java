@@ -21,7 +21,7 @@ public class ExtremeCraftingDisassembly extends Block {
     public ExtremeCraftingDisassembly() {
         super(Properties.of(Material.METAL)
                 .strength(5.0F, 6000.0F)
-                .sound(SoundType.METAL)
+                .sound(SoundType.GLASS)
                 .requiresCorrectToolForDrops());
     }
 
@@ -36,7 +36,7 @@ public class ExtremeCraftingDisassembly extends Block {
                         new SimpleMenuProvider(
                                 (windowId, playerInventory, playerEntity) ->
                                         new ExtremeDisassemblyMenu(windowId, playerInventory, ContainerLevelAccess.create(level, pos)),
-                                new TranslatableComponent("container.ex_enigmaticlegacy.extreme_crafting_disassembly")
+                                new TranslatableComponent("")
                         ),
                         pos);
             }

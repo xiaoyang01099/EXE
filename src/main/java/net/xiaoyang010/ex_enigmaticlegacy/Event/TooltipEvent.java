@@ -16,7 +16,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.HolyRing;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Curio.HolyRing;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.EComponent;
 import net.xiaoyang010.ex_enigmaticlegacy.api.IModelRegister;

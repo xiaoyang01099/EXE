@@ -36,7 +36,7 @@ public class BlockExtremeAutoCrafter extends BaseEntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-        return new TileEntityExtremeAutoCrafter(pos, state);
+        return new TileEntityExtremeAutoCrafter(ModBlockEntities.EXTREME_AUTO_CRAFTER_TILE.get(), pos, state);
     }
 
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {

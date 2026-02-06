@@ -1,44 +1,21 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Block;
 
-import codechicken.lib.util.ServerUtils;
 import io.redspace.ironsspellbooks.util.Component;
 import morph.avaritia.block.MachineBlock;
-import morph.avaritia.container.NeutroniumCompressorMenu;
-import morph.avaritia.init.AvaritiaModContent;
-import morph.avaritia.tile.MachineTileBase;
-import morph.avaritia.tile.NeutroniumCompressorTile;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.*;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerInfinityCompressor;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityInfinityCompressor;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Objects;
-import java.util.function.Supplier;
 
 public class BlockInfinityCompressor extends MachineBlock {
     public BlockInfinityCompressor(BlockBehaviour.Properties properties) {

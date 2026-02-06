@@ -14,9 +14,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.AlphirinePortal;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.EntityAdvancedSpark;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.BlackHoleEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.*;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.ef.EntitySlash;
+import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.EntityCursedManaBurst;
 
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -41,6 +44,31 @@ public class ModEntities {
 //							.fireImmune()
 //							.build("doppleganger_vi")
 //			);
+
+	public static final RegistryObject<EntityType<EntityCursedManaBurst>> CURSED_MANA_BURST =
+			REGISTRY.register("cursed_mana_burst",
+							() -> EntityType.Builder.<EntityCursedManaBurst>of(
+									EntityCursedManaBurst::new, MobCategory.MISC)
+					.sized(0, 0)
+					.clientTrackingRange(6)
+					.updateInterval(10)
+					.build("cursed_mana_burst"));
+
+	public static final RegistryObject<EntityType<BlackHoleEntity>> BLACK_HOLE = REGISTRY.register("black_hole",
+			() -> EntityType.Builder.<BlackHoleEntity>of(BlackHoleEntity::new, MobCategory.MISC)
+					.sized(1.0F, 1.0F)
+					.clientTrackingRange(64)
+					.updateInterval(1)
+					.fireImmune()
+					.build("black_hole"));
+
+	public static final RegistryObject<EntityType<ContinuumBombEntity>> CONTINUUM_BOMB =
+			REGISTRY.register("continuum_bomb",
+				() -> EntityType.Builder.<ContinuumBombEntity>of(ContinuumBombEntity::new, MobCategory.MISC)
+						.sized(0.25F, 0.25F)
+						.clientTrackingRange(4)
+						.updateInterval(10)
+						.build("continuum_bomb"));
 
 	public static final RegistryObject<EntityType<EntityManaVine>> MANA_VINE_BALL =
 			REGISTRY.register("mana_vine_ball",
@@ -236,10 +264,13 @@ public class ModEntities {
             EntityType.Builder.<SpectriteCrystalEntity>of(SpectriteCrystalEntity::new, MobCategory.MISC)
                     .sized(2.0F, 2.0F));
 
-	/*public static final EntityType<EntitySlash> SLASH = EntityType.Builder
-			.<EntitySlash>of(EntitySlash::new, MobCategory.MISC)
-			.sized(0.1F, 0.1F)
-			.build("ex_enigmaticlegacy:slash");*/
+	public static final RegistryObject<EntityType<EntitySlash>> ENTITY_SLASH = register("slash",
+			EntityType.Builder.of(EntitySlash::new, MobCategory.MISC)
+					.sized(0.5F, 0.5F)
+					.clientTrackingRange(64)
+					.updateInterval(1)
+					.setShouldReceiveVelocityUpdates(false)
+	);
 
 	public static final RegistryObject<EntityType<SpectriteWither>> SPECTRITE_WITHER = register(
 			"spectrite_wither",

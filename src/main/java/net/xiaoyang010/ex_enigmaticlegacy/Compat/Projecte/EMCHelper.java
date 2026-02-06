@@ -12,6 +12,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.xiaoyang010.ex_enigmaticlegacy.api.INoEMCItem;
 
 import java.lang.reflect.Field;
 import java.util.Map;

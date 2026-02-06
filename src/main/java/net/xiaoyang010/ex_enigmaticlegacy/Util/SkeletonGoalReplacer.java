@@ -51,9 +51,9 @@ public class SkeletonGoalReplacer {
 
                 skeleton.goalSelector.addGoal(priority, new WildHuntAwareGoal.Ranged<>(
                         skeleton,
-                        1.0,  // 速度修饰符
-                        20,   // 最小攻击间隔
-                        15.0f,// 攻击半径
+                        1.0,
+                        20,
+                        15.0f,
                         SkeletonGoalReplacer::shouldIgnorePlayer
                 ));
                 break;
@@ -68,8 +68,8 @@ public class SkeletonGoalReplacer {
 
                 skeleton.goalSelector.addGoal(priority, new WildHuntAwareGoal.Melee(
                         skeleton,
-                        1.2,  // 速度修饰符
-                        false,// 是否持续跟踪不可见目标
+                        1.2,
+                        false,
                         SkeletonGoalReplacer::shouldIgnorePlayer
                 ));
                 break;

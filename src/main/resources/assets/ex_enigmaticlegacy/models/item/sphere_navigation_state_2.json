@@ -1,0 +1,8 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/res/sphere_navigation_0",
+    "layer1": "ex_enigmaticlegacy:items/res/sphere_navigation_3",
+    "layer2": "ex_enigmaticlegacy:items/res/sphere_navigation_2"
+  }
+}

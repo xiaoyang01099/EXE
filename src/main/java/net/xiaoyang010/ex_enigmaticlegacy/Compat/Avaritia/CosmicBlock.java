@@ -24,21 +24,21 @@ public class CosmicBlock extends Block implements EntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED; // 使用实体渲染
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
     public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
-        return false; // 确保渲染
+        return false;
     }
 
     @Override
     public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
-        return 1.0F; // 不受光照影响
+        return 1.0F;
     }
 
     @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
-        return false; // 允许天空光穿透
+        return false;
     }
 }

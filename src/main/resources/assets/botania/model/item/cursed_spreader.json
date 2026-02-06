@@ -1,0 +1,10 @@
+{
+  "parent": "botania:block/shapes/spreader_item",
+  "textures": {
+    "side": "ex_enigmaticlegacy:blocks/cursed/cursed_spreader_side",
+    "back": "ex_enigmaticlegacy:blocks/cursed/cursed_spreader_back",
+    "inside": "ex_enigmaticlegacy:blocks/cursed/stripped_cursed_spreader",
+    "outside": "ex_enigmaticlegacy:/cursed/cursed_spreader",
+    "core": "ex_enigmaticlegacy:blocks/cursed/cursed_spreader_core"
+  }
+}

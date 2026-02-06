@@ -40,7 +40,7 @@ public class MingXianLanBlock extends FlowerBlock {
 
     @OnlyIn(Dist.CLIENT)
     public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ModBlockss.RAINBOW_GENERATING_FLOWER.get(), renderType -> renderType == RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlockss.MINGXIANLAN.get(), renderType -> renderType == RenderType.cutout());
     }
 
     @Override

@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
@@ -29,17 +28,23 @@ import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.layer.DragonWingsLayer
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.layer.WitherArmorLayer;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.tile.SpottedGardenEelRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.CosmicBlockRenderer;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.shader.RainbowCosmicModelLoader;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.shader.CosmicModelLoader;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.model.InfinityArmorModel;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.render.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Generating.FloweyTileRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.MithrillMultiTool;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.SphereNavigation;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.TerraShovel;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.SpecialCoreShaders;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.SpecialMiscellaneousModels;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
-import net.xiaoyang010.ex_enigmaticlegacy.api.EndPortalHaloLoader;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.shader.EndPortalHaloLoader;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.StarrySkyBlockRenderer;
+import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.RenderCursedSpreader;
+import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.RenderTileCursedPool;
 import vazkii.botania.forge.mixin.client.ForgeAccessorModelBakery;
 import vazkii.botania.mixin.client.AccessorModelBakery;
 import vazkii.botania.mixin.client.AccessorRenderBuffers;
@@ -122,6 +127,18 @@ public class ModEventBusEvents {
                     new ResourceLocation("ex_enigmaticlegacy", "enabled"),
                     (stack, world, entity, seed) -> TerraShovel.isEnabled(stack) ? 1.0F : 0.0F
             );
+
+            ItemProperties.register(
+                    ModItems.SPHERE_NAVIGATION.get(),
+                    new ResourceLocation("ex_enigmaticlegacy", "enabled"),
+                    (stack, world, entity, seed) -> stack.getDamageValue() == 0 ? 1.0F : 0.0F
+            );
+            ItemProperties.register(
+                    ModItems.SPHERE_NAVIGATION.get(),
+                    new ResourceLocation("ex_enigmaticlegacy", "has_target"),
+                    (stack, world, entity, seed) ->
+                            SphereNavigation.getFindBlock(stack) != null ? 1.0F : 0.0F
+            );
         });
     }
 
@@ -146,6 +163,11 @@ public class ModEventBusEvents {
         BlockEntityRenderers.register(ModBlockEntities.POLYCHROME_COLLAPSE_PRISM_TILE.get(),PolychromeCollapsePrismRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.ENGINEER_HOPPER_TILE.get(),RenderTileEngineerHopper::new);
         BlockEntityRenderers.register(ModBlockEntities.COSMIC_BLOCK_ENTITY.get(), CosmicBlockRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.FLOWEYTILE.get(), FloweyTileRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.CURSED_SPREADER.get(), RenderCursedSpreader::new);
+        BlockEntityRenderers.register(ModBlockEntities.CURSED_MANA_POOL.get(), RenderTileCursedPool::new);
+        BlockEntityRenderers.register(ModBlockEntities.STARRY_SKY_BLOCK_ENTITY.get(), StarrySkyBlockRenderer::new);
+
     }
 
     @SubscribeEvent
@@ -178,6 +200,14 @@ public class ModEventBusEvents {
         }
     }
 
+    @SubscribeEvent
+    public static void onModelBake(ModelBakeEvent event) {
+        SpecialMiscellaneousModels.INSTANCE.onModelBake(
+                event.getModelLoader(),
+                event.getModelRegistry()
+        );
+    }
+
     private static void addValkyrieLayerToPlayerSkin(EntityRenderersEvent.AddLayers event, String skinType) {
         EntityRenderer<? extends AbstractClientPlayer> renderer = (EntityRenderer<? extends AbstractClientPlayer>) event.getSkin(skinType);
         if (renderer instanceof PlayerRenderer playerRenderer) {
@@ -203,18 +233,22 @@ public class ModEventBusEvents {
 
     @SubscribeEvent
     public static void onModelRegister(ModelRegistryEvent evt) {
+        var resourceManager = ((ForgeAccessorModelBakery) (Object) ForgeModelBakery.instance())
+                .getResourceManager();
+
+        SpecialMiscellaneousModels.INSTANCE.onModelRegister(
+                resourceManager,
+                ForgeModelBakery::addSpecialModel
+        );
+
         Set<Material> materials = AccessorModelBakery.getMaterials();
         materials.add(SpecialMiscellaneousModels.INSTANCE.evilManaWater);
         materials.add(SpecialMiscellaneousModels.INSTANCE.rainbowManaWater);
         materials.add(SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay);
 
+        ModelLoaderRegistry.registerLoader(new ResourceLocation("ex_enigmaticlegacy", "rainbow_cosmic"), new RainbowCosmicModelLoader());
         ModelLoaderRegistry.registerLoader(new ResourceLocation("ex_enigmaticlegacy", "cosmic"), new CosmicModelLoader());
         ModelLoaderRegistry.registerLoader(new ResourceLocation("ex_enigmaticlegacy", "end_portal_halo"), new EndPortalHaloLoader());
-
-        ResourceManager resourceManager = null;
-        if (ForgeModelBakery.instance() != null) {
-            resourceManager = ((ForgeAccessorModelBakery) (Object) ForgeModelBakery.instance()).getResourceManager();
-        }
     }
 
     @SubscribeEvent

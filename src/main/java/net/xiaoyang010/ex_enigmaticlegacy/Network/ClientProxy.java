@@ -11,10 +11,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.ParticleEngine;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.fx.FXBubble;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.fx.FXBurst;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.fx.FXLightningBolt;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.fx.FXWisp;
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.common.proxy.IProxy;
 
-public class ClientProxy{
+public class ClientProxy extends CommonProxy {
     @OnlyIn(Dist.CLIENT)
     public static void spawnSuperParticle(Level world, String particleType, double x, double y, double z,
                                           double velX, double velY, double velZ, float particleSize, double renderDistance) {
@@ -161,31 +163,84 @@ public class ClientProxy{
         worldObj.addParticle(data, posX, posY, posZ, 0, -0.02, 0);
     }
 
-//    @OnlyIn(Dist.CLIENT)
-//    public static void wispFX2(Level level, double posX, double posY, double posZ, float size, int type, boolean shrink, boolean hasPhysics, float gravity) {
-//        FXWisp ef = new FXWisp((ClientLevel) level, posX, posY, posZ, size, type);
-//        ef.setGravity(gravity);
-//        ef.shrink = shrink;
-//        ef.hasPhysics = hasPhysics;
-//        ParticleEngine.INSTANCE.addEffect(level, ef);
-//    }
-//
-//    @OnlyIn(Dist.CLIENT)
-//    public static void wispFX3(Level level, double posX, double posY, double posZ, double targetX, double targetY, double targetZ, float size, int type, boolean shrink, float gravity) {
-//        FXWisp ef = new FXWisp((ClientLevel) level, posX, posY, posZ, targetX, targetY, targetZ, size, type);
-//        ef.setGravity(gravity);
-//        ef.shrink = shrink;
-//        ParticleEngine.INSTANCE.addEffect(level, ef);
-//    }
-//
-//    @OnlyIn(Dist.CLIENT)
-//    public static void wispFX4(Level level, double posX, double posY, double posZ, Entity target, int type, boolean shrink, float gravity) {
-//        FXWisp ef = new FXWisp((ClientLevel) level, posX, posY, posZ, target, type);
-//        ef.setGravity(gravity);
-//        ef.shrink = shrink;
-//        ParticleEngine.INSTANCE.addEffect(level, ef);
-//    }
+    @OnlyIn(Dist.CLIENT)
+    public static void wispFX2(Level level, double posX, double posY, double posZ, float size, int type, boolean shrink, boolean hasPhysics, float gravity) {
+        FXWisp ef = new FXWisp((ClientLevel) level, posX, posY, posZ, size, type);
+        ef.setGravity(gravity);
+        ef.shrink = shrink;
+        ef.hasPhysics = hasPhysics;
+        ParticleEngine.INSTANCE.addEffect(level, ef);
+    }
 
+    @OnlyIn(Dist.CLIENT)
+    public static void wispFX3(Level level, double posX, double posY, double posZ, double targetX, double targetY, double targetZ, float size, int type, boolean shrink, float gravity) {
+        FXWisp ef = new FXWisp((ClientLevel) level, posX, posY, posZ, targetX, targetY, targetZ, size, type);
+        ef.setGravity(gravity);
+        ef.shrink = shrink;
+        ParticleEngine.INSTANCE.addEffect(level, ef);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void wispFX4(Level level, double posX, double posY, double posZ, Entity target, int type, boolean shrink, float gravity) {
+        FXWisp ef = new FXWisp((ClientLevel) level, posX, posY, posZ, target, type);
+        ef.setGravity(gravity);
+        ef.shrink = shrink;
+        ParticleEngine.INSTANCE.addEffect(level, ef);
+    }
+
+    @Override
+    public void bolt(Level worldObj, Entity sourceEntity, Entity targetedEntity) {
+        if (!(worldObj instanceof ClientLevel)) return;
+
+        FXLightningBolt bolt = new FXLightningBolt(
+                (ClientLevel) worldObj,
+                sourceEntity,
+                targetedEntity,
+                worldObj.random.nextLong(),
+                4
+        );
+        bolt.defaultFractal();
+        bolt.setType(0);
+        bolt.finalizeBolt();
+    }
+
+    @Override
+    public void nodeBolt(Level worldObj, float x, float y, float z, Entity targetedEntity) {
+        if (!(worldObj instanceof ClientLevel)) return;
+
+        FXLightningBolt bolt = new FXLightningBolt(
+                (ClientLevel) worldObj,
+                x, y, z,
+                targetedEntity.getX(),
+                targetedEntity.getY(),
+                targetedEntity.getZ(),
+                worldObj.random.nextLong(),
+                10,
+                4.0f,
+                5
+        );
+        bolt.defaultFractal();
+        bolt.setType(3);
+        bolt.finalizeBolt();
+    }
+
+    @Override
+    public void nodeBolt(Level worldObj, float x, float y, float z, float x2, float y2, float z2) {
+        if (!(worldObj instanceof ClientLevel)) return;
+
+        FXLightningBolt bolt = new FXLightningBolt(
+                (ClientLevel) worldObj,
+                x, y, z,
+                x2, y2, z2,
+                worldObj.random.nextLong(),
+                10,
+                4.0f,
+                5
+        );
+        bolt.defaultFractal();
+        bolt.setType(0);
+        bolt.finalizeBolt();
+    }
 
     private static float[] getColorByType(int type) {
         return switch (type) {

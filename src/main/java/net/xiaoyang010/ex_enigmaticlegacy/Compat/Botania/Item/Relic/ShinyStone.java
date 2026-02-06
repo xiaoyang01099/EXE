@@ -6,8 +6,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -20,7 +20,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.EntityShinyEnergy;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.api.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -28,6 +28,7 @@ import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.IRelic;
 import vazkii.botania.common.helper.ItemNBTHelper;
 import vazkii.botania.common.item.relic.RelicImpl;
+import vazkii.botania.xplat.IXplatAbstractions;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -40,7 +41,7 @@ public class ShinyStone extends Item implements ICurioItem, INoEMCItem {
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @org.jetbrains.annotations.Nullable CompoundTag nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return new ShinyStone.RelicCapProvider(stack);
     }
 
@@ -52,11 +53,21 @@ public class ShinyStone extends Item implements ICurioItem, INoEMCItem {
         }
 
         @Override
-        public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @org.jetbrains.annotations.Nullable Direction direction) {
+        public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction direction) {
             if (capability == BotaniaForgeCapabilities.RELIC) {
                 return relic.cast();
             }
             return LazyOptional.empty();
+        }
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
+        if (!level.isClientSide && entity instanceof Player player) {
+            var relic = IXplatAbstractions.INSTANCE.findRelic(stack);
+            if (relic != null) {
+                relic.tickBinding(player);
+            }
         }
     }
 
@@ -70,12 +81,21 @@ public class ShinyStone extends Item implements ICurioItem, INoEMCItem {
             tooltip.add(Component.nullToEmpty(""));
 
             boolean isPermanentDay = ItemNBTHelper.getBoolean(stack, "PermanentDay", false);
+            if (isPermanentDay) {
+                tooltip.add(new TranslatableComponent("item.shinystone.mode.day").withStyle(ChatFormatting.GOLD));
+            } else {
+                tooltip.add(new TranslatableComponent("item.shinystone.mode.normal").withStyle(ChatFormatting.AQUA));
+            }
+
+            tooltip.add(new TranslatableComponent("item.shinystone.key_hint").withStyle(ChatFormatting.YELLOW));
         } else {
             tooltip.add(new TranslatableComponent("item.FRShiftTooltip.lore").withStyle(ChatFormatting.DARK_GRAY));
         }
     }
 
     public void spawnEnergyParticle(LivingEntity entity) {
+        if (entity.level.isClientSide) return;
+
         EntityShinyEnergy energy = new EntityShinyEnergy(entity.level, entity, entity,
                 entity.getX(), entity.getY(), entity.getZ());
 
@@ -92,120 +112,166 @@ public class ShinyStone extends Item implements ICurioItem, INoEMCItem {
         entity.level.addFreshEntity(energy);
     }
 
-    @Override
+    private boolean isValidPlayer(ItemStack stack, LivingEntity entity) {
+        if (!(entity instanceof Player player)) {
+            return true;
+        }
+
+        var relic = IXplatAbstractions.INSTANCE.findRelic(stack);
+        if (relic == null) {
+            return true;
+        }
+
+        return relic.isRightPlayer(player);
+    }
+
+    public void togglePermanentDay(ItemStack stack, Player player) {
+        Level level = player.level;
+
+        if (level.isClientSide) {
+            return;
+        }
+
+        if (!isValidPlayer(stack, player)) {
+            return;
+        }
+
+        boolean currentState = ItemNBTHelper.getBoolean(stack, "PermanentDay", false);
+        boolean newState = !currentState;
+
+        ItemNBTHelper.setBoolean(stack, "PermanentDay", newState);
+
+        if (level.getServer() != null) {
+            if (newState) {
+                level.getServer().getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, level.getServer());
+                if (level instanceof ServerLevel serverLevel) {
+                    serverLevel.setDayTime(6000);
+                }
+                player.displayClientMessage(
+                        new TranslatableComponent("item.daynight.controller1")
+                                .withStyle(ChatFormatting.GOLD),
+                        true
+                );
+            } else {
+                level.getServer().getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(true, level.getServer());
+                player.displayClientMessage(
+                        new TranslatableComponent("item.daynight.controller2")
+                                .withStyle(ChatFormatting.AQUA),
+                        true
+                );
+            }
+        }
+    }
+
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         LivingEntity entity = slotContext.entity();
+        Level level = entity.level;
+
+        if (level.isClientSide) {
+            return;
+        }
 
         if (entity instanceof Player player) {
-            var relicCap = stack.getCapability(BotaniaForgeCapabilities.RELIC);
-            if (relicCap.isPresent()) {
-                IRelic relic = relicCap.orElse(null);
-                if (relic != null && !relic.isRightPlayer(player)) {
+            var relic = IXplatAbstractions.INSTANCE.findRelic(stack);
+            if (relic != null) {
+                relic.tickBinding(player);
+
+                if (!relic.isRightPlayer(player)) {
                     return;
                 }
             }
         }
 
-        if (!entity.level.isClientSide && entity.tickCount % SHINY_STONE_CHECKRATE == 0) {
-            double posX = ItemNBTHelper.getDouble(stack, "LastX", 0.0D);
-            double posY = ItemNBTHelper.getDouble(stack, "LastY", 0.0D);
-            double posZ = ItemNBTHelper.getDouble(stack, "LastZ", 0.0D);
+        if (entity.tickCount % SHINY_STONE_CHECKRATE == 0) {
+            double lastX = ItemNBTHelper.getDouble(stack, "LastX", entity.getX());
+            double lastY = ItemNBTHelper.getDouble(stack, "LastY", entity.getY());
+            double lastZ = ItemNBTHelper.getDouble(stack, "LastZ", entity.getZ());
 
-            int Static = ItemNBTHelper.getInt(stack, "Static", 0);
+            double currentX = entity.getX();
+            double currentY = entity.getY();
+            double currentZ = entity.getZ();
 
-            if (entity.getX() == posX && entity.getY() == posY && entity.getZ() == posZ) {
-                int particleNumber = 3;
-                ItemNBTHelper.setInt(stack, "HealRate", 1);
+            int staticTicks = ItemNBTHelper.getInt(stack, "Static", 0);
 
-                if (Static >= 40) {
-                    ItemNBTHelper.setInt(stack, "HealRate", 2);
-                    particleNumber = 2;
-                }
-                if (Static >= 80) {
-                    ItemNBTHelper.setInt(stack, "HealRate", 3);
-                    particleNumber = 1;
-                }
-                if (Static >= 200) {
-                    ItemNBTHelper.setInt(stack, "HealRate", 4);
+            boolean isStatic = Math.abs(currentX - lastX) < 0.1D &&
+                    Math.abs(currentY - lastY) < 0.1D &&
+                    Math.abs(currentZ - lastZ) < 0.1D;
+
+            if (isStatic) {
+                int healRate;
+                int particleNumber;
+
+                if (staticTicks >= 100) {
+                    healRate = 5;
                     particleNumber = 0;
+                } else if (staticTicks >= 60) {
+                    healRate = 4;
+                    particleNumber = 1;
+                } else if (staticTicks >= 30) {
+                    healRate = 3;
+                    particleNumber = 2;
+                } else if (staticTicks >= 15) {
+                    healRate = 2;
+                    particleNumber = 3;
+                } else {
+                    healRate = 1;
+                    particleNumber = 3;
                 }
+
+                ItemNBTHelper.setInt(stack, "HealRate", healRate);
 
                 for (int counter = particleNumber; counter <= 3; counter++) {
                     this.spawnEnergyParticle(entity);
                 }
 
-                ItemNBTHelper.setInt(stack, "Static", Static + 4);
+                ItemNBTHelper.setInt(stack, "Static", staticTicks + SHINY_STONE_CHECKRATE);
             } else {
                 ItemNBTHelper.setInt(stack, "Static", 0);
                 ItemNBTHelper.setInt(stack, "HealRate", 0);
             }
 
-            ItemNBTHelper.setDouble(stack, "LastX", entity.getX());
-            ItemNBTHelper.setDouble(stack, "LastY", entity.getY());
-            ItemNBTHelper.setDouble(stack, "LastZ", entity.getZ());
+            ItemNBTHelper.setDouble(stack, "LastX", currentX);
+            ItemNBTHelper.setDouble(stack, "LastY", currentY);
+            ItemNBTHelper.setDouble(stack, "LastZ", currentZ);
         }
 
-        if (!entity.level.isClientSide) {
-            int healRate = ItemNBTHelper.getInt(stack, "HealRate", 0);
-            int healCheckrate = Math.max(1, SHINY_STONE_CHECKRATE / 4); // 防止除零
+        int healRate = ItemNBTHelper.getInt(stack, "HealRate", 0);
+        if (healRate > 0 && entity.getHealth() < entity.getMaxHealth()) {
+            int healInterval = switch (healRate) {
+                case 1 -> 30;
+                case 2 -> 15;
+                case 3 -> 10;
+                case 4 -> 6;
+                case 5 -> 3;
+                default -> 30;
+            };
 
-            if (healRate == 1 && entity.tickCount % (10 * healCheckrate) == 0) {
-                entity.heal(1.0F);
-            } else if (healRate == 2 && entity.tickCount % (5 * healCheckrate) == 0) {
-                entity.heal(1.0F);
-            } else if (healRate == 3 && entity.tickCount % (2 * healCheckrate) == 0) {
-                entity.heal(1.0F);
-            } else if (healRate == 4 && entity.tickCount % healCheckrate == 0) {
+            if (entity.tickCount % healInterval == 0) {
                 entity.heal(1.0F);
             }
         }
     }
-
     @Override
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
-        if (slotContext.entity() instanceof Player player) {
-            var relicCap = stack.getCapability(BotaniaForgeCapabilities.RELIC);
-            if (relicCap.isPresent()) {
-                IRelic relic = relicCap.orElse(null);
-                if (relic != null && !relic.isRightPlayer(player)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return isValidPlayer(stack, slotContext.entity());
     }
 
     @Override
     public boolean canEquip(SlotContext slotContext, ItemStack stack) {
-        if (slotContext.entity() instanceof Player player) {
-            var relicCap = stack.getCapability(BotaniaForgeCapabilities.RELIC);
-            if (relicCap.isPresent()) {
-                IRelic relic = relicCap.orElse(null);
-                if (relic != null && !relic.isRightPlayer(player)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return isValidPlayer(stack, slotContext.entity());
     }
 
     @Override
     public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
-        if (slotContext.entity() instanceof Player player) {
-            var relicCap = stack.getCapability(BotaniaForgeCapabilities.RELIC);
-            if (relicCap.isPresent()) {
-                IRelic relic = relicCap.orElse(null);
-                if (relic != null && !relic.isRightPlayer(player)) {
-                    return;
-                }
-            }
+        if (!isValidPlayer(stack, slotContext.entity())) {
+            return;
         }
 
         ItemNBTHelper.setInt(stack, "Static", 0);
         ItemNBTHelper.setInt(stack, "HealRate", 0);
-        ItemNBTHelper.setDouble(stack, "LastX", 0.0D);
-        ItemNBTHelper.setDouble(stack, "LastY", 0.0D);
-        ItemNBTHelper.setDouble(stack, "LastZ", 0.0D);
+        ItemNBTHelper.removeEntry(stack, "LastX");
+        ItemNBTHelper.removeEntry(stack, "LastY");
+        ItemNBTHelper.removeEntry(stack, "LastZ");
     }
 
     @Override
@@ -215,47 +281,5 @@ public class ShinyStone extends Item implements ICurioItem, INoEMCItem {
         ItemNBTHelper.removeEntry(stack, "LastX");
         ItemNBTHelper.removeEntry(stack, "LastY");
         ItemNBTHelper.removeEntry(stack, "LastZ");
-    }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-
-        var relicCap = stack.getCapability(BotaniaForgeCapabilities.RELIC);
-        if (relicCap.isPresent()) {
-            IRelic relic = relicCap.orElse(null);
-            if (relic != null && !relic.isRightPlayer(player)) {
-                return InteractionResultHolder.fail(stack);
-            }
-        }
-
-        if (player.isShiftKeyDown()) {
-            if (!world.isClientSide) {
-                boolean currentState = ItemNBTHelper.getBoolean(stack, "PermanentDay", false);
-                boolean newState = !currentState;
-
-                ItemNBTHelper.setBoolean(stack, "PermanentDay", newState);
-
-                if (newState) {
-                    world.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, world.getServer());
-                    player.displayClientMessage(
-                            new TranslatableComponent("item.daynight.controller1")
-                                    .withStyle(ChatFormatting.GOLD),
-                            true
-                    );
-                } else {
-                    world.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(true, world.getServer());
-                    player.displayClientMessage(
-                            new TranslatableComponent("item.daynight.controller2")
-                                    .withStyle(ChatFormatting.AQUA),
-                            true
-                    );
-                }
-            }
-
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
-        }
-
-        return InteractionResultHolder.pass(stack);
     }
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/weapons/hallowed_edge"
+  }
+}

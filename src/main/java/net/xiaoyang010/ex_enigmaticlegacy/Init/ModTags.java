@@ -28,12 +28,14 @@ public class ModTags {
     }
 
     public static class Items {
+        public static final TagKey<Item> DETERMINATION = tag("determination");
+
         public static final TagKey<Item> HYBRID_SPECIAL_FLOWERS = tag("hybrid_special_flowers");
-        // 彩虹物品标签
+
         public static final TagKey<Item> SPECTRITE_ITEMS = tag("spectrite_items");
-        //奇点标签
+
         public static final TagKey<Item> SINGULARITY = tag("singularity");
-        // 秘银工具标签
+
         public static final TagKey<Item> MITHRIL_TOOLS = TagKey.create(Registry.ITEM_REGISTRY,
                 new ResourceLocation("ex_enigmaticlegacy", "mithril_tool"));
 

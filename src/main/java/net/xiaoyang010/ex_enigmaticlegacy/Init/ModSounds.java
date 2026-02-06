@@ -31,6 +31,7 @@ public class ModSounds {
 	public static final ResourceLocation CAPYBARA_DEATH_ID = new ResourceLocation("ex_enigmaticlegacy", "capybara_death");
 	public static final ResourceLocation AQUA_SWORD_ID = new ResourceLocation("ex_enigmaticlegacy", "aqua_sword");
 	public static final ResourceLocation BOARD_CUBE_ID = new ResourceLocation("ex_enigmaticlegacy", "board_cube");
+	public static final ResourceLocation HORN_PLENTY_ID = new ResourceLocation("ex_enigmaticlegacy", "horn_plenty_using");
 
 
 	public static final SoundEvent CAPYBARA_AMBIENT_1 = new SoundEvent(CAPYBARA_AMBIENT_1_ID);
@@ -50,8 +51,10 @@ public class ModSounds {
 	public static final SoundEvent HUNT_DOWN = new SoundEvent(HUNT_DOWN_ID);
 	public static final SoundEvent FLOWEY_LAUGH = new SoundEvent(FLOWEY_LAUGH_ID);
 	public static final SoundEvent GOLDEN_LAUREL = new SoundEvent(GOLDEN_LAUREL_ID);
+	public static final SoundEvent HORN_PLENTY = new SoundEvent(HORN_PLENTY_ID);
 
 	static {
+		REGISTRY.put(HORN_PLENTY_ID, HORN_PLENTY);
 		REGISTRY.put(BOARD_CUBE_ID, BOARD_CUBE);
 		REGISTRY.put(AQUA_SWORD_ID, AQUA_SWORD);
 		REGISTRY.put(BLADE_SPACE_ID, BLADE_SPACE);

@@ -2,7 +2,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
 
 import net.minecraft.core.Registry;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
@@ -37,13 +37,18 @@ public class ModRecipes {
     public static final RegistryObject<RecipeSerializer<ManaitaRecipe>> MANAITA =
             SERIALIZERS.register("manaita", () -> new SimpleRecipeSerializer<>(ManaitaRecipe::new));
 
+    public static final RegistryObject<RecipeSerializer<AesirRingRecipe>> AESIR_RING =
+            SERIALIZERS.register("aesir_ring", () -> new SimpleRecipeSerializer<>(AesirRingRecipe::new));
 
+    public static final RegistryObject<RecipeSerializer<StarlitSanctumRecipe>> STARLIT_SERIALIZER =
+            SERIALIZERS.register("starlit_crafting", StarlitSanctumRecipe.Serializer::new);
 
     public static final RecipeType<AncientAlphirineRecipe> ANCIENT_ALPHIRINE_TYPE = new AncientAlphirineRecipe.Type();
     public static final RecipeType<PolychromeRecipe> POLYCHROME_TYPE = new PolychromeRecipe.Type();
-    public static final RecipeType<CelestialTransmuteRecipe> CHT_TYPE = new Type();
+    public static final RecipeType<CelestialTransmuteRecipe> CHT_TYPE = new CelestialTransmuteRecipe.Type();
     public static final RecipeType<RainbowTableRecipe> RAINBOW_TABLE_TYPE = new RainbowTableRecipe.Type();
     public static final RecipeType<NidavellirForgeRecipe> NIDAVELLIR_FORGE_TYPE = new NidavellirForgeRecipe.Type();
+    public static final RecipeType<StarlitSanctumRecipe> STARLIT_TYPE = new StarlitSanctumRecipe.Type();
 
     public static void register(IEventBus eventBus) {
         SERIALIZERS.register(eventBus);
@@ -52,6 +57,6 @@ public class ModRecipes {
         Registry.register(Registry.RECIPE_TYPE, RainbowTableRecipe.TYPE_ID, RAINBOW_TABLE_TYPE);
         Registry.register(Registry.RECIPE_TYPE, CelestialTransmuteRecipe.TYPE_ID, CHT_TYPE);
         Registry.register(Registry.RECIPE_TYPE, AncientAlphirineRecipe.TYPE_ID, ANCIENT_ALPHIRINE_TYPE);
-
+        Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(ExEnigmaticlegacyMod.MODID, "starlit_crafting"), STARLIT_TYPE);
     }
 }

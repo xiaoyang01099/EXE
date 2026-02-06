@@ -21,7 +21,7 @@ public class ModEffects {
     public static final RegistryObject<MobEffect> DROWNING = EFFECTS.register("drowning", Drowning::new);
     public static final RegistryObject<MobEffect> RANDOM_TELEPORT = EFFECTS.register("random_teleport", RandomTeleport::new);
     public static final RegistryObject<MobEffect> FREEZE_WORST = EFFECTS.register("freeze_worst", FreezeWorst::new);
-
+    public static final RegistryObject<MobEffect> ROOTED = EFFECTS.register("rooted", Rooted::new);
 
     public static void registerEffects() {
         EFFECTS.register(FMLJavaModLoadingContext.get().getModEventBus());

@@ -4,8 +4,8 @@
     "layer0": "ex_enigmaticlegacy:items/ingots/astral_pile",
     "mask": "ex_enigmaticlegacy:items/ingots/astral_pile_mask"
   },
-  "loader": "avaritia:cosmic",
-  "cosmic": {
+  "loader": "ex_enigmaticlegacy:rainbow_cosmic",
+  "rainbow_cosmic": {
     "mask": "#mask"
   }
 }

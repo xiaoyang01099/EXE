@@ -1,0 +1,140 @@
+{
+  "processor": "net.xiaoyang010.ex_enigmaticlegacy.Compat.Patchouli.ExtremeCraftingShapelessProcessor",
+  "components": [
+    {
+      "type": "patchouli:header",
+      "text": "#recipe_name",
+      "x": 0,
+      "y": 0,
+      "color": "gold"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Extreme Crafting Table - Shapeless Recipe$()$(br)#text",
+      "x": 0,
+      "y": 15
+    },
+
+    {
+      "type": "patchouli:separator",
+      "x": 0,
+      "y": 35
+    },
+
+    {
+      "type": "patchouli:text",
+      "text": "$(7)Required Materials (any order):$",
+      "x": 0,
+      "y": 40
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#input0",
+      "x": 10,
+      "y": 60
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input1",
+      "x": 30,
+      "y": 60
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input2",
+      "x": 50,
+      "y": 60
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input3",
+      "x": 70,
+      "y": 60
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input4",
+      "x": 90,
+      "y": 60
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#input5",
+      "x": 10,
+      "y": 80
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input6",
+      "x": 30,
+      "y": 80
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input7",
+      "x": 50,
+      "y": 80
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input8",
+      "x": 70,
+      "y": 80
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input9",
+      "x": 90,
+      "y": 80
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#input10",
+      "x": 10,
+      "y": 100
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input11",
+      "x": 30,
+      "y": 100
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input12",
+      "x": 50,
+      "y": 100
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input13",
+      "x": 70,
+      "y": 100
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#input14",
+      "x": 90,
+      "y": 100
+    },
+
+    {
+      "type": "patchouli:text",
+      "text": "$(l)→$",
+      "x": 120,
+      "y": 80,
+      "color": "aqua"
+    },
+
+    {
+      "type": "patchouli:item",
+      "item": "#output",
+      "x": 140,
+      "y": 75,
+      "link_recipe": true
+    }
+  ]
+}

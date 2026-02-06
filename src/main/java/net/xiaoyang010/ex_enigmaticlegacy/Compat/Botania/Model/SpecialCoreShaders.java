@@ -16,9 +16,22 @@ public class SpecialCoreShaders {
     private static ShaderInstance polychromeCollapsePrismOverlay;
     public static ShaderInstance COSMIC_BACKGROUND;
     public static ShaderInstance evilWater;
+    private static ShaderInstance starrySkyShader;
+    private static ShaderInstance blackhole;
+
 
     public static void init(ResourceManager resourceManager,
                             Consumer<Pair<ShaderInstance, Consumer<ShaderInstance>>> registerShader) throws IOException {
+
+        registerShader.accept(Pair.of(
+                new ShaderInstance(resourceManager, "blackhole", DefaultVertexFormat.POSITION_TEX),
+                inst -> blackhole = inst)
+        );
+
+        registerShader.accept(Pair.of(
+                new ShaderInstance(resourceManager, "starry_sky", DefaultVertexFormat.POSITION_TEX),
+                inst -> starrySkyShader = inst)
+        );
 
         registerShader.accept(Pair.of(
                 new ShaderInstance(resourceManager, "rainbow_mana__water", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP),
@@ -43,6 +56,13 @@ public class SpecialCoreShaders {
 
     }
 
+    public static ShaderInstance getBlackHoleShader() {
+        return blackhole;
+    }
+
+    public static ShaderInstance getStarrySkyShader() {
+        return starrySkyShader;
+    }
 
     public static ShaderInstance evilWater() {
         return evilWater;

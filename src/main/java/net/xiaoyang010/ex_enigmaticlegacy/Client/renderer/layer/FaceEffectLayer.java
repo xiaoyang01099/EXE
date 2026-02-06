@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 public class FaceEffectLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
     private static final ResourceLocation EYE_TEXTURE = new ResourceLocation("ex_enigmaticlegacy","textures/models/nebula_eyes.png");
     private static final int FULL_BRIGHT = 0xF000F0;
+
     public FaceEffectLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer) {
         super(renderer);
     }
@@ -35,15 +36,12 @@ public class FaceEffectLayer extends RenderLayer<AbstractClientPlayer, PlayerMod
         ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
         if (!shouldRenderFace(helmet)) return;
 
-        // 使用玩家模型的头部旋转
         poseStack.pushPose();
         this.getParentModel().head.translateAndRotate(poseStack);
 
-        // 调整到面部位置
-        poseStack.translate(0.0, -0.25, -0.2501); // 移动到面部前方
-        poseStack.scale(0.5F, 0.5F, 0.5F);    // 扁平的面部效果
+        poseStack.translate(0.0, -0.25, -0.2501);
+        poseStack.scale(0.5F, 0.5F, 0.5F);
 
-        // 渲染末地传送门效果
         renderEndPortalOnFace(poseStack, buffer);
         renderEyes(poseStack, buffer, player);
         poseStack.popPose();
@@ -55,7 +53,6 @@ public class FaceEffectLayer extends RenderLayer<AbstractClientPlayer, PlayerMod
         RenderSystem.depthMask(false);
         RenderSystem.disableCull();
         poseStack.pushPose();
-        //poseStack.scale(0.85f, 0.85f, 0.0f);
         poseStack.translate(0.0, 0.15, -0.0001);
         // 速率
         float velocity = 0.005F;

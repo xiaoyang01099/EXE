@@ -1,7 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -22,7 +21,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.BotaniaAPIClient;
 import vazkii.botania.api.block.IWandBindable;
@@ -54,8 +52,8 @@ public abstract class TileEntityHybridFlower extends TileEntitySpecialFlower imp
     }
 
     private int mana;
-    private WorkMode workMode = WorkMode.FUNCTIONAL;
     public int redstoneSignal = 0;
+    private WorkMode workMode = WorkMode.FUNCTIONAL;
 
     protected @Nullable BlockPos poolBindingPos = null;
     protected @Nullable BlockPos collectorBindingPos = null;

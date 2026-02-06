@@ -9,6 +9,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.AquaSword;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.TerraBow;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.weapon.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.weapon.WIP.*;
 
 public class ModWeapons {
     public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, ExEnigmaticlegacyMod.MODID);
@@ -34,5 +35,17 @@ public class ModWeapons {
     public static final RegistryObject<Item> AQUA_SWORD = REGISTRY.register("aqua_sword", () -> new AquaSword(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
     public static final RegistryObject<Item> TERRA_BOW = REGISTRY.register("terra_bow", () -> new TerraBow(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
     public static final RegistryObject<Item> HORN_STONE_SWORD = REGISTRY.register("horn_stone_sword", HornstoneSword::new);
+    public static final RegistryObject<Item> COSMIC = REGISTRY.register("cosmic", Cosmic::new);
+    public static final RegistryObject<Item> COSMIC_BREAKER = REGISTRY.register("cosmic_breaker", CosmicBreaker::new);
+    public static final RegistryObject<Item> COSMIC_ANNIHILATOR_BLADE = REGISTRY.register("cosmic_annihilator_blade", CosmicAnnihilatorBlade::new);
+    public static final RegistryObject<Item> END_BROAD_SWORD = REGISTRY.register("end_broad_sword",EndBroadSword::new);
+    public static final RegistryObject<Item> HALLOWED_EDGE = REGISTRY.register("hallowed_edge", HallowedEdge::new);
+    public static final RegistryObject<Item> HARVESTER = REGISTRY.register("harvester", Harvester::new);
+    public static final RegistryObject<Item> HEAVENLY_CHIMES = REGISTRY.register("heavenly_chimes", HeavenlyChimes::new);
+    public static final RegistryObject<Item> SWORD_DARK_MATTER = REGISTRY.register("sword_dark_matter", SwordDarkMatter::new);
+    public static final RegistryObject<Item> DRAGONS_LAYER = REGISTRY.register("dragons_layer", Dragonslayer::new);
+    public static final RegistryObject<Item> FLARE_BRINGER = REGISTRY.register("flare_bringer", Flarebringer::new);
+    public static final RegistryObject<Item> SHADOW_BREAKER = REGISTRY.register("shadow_breaker", Shadowbreaker::new);
+    public static final RegistryObject<Item> GAIA_KILLER = REGISTRY.register("gaia_killer", GaiaSlayer::new);
 
 }

@@ -7,13 +7,11 @@ import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.util.ItemUtils;
 import com.google.common.collect.ImmutableList;
 import morph.avaritia.api.CompressorRecipe;
-import morph.avaritia.init.AvaritiaModContent;
 import morph.avaritia.recipe.CompressorRecipeHelper;
 import morph.avaritia.tile.MachineTileBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +47,7 @@ public class TileEntityInfinityCompressor extends MachineTileBase {
     private LazyOptional<IItemHandler> nullWrapper;
     private LazyOptional<IItemHandlerModifiable>[] sidedWrappers;
 
-    public TileEntityInfinityCompressor(BlockPos pos, BlockState state) {
+    public TileEntityInfinityCompressor(@NotNull BlockEntityType<TileEntityInfinityCompressor> tileEntityInfinityCompressorBlockEntityType, BlockPos pos, BlockState state) {
         super(ModBlockEntities.INFINITY_COMPRESSOR_TILE.get(), pos, state);
         this.targetStack = ItemStack.EMPTY;
         this.inputStack = Ingredient.EMPTY;

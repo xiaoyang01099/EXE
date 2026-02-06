@@ -1,10 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Event;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,11 +8,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.level.chunk.PalettedContainer;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModDamageSources;
@@ -52,13 +44,9 @@ import vazkii.botania.common.block.subtile.functional.SubTileHeiseiDream;
 import vazkii.botania.common.entity.EntityDoppleganger;
 import vazkii.botania.common.helper.ItemNBTHelper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class RelicsEventHandler {
-
     public static List<String> darkRingDamageNegations = new ArrayList<>();
     public static HashMap<ServerPlayer, Integer> castingCooldowns = new HashMap<>();
 
@@ -72,43 +60,6 @@ public class RelicsEventHandler {
         darkRingDamageNegations.add("fire");            // 通用火焰
         darkRingDamageNegations.add("magma");           // 岩浆相关
         darkRingDamageNegations.add("magmaBlock");      // 岩浆块
-    }
-
-    public static void setBiomeAt(Level world, int x, int z, Biome biome) {
-        if (biome != null) {
-            LevelChunk chunk = world.getChunkAt(new BlockPos(x, 0, z));
-
-            Registry<Biome> biomeRegistry = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
-            Holder<Biome> biomeHolder = biomeRegistry.getHolder(biomeRegistry.getResourceKey(biome).get()).get();
-
-            LevelChunkSection[] sections = chunk.getSections();
-
-            for (LevelChunkSection section : sections) {
-                if (section != null) {
-                    PalettedContainer<Holder<Biome>> biomes = section.getBiomes();
-
-                    biomes.getAndSet((x & 15) >> 2, 0, (z & 15) >> 2, biomeHolder);
-                }
-            }
-
-            chunk.setUnsaved(true);
-
-            if (!world.isClientSide) {
-                ClientboundLevelChunkWithLightPacket packet = new ClientboundLevelChunkWithLightPacket(
-                        chunk,
-                        world.getLightEngine(),
-                        null,
-                        null,
-                        true
-                );
-
-                for (ServerPlayer player : ((ServerLevel)world).players()) {
-                    if (player.distanceToSqr(x, player.getY(), z) <= 32.0 * 32.0) {
-                        player.connection.send(packet);
-                    }
-                }
-            }
-        }
     }
 
     public static boolean canEntityBeSeen(Entity entity, double x, double y, double z) {

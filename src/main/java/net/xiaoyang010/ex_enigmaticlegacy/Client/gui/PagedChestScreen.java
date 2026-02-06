@@ -65,7 +65,6 @@ public class PagedChestScreen extends AbstractContainerScreen<PagedChestContaine
         super.render(poseStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(poseStack, mouseX, mouseY);
 
-        // 渲染页面计数器
         String pageText = String.format("Page %d/%d",
                 this.menu.getCurrentPage() + 1,
                 this.menu.getTotalPages()

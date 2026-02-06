@@ -15,12 +15,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeClientCapabilities;
 import vazkii.botania.api.subtile.RadiusDescriptor;
 import vazkii.botania.api.subtile.TileEntityGeneratingFlower;
-import vazkii.botania.common.block.ModSubtiles;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -195,11 +193,6 @@ public class MusicalOrchidTile extends TileEntityGeneratingFlower {
         if (!isGenerating) return 0;
         List<JukeboxBlockEntity> activeJukeboxes = findActiveJukeboxes();
         return Math.min(activeJukeboxes.size(), MAX_JUKEBOXES);
-    }
-
-    @Nullable
-    public ResourceLocation getActiveMusic() {
-        return activeMusic;
     }
 
     @Override

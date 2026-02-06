@@ -17,8 +17,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.api.IRenderHud;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.TileEngineerHopper;
-import vazkii.botania.common.item.ItemTwigWand;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.BlackHalo;
+import vazkii.botania.common.item.ItemTwigWand;
 
 @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID, value = Dist.CLIENT)
 @OnlyIn(Dist.CLIENT)
@@ -49,26 +49,31 @@ public class HudRenderHandler {
                 tile = mc.level.getBlockEntity(pos);
             }
 
-            boolean holdingWand = false;
+            boolean canRender = false;
             if (equippedStack != null) {
-                holdingWand = equippedStack.getItem() instanceof ItemTwigWand;
+                canRender = equippedStack.getItem() instanceof ItemTwigWand;
             }
 
-            if (tile instanceof TileEngineerHopper && holdingWand) {
+            if (tile instanceof TileEngineerHopper &&
+                    equippedStack != null &&
+                    equippedStack.getItem() instanceof ItemTwigWand) {
                 profiler.push("engineerHopper");
                 PoseStack poseStack = event.getMatrixStack();
                 ((TileEngineerHopper) tile).renderHUD(poseStack, mc);
                 profiler.pop();
             }
-            else if (tile instanceof IRenderHud && !holdingWand) {
+            else if (tile instanceof IRenderHud && !canRender) {
+                profiler.push("renderHud");
                 PoseStack poseStack = event.getMatrixStack();
                 ((IRenderHud) tile).renderHud(mc, poseStack,
                         mc.getWindow().getGuiScaledWidth(),
                         mc.getWindow().getGuiScaledHeight());
+                profiler.pop();
             }
         }
 
-        if (equippedStack != null && !equippedStack.isEmpty() && equippedStack.getItem() instanceof BlackHalo) {
+        if (equippedStack != null && !equippedStack.isEmpty() &&
+                equippedStack.getItem() instanceof BlackHalo) {
             profiler.push("blackHalo");
             PoseStack poseStack = event.getMatrixStack();
             BlackHalo.renderHUD(mc, equippedStack, poseStack,

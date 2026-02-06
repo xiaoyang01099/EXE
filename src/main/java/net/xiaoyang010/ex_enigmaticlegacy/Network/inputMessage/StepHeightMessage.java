@@ -2,17 +2,14 @@ package net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
 public class StepHeightMessage {
-    public float height;
-
-    public StepHeightMessage() {
-    }
+    private final float height;
 
     public StepHeightMessage(float height) {
         this.height = height;
@@ -26,17 +23,14 @@ public class StepHeightMessage {
         return new StepHeightMessage(buf.readFloat());
     }
 
-    public static void handle(StepHeightMessage msg, Supplier<NetworkEvent.Context> contextSupplier) {
-        NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> {
-            if (context.getDirection().getReceptionSide().isClient()) {
-                Minecraft minecraft = Minecraft.getInstance();
-                if (minecraft.player != null) {
-                    Objects.requireNonNull(minecraft.player.getAttribute(ForgeMod.STEP_HEIGHT_ADDITION.get()))
-                            .setBaseValue(msg.height - 0.6);
-                }
+    @OnlyIn(Dist.CLIENT)
+    public static void handle(StepHeightMessage msg, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            Minecraft minecraft = Minecraft.getInstance();
+            if (minecraft.player != null) {
+                minecraft.player.maxUpStep = msg.height;
             }
         });
-        context.setPacketHandled(true);
+        ctx.get().setPacketHandled(true);
     }
 }

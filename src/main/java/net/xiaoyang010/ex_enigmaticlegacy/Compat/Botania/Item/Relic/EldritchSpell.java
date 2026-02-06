@@ -1,5 +1,7 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic;
 
+import com.integral.enigmaticlegacy.api.items.ICursed;
+import com.integral.enigmaticlegacy.helpers.ItemLoreHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Direction;
@@ -33,7 +35,7 @@ import vazkii.botania.xplat.IXplatAbstractions;
 
 import java.util.List;
 
-public class EldritchSpell extends Item {
+public class EldritchSpell extends Item implements ICursed {
     public static final float ELDRITCH_SPELL_DAMAGE = 32.5f;
     public static final float ELDRITCH_SPELL_DAMAGE_EX = 100.0f;
     public static final int COOLDOWN_TICKS = 20;
@@ -77,6 +79,7 @@ public class EldritchSpell extends Item {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        ItemLoreHelper.indicateCursedOnesOnly(tooltip);
         RelicImpl.addDefaultTooltip(stack, tooltip);
 
         if (Screen.hasShiftDown()) {

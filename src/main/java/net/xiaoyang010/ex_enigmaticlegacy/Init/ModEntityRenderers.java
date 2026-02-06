@@ -1,5 +1,7 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
+import morph.avaritia.client.render.entity.GapingVoidEntityRenderer;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,6 +32,7 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.SEA_SERPENT.get(), SeaSerpentRender::new);
 		event.registerEntityRenderer(ModEntities.SACABAMBASPIS.get(), SacabambaspisRender::new);
 		event.registerEntityRenderer(ModEntities.ALPHIRINE_PORTAL.get(), AlphirinePortalRenderer::new);
+		event.registerEntityRenderer(ModEntities.CONTINUUM_BOMB.get(), (context) -> new ThrownItemRenderer<>(context, 1.0F, true));
 		event.registerEntityRenderer(ModEntities.RIDEABLE_PEARL_ENTITY.get(), (context) -> new ThrownItemRenderer<>(context, 1.0F, true));
 		event.registerEntityRenderer(ModEntities.NATURE_BOLT.get(), (context) -> new ThrownItemRenderer<>(context, 1.0F, true));
 		event.registerEntityRenderer(ModEntities.ENTITY_SWORD.get(), EntityNullRender::new);
@@ -44,7 +47,10 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.CRIMSON_ORB.get(), RenderCrimsonOrb::new);
 		event.registerEntityRenderer(ModEntities.DARK_MATTER_ORB.get(), RenderEldritchOrb::new);
 		event.registerEntityRenderer(ModEntities.MANA_VINE_BALL.get(), EntityNullRender::new);
-		//event.registerEntityRenderer(ModEntities.RAINBOW_WITHER_SKULL.get(), RainbowWitherSkullRenderer::new);
+		event.registerEntityRenderer(ModEntities.ENTITY_SLASH.get(), EntityNullRender::new);
+		event.registerEntityRenderer(ModEntities.BLACK_HOLE.get(), GapingVoidEntityRenderer::new);
+		event.registerEntityRenderer(ModEntities.CURSED_MANA_BURST.get(), NoopRenderer::new);
+//		event.registerEntityRenderer(ModEntities.RAINBOW_WITHER_SKULL.get(), RainbowWitherSkullRenderer::new);
 	}
 
 }

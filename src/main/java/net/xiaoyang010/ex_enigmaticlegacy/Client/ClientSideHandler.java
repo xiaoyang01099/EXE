@@ -3,6 +3,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -22,7 +23,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Func
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Generating.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.Future.GearFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.Future.TrinarySynthesis;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.RuneFlower;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Hybrid.RuneFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -32,7 +33,6 @@ public class ClientSideHandler {
     public static final ModelLayerLocation INFINITY_CHEST = new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "infinity_chest"), "main");
     public static final ResourceLocation SPECTRITE_CHEST_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "entity/chest/spectrite_chest");
     public static final ModelLayerLocation SPECTRITE_CHEST = new ModelLayerLocation(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "spectrite_chest"), "main");
-
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event){

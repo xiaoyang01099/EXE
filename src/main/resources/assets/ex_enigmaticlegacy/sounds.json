@@ -134,5 +134,13 @@
         "stream": false
       }
     ]
+  },
+  "horn_plenty_using": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:horn_plenty_using",
+        "stream": false
+      }
+    ]
   }
 }

@@ -64,14 +64,16 @@ public class PagedChestRenderer implements BlockEntityRenderer<PagedChestBlockTi
         }
     }
 
-    private void render(PoseStack poseStack, VertexConsumer consumer, ModelPart lidPart, ModelPart lockPart, ModelPart bottomPart, float lidAngle, int packedLight, int packedOverlay) {
-        lidPart.xRot = -(lidAngle * ((float)Math.PI / 2F));
-        lockPart.xRot = lidPart.xRot;
-        bottomPart.render(poseStack, consumer, packedLight, packedOverlay);
-        lockPart.render(poseStack, consumer, packedLight, packedOverlay);
+    private void render(PoseStack poseStack, VertexConsumer consumer, ModelPart lid, ModelPart lock, ModelPart bottom, float lidAngle, int light, int overlay) {
+        lid.xRot = -(lidAngle * ((float) Math.PI / 2F));
+        lock.xRot = lid.xRot;
+        bottom.render(poseStack, consumer, light, overlay);
+
         poseStack.pushPose();
         poseStack.translate(0.0D, 0.06D, 0.0D);
-        lidPart.render(poseStack, consumer, packedLight, packedOverlay);
+        lid.render(poseStack, consumer, light, overlay);
+        lock.render(poseStack, consumer, light, overlay);
+
         poseStack.popPose();
     }
 }

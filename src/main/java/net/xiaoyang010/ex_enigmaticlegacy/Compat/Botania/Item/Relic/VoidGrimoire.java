@@ -1,5 +1,7 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic;
 
+import com.integral.enigmaticlegacy.api.items.ICursed;
+import com.integral.enigmaticlegacy.helpers.ItemLoreHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -43,7 +45,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.EntityMotionMessage;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.OverthrowChatMessage;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.PacketVoidMessage;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.api.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.IRelic;
@@ -54,12 +56,12 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 
-public class VoidGrimoire extends Item implements INoEMCItem {
+public class VoidGrimoire extends Item implements INoEMCItem, ICursed {
     public static final int USAGE_DURATION = 100; // 使用持续时间（ticks）
     public static final int COOLDOWN_DURATION = 30; // 冷却时间（ticks）
     public static final int LOCAL_COOLDOWN_DURATION = 60; // 客户端冷却时间（ticks）
     public static final double TELEPORT_RANGE = 64.0; // 目标选择范围
-    public static final float TARGET_SELECTION_WIDTH = 3.0F; // 目标选择宽度
+    public static final float TARGET_SELECTION_WIDTH = 5.0F; // 目标选择宽度
 
     private static final double VOID_TELEPORT_RANGE = 20002.0;
     private static final double VOID_Y_BASE = -100000.0;
@@ -95,6 +97,7 @@ public class VoidGrimoire extends Item implements INoEMCItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        ItemLoreHelper.indicateCursedOnesOnly(tooltip);
         RelicImpl.addDefaultTooltip(stack, tooltip);
 
         if (Screen.hasShiftDown()) {

@@ -2,189 +2,250 @@ package net.xiaoyang010.ex_enigmaticlegacy.Client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
-
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctumMenu> {
-    private final static HashMap<String, Object> guistate = StarlitSanctumMenu.guistate;
-    private final Level world;
-    private final int x, y, z;
-    private final Player entity;
+    private static final ResourceLocation TEXTURE = new ResourceLocation("ex_enigmaticlegacy:textures/gui/container/starlit.png");
+
+    private static final int TEXTURE_WIDTH = 1024;
+    private static final int TEXTURE_HEIGHT = 1024;
+    private static final int GUI_WIDTH = 540;
+    private static final int GUI_HEIGHT = 501;
+
+    private final float scale = 0.7f;
+
+    private static final int BAR_TEX_X_EMPTY = 540;
+    private static final int BAR_TEX_X_FULL = 561;
+    private static final int BAR_TEX_Y = 15;
+    private static final int BAR_WIDTH = 12;
+    private static final int BAR_HEIGHT = 400;
+    private static final int BAR_POS_X = 550;
+    private static final int BAR_POS_Y = 10;
+
+    private static final int PROGRESS_BAR_X = 245;
+    private static final int PROGRESS_BAR_Y = 55;
+    private static final int PROGRESS_BAR_WIDTH = 30;
+    private static final int PROGRESS_BAR_HEIGHT = 4;
 
     public StarlitSanctumScreen(StarlitSanctumMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
-        this.world = container.world;
-        this.x = container.x;
-        this.y = container.y;
-        this.z = container.z;
-        this.entity = container.entity;
-
-        // 设置GUI尺寸
-        // 玩家物品栏从Y=400开始，到大约Y=480结束
-        this.imageWidth = 512;
-        this.imageHeight = 490; // 足够容纳所有元素，不会太高
+        this.imageWidth = GUI_WIDTH;
+        this.imageHeight = GUI_HEIGHT;
     }
 
-    private static final ResourceLocation texture = new ResourceLocation("ex_enigmaticlegacy:textures/gui/container/starlit.png");
+    @Override
+    protected void init() {
+        super.init();
+        this.leftPos = 0;
+        this.topPos = 0;
+    }
+
+    private int getXOffset() {
+        return (int) ((this.width - GUI_WIDTH * scale) / 2);
+    }
+
+    private int getYOffset() {
+        return (int) ((this.height - GUI_HEIGHT * scale) / 2);
+    }
 
     @Override
     public void render(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(ms);
-        super.render(ms, mouseX, mouseY, partialTicks);
-        this.renderTooltip(ms, mouseX, mouseY);
-    }
 
-    @Override
-    protected void renderBg(PoseStack ms, float partialTicks, int gx, int gy) {
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+        int logicMouseX = (int) ((mouseX - getXOffset()) / scale);
+        int logicMouseY = (int) ((mouseY - getYOffset()) / scale);
 
-        // 绘制主背景 - 512x512的背景图片
-        RenderSystem.setShaderTexture(0, texture);
-        this.blit(ms, this.leftPos, this.topPos, 0, 0, 512, 512, 512, 512);
+        ms.pushPose();
+        ms.translate(getXOffset(), getYOffset(), 0);
+        ms.scale(scale, scale, 1.0f);
 
-        // 绘制玩家物品栏背景
-        drawPlayerInventoryBackground(ms);
+        this.renderBg(ms, partialTicks, logicMouseX, logicMouseY);
+        this.renderLabels(ms, logicMouseX, logicMouseY);
 
-        // 绘制主要网格区域的边框
-        drawMainGridBackground(ms);
+        ms.popPose();
 
-        // 绘制特殊槽位的背景
-        drawSpecialSlotsBackground(ms);
+        this.hoveredSlot = null;
+        for (int i = 0; i < this.menu.slots.size(); ++i) {
+            Slot slot = this.menu.slots.get(i);
 
-        RenderSystem.disableBlend();
-    }
+            if (slot.isActive()) {
+                RenderSlot(ms, slot);
 
-    /**
-     * 绘制玩家物品栏背景
-     */
-    private void drawPlayerInventoryBackground(PoseStack ms) {
-        // 绘制玩家物品栏区域的背景
-        int invStartX = this.leftPos + 175;
-        int invStartY = this.topPos + 570;
-
-        // 主物品栏背景 (3x9)
-        fill(ms, invStartX - 4, invStartY - 4, invStartX + 162 + 4, invStartY + 54 + 4, 0x88000000);
-
-        // 快速物品栏背景 (1x9)
-        fill(ms, invStartX - 4, invStartY + 58 - 4, invStartX + 162 + 4, invStartY + 58 + 18 + 4, 0x88000000);
-    }
-
-    /**
-     * 绘制主要网格区域的背景
-     */
-    private void drawMainGridBackground(PoseStack ms) {
-        // 主要网格区域的背景
-        int startX = this.leftPos + 31;
-        int startY = this.topPos + 55;
-        int gridWidth = 21 * 18;
-        int gridHeight = 27 * 18;
-
-        // 绘制网格边框
-        fill(ms, startX - 2, startY - 2, startX + gridWidth + 2, startY + gridHeight + 2, 0x44FFFFFF);
-    }
-
-    /**
-     * 绘制特殊槽位的背景
-     */
-    private void drawSpecialSlotsBackground(PoseStack ms) {
-        // 左侧输入槽背景
-        int leftInputX = this.leftPos + 65 - 1;
-        int leftInputY = this.topPos + 18 - 1;
-        fill(ms, leftInputX, leftInputY, leftInputX + 18, leftInputY + 18, 0x664A90E2);
-
-        // 右侧输入槽背景
-        int rightInputX = this.leftPos + 429 - 1;
-        int rightInputY = this.topPos + 18 - 1;
-        fill(ms, rightInputX, rightInputY, rightInputX + 18, rightInputY + 18, 0x664A90E2);
-
-        // 中间输出槽背景
-        int outputX = this.leftPos + 247 - 1;
-        int outputY = this.topPos + 18 - 1;
-        fill(ms, outputX, outputY, outputX + 18, outputY + 18, 0x6650E3C2);
-    }
-
-    @Override
-    public boolean keyPressed(int key, int b, int c) {
-        if (key == 256) {
-            this.minecraft.player.closeContainer();
-            return true;
+                if (isHovering(slot, logicMouseX, logicMouseY)) {
+                    this.hoveredSlot = slot;
+                    ms.pushPose();
+                    ms.translate(getXOffset(), getYOffset(), 0);
+                    ms.scale(scale, scale, 1.0f);
+                    RenderSlotHighlight(ms, slot.x, slot.y, 0);
+                    ms.popPose();
+                }
+            }
         }
-        return super.keyPressed(key, b, c);
+
+        ItemStack carried = this.menu.getCarried();
+        if (!carried.isEmpty()) {
+            RenderFloatingItem(carried, mouseX, mouseY, null);
+        }
+
+        if (this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
+            this.renderTooltip(ms, this.hoveredSlot.getItem(), mouseX, mouseY);
+        }
+
+        if (isHovering(BAR_POS_X, BAR_POS_Y, BAR_WIDTH, BAR_HEIGHT, logicMouseX, logicMouseY)) {
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(new TextComponent(this.menu.getMana() + " / " + this.menu.getMaxMana() + " Mana"));
+            this.renderComponentTooltip(ms, tooltip, mouseX, mouseY);
+        }
+    }
+
+    private void RenderSlot(PoseStack ms, Slot slot) {
+        ItemStack itemstack = slot.getItem();
+        if (itemstack.isEmpty()) return;
+
+        float itemScreenX = getXOffset() + (slot.x * scale);
+        float itemScreenY = getYOffset() + (slot.y * scale);
+
+        PoseStack modelViewStack = RenderSystem.getModelViewStack();
+        modelViewStack.pushPose();
+
+        modelViewStack.translate(itemScreenX, itemScreenY, 0);
+        modelViewStack.scale(scale, scale, 1.0F);
+
+        RenderSystem.applyModelViewMatrix();
+
+        this.itemRenderer.renderAndDecorateItem(itemstack, 0, 0);
+        this.itemRenderer.renderGuiItemDecorations(this.font, itemstack, 0, 0, null);
+
+        modelViewStack.popPose();
+        RenderSystem.applyModelViewMatrix();
+    }
+
+    private void RenderFloatingItem(ItemStack stack, int mouseX, int mouseY, String text) {
+        this.setBlitOffset(200);
+        this.itemRenderer.blitOffset = 200.0F;
+        PoseStack modelViewStack = RenderSystem.getModelViewStack();
+        modelViewStack.pushPose();
+        modelViewStack.translate(mouseX, mouseY, 0);
+        modelViewStack.scale(scale, scale, 1.0F);
+        RenderSystem.applyModelViewMatrix();
+        this.itemRenderer.renderAndDecorateItem(stack, -8, -8);
+        this.itemRenderer.renderGuiItemDecorations(this.font, stack, -8, -8, text);
+        modelViewStack.popPose();
+        RenderSystem.applyModelViewMatrix();
+        this.setBlitOffset(0);
+        this.itemRenderer.blitOffset = 0.0F;
+    }
+
+    public static void RenderSlotHighlight(PoseStack ms, int x, int y, int z) {
+        RenderSystem.disableDepthTest();
+        RenderSystem.colorMask(true, true, true, false);
+        fill(ms, x, y, x + 16, y + 16, -2130706433);
+        RenderSystem.colorMask(true, true, true, true);
+        RenderSystem.enableDepthTest();
     }
 
     @Override
-    public void containerTick() {
-        super.containerTick();
+    protected void renderBg(PoseStack ms, float partialTicks, int mouseX, int mouseY) {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
+
+        blit(ms, 0, 0, 0, 0, GUI_WIDTH, GUI_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+
+        blit(ms, BAR_POS_X, BAR_POS_Y,
+                BAR_TEX_X_EMPTY, BAR_TEX_Y,
+                BAR_WIDTH, BAR_HEIGHT,
+                TEXTURE_WIDTH, TEXTURE_HEIGHT);
+
+        int currentMana = this.menu.getMana();
+        int maxMana = this.menu.getMaxMana();
+
+        int fillHeight = (maxMana > 0) ? (int)((long)currentMana * BAR_HEIGHT / maxMana) : 0;
+        if (fillHeight > BAR_HEIGHT) fillHeight = BAR_HEIGHT;
+
+        if (fillHeight > 0) {
+            int x = BAR_POS_X;
+            int y = BAR_POS_Y + (BAR_HEIGHT - fillHeight);
+            int v = BAR_TEX_Y + (BAR_HEIGHT - fillHeight);
+
+            blit(ms, x, y,
+                    BAR_TEX_X_FULL, v,
+                    BAR_WIDTH, fillHeight,
+                    TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        }
+        int progress = this.menu.getCraftingProgress();
+        if (progress > 0) {
+            fill(ms, PROGRESS_BAR_X - 1, PROGRESS_BAR_Y - 1,
+                    PROGRESS_BAR_X + PROGRESS_BAR_WIDTH + 1, PROGRESS_BAR_Y + PROGRESS_BAR_HEIGHT + 1,
+                    0xFF000000);
+            fill(ms, PROGRESS_BAR_X, PROGRESS_BAR_Y,
+                    PROGRESS_BAR_X + PROGRESS_BAR_WIDTH, PROGRESS_BAR_Y + PROGRESS_BAR_HEIGHT,
+                    0xFF3C3C3C);
+            int filledWidth = (PROGRESS_BAR_WIDTH * progress) / 100;
+            if (filledWidth > 0) {
+                int color1 = 0xFF00FF00;
+                int color2 = 0xFF00CC00;
+                fillGradient(ms, PROGRESS_BAR_X, PROGRESS_BAR_Y,
+                        PROGRESS_BAR_X + filledWidth, PROGRESS_BAR_Y + PROGRESS_BAR_HEIGHT,
+                        color1, color2);
+            }
+            String progressText = progress + "%";
+            int textX = PROGRESS_BAR_X + (PROGRESS_BAR_WIDTH - this.font.width(progressText)) / 2;
+            int textY = PROGRESS_BAR_Y + PROGRESS_BAR_HEIGHT + 2;
+            this.font.draw(ms, progressText, textX, textY, 0xFFFFFFFF);
+        }
+    }
+
+    private boolean isHovering(net.minecraft.world.inventory.Slot slot, double mouseX, double mouseY) {
+        return this.isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY);
+    }
+
+    private boolean isHovering(int rectX, int rectY, int rectW, int rectH, int mouseX, int mouseY) {
+        return mouseX >= rectX && mouseX < rectX + rectW && mouseY >= rectY && mouseY < rectY + rectH;
+    }
+
+    private double getLogicX(double mouseX) {
+        return (mouseX - getXOffset()) / scale;
+    }
+
+    private double getLogicY(double mouseY) {
+        return (mouseY - getYOffset()) / scale;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return super.mouseClicked(getLogicX(mouseX), getLogicY(mouseY), button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        return super.mouseReleased(getLogicX(mouseX), getLogicY(mouseY), button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        return super.mouseDragged(getLogicX(mouseX), getLogicY(mouseY), button, dragX / scale, dragY / scale);
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        super.mouseMoved(getLogicX(mouseX), getLogicY(mouseY));
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return super.mouseScrolled(getLogicX(mouseX), getLogicY(mouseY), delta);
     }
 
     @Override
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-        // 绘制GUI标题
-        drawString(poseStack, this.font, "Starlit Sanctum", 200, 20, 0xFFFFFF);
-
-        // 绘制特殊槽位标签 - 调整到正确位置
-        drawString(poseStack, this.font, "Input", 70, 20, 0x4A90E2);   // 左侧输入槽
-        drawString(poseStack, this.font, "Output", 235, 20, 0x50E3C2); // 中间输出槽
-        drawString(poseStack, this.font, "Input", 415, 20, 0x4A90E2);  // 右侧输入槽
-
-        // 绘制物品栏标签
-        drawString(poseStack, this.font, "Inventory", 175, 560, 0x404040);
-    }
-
-    @Override
-    public void onClose() {
-        super.onClose();
-        Minecraft.getInstance().keyboardHandler.setSendRepeatsToGui(false);
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
-
-        // 确保GUI居中显示
-        this.leftPos = (this.width - this.imageWidth) / 2;
-        this.topPos = (this.height - this.imageHeight) / 2;
-    }
-
-    @Override
-    protected void renderTooltip(PoseStack poseStack, int x, int y) {
-        super.renderTooltip(poseStack, x, y);
-
-        // 可以在这里添加自定义工具提示
-        // 比如显示槽位信息、容量等
-    }
-
-    /**
-     * 检查鼠标是否在特殊槽位上
-     */
-    private boolean isMouseOverSpecialSlot(double mouseX, double mouseY) {
-        // 检查左侧输入槽
-        if (isInRect(mouseX, mouseY, this.leftPos + 74, this.topPos + 35, 16, 16)) {
-            return true;
-        }
-        // 检查右侧输入槽
-        if (isInRect(mouseX, mouseY, this.leftPos + 420, this.topPos + 35, 16, 16)) {
-            return true;
-        }
-        // 检查输出槽
-        if (isInRect(mouseX, mouseY, this.leftPos + 247, this.topPos + 35, 16, 16)) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isInRect(double mouseX, double mouseY, int x, int y, int width, int height) {
-        return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 }

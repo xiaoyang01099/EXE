@@ -10,10 +10,11 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.slot.AutoCraftSlot;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
-import net.xiaoyang010.ex_enigmaticlegacy.Network.AutoCrafterPacket;
-import net.xiaoyang010.ex_enigmaticlegacy.Network.AutoCrafterRecipePacket;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.inputPacket.AutoCrafterPacket;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.inputPacket.AutoCrafterRecipePacket;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityExtremeAutoCrafter;
 
 import javax.annotation.Nonnull;
@@ -39,7 +40,7 @@ public final class ContainerExtremeAutoCrafter extends AbstractContainerMenu {
         for (int y = 0; y < 9; y++)
             for (int x = 0; x < 9; x++)
                 this.addSlot((new AutoCraftSlot(autoCrafter, 81 + (y * 9 + x), 175 + (18 * x), 18 + (18 * y))));
-        this.addSlot((new AutoCraftSlot(autoCrafter, 162, 247, 194))); //配方结果格
+        this.addSlot((new AutoCraftSlot(autoCrafter, 162, 247, 194)));
         this.addSlot((new OutputSlot(autoCrafter, 163, 247, 222)));
         for (int y = 0; y < 3; y++)
             for (int x = 0; x < 9; x++)

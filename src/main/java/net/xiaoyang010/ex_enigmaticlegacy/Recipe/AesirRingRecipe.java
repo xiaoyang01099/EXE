@@ -7,9 +7,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
 import vazkii.botania.common.item.ModItems;
 import vazkii.botania.xplat.IXplatAbstractions;
-
 import javax.annotation.Nonnull;
 import java.util.UUID;
 

@@ -1,0 +1,6 @@
+{
+  "parent": "botania:block/shapes/spreader_core",
+  "textures": {
+    "core": "ex_enigmaticlegacy:blocks/cursed/cursed_spreader_core"
+  }
+}

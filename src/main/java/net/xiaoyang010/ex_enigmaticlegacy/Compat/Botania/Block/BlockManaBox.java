@@ -1,5 +1,7 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -31,12 +33,17 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.TileManaBox;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.BlockItemManaBox;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import vazkii.botania.api.BotaniaForgeClientCapabilities;
+import vazkii.botania.api.block.IWandHUD;
+import vazkii.botania.api.block.IWandable;
 import vazkii.botania.common.block.BlockMod;
 import vazkii.botania.common.entity.EntityManaBurst;
 

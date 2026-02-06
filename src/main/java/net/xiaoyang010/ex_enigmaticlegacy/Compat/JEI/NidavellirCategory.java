@@ -19,7 +19,6 @@ import net.minecraft.world.phys.Vec2;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.NidavellirForgeRecipe;
-import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.gui.HUDHandler;
 import vazkii.botania.client.integration.jei.PetalApothecaryRecipeCategory;
 

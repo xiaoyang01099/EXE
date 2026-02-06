@@ -1,5 +1,7 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic;
 
+import com.integral.enigmaticlegacy.api.items.ICursed;
+import com.integral.enigmaticlegacy.helpers.ItemLoreHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -39,7 +41,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModDamageSources;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.api.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
@@ -56,7 +58,7 @@ import vazkii.botania.xplat.IXplatAbstractions;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class GhastlySkull extends Item implements ICurioItem, INoEMCItem {
+public class GhastlySkull extends Item implements ICurioItem, INoEMCItem, ICursed {
 
     private static final int MANA_COST = 3000; // 大量魔力消耗
     private static final int COOLDOWN_TICKS = 100; // 30秒冷却
@@ -93,6 +95,7 @@ public class GhastlySkull extends Item implements ICurioItem, INoEMCItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        ItemLoreHelper.indicateCursedOnesOnly(tooltip);
         RelicImpl.addDefaultTooltip(stack, tooltip);
 
         if (Screen.hasShiftDown()) {

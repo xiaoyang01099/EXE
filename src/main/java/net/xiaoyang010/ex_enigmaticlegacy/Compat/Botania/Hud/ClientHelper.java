@@ -29,7 +29,7 @@ import java.util.Random;
 @OnlyIn(Dist.CLIENT)
 public class ClientHelper {
 
-    public static final ResourceLocation miscHuds = new ResourceLocation("ex_enigmaticlegacy:textures/misc/misc_huds.png");
+    public static final ResourceLocation miscHuds = new ResourceLocation("ex_enigmaticlegacy:textures/misc/engineer_hopper_hud.png");
     private static final ResourceLocation END_SKY_TEXTURE = new ResourceLocation("textures/environment/end_sky.png");
     private static final ResourceLocation END_PORTAL_TEXTURE = new ResourceLocation("textures/entity/end_portal.png");
     private static final Random RANDOM = new Random(31100L);
@@ -138,26 +138,13 @@ public class ClientHelper {
 
     public static void drawChanceBar(PoseStack poseStack, int x, int y, int chance) {
         RenderSystem.setShaderTexture(0, miscHuds);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-        // 绘制背景
-        RenderHelper.drawTexturedModalRect(poseStack, x, y, 0, 0, 57, 6);
-
-        // 计算百分比
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);RenderHelper.drawTexturedModalRect(poseStack, x, y, 0, 0, 57, 6);
         int chancePercentage = Math.max(0, (int)((double)((float)chance / 100.0F) * 55.0));
-
-        // 绘制填充条
         RenderHelper.drawTexturedModalRect(poseStack, x + 1, y + 1, 0, 6, 55, 4);
-
-        // 计算颜色
         Color color = new Color(Color.HSBtoRGB((float)chance / 360.0F,
                 ((float)Math.sin((double)((float)ClientTickHandler.ticksInGame + ClientTickHandler.partialTicks) * 0.2) + 1.0F) * 0.3F + 0.4F, 1.0F));
-
-        // 设置颜色并绘制进度条
         RenderSystem.setShaderColor(color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, 1.0F);
         RenderHelper.drawTexturedModalRect(poseStack, x + 1, y + 1, 0, 6, Math.min(55, chancePercentage), 4);
-
-        // 重置颜色
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 

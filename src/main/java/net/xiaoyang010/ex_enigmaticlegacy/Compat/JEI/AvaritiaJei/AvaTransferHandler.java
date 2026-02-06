@@ -38,15 +38,12 @@ public class AvaTransferHandler implements IRecipeTransferHandler<ContainerExtre
         if (this.transferInfo.canHandle(autoCrafter, recipe)) {
             List<Slot> craftingSlots = Collections.unmodifiableList(this.transferInfo.getRecipeSlots(autoCrafter, recipe));
             List<Slot> inventorySlots = Collections.unmodifiableList(this.transferInfo.getInventorySlots(autoCrafter, recipe));
-            //IOnClickHandler
-            //配方有内容
             if (!recipe.getIngredients().isEmpty() && !recipe.getResultItem().isEmpty()){
-                //清除上一配方
                 for (int i = 81; i <= 161; ++i) {
                     autoCrafter.setItem(i, ItemStack.EMPTY);
                 }
 
-                if (recipe instanceof ExtremeShapedRecipe shapedRecipe) { //有序合成列数可能不满
+                if (recipe instanceof ExtremeShapedRecipe shapedRecipe) {
                     int width = shapedRecipe.getWidth();
                     if (width < 9) {
                         NonNullList<Ingredient> ingredients = NonNullList.withSize(81, Ingredient.EMPTY);
@@ -54,7 +51,7 @@ public class AvaTransferHandler implements IRecipeTransferHandler<ContainerExtre
                         int size = list.size();
                         for (int h = 0; h < 9; h++) {
                             for (int w = 0; w < 9; w++) {
-                                int slot = h * 9 + w;//完整配方9*9格序数
+                                int slot = h * 9 + w;
                                 int recipeSlot = h * width + w;
                                 if (w >= width) {
                                     ingredients.set(slot, Ingredient.EMPTY);
@@ -96,7 +93,7 @@ public class AvaTransferHandler implements IRecipeTransferHandler<ContainerExtre
                 ItemStack stack = ingredient.getItems()[0];
                 ItemStack copy = stack.copy();
                 if (copy.getCount() > 1) copy.setCount(1);
-                autoCrafter.setItem(starSlot, copy); //输入设置
+                autoCrafter.setItem(starSlot, copy);
             }
             starSlot++;
         }

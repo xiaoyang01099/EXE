@@ -11,7 +11,6 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +22,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -59,6 +57,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityPotato;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.FullAltarTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Generating.BelieverTile;
@@ -72,19 +71,20 @@ import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.BedrockBreaker;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.InfinityTotem;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.ManaitaArmor;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmor;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmorHelper;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.WildHuntArmor;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.StepHeightMessage;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputPacket.JumpPacket;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.ColorText;
-import vazkii.botania.api.item.IRelic;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.ContainerOverpowered;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.block.decor.BlockTinyPotato;
 import vazkii.botania.common.block.tile.mana.TilePool;
 import vazkii.botania.common.helper.PlayerHelper;
-import vazkii.botania.xplat.IXplatAbstractions;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -101,6 +101,116 @@ public class ModEventHandler {
     private static int invulnerableTimer = 0;
     private static final int INVULNERABLE_DURATION = 30;
     private static final int REPAIR_COST = 1500;
+
+    @SubscribeEvent
+    public static void ManaOnPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        if (event.player.level.isClientSide) return;
+
+        Player player = event.player;
+
+        if (ManaitaArmor.isManaitaArmor(player)) {
+            player.setHealth(player.getMaxHealth());
+        }
+
+        ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+        if (boots.getItem() instanceof ManaitaArmor) {
+            handleBootsMovement(player, boots);
+        }
+
+        if (ManaitaArmor.isManaitaArmorPart(player)) {
+            if (player.maxUpStep < 1.0f) {
+                player.maxUpStep = 1.0f;
+
+                NetworkHandler.CHANNEL.send(
+                        PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
+                        new StepHeightMessage(1.0f)
+                );
+            }
+        } else {
+            if (player.maxUpStep > 0.6f) {
+                player.maxUpStep = 0.6f;
+                NetworkHandler.CHANNEL.send(
+                        PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
+                        new StepHeightMessage(0.6f)
+                );
+            }
+        }
+    }
+
+    private static void handleBootsMovement(Player player, ItemStack boots) {
+        if (player.zza == 0 && player.xxa == 0) return;
+
+        boolean canMove = player.isOnGround()
+                || player.getAbilities().flying
+                || player.isInWater()
+                || player.isInLava();
+
+        if (!canMove) return;
+
+        float speed = ManaitaArmor.getSpeed(boots) * 0.1f;
+
+        if (player.getAbilities().flying) speed *= 1.1f;
+        if (player.isCrouching()) speed *= 0.1f;
+
+        if (player.zza > 0) {
+            player.moveRelative(speed, new Vec3(0, 0, 1));
+        } else if (player.zza < 0) {
+            player.moveRelative(-speed * 0.3f, new Vec3(0, 0, 1));
+        }
+
+        if (player.xxa != 0) {
+            player.moveRelative(speed * 0.5f * Math.signum(player.xxa), new Vec3(1, 0, 0));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingJump(LivingEvent.LivingJumpEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+        if (boots.getItem() instanceof ManaitaArmor) {
+            float jumpBoost = ManaitaArmor.getSpeed(boots) * 0.1f;
+            Vec3 motion = player.getDeltaMovement();
+            player.setDeltaMovement(motion.x, motion.y + jumpBoost, motion.z);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingFall(LivingFallEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            if (ManaitaArmor.isManaitaArmorPart(player)) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingHurtEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            if (ManaitaArmor.isManaitaArmor(player)) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDeath(LivingDeathEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            if (ManaitaArmor.isManaitaArmor(player)) {
+                event.setCanceled(true);
+                player.setHealth(player.getMaxHealth());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingAttack(LivingAttackEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            if (ManaitaArmor.isManaitaArmor(player)) {
+                event.setCanceled(true);
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
@@ -606,7 +716,7 @@ public class ModEventHandler {
                 boolean isAllowedContainer = false;
                 BlockPos containerPos = null;
                 BlockEntity blockEntity = null;
-
+                boolean isPowerInventory = container instanceof ContainerOverpowered;
                 // 1. 特定容器检查
                 if (container instanceof MachineMenu<?> machineMenu) {
                     blockEntity = machineMenu.machineTile;
@@ -695,7 +805,7 @@ public class ModEventHandler {
 
                     ItemStack slotItem = slot.getItem();
                     if (slotItem.is(ModTags.Items.SPECTRITE_ITEMS)) {
-                        boolean isAllowed = isAllowedContainer;
+                        boolean isAllowed = isAllowedContainer || isPowerInventory;
 
                         // 处理特殊槽位
                         if (container instanceof ItemCombinerMenu && slot.container instanceof ResultContainer) {

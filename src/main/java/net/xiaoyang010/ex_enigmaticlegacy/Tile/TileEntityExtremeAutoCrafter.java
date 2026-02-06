@@ -20,10 +20,12 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.BlockExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +38,7 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
     private ExtremeCraftingRecipe recipe;
     private ResourceLocation recipeId;
 
-    public TileEntityExtremeAutoCrafter(BlockPos pos, BlockState state) {
+    public TileEntityExtremeAutoCrafter(@NotNull BlockEntityType<TileEntityExtremeAutoCrafter> tileEntityExtremeAutoCrafterBlockEntityType, BlockPos pos, BlockState state) {
         super(ModBlockEntities.EXTREME_AUTO_CRAFTER_TILE.get(), pos, state);
     }
 
@@ -50,6 +52,10 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
         tile.isPowered = blockState.getValue(BlockExtremeAutoCrafter.POWERED);
         if (!tile.isPowered) return;
         if (tile.recipe == null) return;
+
+        if (!tile.validateRecipeSlots()) {
+            return;
+        }
 
         ItemStack recipeOut = tile.recipe.getResultItem().copy();
         ItemStack outItem = tile.getItem(163);
@@ -77,6 +83,41 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
             removeInputItem(tile, inputItems);
             tile.setChanged();
         }
+    }
+
+
+    private boolean validateRecipeSlots() {
+
+        if (this.recipe == null) return false;
+
+        NonNullList<Ingredient> ingredients = this.recipe.getIngredients();
+
+        for (int i = 0; i < 81; i++) {
+            ItemStack slotStack = this.getItem(81 + i);
+
+            Ingredient ingredient = i < ingredients.size() ? ingredients.get(i) : Ingredient.EMPTY;
+
+            if (ingredient.isEmpty()) {
+                if (!slotStack.isEmpty()) {
+                    return false;
+                }
+            } else {
+                if (slotStack.isEmpty()) {
+                    return false;
+                }
+                if (!ingredient.test(slotStack)) {
+                    return false;
+                }
+            }
+        }
+
+        ItemStack previewStack = this.getItem(162);
+        ItemStack recipeResult = this.recipe.getResultItem();
+        if (!ItemStack.isSameItemSameTags(previewStack, recipeResult)) {
+            return false;
+        }
+
+        return true;
     }
 
     private static void removeInputItem(TileEntityExtremeAutoCrafter tile, Map<CompoundTag, Integer> inputItems){
@@ -145,42 +186,30 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
         return tag;
     }
 
-    /**
-     * ✅ 正确的配方解析方法
-     */
     private void resolveRecipe() {
         if (this.level == null || this.recipeId == null || this.recipe != null) {
             return;
         }
 
         RecipeManager recipeManager = this.level.getRecipeManager();
-
-        // 方法1：使用byKey（推荐）
         recipeManager.byKey(this.recipeId).ifPresentOrElse(
                 recipe -> {
                     if (recipe instanceof ExtremeCraftingRecipe extremeRecipe) {
                         this.recipe = extremeRecipe;
-                        System.out.println("成功找到配方: " + this.recipeId);
                     } else {
-                        System.err.println("配方类型不匹配: " + this.recipeId);
                         this.recipeId = null;
                     }
                 },
                 () -> {
-                    // 方法2：遍历所有极限合成配方（后备方案）
-                    System.err.println("byKey找不到，尝试遍历: " + this.recipeId);
                     List<ExtremeCraftingRecipe> recipes = recipeManager
                             .getAllRecipesFor(AvaritiaModContent.EXTREME_CRAFTING_RECIPE_TYPE.get());
 
                     for (ExtremeCraftingRecipe recipe : recipes) {
                         if (recipe.getId().equals(this.recipeId)) {
                             this.recipe = recipe;
-                            System.out.println("通过遍历找到配方: " + this.recipeId);
                             return;
                         }
                     }
-
-                    System.err.println("完全找不到配方: " + this.recipeId);
                     this.recipeId = null;
                 }
         );
@@ -279,6 +308,10 @@ public class TileEntityExtremeAutoCrafter extends BaseContainerBlockEntity {
     @Override
     public void setItem(int i, ItemStack itemStack) {
         inputItems.set(i, itemStack);
+
+        if (i >= 81 && i <= 162) {
+            setChanged();
+        }
     }
 
     @Override

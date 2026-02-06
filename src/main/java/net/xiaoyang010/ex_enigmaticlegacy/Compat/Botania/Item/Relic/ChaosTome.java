@@ -1,5 +1,7 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic;
 
+import com.integral.enigmaticlegacy.api.items.ICursed;
+import com.integral.enigmaticlegacy.helpers.ItemLoreHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Direction;
@@ -23,7 +25,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.EntityChaoticOrb;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEntities;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.api.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.IRelic;
@@ -32,7 +34,7 @@ import vazkii.botania.xplat.IXplatAbstractions;
 
 import java.util.List;
 
-public class ChaosTome extends Item implements INoEMCItem {
+public class ChaosTome extends Item implements INoEMCItem, ICursed {
     private static final float CHAOS_TOME_DAMAGE_CAP = 100.0F;
     private static final int EXPERIENCE_COST_PER_ORB = 2;
     private static final float SEEKER_CHANCE = 0.35F;
@@ -102,7 +104,6 @@ public class ChaosTome extends Item implements INoEMCItem {
     public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingUseDuration) {
         if (!(entity instanceof Player player)) return;
 
-        // 检查遗物绑定
         var relicCap = stack.getCapability(BotaniaForgeCapabilities.RELIC);
         if (relicCap.isPresent()) {
             IRelic relic = relicCap.orElse(null);
@@ -161,6 +162,7 @@ public class ChaosTome extends Item implements INoEMCItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
+        ItemLoreHelper.indicateCursedOnesOnly(tooltip);
         RelicImpl.addDefaultTooltip(stack, tooltip);
         if (Screen.hasShiftDown()) {
             tooltip.add(new TranslatableComponent("tooltip.chaos_tome.advanced1")

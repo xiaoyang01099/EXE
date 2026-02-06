@@ -23,8 +23,8 @@ public class FloweyBlock extends FlowerBlock {
                 .noCollission()
                 .instabreak()
                 .sound(SoundType.GRASS)
-                .lightLevel(state -> 4) // 添加发光性，光照等级为15
-                .explosionResistance(1200.0F)); // 防爆属性，阻力值设为1200.0F
+                .lightLevel(state -> 4)
+                .explosionResistance(1200.0F));
     }
 
     @Override
@@ -34,12 +34,12 @@ public class FloweyBlock extends FlowerBlock {
 
     @Override
     public boolean isFlammable(BlockState state, BlockGetter world, BlockPos pos, net.minecraft.core.Direction face) {
-        return false; // 防止植物被点燃
+        return false;
     }
 
     @Override
     public int getFireSpreadSpeed(BlockState state, BlockGetter world, BlockPos pos, net.minecraft.core.Direction face) {
-        return 0; // 火焰蔓延速度为0，防止火焰蔓延到植物
+        return 0;
     }
 
     @OnlyIn(Dist.CLIENT)

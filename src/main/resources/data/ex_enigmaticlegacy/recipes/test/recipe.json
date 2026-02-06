@@ -1,0 +1,100 @@
+{
+  "type": "ex_enigmaticlegacy:starlit_crafting",
+  "mana": 50000,
+  "left_input": {
+    "item": "minecraft:gold_block",
+    "count": 2
+  },
+  "right_input": {
+    "item": "minecraft:iron_block",
+    "count": 5
+  },
+  "result": {
+    "item": "minecraft:nether_star",
+    "count": 1
+  },
+  "patterns": [
+    {
+      "comment": "区块A",
+      "pattern": [
+        "A       H",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "B       C"
+      ],
+      "key": {
+        "A": { "item": "minecraft:apple" },
+        "B": { "item": "minecraft:bedrock" },
+        "C": { "item": "minecraft:emerald" },
+        "H": { "item": "minecraft:emerald" }
+      }
+    },
+    {
+      "comment": "区块B",
+      "pattern": [
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "    D    ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         "
+      ],
+      "key": {
+        "D": { "item": "minecraft:diamond" }
+      }
+    },
+    {
+      "comment": "区块C",
+      "pattern": [
+        "E        ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "         ",
+        "        F"
+      ],
+      "key": {
+        "E": { "item": "minecraft:emerald" },
+        "F": { "item": "minecraft:emerald" }
+      }
+    }
+  ]
+}

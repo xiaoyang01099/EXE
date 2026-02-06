@@ -60,15 +60,17 @@ public class InfinityChestRenderer implements BlockEntityRenderer<InfinityChestT
 
     }
 
-    private void render(PoseStack pPoseStack, VertexConsumer pConsumer, ModelPart pLidPart, ModelPart pLockPart, ModelPart pBottomPart, float pLidAngle, int pPackedLight, int pPackedOverlay) {
-        pLidPart.xRot = -(pLidAngle * 1.5707964F);
-        pLockPart.xRot = pLidPart.xRot;
-        pBottomPart.render(pPoseStack, pConsumer, pPackedLight, pPackedOverlay);
-        pLockPart.render(pPoseStack, pConsumer, pPackedLight, pPackedOverlay);
-        pPoseStack.pushPose();
-        pPoseStack.translate(0.0D, 0.06D, 0.0D);
-        pLidPart.render(pPoseStack, pConsumer, pPackedLight, pPackedOverlay);
-        pPoseStack.popPose();
+    private void render(PoseStack poseStack, VertexConsumer consumer, ModelPart lid, ModelPart lock, ModelPart bottom, float lidAngle, int light, int overlay) {
+        lid.xRot = -(lidAngle * ((float) Math.PI / 2F));
+        lock.xRot = lid.xRot;
+        bottom.render(poseStack, consumer, light, overlay);
+
+        poseStack.pushPose();
+        poseStack.translate(0.0D, 0.06D, 0.0D);
+        lid.render(poseStack, consumer, light, overlay);
+        lock.render(poseStack, consumer, light, overlay);
+
+        poseStack.popPose();
     }
 
     protected Material getMaterial(InfinityChestTile blockEntity) {

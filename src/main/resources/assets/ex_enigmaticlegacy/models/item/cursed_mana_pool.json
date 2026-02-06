@@ -1,0 +1,11 @@
+{
+  "parent": "ex_enigmaticlegacy:block/cursed_mana_pool",
+  "overrides": [
+    {
+      "predicate": {
+        "botania:full": 1.0
+      },
+      "model": "ex_enigmaticlegacy:block/mana_pool_full"
+    }
+  ]
+}

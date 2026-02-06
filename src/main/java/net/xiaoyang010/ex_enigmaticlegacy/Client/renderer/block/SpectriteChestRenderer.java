@@ -83,15 +83,16 @@ public class SpectriteChestRenderer implements BlockEntityRenderer<SpectriteChes
         poseStack.popPose();
     }
 
-    private void render(PoseStack poseStack, VertexConsumer consumer, ModelPart lid,
-                        ModelPart lock, ModelPart bottom, float lidAngle, int light, int overlay) {
+    private void render(PoseStack poseStack, VertexConsumer consumer, ModelPart lid, ModelPart lock, ModelPart bottom, float lidAngle, int light, int overlay) {
         lid.xRot = -(lidAngle * ((float) Math.PI / 2F));
         lock.xRot = lid.xRot;
         bottom.render(poseStack, consumer, light, overlay);
-        lock.render(poseStack, consumer, light, overlay);
+
         poseStack.pushPose();
         poseStack.translate(0.0D, 0.06D, 0.0D);
         lid.render(poseStack, consumer, light, overlay);
+        lock.render(poseStack, consumer, light, overlay);
+
         poseStack.popPose();
     }
 }

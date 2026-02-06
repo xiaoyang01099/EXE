@@ -10,13 +10,10 @@ import net.minecraftforge.common.ForgeTier;
 import net.minecraftforge.common.TierSortingRegistry;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTags;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class EXEAPI {
-    public static List<ItemStack> relicList = new ArrayList<>();
-    public static List<ItemStack> diceList = new ArrayList<>();
-
     public static final Tier MIRACLE_ITEM_TIER = TierSortingRegistry.registerTier(
             new ForgeTier(
                     100,

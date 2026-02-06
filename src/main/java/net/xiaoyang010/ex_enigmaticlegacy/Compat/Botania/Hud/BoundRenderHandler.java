@@ -38,7 +38,6 @@ import java.awt.Color;
 @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID)
 @OnlyIn(Dist.CLIENT)
 public class BoundRenderHandler {
-
     @SubscribeEvent
     public void onRenderLevelStage(RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
@@ -64,7 +63,10 @@ public class BoundRenderHandler {
         if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHit = (BlockHitResult) hitResult;
             BlockPos pos = blockHit.getBlockPos();
-            BlockEntity tile = mc.level.getBlockEntity(pos);
+            BlockEntity tile = null;
+            if (mc.level != null) {
+                tile = mc.level.getBlockEntity(pos);
+            }
 
             if (tile instanceof IBoundRender) {
                 coords = ((IBoundRender) tile).getBlocksCoord();

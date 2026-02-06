@@ -1,6 +1,11 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "ex_enigmaticlegacy:items/ingots/rainbow_catalyst"
+    "layer0": "ex_enigmaticlegacy:items/ingots/rainbow_catalyst",
+    "mask": "ex_enigmaticlegacy:items/ingots/rainbow_catalyst_mask"
+  },
+  "loader": "ex_enigmaticlegacy:rainbow_cosmic",
+  "rainbow_cosmic": {
+    "mask": "#mask"
   }
 }

@@ -31,7 +31,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.InfinityGaiaSpreaderTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Generating.AsgardFlowerTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModSounds;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.api.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;

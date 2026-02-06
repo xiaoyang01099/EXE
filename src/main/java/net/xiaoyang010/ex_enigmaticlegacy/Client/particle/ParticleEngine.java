@@ -27,7 +27,6 @@ import java.util.Random;
 @Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ParticleEngine {
     public static final ParticleEngine INSTANCE = new ParticleEngine();
-
     public static final ResourceLocation PARTICLE_TEXTURE =
             new ResourceLocation("ex_enigmaticlegacy", "textures/misc/particles.png");
     public static final ResourceLocation PARTICLE_TEXTURE_2 =
@@ -42,7 +41,7 @@ public class ParticleEngine {
 
 
     @SubscribeEvent
-    public static void onRenderLevelStage(RenderLevelStageEvent event) {
+        public static void onRenderLevelStage(RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
             INSTANCE.renderParticles(event.getPoseStack(), event.getPartialTick());
         }
@@ -138,62 +137,6 @@ public class ParticleEngine {
         poseStack.popPose();
     }
 
-//    private void renderParticles(PoseStack poseStack, float partialTick) {
-//        Minecraft mc = Minecraft.getInstance();
-//        if (mc.level == null || mc.player == null) return;
-//
-//        Camera camera = mc.gameRenderer.getMainCamera();
-//        int dimension = getDimensionId(mc.level);
-//
-//        poseStack.pushPose();
-//
-//        RenderSystem.enableBlend();
-//        RenderSystem.depthMask(false);
-//        RenderSystem.setShader(GameRenderer::getParticleShader);
-//
-//        for (int layer = 0; layer < 4; layer++) {
-//            if (!particles[layer].containsKey(dimension)) continue;
-//
-//            List<Particle> particleList = particles[layer].get(dimension);
-//            if (particleList.isEmpty()) continue;
-//
-//            if (layer >= 2) {
-//                RenderSystem.setShaderTexture(0, PARTICLE_TEXTURE_2);
-//            } else {
-//                RenderSystem.setShaderTexture(0, PARTICLE_TEXTURE);
-//            }
-//
-//            switch (layer) {
-//                case 0:
-//                case 2:
-//                    RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-//                    break;
-//                case 1:
-//                case 3:
-//                    RenderSystem.defaultBlendFunc();
-//                    break;
-//            }
-//
-//            Tesselator tesselator = Tesselator.getInstance();
-//            BufferBuilder buffer = tesselator.getBuilder();
-//            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-//
-//            for (Particle particle : particleList) {
-//                if (particle != null && particle.isAlive()) {
-//                    particle.render(buffer, camera, partialTick);
-//                }
-//            }
-//
-//            tesselator.end();
-//        }
-//
-//        RenderSystem.depthMask(true);
-//        RenderSystem.disableBlend();
-//        RenderSystem.defaultBlendFunc();
-//
-//        poseStack.popPose();
-//    }
-
     public void addEffect(Level world, Particle particle, int layer) {
         if (!(world instanceof ClientLevel)) return;
         if (layer < 0 || layer >= 4) layer = 0;
@@ -203,7 +146,6 @@ public class ParticleEngine {
         particles[layer].computeIfAbsent(dimension, k -> new ArrayList<>());
         List<Particle> particleList = particles[layer].get(dimension);
 
-        // 限制粒子数量
         if (particleList.size() >= MAX_PARTICLES_PER_LAYER) {
             particleList.remove(0);
         }
@@ -227,10 +169,6 @@ public class ParticleEngine {
 
         addEffect(world, fx, layer);
     }
-
-//    public void addEffect(Level world, Particle particle) {
-//        addEffect(world, particle, 0);
-//    }
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {

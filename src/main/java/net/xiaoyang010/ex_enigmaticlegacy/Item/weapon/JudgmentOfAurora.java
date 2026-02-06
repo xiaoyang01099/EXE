@@ -35,7 +35,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class JudgmentOfAurora extends ItemManasteelSword {
-    // 基础属性
     private static final int INTERVAL = 12;
     private static final String TAG_LAST_TRIGGER = "lastTriggerTime";
     private static final int STAR_DAMAGE = 150;

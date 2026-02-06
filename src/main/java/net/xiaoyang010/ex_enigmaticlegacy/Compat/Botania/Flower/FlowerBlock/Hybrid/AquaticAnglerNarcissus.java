@@ -1,21 +1,13 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Hybrid;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -33,15 +25,14 @@ import vazkii.botania.common.block.BlockSpecialFlower;
 import java.util.function.Supplier;
 
 public class AquaticAnglerNarcissus extends BlockSpecialFlower {
-
     public AquaticAnglerNarcissus(MobEffect stewEffect, int stewDuration, Properties props,
                               Supplier<BlockEntityType<? extends TileEntitySpecialFlower>> blockEntityType) {
         super(stewEffect, stewDuration, props, blockEntityType);
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player,
-                                 InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+
         BlockEntity tileEntity = world.getBlockEntity(pos);
         if (tileEntity instanceof TileEntityAquaticAnglerNarcissus) {
             return ((TileEntityAquaticAnglerNarcissus) tileEntity).onRightClick(player, hand);
@@ -50,14 +41,12 @@ public class AquaticAnglerNarcissus extends BlockSpecialFlower {
     }
 
     @Override
-    public boolean isFlammable(BlockState state, BlockGetter world, BlockPos pos,
-                               Direction face) {
+    public boolean isFlammable(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
         return false;
     }
 
     @Override
-    public int getFireSpreadSpeed(BlockState state, BlockGetter world, BlockPos pos,
-                                  Direction face) {
+    public int getFireSpreadSpeed(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
         return 0;
     }
 

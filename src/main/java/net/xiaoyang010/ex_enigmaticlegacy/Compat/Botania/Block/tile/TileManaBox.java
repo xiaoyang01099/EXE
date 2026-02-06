@@ -74,7 +74,7 @@ public class TileManaBox extends TileMod implements IManaPool, IKeyLocked, ISpar
     private Set<DyeColor> nearbyColors = new HashSet<>();
     private static final int CRAFT_EFFECT_EVENT = 0;
     private static final int CHARGE_EFFECT_EVENT = 1;
-    public static final int MAX_MANA = 1000000;
+    public static final int MAX_MANA = 2500000;
     private int mana = 0;
     private int ticks = 0;
     private int flowerSpawnTimer = 0;
@@ -257,7 +257,7 @@ public class TileManaBox extends TileMod implements IManaPool, IKeyLocked, ISpar
         giveBotaniaEquipment(player, 2);
 
         player.displayClientMessage(
-                new net.minecraft.network.chat.TextComponent(
+                new TextComponent(
                         "§d§l[彩虹魔力箱] §6§l完美共鸣！§e获得额外64个矿石和2件魔法装备！"
                 ),
                 false
@@ -285,10 +285,17 @@ public class TileManaBox extends TileMod implements IManaPool, IKeyLocked, ISpar
 
     private void giveBotaniaOres(Player player, int count) {
         Item[] botaniaOres = {
-                ModItems.manaSteel.asItem(),
-                ModItems.terrasteel.asItem(),
-                ModItems.elementium.asItem(),
                 ModItems.manaDiamond.asItem(),
+                ModItems.manaPearl.asItem(),
+                ModItems.manaSteel.asItem(),
+                ModItems.manaweaveCloth.asItem(),
+                ModItems.manaPowder.asItem(),
+                ModItems.manaString.asItem(),
+
+                ModItems.terrasteel.asItem(),
+
+                ModItems.elementium.asItem(),
+                ModItems.pixieDust.asItem(),
                 ModItems.dragonstone.asItem()
         };
 
@@ -333,7 +340,7 @@ public class TileManaBox extends TileMod implements IManaPool, IKeyLocked, ISpar
         };
 
         for (int i = 0; i < count; i++) {
-            net.minecraft.world.item.Item randomItem = equipment[random.nextInt(equipment.length)];
+            Item randomItem = equipment[random.nextInt(equipment.length)];
             giveItemToPlayer(player, new ItemStack(randomItem, 1));
         }
     }

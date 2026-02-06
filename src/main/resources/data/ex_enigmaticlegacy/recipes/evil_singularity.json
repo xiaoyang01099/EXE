@@ -3,10 +3,10 @@
   "result": {
     "item": "ex_enigmaticlegacy:evil_singularity"
   },
-  "cost": 4000,
+  "cost": 600,
   "ingredients": [
     {
-      "item": "enigmaticlegacy:evil_ingot"
+      "item": "ex_enigmaticlegacy:evilblock"
     }
   ]
 }

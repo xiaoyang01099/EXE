@@ -65,8 +65,10 @@ public class PagedChestBlock extends BaseEntityBlock implements SimpleWaterlogge
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return level.isClientSide ? createTickerHelper(blockEntityType, ModBlockEntities.PAGED_CHEST.get(), PagedChestBlockTile::lidAnimateTick) : null;
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
+                                                                  BlockEntityType<T> blockEntityType) {
+        return createTickerHelper(blockEntityType, ModBlockEntities.PAGED_CHEST.get(),
+                PagedChestBlockTile::lidAnimateTick);
     }
 
     @Override
@@ -132,7 +134,7 @@ public class PagedChestBlock extends BaseEntityBlock implements SimpleWaterlogge
         }
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity != null && blockEntity.getClass() == PagedChestBlockTile.class) {
+        if (blockEntity instanceof PagedChestBlockTile) {
             NetworkHooks.openGui((ServerPlayer) player, (PagedChestBlockTile) blockEntity, pos);
             player.awardStat(this.getOpenChestStat());
             PiglinAi.angerNearbyPiglins(player, true);

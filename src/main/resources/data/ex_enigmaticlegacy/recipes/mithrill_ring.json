@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AB ",
+    "BCB",
+    " B "
+  ],
+  "key": {
+    "A": {
+      "item": "botania:mana_tablet"
+    },
+    "B": {
+      "item": "ex_enigmaticlegacy:mithrill_nugget"
+    },
+    "C": {
+      "item": "ex_enigmaticlegacy:mithrill"
+    }
+  },
+  "result": {
+    "item": "ex_enigmaticlegacy:mithrill_ring"
+  }
+}

@@ -440,19 +440,15 @@ public class InfinityGaiaSpreaderTile extends TileExposedSimpleInventory impleme
         VariantE variant = getVariant();
         float gravity = 0.0F;
 
-        // 创建多种混合的颜色
         float time = level.getGameTime() + level.getRandom().nextFloat();
-        // 使用多个不同的偏移来创建不同的颜色
         float hue1 = (time * 0.005F) % 1.0F;
         float hue2 = (time * 0.005F + 0.33F) % 1.0F; // 偏移120度
         float hue3 = (time * 0.005F + 0.66F) % 1.0F; // 偏移240度
 
-        // 混合三种颜色
         int color1 = Color.HSBtoRGB(hue1, 0.7F, 0.9F);
         int color2 = Color.HSBtoRGB(hue2, 0.7F, 0.9F);
         int color3 = Color.HSBtoRGB(hue3, 0.7F, 0.9F);
 
-        // 根据时间选择颜色或混合颜色
         int finalColor;
         float random = level.getRandom().nextFloat();
         if (random < 0.33F) {
@@ -463,7 +459,6 @@ public class InfinityGaiaSpreaderTile extends TileExposedSimpleInventory impleme
             finalColor = color3;
         }
 
-        // 使用混合颜色创建魔力脉冲属性
         BurstProperties props = new BurstProperties(
                 variant.burstMana,
                 variant.preLossTicks,
@@ -497,7 +492,7 @@ public class InfinityGaiaSpreaderTile extends TileExposedSimpleInventory impleme
             burst.setGravity(mmForcedGravity);
             burst.setDeltaMovement(burst.getDeltaMovement().scale(mmForcedVelocityMultiplier));
         } else {
-            burst.setColor(finalColor);  // 使用混合颜色
+            burst.setColor(finalColor);
             burst.setMana(props.maxMana);
             burst.setStartingMana(props.maxMana);
             burst.setMinManaLoss(props.ticksBeforeManaLoss);

@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.TileEntityRuneFlower;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Hybrid.TileEntityRuneFlower;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.common.item.ModItems;
 

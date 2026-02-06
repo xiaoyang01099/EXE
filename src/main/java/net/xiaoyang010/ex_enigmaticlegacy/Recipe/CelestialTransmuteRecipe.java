@@ -99,7 +99,6 @@ public class CelestialTransmuteRecipe implements Recipe<Container> {
     public static class Type implements RecipeType<CelestialTransmuteRecipe> {
        public Type(){ }
        public static final Type INSTANCE = new Type();
-       public static final String ID = "celestial_transmute";
 
         @Override
         public String toString() {

@@ -41,7 +41,7 @@ public class BelieverTile extends TileEntityGeneratingFlower {
 
         int manaToAdd = isInfinityPotato ? MANA_PER_INFINITY_POTATO : MANA_PER_TINY_POTATO;
         addMana(manaToAdd);
-        cooldown = 20; // 1秒冷却时间
+        cooldown = 20;
     }
 
     @Override

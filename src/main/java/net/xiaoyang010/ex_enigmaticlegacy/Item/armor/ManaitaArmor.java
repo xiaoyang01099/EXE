@@ -2,6 +2,11 @@ package net.xiaoyang010.ex_enigmaticlegacy.Item.armor;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import io.redspace.ironsspellbooks.util.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -12,11 +17,6 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 import java.util.UUID;
@@ -29,7 +29,140 @@ public class ManaitaArmor extends ArmorItem {
 
     public ManaitaArmor(EquipmentSlot pSlot) {
         super(new ZMaterial(), pSlot, MANAITA_ARMOR);
-        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        if (!(entity instanceof Player player)) return;
+        initNBT(stack);
+        if (!isEquipped(player, stack)) return;
+        switch (this.slot) {
+            case HEAD -> tickHelmet(stack, player, level);
+            case CHEST -> tickChestplate(stack, player, level);
+            case LEGS -> tickLeggings(stack, player, level);
+            case FEET -> tickBoots(stack, player, level);
+        }
+    }
+
+    private void tickHelmet(ItemStack stack, Player player, Level level) {
+        player.setAirSupply(300);
+        player.getFoodData().setFoodLevel(20);
+        player.getFoodData().setSaturation(20.0f);
+        if (stack.getOrCreateTag().getBoolean("NightVision")) {
+            player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, false, false));
+        }
+    }
+
+    private void tickChestplate(ItemStack stack, Player player, Level level) {
+        player.getActiveEffects().stream()
+                .filter(effect -> !effect.getEffect().isBeneficial())
+                .map(MobEffectInstance::getEffect)
+                .toList()
+                .forEach(player::removeEffect);
+    }
+
+    private void tickLeggings(ItemStack stack, Player player, Level level) {
+        if (player.isOnFire()) {
+            player.clearFire();
+        }
+        if (stack.getOrCreateTag().getBoolean("Invisibility")) {
+            player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 11, 0, false, false));
+            player.setInvisible(true);
+        } else {
+            player.setInvisible(false);
+        }
+    }
+
+    public static boolean isManaitaArmorPart(Player player) {
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (slot.getType() != EquipmentSlot.Type.ARMOR) continue;
+
+            ItemStack armor = player.getItemBySlot(slot);
+            if (armor.getItem() instanceof ManaitaArmor) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void tickBoots(ItemStack stack, Player player, Level level) {
+    }
+
+    private void initNBT(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+
+        switch (this.slot) {
+            case HEAD -> {
+                if (!tag.contains("NightVision")) {
+                    tag.putBoolean("NightVision", false);
+                }
+            }
+            case LEGS -> {
+                if (!tag.contains("Invisibility")) {
+                    tag.putBoolean("Invisibility", false);
+                }
+            }
+            case FEET -> {
+                if (!tag.contains("Speed")) {
+                    tag.putInt("Speed", 1);
+                }
+            }
+        }
+    }
+
+    private boolean isEquipped(Player player, ItemStack stack) {
+        return player.getItemBySlot(this.slot) == stack;
+    }
+    public static int getSpeed(ItemStack stack) {
+        return stack.getOrCreateTag().getInt("Speed");
+    }
+    public static void setSpeed(ItemStack stack, int speed) {
+        stack.getOrCreateTag().putInt("Speed", speed);
+    }
+
+    public void onArmorKeyPress(ItemStack stack, Player player) {
+        var tag = stack.getOrCreateTag();
+        switch (this.slot) {
+            case HEAD -> {
+                boolean newValue = !tag.getBoolean("NightVision");
+                tag.putBoolean("NightVision", newValue);
+                player.displayClientMessage(
+                        Component.literal("[")
+                                .append(stack.getHoverName())
+                                .append("] NightVision: " + (newValue ? "ON" : "OFF"))
+                                .withStyle(ChatFormatting.AQUA),
+                        true
+                );
+            }
+            case LEGS -> {
+                boolean newValue = !tag.getBoolean("Invisibility");
+                tag.putBoolean("Invisibility", newValue);
+                player.displayClientMessage(
+                        Component.literal("[")
+                                .append(stack.getHoverName())
+                                .append("] Invisibility: " + (newValue ? "ON" : "OFF"))
+                                .withStyle(ChatFormatting.AQUA),
+                        true
+                );
+            }
+            case FEET -> {
+                int currentSpeed = getSpeed(stack);
+                int newSpeed = currentSpeed >= 8 ? 1 : currentSpeed + 1;
+                setSpeed(stack, newSpeed);
+                player.displayClientMessage(
+                        Component.literal("[")
+                                .append(stack.getHoverName())
+                                .append("] Speed Level: " + newSpeed)
+                                .withStyle(ChatFormatting.AQUA),
+                        true
+                );
+            }
+        }
+    }
+
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return false;
     }
 
     @Override
@@ -52,7 +185,7 @@ public class ManaitaArmor extends ArmorItem {
         return false;
     }
 
-    public static boolean hasFullSet(Player player) {
+    public static boolean isManaitaArmor(Player player) {
         ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
         ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
         ItemStack leggings = player.getItemBySlot(EquipmentSlot.LEGS);
@@ -64,57 +197,9 @@ public class ManaitaArmor extends ArmorItem {
                 boots.getItem() instanceof ManaitaArmor;
     }
 
-    @SubscribeEvent
-    public void onLivingHurt(LivingHurtEvent event) {
-        if (event.getEntityLiving() instanceof Player) {
-            Player player = (Player) event.getEntityLiving();
-            if (hasFullSet(player)) {
-                event.setCanceled(true);
-                event.setAmount(0);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onLivingSetAttackTarget(LivingSetAttackTargetEvent event) {
-        if (event.getTarget() instanceof Player) {
-            Player player = (Player) event.getTarget();
-            if (hasFullSet(player)) {
-                event.setCanceled(true);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            Player player = event.player;
-
-            if (hasFullSet(player)) {
-                player.noPhysics = true;
-                player.setInvulnerable(true);
-
-                if (player.isInWater() || player.isInLava()) {
-                    player.setAirSupply(player.getMaxAirSupply());
-                }
-
-                if (player.getBoundingBox().getSize() > 0.1) {
-                    player.refreshDimensions();
-                }
-            } else {
-                if (player.noPhysics && !player.isSpectator()) {
-                    player.noPhysics = false;
-                }
-                if (player.isInvulnerable() && !player.isCreative()) {
-                    player.setInvulnerable(false);
-                }
-            }
-        }
-    }
-
     @Override
     public void onArmorTick(ItemStack stack, Level world, Player player) {
-        if (hasFullSet(player)) {
+        if (isManaitaArmor(player)) {
             player.clearFire();
 
             player.getActiveEffects().stream()

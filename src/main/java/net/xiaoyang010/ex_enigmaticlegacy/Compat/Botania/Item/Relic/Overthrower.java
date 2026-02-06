@@ -1,5 +1,7 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic;
 
+import com.integral.enigmaticlegacy.api.items.ICursed;
+import com.integral.enigmaticlegacy.helpers.ItemLoreHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -42,7 +44,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.BanishmentCasting
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.InfernalParticleMessage;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.LightningBoltMessage;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.OverthrowChatMessage;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.INoEMCItem;
+import net.xiaoyang010.ex_enigmaticlegacy.api.INoEMCItem;
 import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.item.IRelic;
@@ -53,7 +55,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 
-public class Overthrower extends Item implements INoEMCItem {
+public class Overthrower extends Item implements INoEMCItem, ICursed {
     static HashMap<Player, LivingEntity> targetList = new HashMap<>();
 
     public Overthrower(Properties properties) {
@@ -84,6 +86,7 @@ public class Overthrower extends Item implements INoEMCItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        ItemLoreHelper.indicateCursedOnesOnly(tooltip);
         RelicImpl.addDefaultTooltip(stack, tooltip);
 
         if (Screen.hasShiftDown()) {

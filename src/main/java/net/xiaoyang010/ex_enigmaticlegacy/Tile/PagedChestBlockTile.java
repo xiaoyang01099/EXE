@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -15,10 +14,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.level.block.entity.ChestLidController;
-import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
-import net.minecraft.world.level.block.entity.LidBlockEntity;
+import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.PagedChestContainer;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
@@ -59,9 +55,24 @@ public class PagedChestBlockTile extends ChestBlockEntity implements MenuProvide
         };
     }
 
-
     public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, PagedChestBlockTile blockEntity) {
         blockEntity.chestLidController.tickLid();
+    }
+
+    @Override
+    public void startOpen(Player player) {
+        if (!this.remove && !player.isSpectator()) {
+            this.triggerEvent(1, 1);
+            this.openersCounter.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+        }
+    }
+
+    @Override
+    public void stopOpen(Player player) {
+        if (!this.remove && !player.isSpectator()) {
+            this.triggerEvent(1, 0);
+            this.openersCounter.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+        }
     }
 
     @Override
@@ -71,20 +82,6 @@ public class PagedChestBlockTile extends ChestBlockEntity implements MenuProvide
             return true;
         }
         return super.triggerEvent(id, type);
-    }
-
-    @Override
-    public void startOpen(Player player) {
-        if (!this.remove && !player.isSpectator()) {
-            this.openersCounter.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
-        }
-    }
-
-    @Override
-    public void stopOpen(Player player) {
-        if (!this.remove && !player.isSpectator()) {
-            this.openersCounter.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
-        }
     }
 
     @Override
@@ -113,7 +110,7 @@ public class PagedChestBlockTile extends ChestBlockEntity implements MenuProvide
 
     @Override
     public Component getDisplayName() {
-        return new TranslatableComponent("");
+        return Component.nullToEmpty("");
     }
 
     @Override
@@ -125,6 +122,7 @@ public class PagedChestBlockTile extends ChestBlockEntity implements MenuProvide
     public int getContainerSize() {
         return TOTAL_SLOTS;
     }
+
 
     @Override
     public boolean isEmpty() {
@@ -183,6 +181,13 @@ public class PagedChestBlockTile extends ChestBlockEntity implements MenuProvide
 
     public void dropContents(Level level, BlockPos pos) {
         Containers.dropContents(level, pos, this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveAdditional(tag);
+        return tag;
     }
 
     @Override

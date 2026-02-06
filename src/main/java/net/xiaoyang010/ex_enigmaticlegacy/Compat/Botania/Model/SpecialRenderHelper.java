@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
@@ -20,6 +21,8 @@ public final class SpecialRenderHelper extends RenderType {
     public static final RenderType POLYCHROME_COLLAPSE_PRISM;
     public static final RenderType COSMIC_BACKGROUND;
     public static final RenderType EVIL_WATER;
+    public static final RenderType STARRY_SKY;
+    public static final RenderType BLACK_HOLE;
 
     private SpecialRenderHelper(String string, VertexFormat vertexFormat, VertexFormat.Mode mode,
                                 int i, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
@@ -86,6 +89,36 @@ public final class SpecialRenderHelper extends RenderType {
 
         EVIL_WATER = makeLayer(ExEnigmaticlegacyMod.MODID + "evil_water",
                 DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
+
+        glState = RenderType.CompositeState.builder()
+                .setShaderState(new RenderStateShard.ShaderStateShard(SpecialCoreShaders::getStarrySkyShader))
+                .setTextureState(NO_TEXTURE)
+                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .setLightmapState(NO_LIGHTMAP)
+                .setOverlayState(NO_OVERLAY)
+                .setCullState(NO_CULL)
+                .setWriteMaskState(COLOR_WRITE)
+                .setDepthTestState(LEQUAL_DEPTH_TEST)
+                .createCompositeState(false);
+
+        STARRY_SKY = makeLayer(ExEnigmaticlegacyMod.MODID + ":starry_sky",
+                DefaultVertexFormat.POSITION_TEX,
+                VertexFormat.Mode.QUADS, 256, glState);
+
+        glState = RenderType.CompositeState.builder()
+                .setShaderState(new RenderStateShard.ShaderStateShard(SpecialCoreShaders::getBlackHoleShader))
+                .setTextureState(NO_TEXTURE)
+                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .setLightmapState(NO_LIGHTMAP)
+                .setOverlayState(NO_OVERLAY)
+                .setCullState(NO_CULL)
+                .setWriteMaskState(COLOR_WRITE)
+                .setDepthTestState(LEQUAL_DEPTH_TEST)
+                .createCompositeState(false);
+
+        BLACK_HOLE = makeLayer(ExEnigmaticlegacyMod.MODID + ":blackhole",
+                DefaultVertexFormat.POSITION_TEX,
+                VertexFormat.Mode.QUADS, 256, glState);
     }
 
 

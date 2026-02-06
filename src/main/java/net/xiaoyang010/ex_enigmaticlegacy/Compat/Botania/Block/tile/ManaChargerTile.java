@@ -1,6 +1,8 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.BlockPos;
@@ -29,6 +31,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.EComponent;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.opengl.GL11;
 import vazkii.botania.api.BotaniaAPIClient;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.BotaniaForgeClientCapabilities;
@@ -40,6 +43,7 @@ import vazkii.botania.api.mana.IManaReceiver;
 import vazkii.botania.api.mana.spark.IManaSpark;
 import vazkii.botania.api.mana.spark.ISparkAttachable;
 import vazkii.botania.api.mana.spark.SparkHelper;
+import vazkii.botania.client.core.helper.RenderHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,7 +52,6 @@ import java.util.List;
 public class ManaChargerTile extends BlockEntity implements IWandBindable, ISparkAttachable, IManaReceiver, Container {
     private static final int MANA_SPEED = 11240;
     private static final int MAX_MANA = 1000000; // 最大魔力容量
-
     private final LazyOptional<IManaReceiver> manaReceiverCap = LazyOptional.of(() -> this);
     private final LazyOptional<ISparkAttachable> sparkAttachableCap = LazyOptional.of(() -> this);
     public boolean requestUpdate = false;
@@ -334,13 +337,17 @@ public class ManaChargerTile extends BlockEntity implements IWandBindable, ISpar
     public static class WandHud implements IWandHUD {
         private final ManaChargerTile charger;
 
+        private static final int CIRCLE_Y_OFFSET = -70;
+        private static final int CIRCLE_RADIUS = 42;
+        private static final float RECEIVER_ICON_SCALE = 0.75f;
+        private static final int Z_LEVEL = 200;
+
         public WandHud(ManaChargerTile charger) {
             this.charger = charger;
         }
 
         @Override
         public void renderHUD(PoseStack ms, Minecraft mc) {
-
             ItemStack chargerStack = new ItemStack(charger.getBlockState().getBlock());
             String name = chargerStack.getHoverName().getString();
 
@@ -353,9 +360,7 @@ public class ManaChargerTile extends BlockEntity implements IWandBindable, ISpar
 
                 int color = 0xF5FF62;
                 BotaniaAPIClient.instance().drawSimpleManaHUD(ms, color, currentMana, maxMana, name);
-
-                drawIconsWithArrow(ms, mc);
-
+                drawItemsInCircle(ms, mc);
             } else {
                 int color = 0xB9B6B2;
                 String unlinkedText = EComponent.translatable("gui.ex_enigmaticlegacy.mana_charger.unlinked").getString();
@@ -363,85 +368,72 @@ public class ManaChargerTile extends BlockEntity implements IWandBindable, ISpar
             }
         }
 
-        private void drawIconsWithArrow(PoseStack ms, Minecraft mc) {
-            int x = mc.getWindow().getGuiScaledWidth() / 2 - 11;
-            int y = mc.getWindow().getGuiScaledHeight() / 2 + 30;
+        private void drawItemsInCircle(PoseStack ms, Minecraft mc) {
+            int centerX = mc.getWindow().getGuiScaledWidth() / 2;
+            int centerY = mc.getWindow().getGuiScaledHeight() / 2 + CIRCLE_Y_OFFSET;
+            int radius = CIRCLE_RADIUS;
 
-            if (charger.receiverPos != null) {
-                BlockEntity receiverTile = charger.level.getBlockEntity(charger.receiverPos);
-                if (receiverTile != null) {
-                    ItemStack receiverStack = new ItemStack(
-                            charger.level.getBlockState(charger.receiverPos).getBlock());
-                    mc.getItemRenderer().renderAndDecorateItem(receiverStack, x - 20, y);
-
-                    double distance = Math.sqrt(charger.worldPosition.distSqr(charger.receiverPos));
-                    String distText = String.format("%.1fm", distance);
-                    int distX = x - 20 + 8 - mc.font.width(distText) / 2;
-                    mc.font.drawShadow(ms, distText, distX, y + 18, 0xFFFFFF);
+            int itemCount = 0;
+            for (int i = 0; i < charger.getInventorySize(); i++) {
+                if (!charger.getStackInSlot(i).isEmpty()) {
+                    itemCount++;
                 }
             }
 
-            drawArrow(ms, x - 5, y + 8, x + 22, y + 8);
+            if (itemCount == 0) return;
 
-            ItemStack chargerIcon = new ItemStack(charger.getBlockState().getBlock());
-            mc.getItemRenderer().renderAndDecorateItem(chargerIcon, x + 26, y);
+            float angle = -90.0f;
+            float anglePer = 360.0f / (float) itemCount;
 
-            String speedText = EComponent.translatable("gui.ex_enigmaticlegacy.mana_charger.transferring").getString();
-            int speedX = x + 26 + 8 - mc.font.width(speedText) / 2;
-            mc.font.drawShadow(ms, speedText, speedX, y + 18, 0x00FF00);
-        }
+            for (int i = 0; i < charger.getInventorySize(); i++) {
+                ItemStack stack = charger.getStackInSlot(i);
+                if (stack.isEmpty()) continue;
 
-        private void drawArrow(PoseStack ms, int startX, int startY, int endX, int endY) {
-            int arrowColor = 0xFF00AAFF;
-            int glowColor = 0x8000AAFF;
+                int xPos = (int) (centerX + Math.cos(angle * Math.PI / 180.0) * radius - 8.0);
+                int yPos = (int) (centerY + Math.sin(angle * Math.PI / 180.0) * radius - 8.0);
 
-            int arrowLength = endX - startX;
-            int arrowHeadLength = 6;
-            int arrowHeadWidth = 4;
+                ms.pushPose();
+                ms.translate(0, 0, Z_LEVEL);
 
-            drawArrowLine(ms, startX - 1, startY - 1, endX - arrowHeadLength - 1, startY - 1, 3, glowColor);
-            drawArrowLine(ms, startX - 1, startY + 1, endX - arrowHeadLength - 1, startY + 1, 3, glowColor);
-            drawArrowLine(ms, startX - 1, startY, endX - arrowHeadLength - 1, startY, 3, glowColor);
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 0.75f);
 
-            drawArrowLine(ms, startX, startY, endX - arrowHeadLength, startY, 2, arrowColor);
+                float manaPercent = ManaChargerTile.getManaPercent(stack) / 100.0f;
+                RenderHelper.renderProgressPie(ms, xPos, yPos, manaPercent, stack);
 
-            drawArrowHead(ms, endX, startY, arrowHeadLength, arrowHeadWidth, arrowColor);
+                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+                RenderSystem.colorMask(true, true, true, true);
+                RenderSystem.depthMask(true);
+                GL11.glStencilMask(0xFF);
+                RenderSystem.enableTexture();
+                RenderSystem.disableBlend();
+                GL11.glDisable(GL11.GL_STENCIL_TEST);
 
-            drawAnimatedDots(ms, startX, startY, endX - arrowHeadLength, startY);
-        }
+                ms.pushPose();
+                ms.translate(0, 0, 1);
+                RenderSystem.enableDepthTest();
+                mc.getItemRenderer().renderAndDecorateItem(stack, xPos, yPos);
+                RenderSystem.disableDepthTest();
+                ms.popPose();
 
-        private void drawArrowLine(PoseStack ms, int x1, int y1, int x2, int y2, int thickness, int color) {
-            for (int i = 0; i < thickness; i++) {
-                GuiComponent.fill(ms, x1, y1 - i/2, x2, y1 + i/2 + 1, color);
-            }
-        }
+                if (i == 0 && charger.receiverPos != null) {
+                    ms.pushPose();
+                    ms.translate(xPos + 11.0, yPos + 10.0, 2.0);
+                    ms.scale(RECEIVER_ICON_SCALE, RECEIVER_ICON_SCALE, RECEIVER_ICON_SCALE);
 
-        private void drawArrowHead(PoseStack ms, int tipX, int tipY, int length, int width, int color) {
-            for (int i = 0; i < length; i++) {
-                int currentWidth = (width * (length - i)) / length;
-                GuiComponent.fill(ms,
-                        tipX - i,
-                        tipY - currentWidth,
-                        tipX - i + 1,
-                        tipY + currentWidth + 1,
-                        color);
-            }
-        }
+                    BlockEntity receiverTile = charger.level.getBlockEntity(charger.receiverPos);
+                    if (receiverTile != null) {
+                        ItemStack receiverStack = new ItemStack(
+                                charger.level.getBlockState(charger.receiverPos).getBlock());
+                        mc.getItemRenderer().renderAndDecorateItem(receiverStack, 0, 0);
+                    }
 
-        private void drawAnimatedDots(PoseStack ms, int startX, int startY, int endX, int endY) {
-            long time = System.currentTimeMillis();
-            int dotCount = 3;
-            int totalLength = endX - startX;
+                    ms.popPose();
+                }
 
-            for (int i = 0; i < dotCount; i++) {
-                float offset = (time / 200f + i * 0.33f) % 1.0f;
-                int dotX = startX + (int)(totalLength * offset);
-
-                int dotColor = 0xFFFFFFFF;
-                GuiComponent.fill(ms, dotX - 1, startY - 1, dotX + 2, startY + 2, dotColor);
-
-                int glowColor = 0x4000AAFF;
-                GuiComponent.fill(ms, dotX - 2, startY - 2, dotX + 3, startY + 3, glowColor);
+                ms.popPose();
+                angle += anglePer;
             }
         }
     }

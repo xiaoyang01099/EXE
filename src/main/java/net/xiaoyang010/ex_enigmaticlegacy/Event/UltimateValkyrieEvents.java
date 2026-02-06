@@ -46,7 +46,6 @@ import static net.xiaoyang010.ex_enigmaticlegacy.Item.armor.UltimateValkyrie.isF
 public class UltimateValkyrieEvents {
     private static final String NBT_SHIELD_COUNT = "ValkyrieShieldCount";
     private static final String NBT_COOLDOWN_TIME = "ValkyrieShieldCooldown";
-    private static final String NBT_SKULL_COOLDOWN = "ValkyrieSkullCooldown";
     private static final String NBT_OWNER_UUID = "ValkyrieOwnerUUID";
     private static final String NBT_ENHANCED_SKELETON = "ValkyrieEnhanced";
     private static final String NBT_WITHER_KILL_MARK = "ValkyrieWitherKill";
@@ -54,7 +53,6 @@ public class UltimateValkyrieEvents {
     private static final String NBT_SKELETON_COUNT = "ValkyrieSkeletonCount";
     private static final float HEALTH_PER_SKELETON = 2.0F;
     private static final int MAX_SHIELD_COUNT = 25;
-    private static final int SKULL_COOLDOWN = 10;
     private static final UUID DAMAGE_MODIFIER_UUID = UUID.fromString("6C5B2A4E-3D1F-4E9B-8A7C-1F2E3D4C5B6A");
     private static final UUID HEALTH_MODIFIER_UUID = UUID.fromString("7D6C3B2A-4E1F-5F9C-9B8A-2F3F4E5D6C7B");
 
@@ -287,6 +285,17 @@ public class UltimateValkyrieEvents {
                 .count();
     }
 
+    private static boolean isValkyrieArmorPiece(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        Item item = stack.getItem();
+        return item == ModArmors.ULTIMATE_VALKYRIE_HELMET.get() ||
+                item == ModArmors.ULTIMATE_VALKYRIE_CHESTPLATE.get() ||
+                item == ModArmors.ULTIMATE_VALKYRIE_LEGGINGS.get() ||
+                item == ModArmors.ULTIMATE_VALKYRIE_BOOTS.get();
+    }
+
     /**
      * 玩家脱下装备时移除血量加成
      */
@@ -296,14 +305,22 @@ public class UltimateValkyrieEvents {
             if (event.getSlot().getType() == EquipmentSlot.Type.ARMOR) {
                 if (player.level instanceof ServerLevel serverLevel) {
                     serverLevel.getServer().execute(() -> {
-                        if (!UltimateValkyrie.isFullSuit(player)) {
-                            removeHealthBonus(player);
-                            player.displayClientMessage(
-                                    Component.nullToEmpty("§c武神套装效果已失效！"),
-                                    true
-                            );
-                        } else {
-                            updatePlayerMaxHealth(player);
+                        boolean wasValkyrieArmor = isValkyrieArmorPiece(event.getFrom());
+                        boolean isValkyrieArmor = isValkyrieArmorPiece(event.getTo());
+
+                        if (wasValkyrieArmor || isValkyrieArmor) {
+                            if (!UltimateValkyrie.isFullSuit(player)) {
+                                removeHealthBonus(player);
+
+                                if (wasValkyrieArmor) {
+                                    player.displayClientMessage(
+                                            Component.nullToEmpty("§c武神套装效果已失效！"),
+                                            true
+                                    );
+                                }
+                            } else {
+                                updatePlayerMaxHealth(player);
+                            }
                         }
                     });
                 }

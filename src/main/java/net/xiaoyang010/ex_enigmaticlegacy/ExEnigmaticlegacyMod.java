@@ -1,6 +1,5 @@
 package net.xiaoyang010.ex_enigmaticlegacy;
 
-import com.integral.enigmaticlegacy.proxy.CommonProxy;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,15 +16,24 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.ModParticleTypes;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.shader.AvaritiaShaders;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.NoEMCCommandInterceptor;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.NoEMCEventHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.ContinuumItem;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.ClientProxy;
+import net.xiaoyang010.ex_enigmaticlegacy.Network.CommonProxy;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.TooltipEvent;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.NoEMCCommandInterceptor;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.NoEMCEventHandler;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.EventHandler;
+import net.xiaoyang010.ex_enigmaticlegacy.Event.CrissaegrimEventHandler;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.ef.EffectManager;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.fx.FXHandler;
+import net.xiaoyang010.ex_enigmaticlegacy.api.test.CurseAbilityHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,14 +53,16 @@ public class ExEnigmaticlegacyMod {
 	public static final SimpleChannel PACKET_HANDLER = NetworkRegistry.newSimpleChannel(
 			new ResourceLocation(MODID, MODID), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 	private static int messageID = 0;
-	public static CommonProxy proxy;
+	public static CommonProxy proxy = DistExecutor.unsafeRunForDist(
+			() -> ClientProxy::new,
+			() -> CommonProxy::new
+	);
 
 	private static final Collection<AbstractMap.SimpleEntry<Runnable, Integer>> workQueue = new ConcurrentLinkedQueue<>();
 
 	public static void queueServerWork(int tick, Runnable action) {
 		workQueue.add(new AbstractMap.SimpleEntry<>(action, tick));
 	}
-
 
 	public ExEnigmaticlegacyMod() {
 		ModTabs.load();
@@ -85,9 +95,17 @@ public class ExEnigmaticlegacyMod {
 			MinecraftForge.EVENT_BUS.register(NoEMCCommandInterceptor.class);
 		}
 
+		MinecraftForge.EVENT_BUS.register(new CurseAbilityHandler());
 		MinecraftForge.EVENT_BUS.register(new RelicsEventHandler());
 		MinecraftForge.EVENT_BUS.register(new TooltipEvent());
 		MinecraftForge.EVENT_BUS.register(new SpectatorModeHandler());
+		MinecraftForge.EVENT_BUS.register(EventHandler.class);
+		MinecraftForge.EVENT_BUS.register(new CrissaegrimEventHandler());
+
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+			MinecraftForge.EVENT_BUS.register(new EffectManager());
+			FXHandler.registerEffects();
+		});
 
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -103,6 +121,7 @@ public class ExEnigmaticlegacyMod {
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		AvaritiaShaders.init();
+		event.enqueueWork(this::Continuum);
 	}
 
 	public static ResourceLocation path(String path) {
@@ -129,13 +148,15 @@ public class ExEnigmaticlegacyMod {
 		});
 	}
 
+	public void Continuum() {
+		ForgeRegistries.ITEMS.forEach(ContinuumItem::addPossibleItem);
+		ForgeRegistries.BLOCKS.forEach(ContinuumItem::addPossibleItem);
+	}
+
 	public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder,
 											 Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
 		PACKET_HANDLER.registerMessage(messageID, messageType, encoder, decoder, messageConsumer);
 		messageID++;
-	}
-	public static ResourceLocation getRL(String s){
-		return new ResourceLocation(MODID,s);
 	}
 }
 

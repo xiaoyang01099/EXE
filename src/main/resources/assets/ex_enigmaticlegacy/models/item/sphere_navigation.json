@@ -1,0 +1,36 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:items/res/sphere_navigation_0"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "ex_enigmaticlegacy:enabled": 0,
+        "ex_enigmaticlegacy:has_target": 0
+      },
+      "model": "ex_enigmaticlegacy:item/sphere_navigation_state_0"
+    },
+    {
+      "predicate": {
+        "ex_enigmaticlegacy:enabled": 0,
+        "ex_enigmaticlegacy:has_target": 1
+      },
+      "model": "ex_enigmaticlegacy:item/sphere_navigation_state_1"
+    },
+    {
+      "predicate": {
+        "ex_enigmaticlegacy:enabled": 1,
+        "ex_enigmaticlegacy:has_target": 0
+      },
+      "model": "ex_enigmaticlegacy:item/sphere_navigation_state_2"
+    },
+    {
+      "predicate": {
+        "ex_enigmaticlegacy:enabled": 1,
+        "ex_enigmaticlegacy:has_target": 1
+      },
+      "model": "ex_enigmaticlegacy:item/sphere_navigation_state_3"
+    }
+  ]
+}

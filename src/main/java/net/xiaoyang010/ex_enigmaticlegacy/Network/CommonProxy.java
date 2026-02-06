@@ -24,6 +24,16 @@ public class CommonProxy {
     public static void wispFX4(ClientLevel level, double posX, double posY, double posZ, Entity target, int type, boolean shrink, float gravity) {
     }
 
+    public void bolt(Level worldObj, Entity sourceEntity, Entity targetedEntity) {
+
+    }
+    public void nodeBolt(Level worldObj, float x, float y, float z, Entity targetedEntity) {
+
+    }
+    public void nodeBolt(Level worldObj, float x, float y, float z, float x2, float y2, float z2) {
+
+    }
+
     public void init() {
     }
 }

@@ -143,11 +143,6 @@ public class TileEngineerHopper extends TileInventory implements IBoundRender, H
 
     @Override
     public void renderHUD(PoseStack poseStack, Minecraft mc) {
-        this.render(mc, poseStack);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void render(Minecraft mc, PoseStack poseStack) {
         int screenWidth = mc.getWindow().getGuiScaledWidth();
         int screenHeight = mc.getWindow().getGuiScaledHeight();
         int x = screenWidth / 2 - 7;

@@ -1,5 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Item.armor;
 
+import com.integral.enigmaticlegacy.api.items.ICursed;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -24,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public abstract class UltimateValkyrie extends ArmorItem {
+public abstract class UltimateValkyrie extends ArmorItem implements ICursed {
     public UltimateValkyrie(EquipmentSlot slot, Properties properties) {
         super(ValkyrieMaterial.INSTANCE, slot, properties);
     }

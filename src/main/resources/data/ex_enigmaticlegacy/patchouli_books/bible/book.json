@@ -2,10 +2,7 @@
   "name": "item.ex_enigmaticlegacy.bible",
   "landing_text": "info.ex_enigmaticlegacy.bible",
   "book_texture": "ex_enigmaticlegacy:textures/gui/book.png",
-  "filler_texture": "ex_enigmaticlegacy:textures/gui/book_filler.png",
   "model": "ex_enigmaticlegacy:bible",
   "version": 114514,
-  "show_toasts": false,
-  "use_blocky_font": false,
-  "creative_tab": ""
+  "creative_tab": "ex_enigmaticlegacy"
 }

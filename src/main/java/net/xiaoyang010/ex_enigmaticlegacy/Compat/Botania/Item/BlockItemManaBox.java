@@ -31,7 +31,7 @@ public class BlockItemManaBox extends BlockItem implements IManaItem {
         super(ModBlockss.MANA_BOX.get(),
                 ModItems.defaultBuilder()
                         .stacksTo(1)
-                        .rarity(Rarity.RARE)
+                        .rarity(Rarity.EPIC)
                         .tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA));
     }
 
