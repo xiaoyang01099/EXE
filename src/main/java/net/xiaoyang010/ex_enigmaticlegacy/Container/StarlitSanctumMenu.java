@@ -35,8 +35,8 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
 
     private static final int MAIN_GRID_SLOTS = 486;
     private static final int INPUT_LEFT_SLOT = 486;
-    private static final int OUTPUT_SLOT = 488;
     private static final int INPUT_RIGHT_SLOT = 487;
+    private static final int OUTPUT_SLOT = 488;
     private static final int TOTAL_CUSTOM_SLOTS = 489;
 
 

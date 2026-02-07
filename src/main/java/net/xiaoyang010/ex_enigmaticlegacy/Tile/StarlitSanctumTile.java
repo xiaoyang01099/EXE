@@ -38,8 +38,8 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
     private static final int TOTAL_SLOTS = 489;
     private static final int MAIN_GRID_SLOTS = 486;
     private static final int INPUT_LEFT_SLOT = 486;
-    private static final int OUTPUT_SLOT = 487;
-    private static final int INPUT_RIGHT_SLOT = 488;
+    private static final int INPUT_RIGHT_SLOT = 487;
+    private static final int OUTPUT_SLOT = 488;
 
     private NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(TOTAL_SLOTS, ItemStack.EMPTY);
     private final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
