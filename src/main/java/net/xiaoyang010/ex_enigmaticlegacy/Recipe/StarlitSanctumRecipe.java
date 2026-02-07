@@ -23,29 +23,21 @@ import java.util.Map;
 
 public class StarlitSanctumRecipe implements Recipe<Container> {
     public static final String RECIPE_ID = "starlit_crafting";
-    private final ResourceLocation id;
-
-    private final int manaCost;
-    private final ItemStack result;
-
-    private final Ingredient leftInput;
-    private final int leftInputCount;
-    private final Ingredient rightInput;
-    private final int rightInputCount;
-
-    private final List<NonNullList<Ingredient>> patternGroups;
-
     private static final int INPUT_LEFT_SLOT = 486;
     private static final int INPUT_RIGHT_SLOT = 487;
     private static final int GRID_ROWS = 18;
     private static final int GRID_COLS_PER_BLOCK = 9;
     private static final int TOTAL_ROW_WIDTH = 27;
+    private final ResourceLocation id;
+    private final long manaCost;
+    private final ItemStack result;
+    private final Ingredient leftInput;
+    private final int leftInputCount;
+    private final Ingredient rightInput;
+    private final int rightInputCount;
+    private final List<NonNullList<Ingredient>> patternGroups;
 
-    public StarlitSanctumRecipe(ResourceLocation id, int manaCost,
-                                Ingredient leftInput, int leftInputCount,
-                                Ingredient rightInput, int rightInputCount,
-                                List<NonNullList<Ingredient>> patternGroups,
-                                ItemStack result) {
+    public StarlitSanctumRecipe(ResourceLocation id, long manaCost, Ingredient leftInput, int leftInputCount, Ingredient rightInput, int rightInputCount, List<NonNullList<Ingredient>> patternGroups, ItemStack result) {
         this.id = id;
         this.manaCost = manaCost;
         this.leftInput = leftInput;
@@ -56,39 +48,39 @@ public class StarlitSanctumRecipe implements Recipe<Container> {
         this.result = result;
     }
 
-    public int getManaCost() {
+    public long getManaCost() {
         return manaCost;
     }
 
-    public Ingredient getLeftInput() { return leftInput; }
-    public int getLeftInputCount() { return leftInputCount; }
+    public Ingredient getLeftInput() {
+        return leftInput;
+    }
 
-    public Ingredient getRightInput() { return rightInput; }
-    public int getRightInputCount() { return rightInputCount; }
+    public int getLeftInputCount() {
+        return leftInputCount;
+    }
 
-    public List<NonNullList<Ingredient>> getPatternGroups() { return patternGroups; }
+    public Ingredient getRightInput() {
+        return rightInput;
+    }
 
-    @Override
-    public NonNullList<Ingredient> getIngredients() {
-        NonNullList<Ingredient> ingredients = NonNullList.create();
-        ingredients.add(leftInput);
-        ingredients.add(rightInput);
-        for (NonNullList<Ingredient> patternGroup : patternGroups) {
-            ingredients.addAll(patternGroup);
-        }
+    public int getRightInputCount() {
+        return rightInputCount;
+    }
 
-        return Recipe.super.getIngredients();
+    public List<NonNullList<Ingredient>> getPatternGroups() {
+        return patternGroups;
     }
 
     @Override
     public boolean matches(Container pContainer, Level pLevel) {
         ItemStack leftStack = pContainer.getItem(INPUT_LEFT_SLOT);
-        if (!leftInput.test(leftStack)) {
+        if (!leftInput.test(leftStack) || leftStack.getCount() < leftInputCount) {
             return false;
         }
 
         ItemStack rightStack = pContainer.getItem(INPUT_RIGHT_SLOT);
-        if (!rightInput.test(rightStack)) {
+        if (!rightInput.test(rightStack) || rightStack.getCount() < rightInputCount) {
             return false;
         }
 
@@ -157,7 +149,7 @@ public class StarlitSanctumRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack getResultItem() {
-        return result.copy();
+        return result;
     }
 
     @Override
@@ -175,12 +167,40 @@ public class StarlitSanctumRecipe implements Recipe<Container> {
         return ModRecipes.STARLIT_TYPE;
     }
 
-
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<StarlitSanctumRecipe> {
+
+        private static Map<String, Ingredient> customKeyFromJson(JsonObject json) {
+            Map<String, Ingredient> map = Maps.newHashMap();
+
+            for (Map.Entry<String, com.google.gson.JsonElement> entry : json.entrySet()) {
+                if (entry.getKey().length() != 1) {
+                    throw new JsonSyntaxException("Invalid key entry: '" + entry.getKey() + "' is an invalid symbol.");
+                }
+
+                if (" ".equals(entry.getKey())) {
+                    throw new JsonSyntaxException("Invalid key entry: ' ' is a reserved symbol.");
+                }
+
+                map.put(entry.getKey(), Ingredient.fromJson(entry.getValue()));
+            }
+
+            map.put(" ", Ingredient.EMPTY);
+            return map;
+        }
 
         @Override
         public StarlitSanctumRecipe fromJson(ResourceLocation pRecipeId, JsonObject pJson) {
-            int mana = GsonHelper.getAsInt(pJson, "mana");
+            long mana;
+            if (pJson.has("mana")) {
+                if (pJson.get("mana").isJsonPrimitive() && pJson.get("mana").getAsJsonPrimitive().isNumber()) {
+                    mana = pJson.get("mana").getAsLong();
+                } else {
+                    throw new JsonParseException("'mana' must be a number");
+                }
+            } else {
+                throw new JsonParseException("Missing 'mana' field");
+            }
+
             ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(pJson, "result"));
 
             JsonObject leftJson = GsonHelper.getAsJsonObject(pJson, "left_input");
@@ -205,7 +225,6 @@ public class StarlitSanctumRecipe implements Recipe<Container> {
 
             return new StarlitSanctumRecipe(pRecipeId, mana, leftIng, leftCount, rightIng, rightCount, patterns, result);
         }
-
 
         private NonNullList<Ingredient> parsePatternBlock(JsonObject json) {
             Map<String, Ingredient> key = customKeyFromJson(GsonHelper.getAsJsonObject(json, "key"));
@@ -233,29 +252,10 @@ public class StarlitSanctumRecipe implements Recipe<Container> {
             return ingredients;
         }
 
-        private static Map<String, Ingredient> customKeyFromJson(JsonObject json) {
-            Map<String, Ingredient> map = Maps.newHashMap();
-
-            for (Map.Entry<String, com.google.gson.JsonElement> entry : json.entrySet()) {
-                if (entry.getKey().length() != 1) {
-                    throw new JsonSyntaxException("Invalid key entry: '" + (String)entry.getKey() + "' is an invalid symbol.");
-                }
-
-                if (" ".equals(entry.getKey())) {
-                    throw new JsonSyntaxException("Invalid key entry: ' ' is a reserved symbol.");
-                }
-
-                map.put(entry.getKey(), Ingredient.fromJson(entry.getValue()));
-            }
-
-            map.put(" ", Ingredient.EMPTY);
-            return map;
-        }
-
         @Nullable
         @Override
         public StarlitSanctumRecipe fromNetwork(ResourceLocation pRecipeId, FriendlyByteBuf pBuffer) {
-            int mana = pBuffer.readInt();
+            long mana = pBuffer.readLong();
 
             Ingredient leftIng = Ingredient.fromNetwork(pBuffer);
             int leftCount = pBuffer.readInt();
@@ -280,7 +280,7 @@ public class StarlitSanctumRecipe implements Recipe<Container> {
 
         @Override
         public void toNetwork(FriendlyByteBuf pBuffer, StarlitSanctumRecipe pRecipe) {
-            pBuffer.writeInt(pRecipe.manaCost);
+            pBuffer.writeLong(pRecipe.manaCost);
 
             pRecipe.leftInput.toNetwork(pBuffer);
             pBuffer.writeInt(pRecipe.leftInputCount);
@@ -300,7 +300,7 @@ public class StarlitSanctumRecipe implements Recipe<Container> {
     }
 
     public static class Type implements RecipeType<StarlitSanctumRecipe> {
-        public static final StarlitSanctumRecipe.Type INSTANCE = new StarlitSanctumRecipe.Type();
+        public static final Type INSTANCE = new Type();
         public static final String ID = "starlit_crafting";
 
         @Override

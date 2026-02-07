@@ -11,6 +11,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.StarlitSanctumTile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,10 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
     private static final int BAR_POS_X = 550;
     private static final int BAR_POS_Y = 10;
 
+    private static final int PROGRESS_BAR_X = 245;
+    private static final int PROGRESS_BAR_Y = 55;
+    private static final int PROGRESS_BAR_WIDTH = 30;
+    private static final int PROGRESS_BAR_HEIGHT = 4;
 
     public StarlitSanctumScreen(StarlitSanctumMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
@@ -88,7 +93,6 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
             }
         }
 
-
         ItemStack carried = this.menu.getCarried();
         if (!carried.isEmpty()) {
             RenderFloatingItem(carried, mouseX, mouseY, null);
@@ -100,7 +104,19 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
 
         if (isHovering(BAR_POS_X, BAR_POS_Y, BAR_WIDTH, BAR_HEIGHT, logicMouseX, logicMouseY)) {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(new TextComponent(this.menu.getMana() + " / " + this.menu.getMaxMana() + " Mana"));
+            long currentMana = this.menu.getManaLong();
+            long maxMana = this.menu.getMaxManaLong();
+
+            String currentStr = StarlitSanctumTile.formatMana(currentMana);
+            String maxStr = StarlitSanctumTile.formatMana(maxMana);
+
+            tooltip.add(new TextComponent("§b" + currentStr + " §7/ §b" + maxStr + " §7Mana"));
+
+            if (maxMana > 0) {
+                double percent = (double) currentMana / maxMana * 100.0;
+                tooltip.add(new TextComponent(String.format("§7(%.2f%%)", percent)));
+            }
+
             this.renderComponentTooltip(ms, tooltip, mouseX, mouseY);
         }
     }
@@ -109,8 +125,8 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
         ItemStack itemstack = slot.getItem();
         String countString = null;
         ItemStack carried = this.menu.getCarried();
-        if (this.isQuickCrafting && this.quickCraftSlots.contains(slot) && !carried.isEmpty()) {
 
+        if (this.isQuickCrafting && this.quickCraftSlots.contains(slot) && !carried.isEmpty()) {
             if (this.quickCraftSlots.size() > 1 && AbstractContainerMenu.canItemQuickReplace(slot, carried, true) && this.menu.canDragTo(slot)) {
                 ItemStack fakeStack = carried.copy();
                 int existingCount = slot.getItem().isEmpty() ? 0 : slot.getItem().getCount();
@@ -137,7 +153,6 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
         modelViewStack.scale(scale, scale, 1.0F);
         RenderSystem.applyModelViewMatrix();
 
-
         this.itemRenderer.renderAndDecorateItem(itemstack, 0, 0);
         this.itemRenderer.renderGuiItemDecorations(this.font, itemstack, 0, 0, countString);
 
@@ -148,15 +163,19 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
     private void RenderFloatingItem(ItemStack stack, int mouseX, int mouseY, String text) {
         this.setBlitOffset(200);
         this.itemRenderer.blitOffset = 200.0F;
+
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         modelViewStack.translate(mouseX, mouseY, 0);
         modelViewStack.scale(scale, scale, 1.0F);
         RenderSystem.applyModelViewMatrix();
+
         this.itemRenderer.renderAndDecorateItem(stack, -8, -8);
         this.itemRenderer.renderGuiItemDecorations(this.font, stack, -8, -8, text);
+
         modelViewStack.popPose();
         RenderSystem.applyModelViewMatrix();
+
         this.setBlitOffset(0);
         this.itemRenderer.blitOffset = 0.0F;
     }
@@ -181,11 +200,16 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
                 BAR_WIDTH, BAR_HEIGHT,
                 TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
-        int currentMana = this.menu.getMana();
-        int maxMana = this.menu.getMaxMana();
+        long currentMana = this.menu.getManaLong();
+        long maxMana = this.menu.getMaxManaLong();
 
-        int fillHeight = (maxMana > 0) ? (int)((long)currentMana * BAR_HEIGHT / maxMana) : 0;
-        if (fillHeight > BAR_HEIGHT) fillHeight = BAR_HEIGHT;
+        int fillHeight = 0;
+        if (maxMana > 0) {
+            double ratio = (double) currentMana / (double) maxMana;
+            fillHeight = (int) (ratio * BAR_HEIGHT);
+
+            fillHeight = Math.max(0, Math.min(fillHeight, BAR_HEIGHT));
+        }
 
         if (fillHeight > 0) {
             int x = BAR_POS_X;
@@ -197,16 +221,40 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
                     BAR_WIDTH, fillHeight,
                     TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
+
+        int progress = this.menu.getCraftingProgress();
+        if (progress > 0) {
+            fill(ms, PROGRESS_BAR_X - 1, PROGRESS_BAR_Y - 1,
+                    PROGRESS_BAR_X + PROGRESS_BAR_WIDTH + 1, PROGRESS_BAR_Y + PROGRESS_BAR_HEIGHT + 1,
+                    0xFF000000);
+
+            fill(ms, PROGRESS_BAR_X, PROGRESS_BAR_Y,
+                    PROGRESS_BAR_X + PROGRESS_BAR_WIDTH, PROGRESS_BAR_Y + PROGRESS_BAR_HEIGHT,
+                    0xFF3C3C3C);
+
+            int filledWidth = (PROGRESS_BAR_WIDTH * progress) / 100;
+            if (filledWidth > 0) {
+                int color1 = 0xFF00FF00;
+                int color2 = 0xFF00CC00;
+                fillGradient(ms, PROGRESS_BAR_X, PROGRESS_BAR_Y,
+                        PROGRESS_BAR_X + filledWidth, PROGRESS_BAR_Y + PROGRESS_BAR_HEIGHT,
+                        color1, color2);
+            }
+
+            String progressText = progress + "%";
+            int textX = PROGRESS_BAR_X + (PROGRESS_BAR_WIDTH - this.font.width(progressText)) / 2;
+            int textY = PROGRESS_BAR_Y + PROGRESS_BAR_HEIGHT + 2;
+            this.font.draw(ms, progressText, textX, textY, 0xFFFFFFFF);
+        }
     }
 
-    private boolean isHovering(net.minecraft.world.inventory.Slot slot, double mouseX, double mouseY) {
+    private boolean isHovering(Slot slot, double mouseX, double mouseY) {
         return this.isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY);
     }
 
     private boolean isHovering(int rectX, int rectY, int rectW, int rectH, int mouseX, int mouseY) {
         return mouseX >= rectX && mouseX < rectX + rectW && mouseY >= rectY && mouseY < rectY + rectH;
     }
-
 
     private double getLogicX(double mouseX) {
         return (mouseX - getXOffset()) / scale;

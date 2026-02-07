@@ -130,7 +130,7 @@ public class TileCursedGourmaryllis extends TileCursedGeneratingFlower {
 
     @Override
     public @Nullable BlockPos findClosestTarget() {
-        return null;
+        return super.findClosestTarget();
     }
 
     @Override

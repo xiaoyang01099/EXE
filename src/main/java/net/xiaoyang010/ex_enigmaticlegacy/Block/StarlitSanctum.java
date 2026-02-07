@@ -1,5 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Block;
 
+
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,6 +14,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -25,9 +27,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
-import net.xiaoyang010.ex_enigmaticlegacy.Tile.StarlitSanctumTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.StarlitSanctumTile;
 
 import javax.annotation.Nullable;
 
@@ -35,13 +37,12 @@ import static vazkii.botania.common.block.BlockMod.createTickerHelper;
 
 public class StarlitSanctum extends Block implements EntityBlock {
     public StarlitSanctum() {
-        super(BlockBehaviour.Properties.of(Material.STONE)
-                .sound(SoundType.STONE)
-                .strength(10f, 10f)
-                .lightLevel(s -> 2)
-                .requiresCorrectToolForDrops()
-                .hasPostProcess((bs, br, bp) -> true)
-                .emissiveRendering((bs, br, bp) -> true));
+        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(10f, 10f).lightLevel(s -> 2).requiresCorrectToolForDrops().hasPostProcess((bs, br, bp) -> true).emissiveRendering((bs, br, bp) -> true));
+    }
+
+    @Override
+    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
+        return 7;
     }
 
     @Override
@@ -116,4 +117,5 @@ public class StarlitSanctum extends Block implements EntityBlock {
         else
             return 0;
     }
+
 }

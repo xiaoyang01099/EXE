@@ -136,4 +136,16 @@ public class StructureValidator {
 
         return true;
     }
+
+    public static Map<int[], Block> getSpecificBlocks() {
+        return new HashMap<>(SPECIFIC_BLOCKS);
+    }
+
+    public static Map<int[], TagKey<Block>> getTaggedBlocks() {
+        return new HashMap<>(TAGGED_BLOCKS);
+    }
+
+    public static int getTotalBlockCount() {
+        return SPECIFIC_BLOCKS.size() + TAGGED_BLOCKS.size();
+    }
 }

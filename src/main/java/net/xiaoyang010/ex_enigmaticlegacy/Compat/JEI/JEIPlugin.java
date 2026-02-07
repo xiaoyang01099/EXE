@@ -8,10 +8,13 @@ import mezz.jei.api.registration.*;
 import morph.avaritia.api.ExtremeCraftingRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -25,9 +28,9 @@ import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.*;
-import net.xiaoyang010.ex_enigmaticlegacy.Recipe.StarlitSanctumRecipe.Type;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,7 +55,8 @@ public class JEIPlugin implements IModPlugin {
                 new NidavellirCategory(registration.getJeiHelpers().getGuiHelper()),
                 new AncientAlphirineCategory(registration.getJeiHelpers().getGuiHelper()),
                 new DoubleCraftingRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
-                new StarlitSanctumCategory(registration.getJeiHelpers().getGuiHelper()));
+                new StarlitSanctumCategory(registration.getJeiHelpers().getGuiHelper())
+        );
     }
 
     //配方显示位置，大小
@@ -67,61 +71,54 @@ public class JEIPlugin implements IModPlugin {
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
         registration.addRecipeTransferHandler(CelestialHTMenu.class, CelestialTransmuteRecipe.TYPE_ID, 1, 4, 5, 36);
         registration.addRecipeTransferHandler(RainbowTableContainer.class, RainbowTableRecipe.TYPE_ID, 0, 4, 5, 36);
-        registration.addRecipeTransferHandler(StarlitSanctumMenu.class, new ResourceLocation(ExEnigmaticlegacyMod.MODID, StarlitSanctumRecipe.RECIPE_ID), 0, 488, 489, 36);
+        registration.addRecipeTransferHandler(StarlitSanctumMenu.class, StarlitSanctumCategory.UID, 0, 488, 489, 36);
         registration.addUniversalRecipeTransferHandler(new AvaTransferHandler());
-
-        /*
-        registration.addRecipeTransferHandler(new IRecipeTransferInfo<StarlitSanctumMenu, StarlitSanctumRecipe>() {
-            @Override
-            public Class<StarlitSanctumMenu> getContainerClass() {
-                return StarlitSanctumMenu.class;
-            }
-
-            @Override
-            public Class<StarlitSanctumRecipe> getRecipeClass() {
-                return StarlitSanctumRecipe.class;
-            }
-
-            @Override
-            public ResourceLocation getRecipeCategoryUid() {
-                return StarlitSanctumCategory.UID;
-            }
-
-            @Override
-            public boolean canHandle(StarlitSanctumMenu container, StarlitSanctumRecipe recipe) {
-                return true;
-            }
-
-            @Override
-            public List<Slot> getRecipeSlots(StarlitSanctumMenu container, StarlitSanctumRecipe recipe) {
-                List<Slot> slots = new ArrayList<>();
-
-                Slot slot0 = container.getSlot(0);
-                slots.add(slot0);
-                slots.add(container.getSlot(2));
-                for (int i = 3; i <= 488; i++) {
-                    slots.add(container.getSlot(i));
-                }
-
-                return slots;
-            }
-
-            @Override
-            public List<Slot> getInventorySlots(StarlitSanctumMenu container, StarlitSanctumRecipe recipe) {
-                List<Slot> slots = new ArrayList<>();
-                for (int i = 489; i < container.slots.size(); i++) {
-                    slots.add(container.getSlot(i));
-                }
-                return slots;
-            }
-        });*/
+//        registration.addRecipeTransferHandler(new IRecipeTransferInfo<StarlitSanctumMenu, StarlitSanctumRecipe>() {
+//            @Override
+//            public Class<StarlitSanctumMenu> getContainerClass() {
+//                return StarlitSanctumMenu.class;
+//            }
+//            @Override
+//            public Class<StarlitSanctumRecipe> getRecipeClass() {
+//                return StarlitSanctumRecipe.class;
+//            }
+//            @Override
+//            public ResourceLocation getRecipeCategoryUid() {
+//                return StarlitSanctumCategory.UID;
+//            }
+//            @Override
+//            public boolean canHandle(StarlitSanctumMenu container, StarlitSanctumRecipe recipe) {
+//                return true;
+//            }
+//            @Override
+//            public List<Slot> getRecipeSlots(StarlitSanctumMenu container, StarlitSanctumRecipe recipe) {
+//                List<Slot> slots = new ArrayList<>();
+//                slots.add(container.getSlot(486));
+//                slots.add(container.getSlot(488));
+//                for (int i = 0; i < 486; i++) {
+//                    slots.add(container.getSlot(i));
+//                }
+//                return slots;
+//            }
+//            @Override
+//            public List<Slot> getInventorySlots(StarlitSanctumMenu container, StarlitSanctumRecipe recipe) {
+//                List<Slot> slots = new ArrayList<>();
+//                for (int i = 489; i < container.slots.size(); i++) {
+//                    slots.add(container.getSlot(i));
+//                }
+//
+//                return slots;
+//            }
+//        });
     }
 
     //用合成方块查找配方
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(ModBlockss.CELESTIAL_HOLINESS_TRANSMUTER.get()), CelestialTransmuteRecipe.TYPE_ID);
-        registration.addRecipeCatalyst(new ItemStack(ModBlockss.RAINBOW_TABLE.get()), RainbowTableRecipe.TYPE_ID);
+        registration.addRecipeCatalyst(new ItemStack(ModBlockss.CELESTIAL_HOLINESS_TRANSMUTER.get()),
+                CelestialTransmuteRecipe.TYPE_ID);
+        registration.addRecipeCatalyst(new ItemStack(ModBlockss.RAINBOW_TABLE.get()),
+                RainbowTableRecipe.TYPE_ID);
         registration.addRecipeCatalyst(new ItemStack(ModBlockss.POLYCHROME_COLLAPSE_PRISM.get()), PolychromeRecipeCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(ModBlockss.NIDAVELLIR_FORGE.get()), NidavellirCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(ModBlockss.EXTREME_AUTO_CRAFTER.get()), EXTREME_CRAFTING_TYPE);
@@ -148,8 +145,8 @@ public class JEIPlugin implements IModPlugin {
                 .stream().filter(Objects::nonNull).toList();
         registration.addRecipes(ancientAlphirineRecipes, AncientAlphirineRecipe.TYPE_ID);
 
-        List<PolychromeRecipe> polychromeRecipes = new ArrayList<>(recipeManager.getAllRecipesFor(ModRecipes.POLYCHROME_TYPE)
-                .stream().filter(Objects::nonNull).toList());
+        List<PolychromeRecipe> polychromeRecipes = recipeManager.getAllRecipesFor(ModRecipes.POLYCHROME_TYPE)
+                .stream().filter(Objects::nonNull).toList();
         registration.addRecipes(polychromeRecipes, PolychromeRecipeCategory.UID);
 
         List<StarlitSanctumRecipe> starlitRecipes = new ArrayList<>(
@@ -157,7 +154,6 @@ public class JEIPlugin implements IModPlugin {
                         .stream().filter(Objects::nonNull).toList()
         );
         registration.addRecipes(starlitRecipes, StarlitSanctumCategory.UID);
-
 
         ClientLevel lvl = Minecraft.getInstance().level;
         if (lvl != null) {

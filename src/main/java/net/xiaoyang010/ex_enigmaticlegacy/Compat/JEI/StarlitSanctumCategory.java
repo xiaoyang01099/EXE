@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.StarlitSanctumRecipe;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.EComponent;
 
@@ -40,7 +41,7 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
     private static final int TEX_WIDTH = 539;
     private static final int TEX_HEIGHT = 431;
 
-    private static final float SCALE = 0.35f;
+    private static final float SCALE = 0.7f;
 
     private final int scaledWidth = (int) (TEX_WIDTH * SCALE);
     private final int scaledHeight = (int) (TEX_HEIGHT * SCALE);
@@ -57,7 +58,7 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
                 .setTextureSize(TEX_WIDTH, TEX_HEIGHT)
                 .build();;
 
-        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(net.minecraft.world.item.Items.DIAMOND));
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModItems.STARLIT_SANCTUM.get()));
         this.localizedName = EComponent.translatable("jei.ex_enigmaticlegacy.starlit_crafting");
         this.emptyDrawable = guiHelper.createBlankDrawable(0, 0);
     }
@@ -86,7 +87,7 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
         this.fullSizeTexture.draw(ms, 0, 0);
         ms.popPose();
 
-        int mana = recipe.getManaCost();
+        long mana = recipe.getManaCost();
         String manaText = "Mana Req: " + mana;
         Font font = Minecraft.getInstance().font;
 

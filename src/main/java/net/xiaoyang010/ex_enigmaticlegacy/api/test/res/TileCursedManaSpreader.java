@@ -73,7 +73,7 @@ public class TileCursedManaSpreader extends BlockEntity implements ICursedManaSp
     private int cursedMana = 0;
     public float rotationX = 0F;
     public float rotationY = 0F;
-    private boolean canShoot = true;
+    private boolean canShoot;
     private int burstParticleTick = 0;
     private int lastBurstDeathTick = -1;
     private ICursedManaReceiver receiver = null;
