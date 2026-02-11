@@ -35,6 +35,14 @@ public class NetworkHandler {
     public static void register() {
         CHANNEL.registerMessage(
                 packetId++,
+                RecipeTransferPacket.class,
+                RecipeTransferPacket::encode,
+                RecipeTransferPacket::decode,
+                RecipeTransferPacket::handle
+        );
+
+        CHANNEL.registerMessage(
+                packetId++,
                 BlinkMessage.class,
                 BlinkMessage::encode,
                 BlinkMessage::new,

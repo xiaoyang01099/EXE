@@ -5,18 +5,23 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -28,6 +33,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.StarlitCraftingParticles;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
@@ -49,7 +55,6 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 public class StarlitSanctumTile extends RandomizableContainerBlockEntity implements WorldlyContainer, IManaReceiver, ISparkAttachable {
-
     public static final Supplier<IMultiblock> MULTIBLOCK = Suppliers.memoize(() -> PatchouliAPI.get().makeMultiblock(
             new String[][] {
 
@@ -199,11 +204,15 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
     private int tickCounter = 0;
     private StarlitSanctumRecipe currentRecipe = null;
 
+    private boolean isCrafting = false;
+    private int craftingTick = 0;
+
     private boolean structureValid = false;
     private int structureCheckCooldown = 0;
     private static final int STRUCTURE_CHECK_INTERVAL = 100;
     private String lastStructureError = "";
 
+    public static final TagKey<Item> STARLIT = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("ex_enigmaticlegacy", "starlit"));
     private final LazyOptional<IManaReceiver> manaReceiverCap = LazyOptional.of(() -> this);
     private final LazyOptional<ISparkAttachable> sparkAttachableCap = LazyOptional.of(() -> this);
     private NonNullList<ItemStack> stacks = NonNullList.withSize(TOTAL_SLOTS, ItemStack.EMPTY);
@@ -217,20 +226,19 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
     @Override
     public void load(CompoundTag compound) {
         super.load(compound);
-
         this.currentMana = compound.getLong("CurrentMana");
         this.craftingProgress = compound.getInt("CraftingProgress");
         this.maxCraftingTime = compound.getInt("MaxCraftingTime");
         this.structureValid = compound.getBoolean("StructureValid");
         this.lastStructureError = compound.getString("LastStructureError");
-
+        this.isCrafting = compound.getBoolean("IsCrafting");
+        this.craftingTick = compound.getInt("CraftingTick");
         if (!this.tryLoadLootTable(compound)) {
             this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
             if (compound.contains("Items", 9)) {
                 loadAllItemsWithIntSlot(compound, this.stacks);
             }
         }
-
         if (level != null && !level.isClientSide) {
             System.out.println("[StarlitSanctum] Loaded: Mana=" + formatMana(currentMana) +
                     ", Items=" + countNonEmptySlots() +
@@ -242,13 +250,13 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
     @Override
     public void saveAdditional(CompoundTag compound) {
         super.saveAdditional(compound);
-
         compound.putLong("CurrentMana", this.currentMana);
         compound.putInt("CraftingProgress", this.craftingProgress);
         compound.putInt("MaxCraftingTime", this.maxCraftingTime);
         compound.putBoolean("StructureValid", this.structureValid);
         compound.putString("LastStructureError", this.lastStructureError);
-
+        compound.putBoolean("IsCrafting", this.isCrafting);
+        compound.putInt("CraftingTick", this.craftingTick);
         if (!this.trySaveLootTable(compound)) {
             saveAllItemsWithIntSlot(compound, this.stacks);
         }
@@ -336,8 +344,21 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
 
     @Override
     public boolean canPlaceItem(int index, ItemStack stack) {
-        return index != OUTPUT_SLOT;
+        if (index == OUTPUT_SLOT) {
+            return false;
+        }
+
+        if (index == INPUT_LEFT_SLOT) {
+            return stack.isEmpty() || stack.is(STARLIT);
+        }
+
+        return true;
     }
+
+//    @Override
+//    public boolean canPlaceItem(int index, ItemStack stack) {
+//        return index != OUTPUT_SLOT;
+//    }
 
     @Override
     public int[] getSlotsForFace(Direction side) {
@@ -556,7 +577,6 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
         }
     }
 
-
     public static void tick(Level level, BlockPos pos, BlockState state, StarlitSanctumTile tile) {
         if (level.isClientSide) return;
 
@@ -586,37 +606,80 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
             return;
         }
 
-        ItemStack output = tile.getItem(OUTPUT_SLOT);
+        ServerLevel serverLevel = (ServerLevel) level;
 
-        Optional<StarlitSanctumRecipe> recipeFor = level.getRecipeManager().getRecipeFor(ModRecipes.STARLIT_TYPE, tile, level);
-        if (recipeFor.isPresent()) {
-            StarlitSanctumRecipe recipe = recipeFor.get();
+        if (tile.tickCounter % 2 == 0) {
+            StarlitCraftingParticles.spawnArenaRingParticles(serverLevel, pos, tile.tickCounter);
+        }
+
+        if (tile.tickCounter % 3 == 0) {
+            StarlitCraftingParticles.spawnPylonEnergyParticles(serverLevel, pos, tile.tickCounter);
+        }
+        Optional<StarlitSanctumRecipe> recipeOpt = level.getRecipeManager()
+                .getRecipeFor(ModRecipes.STARLIT_TYPE, tile, level);
+        if (recipeOpt.isPresent()) {
+            StarlitSanctumRecipe recipe = recipeOpt.get();
             ItemStack resultItem = recipe.getResultItem();
-
             long requiredMana = recipe.getManaCost();
             if (tile.currentMana < requiredMana) {
+                if (tile.isCrafting) {
+                    tile.isCrafting = false;
+                    tile.craftingTick = 0;
+                }
                 if (tile.tickCounter % 100 == 0) {
                     System.out.println("[StarlitSanctum] Insufficient mana: " +
                             formatMana(tile.currentMana) + " / " + formatMana(requiredMana));
                 }
                 return;
             }
-
-            if (output.isEmpty()) {
-                tile.setItem(OUTPUT_SLOT, resultItem.copy());
-                tile.consumeIngredients(recipe);
-                tile.consumeMana(requiredMana);
-
-                System.out.println("[StarlitSanctum] Crafted: " + resultItem.getDisplayName().getString());
-            } else {
-                if (resultItem.getItem() == output.getItem() &&
-                        output.getCount() < output.getMaxStackSize()) {
-                    output.grow(resultItem.getCount());
+            ItemStack output = tile.getItem(OUTPUT_SLOT);
+            boolean canOutput = output.isEmpty() ||
+                    (resultItem.getItem() == output.getItem() &&
+                            output.getCount() + resultItem.getCount() <= output.getMaxStackSize());
+            if (!canOutput) {
+                if (tile.isCrafting) {
+                    tile.isCrafting = false;
+                    tile.craftingTick = 0;
+                }
+                return;
+            }
+            if (!tile.isCrafting) {
+                tile.isCrafting = true;
+                tile.craftingTick = 0;
+                tile.maxCraftingTime = 200;
+                System.out.println("[StarlitSanctum] Starting crafting: " + resultItem.getDisplayName().getString());
+            }
+            if (tile.isCrafting) {
+                tile.craftingTick++;
+                float progress = tile.craftingTick / (float) tile.maxCraftingTime;
+                StarlitCraftingParticles.spawnAllCraftingParticles(serverLevel, pos, tile.craftingTick, progress);
+                if (tile.craftingTick % 5 == 0) {
+                    StarlitCraftingParticles.spawnPillarToCenterParticles(serverLevel, pos, tile.craftingTick);
+                }
+                if (tile.craftingTick % 10 == 0) {
+                    StarlitCraftingParticles.spawnHexagramParticles(serverLevel, pos, tile.craftingTick);
+                }
+                if (tile.craftingTick >= tile.maxCraftingTime) {
+                    StarlitCraftingParticles.spawnCompletionBurst(serverLevel, pos);
+                    if (output.isEmpty()) {
+                        tile.setItem(OUTPUT_SLOT, resultItem.copy());
+                    } else {
+                        output.grow(resultItem.getCount());
+                    }
                     tile.consumeIngredients(recipe);
                     tile.consumeMana(requiredMana);
-
-                    System.out.println("[StarlitSanctum] Crafted (stacked): " + resultItem.getDisplayName().getString());
+                    tile.isCrafting = false;
+                    tile.craftingTick = 0;
+                    System.out.println("[StarlitSanctum] Crafting completed: " +
+                            resultItem.getDisplayName().getString() +
+                            " (Mana used: " + formatMana(requiredMana) + ")");
                 }
+            }
+        } else {
+
+            if (tile.isCrafting) {
+                tile.isCrafting = false;
+                tile.craftingTick = 0;
             }
         }
     }
@@ -636,11 +699,11 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
     }
 
     private void consumePatternMaterials(StarlitSanctumRecipe recipe) {
-        List<NonNullList<net.minecraft.world.item.crafting.Ingredient>> patterns = recipe.getPatternGroups();
+        List<NonNullList<Ingredient>> patterns = recipe.getPatternGroups();
         int[] blockStarts = {0, 9, 18};
 
         for (int blockIndex = 0; blockIndex < 3; blockIndex++) {
-            NonNullList<net.minecraft.world.item.crafting.Ingredient> pattern = patterns.get(blockIndex);
+            NonNullList<Ingredient> pattern = patterns.get(blockIndex);
             int startCol = blockStarts[blockIndex];
 
             for (int row = 0; row < 18; row++) {
@@ -648,8 +711,8 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
                     int patternIndex = row * 9 + col;
                     int slotIndex = row * 27 + (startCol + col);
 
-                    net.minecraft.world.item.crafting.Ingredient required = pattern.get(patternIndex);
-                    if (required != net.minecraft.world.item.crafting.Ingredient.EMPTY) {
+                    Ingredient required = pattern.get(patternIndex);
+                    if (required != Ingredient.EMPTY) {
                         ItemStack stack = getItem(slotIndex);
                         stack.shrink(1);
                         setItem(slotIndex, stack);
@@ -657,21 +720,6 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
                 }
             }
         }
-    }
-
-    private Optional<StarlitSanctumRecipe> findMatchingRecipe() {
-        if (level == null) return Optional.empty();
-
-        SimpleContainer tempContainer = new SimpleContainer(TOTAL_SLOTS);
-        for (int i = 0; i < TOTAL_SLOTS; i++) {
-            tempContainer.setItem(i, getItem(i).copy());
-        }
-
-        return level.getRecipeManager()
-                .getAllRecipesFor(StarlitSanctumRecipe.Type.INSTANCE)
-                .stream()
-                .filter(recipe -> recipe.matches(tempContainer, level))
-                .findFirst();
     }
 
     private void syncManaToClient() {

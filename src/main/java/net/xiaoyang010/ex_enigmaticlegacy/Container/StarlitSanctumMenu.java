@@ -149,7 +149,12 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
             }
         }
 
-        this.customSlots.put(INPUT_LEFT_SLOT, this.addSlot(new BSlot(internal, INPUT_LEFT_SLOT, inputLeftX, inputLeftY)));
+        this.customSlots.put(INPUT_LEFT_SLOT, this.addSlot(new BSlot(internal, INPUT_LEFT_SLOT, inputLeftX, inputLeftY){
+//            @Override
+//            public boolean mayPlace(ItemStack stack) {
+//                return !stack.isEmpty() && stack.is(STARLIT) && super.mayPlace(stack);
+//            }
+        }));
         this.customSlots.put(INPUT_RIGHT_SLOT, this.addSlot(new BSlot(internal, INPUT_RIGHT_SLOT, inputRightX, inputRightY)));
         this.customSlots.put(OUTPUT_SLOT, this.addSlot(new SlotItemHandler(internal, OUTPUT_SLOT, outputX, outputY) {
             @Override

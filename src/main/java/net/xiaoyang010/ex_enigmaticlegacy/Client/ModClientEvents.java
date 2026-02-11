@@ -28,6 +28,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.layer.DragonWingsLayer
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.layer.WitherArmorLayer;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.tile.SpottedGardenEelRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.CosmicBlockRenderer;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.renderer.block.StarlitSanctumRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.shader.RainbowCosmicModelLoader;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.shader.CosmicModelLoader;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.model.InfinityArmorModel;
@@ -53,7 +54,7 @@ import java.util.Set;
 import java.util.SortedMap;
 
 @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ModEventBusEvents {
+public class ModClientEvents {
 
     @SubscribeEvent
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -167,6 +168,7 @@ public class ModEventBusEvents {
         BlockEntityRenderers.register(ModBlockEntities.CURSED_SPREADER.get(), RenderCursedSpreader::new);
         BlockEntityRenderers.register(ModBlockEntities.CURSED_MANA_POOL.get(), RenderTileCursedPool::new);
         BlockEntityRenderers.register(ModBlockEntities.STARRY_SKY_BLOCK_ENTITY.get(), StarrySkyBlockRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.STARLIT_SANCTUM_OF_MYSTIQUE.get(), StarlitSanctumRenderer::new);
 
     }
 

@@ -150,7 +150,7 @@ public class TileEngineerHopper extends TileInventory implements IBoundRender, H
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        ClientHelper.drawArrow(poseStack, x - 2, y, false);
+        ClientHelper.drawArrow(poseStack, x - 2, y, true);
 
         for(int i = 0; i < 2; ++i) {
             ItemStack stack = ItemStack.EMPTY;

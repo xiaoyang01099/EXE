@@ -1,7 +1,5 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Config;
 
-import com.integral.omniconfig.wrappers.Omniconfig;
-import com.integral.omniconfig.wrappers.OmniconfigWrapper;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
@@ -32,6 +30,9 @@ public class ConfigHandler {
     public static int astralKillopEffectLevel = 29;
     public static int astralKillopMaxMana = 10000;
     public static boolean enableDragonArmorOverlay = true;
+
+    public static float starlitGuiScale = 0.7f;
+    public static float starlitJeiScale = 0.7f;
 
     public static List<String> lockEntityListToHorn = new ArrayList<>();
 
@@ -69,6 +70,9 @@ public class ConfigHandler {
     public static ForgeConfigSpec.BooleanValue useManaChargerAnimation;
     public static ForgeConfigSpec.BooleanValue enableDragonArmorOverlayConfig;
 
+    public static ForgeConfigSpec.DoubleValue starlitGuiScaleConfig;
+    public static ForgeConfigSpec.DoubleValue starlitJeiScaleConfig;
+
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> lockWorldNameNebulaRodConfig;
     public static ForgeConfigSpec.IntValue nebulaWandCooldownTickConfig;
     public static ForgeConfigSpec.IntValue nebulaRodManaCostConfig;
@@ -98,9 +102,33 @@ public class ConfigHandler {
                 .comment("Enable/disable the Dragon Crystal Armor helmet overlay effect")
                 .define("enableDragonArmorOverlay", true);
 
+        // ========== 新增：Starlit Sanctum GUI 缩放配置 ==========
+        CLIENT_BUILDER.comment("Starlit Sanctum GUI Settings").push("starlit_gui");
+
+        starlitGuiScaleConfig = CLIENT_BUILDER
+                .comment(
+                        "Scale factor for Starlit Sanctum GUI",
+                        "Range: 0.1 to 1.0",
+                        "Default: 0.7 (70% of original size)",
+                        "1.0 = full size, 0.5 = half size"
+                )
+                .defineInRange("guiScale", 0.7, 0.1, 1.0);
+
+        starlitJeiScaleConfig = CLIENT_BUILDER
+                .comment(
+                        "Scale factor for Starlit Sanctum JEI recipe display",
+                        "Range: 0.1 to 1.0",
+                        "Default: 0.7 (70% of original size)",
+                        "Should match guiScale for consistency"
+                )
+                .defineInRange("jeiScale", 0.7, 0.1, 1.0);
+
+        CLIENT_BUILDER.pop(); // starlit_gui
+
         CLIENT_BUILDER.pop();
         CLIENT_SPEC = CLIENT_BUILDER.build();
 
+        // ========== 通用配置（保持不变）==========
         COMMON_BUILDER.comment("Common Settings").push("common");
 
         // Timeless Ivy
@@ -306,6 +334,13 @@ public class ConfigHandler {
 
     public static void syncClientConfig() {
         enableDragonArmorOverlay = enableDragonArmorOverlayConfig.get();
+
+        // ========== 新增：同步 GUI 缩放配置 ==========
+        starlitGuiScale = starlitGuiScaleConfig.get().floatValue();
+        starlitJeiScale = starlitJeiScaleConfig.get().floatValue();
+
+        ExEnigmaticlegacyMod.LOGGER.info("Starlit Sanctum GUI scales loaded: GUI={}, JEI={}",
+                starlitGuiScale, starlitJeiScale);
     }
 
     private static void syncPowerInventoryConfig() {
@@ -403,6 +438,24 @@ public class ConfigHandler {
 
         public static boolean isEntityLocked(String entityClassName) {
             return lockEntityListToHorn.contains(entityClassName);
+        }
+    }
+
+    public static class StarlitGuiConfig {
+        /**
+         * 获取 GUI 缩放比例
+         * @return 缩放比例 (0.1 - 1.0)
+         */
+        public static float getGuiScale() {
+            return starlitGuiScale;
+        }
+
+        /**
+         * 获取 JEI 缩放比例
+         * @return 缩放比例 (0.1 - 1.0)
+         */
+        public static float getJeiScale() {
+            return starlitJeiScale;
         }
     }
 }

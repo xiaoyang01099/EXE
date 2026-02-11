@@ -4,12 +4,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.StarlitSanctumTile;
 
@@ -18,14 +19,10 @@ import java.util.List;
 
 public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctumMenu> {
     private static final ResourceLocation TEXTURE = new ResourceLocation("ex_enigmaticlegacy:textures/gui/container/starlit.png");
-
     private static final int TEXTURE_WIDTH = 1024;
     private static final int TEXTURE_HEIGHT = 1024;
     private static final int GUI_WIDTH = 540;
     private static final int GUI_HEIGHT = 501;
-
-    private final float scale = 0.7f;
-
     private static final int BAR_TEX_X_EMPTY = 540;
     private static final int BAR_TEX_X_FULL = 561;
     private static final int BAR_TEX_Y = 15;
@@ -33,11 +30,25 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
     private static final int BAR_HEIGHT = 400;
     private static final int BAR_POS_X = 550;
     private static final int BAR_POS_Y = 10;
-
     private static final int PROGRESS_BAR_X = 245;
     private static final int PROGRESS_BAR_Y = 55;
     private static final int PROGRESS_BAR_WIDTH = 30;
     private static final int PROGRESS_BAR_HEIGHT = 4;
+
+    private float getScale() {
+        if (ConfigHandler.starlitGuiScaleConfig != null) {
+            return ConfigHandler.starlitGuiScaleConfig.get().floatValue();
+        }
+        return 0.7f;
+    }
+
+    private int getXOffset() {
+        return (int) ((this.width - GUI_WIDTH * getScale()) / 2);
+    }
+
+    private int getYOffset() {
+        return (int) ((this.height - GUI_HEIGHT * getScale()) / 2);
+    }
 
     public StarlitSanctumScreen(StarlitSanctumMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
@@ -52,24 +63,16 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
         this.topPos = 0;
     }
 
-    private int getXOffset() {
-        return (int) ((this.width - GUI_WIDTH * scale) / 2);
-    }
-
-    private int getYOffset() {
-        return (int) ((this.height - GUI_HEIGHT * scale) / 2);
-    }
-
     @Override
     public void render(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(ms);
 
-        int logicMouseX = (int) ((mouseX - getXOffset()) / scale);
-        int logicMouseY = (int) ((mouseY - getYOffset()) / scale);
+        int logicMouseX = (int) ((mouseX - getXOffset()) / getScale());
+        int logicMouseY = (int) ((mouseY - getYOffset()) / getScale());
 
         ms.pushPose();
         ms.translate(getXOffset(), getYOffset(), 0);
-        ms.scale(scale, scale, 1.0f);
+        ms.scale(getScale(), getScale(), 1.0f);
 
         this.renderBg(ms, partialTicks, logicMouseX, logicMouseY);
         this.renderLabels(ms, logicMouseX, logicMouseY);
@@ -86,7 +89,7 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
                     this.hoveredSlot = slot;
                     ms.pushPose();
                     ms.translate(getXOffset(), getYOffset(), 0);
-                    ms.scale(scale, scale, 1.0f);
+                    ms.scale(getScale(), getScale(), 1.0f);
                     RenderSlotHighlight(ms, slot.x, slot.y, 0);
                     ms.popPose();
                 }
@@ -110,13 +113,13 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
             String currentStr = StarlitSanctumTile.formatMana(currentMana);
             String maxStr = StarlitSanctumTile.formatMana(maxMana);
 
-            tooltip.add(new TextComponent("§b" + currentStr + " §7/ §b" + maxStr + " §7Mana"));
-
+            tooltip.add(new TranslatableComponent("gui.ex_enigmaticlegacy.starlit_sanctum.mana",
+                    "§b" + currentStr, "§b" + maxStr));
             if (maxMana > 0) {
                 double percent = (double) currentMana / maxMana * 100.0;
-                tooltip.add(new TextComponent(String.format("§7(%.2f%%)", percent)));
+                tooltip.add(new TranslatableComponent("gui.ex_enigmaticlegacy.starlit_sanctum.mana_percent",
+                        String.format("§7%.2f", percent)));
             }
-
             this.renderComponentTooltip(ms, tooltip, mouseX, mouseY);
         }
     }
@@ -144,13 +147,13 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
 
         if (itemstack.isEmpty()) return;
 
-        float itemScreenX = getXOffset() + (slot.x * scale);
-        float itemScreenY = getYOffset() + (slot.y * scale);
+        float itemScreenX = getXOffset() + (slot.x * getScale());
+        float itemScreenY = getYOffset() + (slot.y * getScale());
 
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         modelViewStack.translate(itemScreenX, itemScreenY, 0);
-        modelViewStack.scale(scale, scale, 1.0F);
+        modelViewStack.scale(getScale(), getScale(), 1.0F);
         RenderSystem.applyModelViewMatrix();
 
         this.itemRenderer.renderAndDecorateItem(itemstack, 0, 0);
@@ -167,7 +170,7 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         modelViewStack.translate(mouseX, mouseY, 0);
-        modelViewStack.scale(scale, scale, 1.0F);
+        modelViewStack.scale(getScale(), getScale(), 1.0F);
         RenderSystem.applyModelViewMatrix();
 
         this.itemRenderer.renderAndDecorateItem(stack, -8, -8);
@@ -257,11 +260,11 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
     }
 
     private double getLogicX(double mouseX) {
-        return (mouseX - getXOffset()) / scale;
+        return (mouseX - getXOffset()) / getScale();
     }
 
     private double getLogicY(double mouseY) {
-        return (mouseY - getYOffset()) / scale;
+        return (mouseY - getYOffset()) / getScale();
     }
 
     @Override
@@ -276,7 +279,7 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        return super.mouseDragged(getLogicX(mouseX), getLogicY(mouseY), button, dragX / scale, dragY / scale);
+        return super.mouseDragged(getLogicX(mouseX), getLogicY(mouseY), button, dragX / getScale(), dragY / getScale());
     }
 
     @Override

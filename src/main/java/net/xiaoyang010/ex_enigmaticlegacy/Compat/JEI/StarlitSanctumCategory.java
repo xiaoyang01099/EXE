@@ -16,11 +16,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.StarlitSanctumRecipe;
@@ -29,25 +30,33 @@ import net.xiaoyang010.ex_enigmaticlegacy.Util.EComponent;
 import java.util.List;
 
 public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRecipe> {
-
     public static final ResourceLocation UID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "starlit_crafting");
-
     private final IDrawable background;
     private final IDrawable icon;
     private final Component localizedName;
     private final IDrawable fullSizeTexture;
     private final IDrawable emptyDrawable;
-
     private static final int TEX_WIDTH = 539;
     private static final int TEX_HEIGHT = 431;
 
-    private static final float SCALE = 0.7f;
+    private float getScale() {
+//        if (ConfigHandler.starlitJeiScaleConfig != null) {
+//            return ConfigHandler.starlitJeiScaleConfig.get().floatValue();
+//        }
+        return 0.7f;
+    }
 
-    private final int scaledWidth = (int) (TEX_WIDTH * SCALE);
-    private final int scaledHeight = (int) (TEX_HEIGHT * SCALE);
+    private int getScaledWidth() {
+        return (int) (TEX_WIDTH * getScale());
+    }
+
+    private int getScaledHeight() {
+        return (int) (TEX_HEIGHT * getScale());
+    }
 
     public StarlitSanctumCategory(IGuiHelper guiHelper) {
-        this.background = guiHelper.createBlankDrawable(scaledWidth, scaledHeight);
+        this.background = guiHelper.createBlankDrawable(getScaledWidth(), getScaledHeight());
+
         ResourceLocation textureLoc = new ResourceLocation("ex_enigmaticlegacy:textures/gui/container/starlit_jei.png");
         this.fullSizeTexture = guiHelper.drawableBuilder(
                         textureLoc,
@@ -56,7 +65,7 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
                         TEX_HEIGHT
                 )
                 .setTextureSize(TEX_WIDTH, TEX_HEIGHT)
-                .build();;
+                .build();
 
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModItems.STARLIT_SANCTUM.get()));
         this.localizedName = EComponent.translatable("jei.ex_enigmaticlegacy.starlit_crafting");
@@ -73,7 +82,9 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
     public Component getTitle() { return localizedName; }
 
     @Override
-    public IDrawable getBackground() { return background; }
+    public IDrawable getBackground() {
+        return background;
+    }
 
     @Override
     public IDrawable getIcon() { return icon; }
@@ -82,15 +93,20 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
     public void draw(StarlitSanctumRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack ms, double mouseX, double mouseY) {
         RenderSystem.enableBlend();
 
+        float scale = getScale();
         ms.pushPose();
-        ms.scale(SCALE, SCALE, 1.0f);
+        ms.scale(scale, scale, 1.0f);
         this.fullSizeTexture.draw(ms, 0, 0);
         ms.popPose();
 
         long mana = recipe.getManaCost();
-        String manaText = "Mana Req: " + mana;
+        Component manaComponent = new TranslatableComponent("gui.ex_enigmaticlegacy.mana_req", mana);
+        String manaText = manaComponent.getString();
+
         Font font = Minecraft.getInstance().font;
 
+        int scaledWidth = getScaledWidth();
+        int scaledHeight = getScaledHeight();
         int textX = (scaledWidth - font.width(manaText)) / 2;
         int textY = scaledHeight - 2;
 
@@ -101,6 +117,8 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, StarlitSanctumRecipe recipe, IFocusGroup focuses) {
+        float scale = getScale();
+
         int blockStartY = 85;
         int[] blockStartX = {23, 188, 355};
 
@@ -133,26 +151,29 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
                         ing = pattern.get(indexInPattern);
                     }
                 }
-                addScaledSlot(builder, ing, drawX, drawY, RecipeIngredientRole.INPUT);
+                addScaledSlot(builder, ing, drawX, drawY, RecipeIngredientRole.INPUT, scale);
             }
         }
 
-        addScaledSlot(builder, recipe.getLeftInput(), 96, 32, RecipeIngredientRole.INPUT)
-                .addTooltipCallback((view, tooltip) -> tooltip.add(new TextComponent("Count: " + recipe.getLeftInputCount())));
-
-        addScaledSlot(builder, recipe.getRightInput(), 425, 32, RecipeIngredientRole.INPUT)
-                .addTooltipCallback((view, tooltip) -> tooltip.add(new TextComponent("Count: " + recipe.getRightInputCount())));
-
-        addScaledSlot(builder, Ingredient.of(recipe.getResultItem()), 261, 32, RecipeIngredientRole.OUTPUT);
+        addScaledSlot(builder, recipe.getLeftInput(), 96, 32, RecipeIngredientRole.INPUT, scale)
+                .addTooltipCallback((view, tooltip) ->
+                        tooltip.add(new TranslatableComponent("jei.ex_enigmaticlegacy.starlit_crafting.count",
+                                recipe.getLeftInputCount())));
+        addScaledSlot(builder, recipe.getRightInput(), 425, 32, RecipeIngredientRole.INPUT, scale)
+                .addTooltipCallback((view, tooltip) ->
+                        tooltip.add(new TranslatableComponent("jei.ex_enigmaticlegacy.starlit_crafting.count",
+                                recipe.getRightInputCount())));
+        addScaledSlot(builder, Ingredient.of(recipe.getResultItem()), 261, 32, RecipeIngredientRole.OUTPUT, scale);
     }
 
-    private IRecipeSlotBuilder addScaledSlot(IRecipeLayoutBuilder builder, Ingredient ingredient, int originalX, int originalY, RecipeIngredientRole role) {
-        int finalX = (int) (originalX * SCALE);
-        int finalY = (int) (originalY * SCALE);
+    private IRecipeSlotBuilder addScaledSlot(IRecipeLayoutBuilder builder, Ingredient ingredient,
+                                             int originalX, int originalY, RecipeIngredientRole role, float scale) {
+        int finalX = (int) (originalX * scale);
+        int finalY = (int) (originalY * scale);
 
         IRecipeSlotBuilder slotBuilder = builder.addSlot(role, finalX, finalY)
                 .setBackground(this.emptyDrawable, 0, 0)
-                .setCustomRenderer(VanillaTypes.ITEM_STACK, new ScaledItemRenderer(SCALE));
+                .setCustomRenderer(VanillaTypes.ITEM_STACK, new ScaledItemRenderer(scale));
 
         if (ingredient != null && !ingredient.isEmpty()) {
             slotBuilder.addIngredients(ingredient);

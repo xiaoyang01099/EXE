@@ -2,19 +2,18 @@ package net.xiaoyang010.ex_enigmaticlegacy.Compat.JEI;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.registration.*;
+import mezz.jei.common.transfer.BasicRecipeTransferInfo;
+import mezz.jei.common.transfer.RecipeTransferHandlerHelper;
 import morph.avaritia.api.ExtremeCraftingRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -30,7 +29,6 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,8 +69,10 @@ public class JEIPlugin implements IModPlugin {
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
         registration.addRecipeTransferHandler(CelestialHTMenu.class, CelestialTransmuteRecipe.TYPE_ID, 1, 4, 5, 36);
         registration.addRecipeTransferHandler(RainbowTableContainer.class, RainbowTableRecipe.TYPE_ID, 0, 4, 5, 36);
-        registration.addRecipeTransferHandler(StarlitSanctumMenu.class, StarlitSanctumCategory.UID, 0, 488, 489, 36);
+//        registration.addRecipeTransferHandler(StarlitSanctumMenu.class, StarlitSanctumCategory.UID, 0, 488, 489, 36);
         registration.addUniversalRecipeTransferHandler(new AvaTransferHandler());
+        BasicRecipeTransferInfo<StarlitSanctumMenu, StarlitSanctumRecipe> transferInfo = new BasicRecipeTransferInfo(StarlitSanctumMenu.class, new RecipeType(StarlitSanctumCategory.UID, StarlitSanctumRecipe.class), 0, 488, 489, 36);
+        registration.addRecipeTransferHandler(new StarlitSanctumTransferHandler(registration.getTransferHelper()), StarlitSanctumCategory.UID);
 //        registration.addRecipeTransferHandler(new IRecipeTransferInfo<StarlitSanctumMenu, StarlitSanctumRecipe>() {
 //            @Override
 //            public Class<StarlitSanctumMenu> getContainerClass() {
