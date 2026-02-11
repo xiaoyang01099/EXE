@@ -158,7 +158,7 @@ public class TerraBow extends ItemLivingwoodBow implements INoEMCItem {
         if (!(entityLiving instanceof Player player)) return;
 
         boolean flag = canFire(stack, player);
-        ItemStack itemstack = player.getProjectile(stack);
+        ItemStack itemstack = new ItemStack(Items.ARROW);
         int chargeTime = (int) ((getUseDuration(stack) - timeLeft) * chargeVelocityMultiplier() * TIME_COMPENSATION);
         chargeTime = ForgeEventFactory.onArrowLoose(stack, level, player, chargeTime,
                 !itemstack.isEmpty() || flag);
@@ -179,9 +179,10 @@ public class TerraBow extends ItemLivingwoodBow implements INoEMCItem {
                 for (int col = 0; col < ARROW_COLS; col++) {
                     float pitchOffset = (row - ARROW_ROWS / 2) * 3F;
                     float yawOffset = (col - ARROW_COLS / 2) * 3F;
-                    AbstractArrow arrow = arrowitem.createArrow(level, itemstack, player);
-                    arrow = customArrow(arrow);
+                    AbstractArrow arrow = arrowitem.createArrow(level, new ItemStack(Items.ARROW), player);
+                    arrow = this.customArrow(arrow);
                     arrow.setBaseDamage(ARROW_BASE_DAMAGE);
+                    arrow.setOwner(player);
                     if (level.random.nextDouble() < (INSTANT_KILL_CHANCE / 9)) {
                         arrow.setBaseDamage(Float.MAX_VALUE);
                         arrow.addTag("instant_kill");
@@ -198,11 +199,11 @@ public class TerraBow extends ItemLivingwoodBow implements INoEMCItem {
                     }
                     applyEnchantments(stack, arrow);
                     onFire(stack, player, infiniteArrows, arrow);
-                    stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(player.getUsedItemHand()));
                     if (infiniteArrows) {
                         arrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                     }
                     level.addFreshEntity(arrow);
+                    stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(player.getUsedItemHand()));
                 }
             }
             if (hasInstantKill) {
@@ -215,10 +216,6 @@ public class TerraBow extends ItemLivingwoodBow implements INoEMCItem {
                 SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F,
                 1.0F / (level.random.nextFloat() * 0.4F + 1.2F) + power * 0.5F);
         if (!infiniteArrows && !player.getAbilities().instabuild) {
-            itemstack.shrink(1);
-            if (itemstack.isEmpty()) {
-                player.getInventory().removeItem(itemstack);
-            }
         }
         player.awardStat(Stats.ITEM_USED.get(this));
     }
