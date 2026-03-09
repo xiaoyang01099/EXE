@@ -5,18 +5,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
-import vazkii.botania.client.core.helper.CoreShaders;
-import vazkii.botania.client.lib.LibResources;
 import vazkii.botania.mixin.client.AccessorRenderType;
 
 public final class SpecialRenderHelper extends RenderType {
-
     public static final RenderType RAINBOW_MANA_WATER;
     public static final RenderType POLYCHROME_COLLAPSE_PRISM;
     public static final RenderType COSMIC_BACKGROUND;

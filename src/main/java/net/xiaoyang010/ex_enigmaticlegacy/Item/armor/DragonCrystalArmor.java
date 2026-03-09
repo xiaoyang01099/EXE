@@ -25,7 +25,9 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModArmors;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
@@ -36,16 +38,14 @@ import java.util.UUID;
 
 public class DragonCrystalArmor extends ArmorItem {
     private static final ResourceLocation OVERLAY = new ResourceLocation("ex_enigmaticlegacy", "textures/overlay.png");
-
     private static final Map<UUID, Boolean> playerWearingFullSet = new HashMap<>();
     private static final Map<UUID, Boolean> playerOriginalFlightStatus = new HashMap<>();
     private static final Map<UUID, Float> playerOriginalFlySpeed = new HashMap<>();
-
     private static final int REGENERATION_TICKS = 5;
     private static final float REGENERATION_AMOUNT = 20.0F;
     private static final Map<UUID, Integer> playerRegenerationTimer = new HashMap<>();
-
     private static final float DRAGON_ARMOR_FLY_SPEED = 0.5F;
+    private static final float DEFAULT_FLY_SPEED = 0.05F;
 
     public DragonCrystalArmor(ArmorMaterial material, EquipmentSlot slot) {
         super(material, slot, new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
@@ -68,6 +68,37 @@ public class DragonCrystalArmor extends ArmorItem {
                 player.getItemBySlot(EquipmentSlot.HEAD).getItem() == ModArmors.dragonArmorHelm.get();
     }
 
+    private static boolean isDragonArmorSpeed(float speed) {
+        return Math.abs(speed - DRAGON_ARMOR_FLY_SPEED) < 0.001F;
+    }
+
+    private static float getSafeOriginalSpeed(Player player) {
+        float currentSpeed = player.getAbilities().getFlyingSpeed();
+        if (isDragonArmorSpeed(currentSpeed)) {
+            Float saved = playerOriginalFlySpeed.get(player.getUUID());
+            if (saved != null && !isDragonArmorSpeed(saved)) {
+                return saved;
+            }
+            return DEFAULT_FLY_SPEED;
+        }
+        return currentSpeed;
+    }
+
+    private static boolean getSafeOriginalFlightStatus(Player player) {
+        if (player.isCreative() || player.isSpectator()) {
+            return true;
+        }
+        Boolean saved = playerOriginalFlightStatus.get(player.getUUID());
+        if (saved != null) {
+            return saved;
+        }
+        boolean wasWearing = playerWearingFullSet.getOrDefault(player.getUUID(), false);
+        if (wasWearing) {
+            return false;
+        }
+        return player.getAbilities().mayfly;
+    }
+
     @Override
     public void onArmorTick(ItemStack stack, Level world, Player player) {
         if (!world.isClientSide) {
@@ -80,53 +111,159 @@ public class DragonCrystalArmor extends ArmorItem {
             boolean previousFullSet = playerWearingFullSet.getOrDefault(playerUUID, false);
 
             if (fullSet) {
-                // 首次穿上完整套装
                 if (!previousFullSet) {
-                    playerOriginalFlightStatus.put(playerUUID, player.getAbilities().mayfly);
-                    playerOriginalFlySpeed.put(playerUUID, player.getAbilities().getFlyingSpeed());
+                    playerOriginalFlightStatus.put(playerUUID, getSafeOriginalFlightStatus(player));
+                    playerOriginalFlySpeed.put(playerUUID, getSafeOriginalSpeed(player));
                     playerWearingFullSet.put(playerUUID, true);
                 }
 
-                // 设置飞行能力
+                boolean needUpdate = false;
                 if (!player.getAbilities().mayfly) {
                     player.getAbilities().mayfly = true;
+                    needUpdate = true;
+                }
+                if (!isDragonArmorSpeed(player.getAbilities().getFlyingSpeed())) {
                     player.getAbilities().setFlyingSpeed(DRAGON_ARMOR_FLY_SPEED);
-                    player.onUpdateAbilities();
-                } else if (player.getAbilities().getFlyingSpeed() != DRAGON_ARMOR_FLY_SPEED) {
-                    player.getAbilities().setFlyingSpeed(DRAGON_ARMOR_FLY_SPEED);
+                    needUpdate = true;
+                }
+                if (needUpdate) {
                     player.onUpdateAbilities();
                 }
 
                 processRegeneration(player, world);
                 applyEffects(player);
             } else if (previousFullSet) {
-                // 脱下完整套装时的清理工作
                 cleanupPlayerEffects(player, playerUUID);
             }
         }
     }
 
-    // 新增的清理方法
-    private void cleanupPlayerEffects(Player player, UUID playerUUID) {
-        // 移除所有无限时长的效果
-        removeAllEffects(player);
+    private static void cleanupPlayerEffects(Player player, UUID playerUUID) {
+        removeAllEffectsStatic(player);
 
-        // 恢复原始飞行状态
         Boolean originalFlight = playerOriginalFlightStatus.remove(playerUUID);
         Float originalSpeed = playerOriginalFlySpeed.remove(playerUUID);
 
-        if (originalFlight != null && originalSpeed != null) {
-            player.getAbilities().mayfly = originalFlight;
-            if (!originalFlight) {
+        boolean hasInnateFlight = player.isCreative() || player.isSpectator();
+
+        if (hasInnateFlight) {
+            player.getAbilities().mayfly = true;
+            player.getAbilities().setFlyingSpeed(DEFAULT_FLY_SPEED);
+        } else {
+            boolean restoreFlight = (originalFlight != null) ? originalFlight : false;
+            float restoreSpeed = (originalSpeed != null && !isDragonArmorSpeed(originalSpeed))
+                    ? originalSpeed : DEFAULT_FLY_SPEED;
+
+            player.getAbilities().mayfly = restoreFlight;
+            if (!restoreFlight) {
                 player.getAbilities().flying = false;
             }
-            player.getAbilities().setFlyingSpeed(originalSpeed);
-            player.onUpdateAbilities();
+            player.getAbilities().setFlyingSpeed(restoreSpeed);
         }
 
-        // 清理其他状态
+        player.onUpdateAbilities();
         playerRegenerationTimer.remove(playerUUID);
         playerWearingFullSet.put(playerUUID, false);
+    }
+
+    private static void forceCleanup(Player player) {
+        UUID playerUUID = player.getUUID();
+        boolean wasWearing = playerWearingFullSet.getOrDefault(playerUUID, false);
+        if (wasWearing || isDragonArmorSpeed(player.getAbilities().getFlyingSpeed())) {
+            cleanupPlayerEffects(player, playerUUID);
+        }
+    }
+
+    private static void purgePlayerData(UUID uuid) {
+        playerWearingFullSet.remove(uuid);
+        playerOriginalFlightStatus.remove(uuid);
+        playerOriginalFlySpeed.remove(uuid);
+        playerRegenerationTimer.remove(uuid);
+    }
+
+    private static void ensureNormalSpeed(Player player) {
+        if (!isWearingFullSet(player) && isDragonArmorSpeed(player.getAbilities().getFlyingSpeed())) {
+            player.getAbilities().setFlyingSpeed(DEFAULT_FLY_SPEED);
+            player.onUpdateAbilities();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerDeath(LivingDeathEvent event) {
+        if (event.getEntityLiving() instanceof Player player && !player.level.isClientSide) {
+            forceCleanup(player);
+            purgePlayerData(player.getUUID());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        Player player = event.getPlayer();
+        UUID uuid = player.getUUID();
+        if (playerWearingFullSet.getOrDefault(uuid, false)) {
+            cleanupPlayerEffects(player, uuid);
+        }
+        purgePlayerData(uuid);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        Player player = event.getPlayer();
+        if (!player.level.isClientSide) {
+            purgePlayerData(player.getUUID());
+            ensureNormalSpeed(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        if (!player.level.isClientSide) {
+            purgePlayerData(player.getUUID());
+            ensureNormalSpeed(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        Player player = event.getPlayer();
+        if (!player.level.isClientSide && !isWearingFullSet(player)) {
+            if (playerWearingFullSet.getOrDefault(player.getUUID(), false)) {
+                cleanupPlayerEffects(player, player.getUUID());
+            } else {
+                ensureNormalSpeed(player);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerClone(PlayerEvent.Clone event) {
+        purgePlayerData(event.getOriginal().getUUID());
+        Player newPlayer = event.getPlayer();
+        if (!newPlayer.level.isClientSide) {
+            ensureNormalSpeed(newPlayer);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingHurtEvent event) {
+        if (event.getEntityLiving() instanceof Player) {
+            Player player = (Player) event.getEntityLiving();
+            if (isWearingFullSet(player)) {
+                if (event.getSource().isExplosion()) {
+                    event.setCanceled(true);
+                } else {
+                    float originalDamage = event.getAmount();
+                    float reducedDamage = originalDamage * 0.1f;
+                    event.setAmount(reducedDamage);
+
+                    if (player.level instanceof ServerLevel) {
+                        ServerLevel serverLevel = (ServerLevel) player.level;
+                        spawnDamageParticles(player, serverLevel);
+                    }
+                }
+            }
+        }
     }
 
     private void processRegeneration(Player player, Level level) {
@@ -156,31 +293,7 @@ public class DragonCrystalArmor extends ArmorItem {
         playerRegenerationTimer.put(playerUUID, timer);
     }
 
-    @SubscribeEvent
-    public static void onLivingHurt(LivingHurtEvent event) {
-        if (event.getEntityLiving() instanceof Player) {
-            Player player = (Player) event.getEntityLiving();
-            if (isWearingFullSet(player)) {
-                if (event.getSource().isExplosion()) {
-                    event.setCanceled(true);
-                    return;
-                }
-                else {
-                    float originalDamage = event.getAmount();
-                    float reducedDamage = originalDamage * 0.1f;
-                    event.setAmount(reducedDamage);
-
-                    if (player.level instanceof ServerLevel) {
-                        ServerLevel serverLevel = (ServerLevel) player.level;
-                        spawnDamageParticles(player, serverLevel);
-                    }
-                }
-            }
-        }
-    }
-
     private void applyEffects(Player player) {
-        // 只在没有对应效果或者效果即将结束时才添加
         applyEffectIfNeeded(player, MobEffects.DAMAGE_BOOST, 127);
         applyEffectIfNeeded(player, MobEffects.WATER_BREATHING, 10);
         applyEffectIfNeeded(player, MobEffects.MOVEMENT_SPEED, 40);
@@ -195,8 +308,7 @@ public class DragonCrystalArmor extends ArmorItem {
         }
     }
 
-    private void removeAllEffects(Player player) {
-        // 更严格的移除逻辑，确保移除所有由龙甲产生的无限时长效果
+    private static void removeAllEffectsStatic(Player player) {
         removeEffectIfDragonArmor(player, MobEffects.DAMAGE_BOOST);
         removeEffectIfDragonArmor(player, MobEffects.WATER_BREATHING);
         removeEffectIfDragonArmor(player, MobEffects.MOVEMENT_SPEED);
@@ -204,9 +316,8 @@ public class DragonCrystalArmor extends ArmorItem {
         removeEffectIfDragonArmor(player, MobEffects.FIRE_RESISTANCE);
     }
 
-    private void removeEffectIfDragonArmor(Player player, MobEffect effect) {
+    private static void removeEffectIfDragonArmor(Player player, MobEffect effect) {
         MobEffectInstance instance = player.getEffect(effect);
-        // 移除持续时间超过1000000的效果（认为是龙甲产生的无限效果）
         if (instance != null && instance.getDuration() > 1000000) {
             player.removeEffect(effect);
         }

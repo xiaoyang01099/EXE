@@ -32,7 +32,7 @@ void main() {
     // 保留原始颜色并添加动画效果
     vec3 enhancedColor = color.rgb + vec3(animR, animG, animB);
     
-    // 可选：轻微增强饱和度
+    // 轻微增强饱和度
     float luminance = dot(enhancedColor, vec3(0.299, 0.587, 0.114));
     enhancedColor = mix(vec3(luminance), enhancedColor, 1.2); // 1.2 = 饱和度增强
     

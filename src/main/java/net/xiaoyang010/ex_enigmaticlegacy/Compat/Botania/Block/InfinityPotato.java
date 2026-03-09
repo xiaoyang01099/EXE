@@ -43,7 +43,6 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 import static vazkii.botania.common.block.BlockMod.createTickerHelper;
 
 public class InfinityPotato extends Block implements SimpleWaterloggedBlock, EntityBlock {
-
     protected static final VoxelShape SHAPE = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 12.0D, 12.0D);
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final DirectionProperty FACING = HORIZONTAL_FACING;

@@ -41,6 +41,8 @@ public class ConfigHandler {
 
     public static List<Object> lockEntityListToHorn = new ArrayList<>();
 
+    public static boolean infinityPotatoDrawHalo = true;
+
     private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
     private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
 
@@ -99,6 +101,8 @@ public class ConfigHandler {
 
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> lockEntityListToHornConfig;
 
+    public static ForgeConfigSpec.BooleanValue infinityPotatoDrawHaloConfig;
+
     static {
         CLIENT_BUILDER.comment("Client Settings").push("client");
 
@@ -125,6 +129,17 @@ public class ConfigHandler {
                         "Should match guiScale for consistency"
                 )
                 .defineInRange("jeiScale", 0.7, 0.1, 1.0);
+
+        CLIENT_BUILDER.pop();
+
+        CLIENT_BUILDER.comment("Infinity Potato Settings").push("infinity_potato");
+
+        infinityPotatoDrawHaloConfig = CLIENT_BUILDER
+                .comment(
+                        "Enable/disable the halo effect rendered behind the Infinity Potato block",
+                        "Default: true"
+                )
+                .define("drawHalo", true);
 
         CLIENT_BUILDER.pop();
 
@@ -359,9 +374,12 @@ public class ConfigHandler {
         enableDragonArmorOverlay = enableDragonArmorOverlayConfig.get();
         starlitGuiScale = starlitGuiScaleConfig.get().floatValue();
         starlitJeiScale = starlitJeiScaleConfig.get().floatValue();
+        infinityPotatoDrawHalo = infinityPotatoDrawHaloConfig.get();
 
         ExEnigmaticlegacyMod.LOGGER.info("Starlit Sanctum GUI scales loaded: GUI={}, JEI={}",
                 starlitGuiScale, starlitJeiScale);
+        ExEnigmaticlegacyMod.LOGGER.info("Infinity Potato config loaded: drawHalo={}",
+                infinityPotatoDrawHalo);
     }
 
     private static void syncPowerInventoryConfig() {
@@ -485,6 +503,12 @@ public class ConfigHandler {
     public static class PeacefulTableConfig {
         public static boolean isEnabledInAllDifficulties() {
             return peacefulTableInAllDifficulties;
+        }
+    }
+
+    public static class InfinityPotatoConfig {
+        public static boolean isDrawHalo() {
+            return infinityPotatoDrawHalo;
         }
     }
 }
