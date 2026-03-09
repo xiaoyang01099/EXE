@@ -41,7 +41,7 @@ import java.util.List;
 
 public class CelestialHolinessTransmuter extends BaseEntityBlock {
 	public CelestialHolinessTransmuter() {
-		super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(3f, 10f).requiresCorrectToolForDrops());
+		super(Properties.of(Material.STONE).sound(SoundType.STONE).strength(3f, 10f).requiresCorrectToolForDrops());
 	}
 
 	@Override
@@ -50,7 +50,6 @@ public class CelestialHolinessTransmuter extends BaseEntityBlock {
 	}
 
 
-	// 添加右键点击事件
 	@Override
 	public InteractionResult use(BlockState state, Level world, BlockPos pos,
 								 Player player, InteractionHand hand, BlockHitResult hit) {

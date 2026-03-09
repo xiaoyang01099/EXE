@@ -220,7 +220,7 @@ public class TrinarySynthesisTile extends TileEntityFunctionalFlower{
 
             applyKineticEnhancement(kinetic, kineticNBT, currentTime, currentStress, currentSpeed);
 
-            if (kinetic instanceof com.simibubi.create.foundation.blockEntity.IMultiBlockEntityContainer) {
+            if (kinetic instanceof IMultiBlockEntityContainer) {
                 enhanceMultiBlockStructure(kinetic);
             }
 
@@ -537,7 +537,7 @@ public class TrinarySynthesisTile extends TileEntityFunctionalFlower{
      */
     private void scheduleKineticBehaviorModification(KineticBlockEntity kinetic) {
         // 通过调度器在下一tick修改机械行为
-        if (level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+        if (level instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new net.minecraft.server.TickTask(
                     serverLevel.getServer().getTickCount() + 1,
                     () -> {
@@ -591,7 +591,7 @@ public class TrinarySynthesisTile extends TileEntityFunctionalFlower{
             try {
                 var tank = fluidHandler.getTank(0);
 
-                var blockEntity = (net.minecraft.world.level.block.entity.BlockEntity) fluidHandler;
+                var blockEntity = (BlockEntity) fluidHandler;
                 var nbt = blockEntity.saveWithFullMetadata();
                 nbt.putFloat("FluidProcessingBonus", 1.4f); // 流体处理效率+40%
                 nbt.putBoolean("FluidEnhanced", true);
@@ -857,7 +857,7 @@ public class TrinarySynthesisTile extends TileEntityFunctionalFlower{
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap,
-                LazyOptional.of(() -> new TrinarySynthesisTile.FunctionalWandHud(this)).cast());
+                LazyOptional.of(() -> new FunctionalWandHud(this)).cast());
     }
 
     @Override

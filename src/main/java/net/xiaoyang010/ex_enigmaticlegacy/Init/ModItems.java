@@ -19,6 +19,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.ItemHybridSpecialFlower
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.SuperpositionRing;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.BlackHoleGrimoire;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.HolyRing;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.SlimeCannon;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.HornPlenty;
@@ -28,7 +29,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModIngot;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.all.ModSingularity;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.TelekinesisTome;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.ItemPowerRing;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.DiscordRing;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.DiscordRing;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.TeleportationTome;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.TelekinesisTomeLevel;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.DivineCloak;
@@ -104,15 +105,23 @@ public class ModItems {
 	public static final RegistryObject<Item> CURSED_MANA_SPREADER = block(ModBlockss.CURSED_MANA_SPREADER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 
 	public static final RegistryObject<Item> PURIFICATION_CRYSTAL = REGISTRY.register("purification_crystal",
-			() -> new ItemManaPurificationCrystal(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS)));
+			() -> new ItemManaPurificationCrystal(new Properties().tab(CreativeModeTab.TAB_TOOLS)));
 	public static final RegistryObject<Item> CORRUPTION_DETECTOR = REGISTRY.register("corruption_detector",
-			() -> new ItemCorruptionDetector(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS)));
+			() -> new ItemCorruptionDetector(new Properties().tab(CreativeModeTab.TAB_TOOLS)));
 	public static final RegistryObject<Item> CORRUPTION_PROTECTION_AMULET = REGISTRY.register("corruption_protection_amulet",
-			() -> new ItemCorruptionProtectionAmulet(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+			() -> new ItemCorruptionProtectionAmulet(new Properties().tab(CreativeModeTab.TAB_COMBAT)));
 
 	//扩展浮空花
 
+
+
+
+
+
+
+
 	//其他方块物品
+	public static final RegistryObject<Item> ADVANCED_SPREADER = block(ModBlockss.ADVANCED_SPREADER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> MANA_CRYSTAL = block(ModBlockss.MANA_CRYSTAL, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> MANA_CHARGER = block(ModBlockss.MANA_CHARGER, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> infinitySpreader = block(ModBlockss.infinitySpreader, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
@@ -156,6 +165,7 @@ public class ModItems {
 	public static final RegistryObject<Item> LEBETHRON_CORE = block(ModBlockss.LEBETHRON_CORE, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> LEBETHRON_LOG = block(ModBlockss.LEBETHRON_LOG, ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA);
 	public static final RegistryObject<Item> STARLIT_SANCTUM = block(ModBlockss.STARLIT_SANCTUM, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
+	public static final RegistryObject<Item> PEACEFUL_TABLE = block(ModBlockss.PEACEFUL_TABLE, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
 	public static final RegistryObject<Item> MANA_BOX_ITEM = REGISTRY.register("mana_box", BlockItemManaBox::new);
 
 
@@ -237,12 +247,20 @@ public class ModItems {
 	public static final RegistryObject<Item> MYSTICISM_INGOT = REGISTRY.register("mysticism_ingot", () -> new ModIngot(INGOT_PROPERTIES.rarity(ModRarities.MIRACLE)));
 	public static final RegistryObject<Item> RAINBOW_NUGGET = REGISTRY.register("rainbow_nugget", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> RAINBOW_ORE_ROCK = REGISTRY.register("rainbow_ore_rock", () -> new ModIngot(INGOT_PROPERTIES.rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> CREEPER_NUGGET = REGISTRY.register("creeper_nugget", () -> CreeperNugget.INSTANCE);
+
+
+
 
 	//其他通用物品注册
 	public static final RegistryObject<Item> NATURE_GIFT = REGISTRY.register("nature_gift", () -> new ItemResource(false));
 	public static final RegistryObject<Item> FORGOTTEN_LANDS = REGISTRY.register("air_of_forgotten_lands", () -> new ItemResource(true));
 	public static final RegistryObject<Item> CURSED_PASTELS = REGISTRY.register("cursed_pastels", () -> new ItemResource(false));
 	public static final RegistryObject<Item> MANA_PASTELS = REGISTRY.register("mana_pastels", () -> new ItemResource(false));
+
+
+
+
 
 	//其他物品注册
 	public static final RegistryObject<Item> SPECTRITE_CRYSTAL = REGISTRY.register("spectrite_crystal", SpectriteCrystal::new);
@@ -268,10 +286,15 @@ public class ModItems {
 	public static final RegistryObject<Item> RADIANT_SACRED_RUBY = REGISTRY.register("radiant_sacred_ruby", RadiantSacredRuby::new);
 	public static final RegistryObject<Item> MANA_READER = REGISTRY.register("mana_reader", () -> new ManaReader(new Properties().rarity(Rarity.RARE)));
 	public static final RegistryObject<Item> PLUMED_BELT = REGISTRY.register("plumed_belt", () -> new PlumedBelt(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC)));
-	public static final RegistryObject<Item> IVY_REGEN = REGISTRY.register("ivy_regen", () -> new IvyRegen(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+	public static final RegistryObject<Item> IVY_REGEN = REGISTRY.register("ivy_regen", () -> new IvyRegen(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 	public static final RegistryObject<Item> MANA_FLOWER = REGISTRY.register("mana_flower", ManaFlower::new);
 	public static final RegistryObject<Item> INFINITY_ROD = REGISTRY.register("infinity_rod", InfinityRod::new);
-	public static final RegistryObject<Item> CONTINUUM_BOMB = REGISTRY.register("continuum_bomb", () -> new ContinuumBombItem(new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)));
+	public static final RegistryObject<Item> SLIME_CANNON = REGISTRY.register("slime_cannon", SlimeCannon::new);
+	public static final RegistryObject<Item> SLING = REGISTRY.register("sling", Sling::new);
+	public static final RegistryObject<Item> CONTINUUM_BOMB = REGISTRY.register("continuum_bomb", () -> new ContinuumBombItem(new Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)));
+	public static final RegistryObject<Item> SLIME_NECKLACE = REGISTRY.register("slime_necklace", SlimeNecklace::new);
+
+
 
 	//奇点
 	public static final RegistryObject<Item> ETERNAL_SINGULARITY = REGISTRY.register("eternal_singularity", ModSingularity::new);
@@ -321,25 +344,25 @@ public class ModItems {
 	public static final RegistryObject<Item> MysteriousPurpleWisteriaSpiritRune = REGISTRY.register("mysterious_purple_wisteria_spirit_rune", ModRunes::new);
 
 	public static final RegistryObject<Item> EMPTY_MANA_BUCKET = REGISTRY.register("empty_mana_bucket",
-			() -> new ManaBucket(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(16), false));
+			() -> new ManaBucket(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(16), false));
 
 	public static final RegistryObject<Item> FILLED_MANA_BUCKET = REGISTRY.register("filled_mana_bucket",
-			() -> new ManaBucket(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(16), true));
+			() -> new ManaBucket(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(16), true));
 
 	public static final RegistryObject<Item> SPRAWL_ROD = REGISTRY.register("sprawl_rod",
-			() -> new SprawlRod(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.UNCOMMON)));
+			() -> new SprawlRod(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.UNCOMMON)));
 
 	public static final RegistryObject<Item> MITHRILL_MULTI_TOOL = REGISTRY.register("mithrill_multi_tool",
-			() -> new MithrillMultiTool(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC)));
+			() -> new MithrillMultiTool(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC)));
 
 	public static final RegistryObject<Item> TERRA_SHOVEL = REGISTRY.register("terra_shovel",
-			() -> new TerraShovel(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC)));
+			() -> new TerraShovel(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC)));
 
 	public static final RegistryObject<Item> TERRA_HOE = REGISTRY.register("terra_hoe",
-			() -> new TerraHoe(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC)));
+			() -> new TerraHoe(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC)));
 
 	public static final RegistryObject<Item> RIDEABLE_PEARL = REGISTRY.register("rideable_pearl",
-			() -> new RideablePearl(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).durability(30)));
+			() -> new RideablePearl(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).durability(30)));
 
 	public static final RegistryObject<Item> SPOTTED_GARDEN_EEL_BUCKET = REGISTRY.register("spotted_garden_eel_bucket",
 			() -> new MobBucketItem(ModEntities.SPOTTED_GARDEN_EEL, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_FISH,
@@ -370,23 +393,23 @@ public class ModItems {
 					new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)));
 
 	public static final RegistryObject<Item> NEBULA_ROD = REGISTRY.register("nebula_rod",
-			() -> new NebulaRod(new Item.Properties()
+			() -> new NebulaRod(new Properties()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC)));
 
 	public static final RegistryObject<Item> MITHRILL_RING = REGISTRY.register("mithrill_ring",
-			() -> new MithrillRing(new Item.Properties()
+			() -> new MithrillRing(new Properties()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC)));
 
 	public static final RegistryObject<Item> NEBULA_RING = REGISTRY.register("nebula_ring",
-			() -> new NebulaRing(new Item.Properties()
+			() -> new NebulaRing(new Properties()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC)));
 
 	public static final RegistryObject<Item> ADVANCED_SPARK = REGISTRY.register("advanced_spark",
-			() -> new AdvancedSpark(new Item.Properties()
+			() -> new AdvancedSpark(new Properties()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 	public static final RegistryObject<Item> ADMIN_CONTROLLER = REGISTRY.register("admin_controller",
-			() -> new AdminController(new Item.Properties()
+			() -> new AdminController(new Properties()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 	public static final RegistryObject<Item> FATE_TOME = REGISTRY.register("fate_tome",
@@ -394,54 +417,55 @@ public class ModItems {
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 	public static final RegistryObject<Item> TELEKINESIS_TOME_LEVEL = REGISTRY.register("telekinesis_tome_level",
-			() -> new TelekinesisTomeLevel(new Item.Properties().stacksTo(1).rarity(ModRarities.MIRACLE).fireResistant()
+			() -> new TelekinesisTomeLevel(new Properties().stacksTo(1).rarity(ModRarities.MIRACLE).fireResistant()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 	public static final RegistryObject<Item> BLACK_HALO_TOME = REGISTRY.register("black_halo_tome",
-			() -> new BlackHoleGrimoire(new Item.Properties().stacksTo(1).rarity(ModRarities.MIRACLE).fireResistant()
+			() -> new BlackHoleGrimoire(new Properties().stacksTo(1).rarity(ModRarities.MIRACLE).fireResistant()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 	public static final RegistryObject<Item> HORN_PLENTY = REGISTRY.register("horn_plenty",
-			() -> new HornPlenty(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant()
+			() -> new HornPlenty(new Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 	public static final RegistryObject<Item> SPHERE_NAVIGATION = REGISTRY.register("sphere_navigation",
-			() -> new SphereNavigation(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant()
+			() -> new SphereNavigation(new Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 	public static final RegistryObject<Item> DIVINE_CLOAK_NJORD = REGISTRY.register("divine_cloak_njord",
-			() -> new DivineCloak(new Item.Properties().durability(0)));
+			() -> new DivineCloak(new Properties().durability(0)));
 
 	public static final RegistryObject<Item> DIVINE_CLOAK_IDUNN = REGISTRY.register("divine_cloak_idunn",
-			() -> new DivineCloak(new Item.Properties().durability(1)));
+			() -> new DivineCloak(new Properties().durability(1)));
 
 	public static final RegistryObject<Item> DIVINE_CLOAK_THOR = REGISTRY.register("divine_cloak_thor",
-			() -> new DivineCloak(new Item.Properties().durability(2)));
+			() -> new DivineCloak(new Properties().durability(2)));
 
 	public static final RegistryObject<Item> DIVINE_CLOAK_HEIMDALL = REGISTRY.register("divine_cloak_heimdall",
-			() -> new DivineCloak(new Item.Properties().durability(3)));
+			() -> new DivineCloak(new Properties().durability(3)));
 
 	public static final RegistryObject<Item> DIVINE_CLOAK_LOKI = REGISTRY.register("divine_cloak_loki",
-			() -> new DivineCloak(new Item.Properties().durability(4)));
+			() -> new DivineCloak(new Properties().durability(4)));
 
 	public static final RegistryObject<Item> FATE_HORN = REGISTRY.register("fate_horn",
-			() -> new FateHorn(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant()
+			() -> new FateHorn(new Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
+
 	//遗物
 	public static final RegistryObject<Item> SCEPTER_OF_SOVEREIGN = REGISTRY.register("scepter_of_sovereign",
-			() -> new ScepterOfSovereign(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).fireResistant()));
+			() -> new ScepterOfSovereign(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).fireResistant()));
 
 	public static final RegistryObject<Item> TELEPORTATION_TOME = REGISTRY.register("teleportation_tome",
 			() -> new TeleportationTome(new Properties().stacksTo(1).rarity(Rarity.EPIC).tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 	public static final RegistryObject<Item> POWER_RING = REGISTRY.register("power_ring",
-			() -> new ItemPowerRing(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(ModRarities.MIRACLE)));
+			() -> new ItemPowerRing(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(ModRarities.MIRACLE)));
 
 	public static final RegistryObject<Item> DISCORD_RING = REGISTRY.register("discord_ring",
-			() -> new DiscordRing(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC).stacksTo(1)));
+			() -> new DiscordRing(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC).stacksTo(1)));
 
 	public static final RegistryObject<Item> AESIR_RING = REGISTRY.register("aesir_ring",
-			() -> new AesirRing(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).rarity(Rarity.EPIC)));
+			() -> new AesirRing(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).rarity(Rarity.EPIC)));
 
 	public static final RegistryObject<Item> FREYR_SLINGSHOT = REGISTRY.register("freyr_slingshot",
 			() -> new FreyrSlingshot(new Properties().stacksTo(1).rarity(Rarity.EPIC).tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
@@ -477,7 +501,7 @@ public class ModItems {
 			() -> new Overthrower(new Properties().stacksTo(1).rarity(Rarity.EPIC).tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 	public static final RegistryObject<Item> MANAITA_SHEARS = REGISTRY.register("manaita_shears",
-			() -> new ManaitaShears(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC).durability(Integer.MAX_VALUE)));
+			() -> new ManaitaShears(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).rarity(Rarity.EPIC).durability(Integer.MAX_VALUE)));
 
 	public static final RegistryObject<Item> MANAITA = REGISTRY.register("manaita",
 			() -> new Manaita(new Properties().stacksTo(1).rarity(Rarity.EPIC).tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
@@ -516,7 +540,7 @@ public class ModItems {
 			() -> new TelekinesisTome(new Properties().stacksTo(1).rarity(Rarity.EPIC).tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)));
 
 	public static final RegistryObject<Item> DARK_SUN_RING = REGISTRY.register("dark_sun_ring",
-			() -> new DarkSunRing(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).rarity(Rarity.EPIC)));
+			() -> new DarkSunRing(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).rarity(Rarity.EPIC)));
 
 	public static final RegistryObject<Item> FLOWER_FINDER_WAND = REGISTRY.register("flower_finder_wand",
 			() -> new FlowerFinderWand(new Properties()
@@ -527,19 +551,19 @@ public class ModItems {
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).rarity(ModRarities.MIRACLE)));
 
 	public static final RegistryObject<Item> ANTIGRAVITY_CHARM = REGISTRY.register("antigravity_charm",
-			() -> new AntigravityCharm(new Item.Properties()
+			() -> new AntigravityCharm(new Properties()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).rarity(Rarity.EPIC).setNoRepair()));
 
 	public static final RegistryObject<Item> TALISMAN_HIDDEN_RICHES = REGISTRY.register("talisman_hidden_riches",
-				() -> new TalismanHiddenRiches(new Item.Properties()
+				() -> new TalismanHiddenRiches(new Properties()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA) .stacksTo(1).setNoRepair().rarity(Rarity.EPIC)));
 
 	public static final RegistryObject<Item> BLACK_HALO = REGISTRY.register("black_halo",
-			() -> new BlackHalo(new Item.Properties()
+			() -> new BlackHalo(new Properties()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).rarity(Rarity.EPIC)));
 
 	public static final RegistryObject<Item> POCKET_WARDROBE = REGISTRY.register("pocket_wardrobe",
-			() -> new PocketWardrobe(new Item.Properties()
+			() -> new PocketWardrobe(new Properties()
 					.tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA).stacksTo(1).rarity(Rarity.EPIC)));
 
 

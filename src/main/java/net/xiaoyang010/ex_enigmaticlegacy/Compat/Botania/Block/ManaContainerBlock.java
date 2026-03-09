@@ -49,8 +49,7 @@ public class ManaContainerBlock extends BlockModWaterloggable implements EntityB
     public enum Variant {
         DEFAULT,
         CREATIVE,
-        DILUTED,
-        FABULOUS
+        DILUTED
     }
 
     public ManaContainerBlock(Variant v, Properties builder) {
@@ -151,10 +150,6 @@ public class ManaContainerBlock extends BlockModWaterloggable implements EntityB
     @Nonnull
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        if (variant == Variant.FABULOUS) {
-            return RenderShape.ENTITYBLOCK_ANIMATED;
-        } else {
-            return RenderShape.MODEL;
-        }
+        return RenderShape.MODEL;
     }
 }

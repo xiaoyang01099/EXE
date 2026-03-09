@@ -56,12 +56,12 @@ public class RenderEldritchOrb extends EntityRenderer<Entity> {
         poseStack.pushPose();
 
         for(int i = 0; i < 12; ++i) {
-            poseStack.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
-            poseStack.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
-            poseStack.mulPose(com.mojang.math.Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F));
-            poseStack.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
-            poseStack.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
-            poseStack.mulPose(com.mojang.math.Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F + f1 * 360.0F));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F + f1 * 360.0F));
 
             buffer.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
 

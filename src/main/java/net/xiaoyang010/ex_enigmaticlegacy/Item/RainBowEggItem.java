@@ -24,7 +24,7 @@ import java.util.List;
 
 public class RainBowEggItem extends Item {
     public RainBowEggItem(){
-        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(64).fireResistant().rarity(ModRarities.MIRACLE));
+        super(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(64).fireResistant().rarity(ModRarities.MIRACLE));
     }
 
     @Override

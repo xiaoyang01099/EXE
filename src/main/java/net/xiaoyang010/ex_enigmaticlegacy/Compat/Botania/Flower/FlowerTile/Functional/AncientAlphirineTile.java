@@ -135,7 +135,7 @@ public class AncientAlphirineTile extends TileEntityFunctionalFlower {
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap,
-                LazyOptional.of(() -> new AncientAlphirineTile.FunctionalWandHud(this)).cast());
+                LazyOptional.of(() -> new FunctionalWandHud(this)).cast());
     }
 
     @Override

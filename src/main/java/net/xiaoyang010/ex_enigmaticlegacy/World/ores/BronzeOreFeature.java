@@ -39,7 +39,7 @@ public class BronzeOreFeature extends OreFeature {
 
     public static Feature<?> feature() {
         FEATURE = new BronzeOreFeature();
-        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:bronze_ore", FEATURE, new OreConfiguration(BronzeOreFeature.BronzeOreFeatureRuleTest.INSTANCE, ((Block) ModBlockss.BRONZE_ORE.get()).defaultBlockState(), 6));
+        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:bronze_ore", FEATURE, new OreConfiguration(BronzeOreFeatureRuleTest.INSTANCE, ((Block) ModBlockss.BRONZE_ORE.get()).defaultBlockState(), 6));
         PLACED_FEATURE = PlacementUtils.register("ex_enigmaticlegacy:bronze_ore", CONFIGURED_FEATURE, List.of(CountPlacement.of(2), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-30), VerticalAnchor.absolute(60)), BiomeFilter.biome()));
         return FEATURE;
     }

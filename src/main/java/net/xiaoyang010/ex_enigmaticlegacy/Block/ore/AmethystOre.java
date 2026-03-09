@@ -22,7 +22,7 @@ import java.util.List;
 
 public class AmethystOre extends OreBlock {
     public AmethystOre() {
-        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(3f, 3f).requiresCorrectToolForDrops());
+        super(Properties.of(Material.STONE).sound(SoundType.STONE).strength(3f, 3f).requiresCorrectToolForDrops());
     }
 
     @Override

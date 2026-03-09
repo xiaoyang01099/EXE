@@ -40,7 +40,7 @@ public class DarkSunRing extends Item implements ICurioItem, INoEMCItem {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @org.jetbrains.annotations.Nullable CompoundTag nbt) {
-        return new DarkSunRing.RelicCapProvider(stack);
+        return new RelicCapProvider(stack);
     }
 
     private static class RelicCapProvider implements ICapabilityProvider {

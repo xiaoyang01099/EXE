@@ -20,7 +20,7 @@ import java.util.Collections;
 
 public class BlocknatureBlock extends Block {
 	public BlocknatureBlock() {
-		super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(5f, 10f).requiresCorrectToolForDrops());
+		super(Properties.of(Material.STONE).sound(SoundType.STONE).strength(5f, 10f).requiresCorrectToolForDrops());
 	}
 
 	@Override

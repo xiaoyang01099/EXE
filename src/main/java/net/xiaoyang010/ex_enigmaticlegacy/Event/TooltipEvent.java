@@ -1,9 +1,14 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Event;
 
+import com.mojang.datafixers.util.Either;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,14 +24,52 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.HolyRing;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.EComponent;
+import net.xiaoyang010.ex_enigmaticlegacy.Util.StyleMarker;
+import net.xiaoyang010.ex_enigmaticlegacy.Util.WaveNameData;
+import net.xiaoyang010.ex_enigmaticlegacy.Util.WaveNameTooltipComponent;
 import net.xiaoyang010.ex_enigmaticlegacy.api.IModelRegister;
+import net.xiaoyang010.ex_enigmaticlegacy.api.IWaveName;
 import vazkii.botania.api.mana.IManaItem;
 import vazkii.botania.xplat.IXplatAbstractions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class TooltipEvent {
+
+    @SubscribeEvent
+    public static void onGatherTooltip(RenderTooltipEvent.GatherComponents event) {
+        ItemStack stack = event.getItemStack();
+        if (stack.isEmpty()) return;
+
+        List<Either<FormattedText, TooltipComponent>> list = event.getTooltipElements();
+
+        if (stack.getItem() instanceof IWaveName wni && !list.isEmpty()) {
+            Either<FormattedText, TooltipComponent> first = list.get(0);
+            first.ifLeft(text -> {
+                String rawText = ChatFormatting.stripFormatting(text.getString());
+                if (rawText != null && !rawText.isEmpty()) {
+                    IWaveName.WaveStyle style = wni.getWaveStyle(stack);
+                    list.set(0, Either.right(new WaveNameData(stack, style, rawText)));
+                }
+            });
+        }
+
+        for (int i = 1; i < list.size(); i++) {
+            final int idx = i;
+            list.get(i).ifLeft(text -> {
+                IWaveName.WaveStyle waveStyle = StyleMarker.extractStyle(text);
+                if (waveStyle == null) return;
+                String rawText = ChatFormatting.stripFormatting(text.getString());
+                if (rawText == null || rawText.isEmpty()) return;
+                list.set(idx, Either.right(
+                        new WaveNameData(stack, waveStyle, rawText)
+                ));
+            });
+        }
+    }
 
     @SubscribeEvent
     public static void onRenderTooltipColor(RenderTooltipEvent.Color event) {
@@ -77,7 +120,7 @@ public class TooltipEvent {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void onItemTooltip(ItemTooltipEvent event) {
+    public void BonItemTooltip(ItemTooltipEvent event) {
         ItemStack itemStack = event.getItemStack();
 
         Item item = itemStack.getItem();

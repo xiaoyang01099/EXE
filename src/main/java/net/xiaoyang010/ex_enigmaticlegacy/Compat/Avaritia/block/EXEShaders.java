@@ -131,10 +131,10 @@ public final class EXEShaders {
                 false,
                 CompositeState.builder()
                         .setShaderState(new RenderStateShard.ShaderStateShard(() -> cosmicShader))
-                        .setDepthTestState(EXEShaders.RenderStateShardAccess.EQUAL_DEPTH_TEST)
-                        .setLightmapState(EXEShaders.RenderStateShardAccess.LIGHT_MAP)
-                        .setTransparencyState(EXEShaders.RenderStateShardAccess.TRANSLUCENT_TRANSPARENCY)
-                        .setTextureState(EXEShaders.RenderStateShardAccess.BLOCK_SHEET_MIPPED)
+                        .setDepthTestState(RenderStateShardAccess.EQUAL_DEPTH_TEST)
+                        .setLightmapState(RenderStateShardAccess.LIGHT_MAP)
+                        .setTransparencyState(RenderStateShardAccess.TRANSLUCENT_TRANSPARENCY)
+                        .setTextureState(RenderStateShardAccess.BLOCK_SHEET_MIPPED)
                         .createCompositeState(true));
 
         COSMIC_BLOCK_RENDER_TYPE = RenderType.create("ex_enigmaticlegacy:cosmic_block",
@@ -144,10 +144,10 @@ public final class EXEShaders {
                 true,
                 false, CompositeState.builder()
                         .setShaderState(new RenderStateShard.ShaderStateShard(() -> cosmicShader))
-                        .setDepthTestState(EXEShaders.RenderStateShardAccess.LEQUAL_DEPTH_TEST)
-                        .setLightmapState(EXEShaders.RenderStateShardAccess.LIGHT_MAP)
-                        .setTransparencyState(EXEShaders.RenderStateShardAccess.TRANSLUCENT_TRANSPARENCY)
-                        .setTextureState(EXEShaders.RenderStateShardAccess.BLOCK_SHEET_MIPPED)
+                        .setDepthTestState(RenderStateShardAccess.LEQUAL_DEPTH_TEST)
+                        .setLightmapState(RenderStateShardAccess.LIGHT_MAP)
+                        .setTransparencyState(RenderStateShardAccess.TRANSLUCENT_TRANSPARENCY)
+                        .setTextureState(RenderStateShardAccess.BLOCK_SHEET_MIPPED)
                         .createCompositeState(true));
 
         COSMIC_ENTITY_RENDER_TYPE = RenderType.create("ex_enigmaticlegacy:cosmic_entity",
@@ -156,11 +156,11 @@ public final class EXEShaders {
                 false,
                 true, CompositeState.builder()
                         .setShaderState(new RenderStateShard.ShaderStateShard(() -> cosmicShader))
-                        .setDepthTestState(EXEShaders.RenderStateShardAccess.LEQUAL_DEPTH_TEST)
-                        .setLightmapState(EXEShaders.RenderStateShardAccess.LIGHT_MAP)
-                        .setTransparencyState(EXEShaders.RenderStateShardAccess.TRANSLUCENT_TRANSPARENCY)
-                        .setTextureState(EXEShaders.RenderStateShardAccess.COSMIC_TEXTURE_STATE)
-                        .setWriteMaskState(EXEShaders.RenderStateShardAccess.COLOR_DEPTH_WRITE)
+                        .setDepthTestState(RenderStateShardAccess.LEQUAL_DEPTH_TEST)
+                        .setLightmapState(RenderStateShardAccess.LIGHT_MAP)
+                        .setTransparencyState(RenderStateShardAccess.TRANSLUCENT_TRANSPARENCY)
+                        .setTextureState(RenderStateShardAccess.COSMIC_TEXTURE_STATE)
+                        .setWriteMaskState(RenderStateShardAccess.COLOR_DEPTH_WRITE)
                         .createCompositeState(false));
 
         COSMIC_FLOWER_BLOCK_RENDER_TYPE = RenderType.create(
@@ -183,25 +183,25 @@ public final class EXEShaders {
 
         EYES = Util.memoize((function) -> {
             RenderStateShard.TextureStateShard textureStateShard = new RenderStateShard.TextureStateShard(function, false, false);
-            return RenderType.create("eyes_light", DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 256, false, true, CompositeState.builder().setShaderState(EXEShaders.RenderStateShardAccess.EYES_LIGHT).setTextureState(textureStateShard).setTransparencyState(EXEShaders.RenderStateShardAccess.ADDITIVE_TRANSPARENCY).setWriteMaskState(EXEShaders.RenderStateShardAccess.COLOR_WRITE).createCompositeState(false));
+            return RenderType.create("eyes_light", DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 256, false, true, CompositeState.builder().setShaderState(RenderStateShardAccess.EYES_LIGHT).setTextureState(textureStateShard).setTransparencyState(RenderStateShardAccess.ADDITIVE_TRANSPARENCY).setWriteMaskState(RenderStateShardAccess.COLOR_WRITE).createCompositeState(false));
         });
     }
 
     private static class RenderStateShardAccess extends RenderStateShard {
-        private static final RenderStateShard.DepthTestStateShard EQUAL_DEPTH_TEST;
-        private static final RenderStateShard.DepthTestStateShard LEQUAL_DEPTH_TEST;
-        private static final RenderStateShard.LightmapStateShard LIGHT_MAP;
-        private static final RenderStateShard.TransparencyStateShard TRANSLUCENT_TRANSPARENCY;
-        private static final RenderStateShard.TextureStateShard BLOCK_SHEET_MIPPED;
-        private static final RenderStateShard.TextureStateShard BLOCK_SHEET;
-        private static final RenderStateShard.CullStateShard NO_CULL;
+        private static final DepthTestStateShard EQUAL_DEPTH_TEST;
+        private static final DepthTestStateShard LEQUAL_DEPTH_TEST;
+        private static final LightmapStateShard LIGHT_MAP;
+        private static final TransparencyStateShard TRANSLUCENT_TRANSPARENCY;
+        private static final TextureStateShard BLOCK_SHEET_MIPPED;
+        private static final TextureStateShard BLOCK_SHEET;
+        private static final CullStateShard NO_CULL;
         private static final ResourceLocation COSMIC_ATLAS;
-        private static final RenderStateShard.TextureStateShard COSMIC_TEXTURE_STATE;
-        private static final RenderStateShard.ShaderStateShard EYES_LIGHT;
-        private static final RenderStateShard.WriteMaskStateShard COLOR_WRITE;
-        protected static final RenderStateShard.WriteMaskStateShard COLOR_DEPTH_WRITE;
-        private static final RenderStateShard.TransparencyStateShard ADDITIVE_TRANSPARENCY;
-        private static final RenderStateShard.LayeringStateShard POLYGON_OFFSET_LAYERING;
+        private static final TextureStateShard COSMIC_TEXTURE_STATE;
+        private static final ShaderStateShard EYES_LIGHT;
+        private static final WriteMaskStateShard COLOR_WRITE;
+        protected static final WriteMaskStateShard COLOR_DEPTH_WRITE;
+        private static final TransparencyStateShard ADDITIVE_TRANSPARENCY;
+        private static final LayeringStateShard POLYGON_OFFSET_LAYERING;
 
         private RenderStateShardAccess(String pName, Runnable pSetupState, Runnable pClearState) {
             super(pName, pSetupState, pClearState);
@@ -216,11 +216,11 @@ public final class EXEShaders {
             BLOCK_SHEET = RenderStateShard.BLOCK_SHEET;
             NO_CULL = RenderStateShard.NO_CULL;
             COSMIC_ATLAS = new ResourceLocation("ex_enigmaticlegacy", "textures/atlas/particles.png");
-            COSMIC_TEXTURE_STATE = new RenderStateShard.TextureStateShard(COSMIC_ATLAS, true, true);
-            EYES_LIGHT = new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEndPortalShader);
-            COLOR_WRITE = new RenderStateShard.WriteMaskStateShard(true, false);
-            COLOR_DEPTH_WRITE = new RenderStateShard.WriteMaskStateShard(true, true);
-            POLYGON_OFFSET_LAYERING = new RenderStateShard.LayeringStateShard(
+            COSMIC_TEXTURE_STATE = new TextureStateShard(COSMIC_ATLAS, true, true);
+            EYES_LIGHT = new ShaderStateShard(GameRenderer::getRendertypeEndPortalShader);
+            COLOR_WRITE = new WriteMaskStateShard(true, false);
+            COLOR_DEPTH_WRITE = new WriteMaskStateShard(true, true);
+            POLYGON_OFFSET_LAYERING = new LayeringStateShard(
                     "polygon_offset_layering",
                     () -> {
                         RenderSystem.polygonOffset(-1.0F, -10.0F);
@@ -232,7 +232,7 @@ public final class EXEShaders {
                     }
             );
 
-            ADDITIVE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("additive_transparency", () -> {
+            ADDITIVE_TRANSPARENCY = new TransparencyStateShard("additive_transparency", () -> {
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(SourceFactor.ONE, DestFactor.ONE);
             }, () -> {

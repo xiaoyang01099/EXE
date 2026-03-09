@@ -32,11 +32,13 @@ public class SpecialMiscellaneousModels {
 
     public BakedModel cursedSpreaderCore;
     public BakedModel cursedSpreaderScaffolding;
-
+    public BakedModel advancedSpreaderCore;
 
     public void onModelRegister(ResourceManager rm, Consumer<ResourceLocation> consumer) {
+        consumer.accept(path("block/advanced_spreader_core"));
         consumer.accept(path("block/cursed_spreader_core"));
         consumer.accept(path("block/cursed_spreader_scaffolding"));
+
 
         if (!registeredModels) {
             registeredModels = true;
@@ -49,7 +51,7 @@ public class SpecialMiscellaneousModels {
             ExEnigmaticlegacyMod.LOGGER.error("Cursed spreader models failed to register! Skipping bake.");
             return;
         }
-
+        advancedSpreaderCore = map.get(path("block/advanced_spreader_core"));
         cursedSpreaderCore = map.get(path("block/cursed_spreader_core"));
         cursedSpreaderScaffolding = map.get(path("block/cursed_spreader_scaffolding"));
     }

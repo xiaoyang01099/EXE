@@ -51,11 +51,11 @@ import java.util.List;
 
 public class ManaChargerTile extends BlockEntity implements IWandBindable, ISparkAttachable, IManaReceiver, Container {
     private static final int MANA_SPEED = 11240;
-    private static final int MAX_MANA = 1000000; // 最大魔力容量
+    private static final int MAX_MANA = 1000000;
     private final LazyOptional<IManaReceiver> manaReceiverCap = LazyOptional.of(() -> this);
     private final LazyOptional<ISparkAttachable> sparkAttachableCap = LazyOptional.of(() -> this);
     public boolean requestUpdate = false;
-    private int currentMana = 0; // 当前魔力值
+    private int currentMana = 0;
     private BlockPos receiverPos = null;
     public int[] clientTick = new int[]{0, 0, 3, 12, 6};
 
@@ -124,7 +124,8 @@ public class ManaChargerTile extends BlockEntity implements IWandBindable, ISpar
 
                                 if (!level.isClientSide) {
                                     manaItem.addMana(-manaVal);
-                                    if (level.getGameTime() % 15L == 0L) {
+                                    boolean justFinished = manaItem.getMana() <= 0;
+                                    if (justFinished || level.getGameTime() % 15L == 0L) {
                                         hasUpdate = true;
                                     }
                                 } else {
@@ -145,21 +146,28 @@ public class ManaChargerTile extends BlockEntity implements IWandBindable, ISpar
 
                                 if (!level.isClientSide) {
                                     manaItem.addMana(manaVal);
-                                    if (level.getGameTime() % 15L == 0L) {
+                                    boolean justFilled = manaItem.getMana() >= manaItem.getMaxMana();
+                                    if (justFilled || level.getGameTime() % 15L == 0L) {
                                         hasUpdate = true;
                                     }
-                                } else if (ConfigHandler.useManaChargerAnimation.get()) {
+                                } else {
                                     clientTick[i]++;
                                 }
 
                                 manaReceiver.receiveMana(-manaVal);
+                            } else if (level.isClientSide) {
+                                clientTick[i] = 0;
                             }
                         }
                     }
+                } else if (level.isClientSide) {
+                    clientTick[i] = 0;
                 }
             }
 
-            requestUpdate = hasUpdate;
+            if (hasUpdate) {
+                requestUpdate = true;
+            }
         }
 
         if (sparkReceiver == null || manaReceiver == null) {

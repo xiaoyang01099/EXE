@@ -81,7 +81,7 @@ public class UtilsFX {
             for(int a = 0; a < 3; ++a) {
                 FXSparkle fx = new FXSparkle((ClientLevel)world, (double)((float)x + world.random.nextFloat()), (double)((float)y + world.random.nextFloat()), (double)((float)z + world.random.nextFloat()), 1.75F, color == -1 ? world.random.nextInt(5) : color, 3 + world.random.nextInt(3));
                 fx.setGravity(0.1F);
-                ParticleEngine.INSTANCE.addEffect(world, fx);
+                ParticleEngine.instance.addEffect(world, fx);
             }
         }
     }
@@ -97,7 +97,7 @@ public class UtilsFX {
 
         for(int q = 0; q < 3; ++q) {
             FXScorch ef = new FXScorch((ClientLevel)world, px, py, pz, vec3d, (float)range, lance);
-            ParticleEngine.INSTANCE.addEffect(world, ef);
+            ParticleEngine.instance.addEffect(world, ef);
         }
     }
 
@@ -473,7 +473,7 @@ public class UtilsFX {
                     var14 = "§7" + var14;
                 }
 
-                fr.draw(new com.mojang.blaze3d.vertex.PoseStack(), var14, var15, var16, -1);
+                fr.draw(new PoseStack(), var14, var15, var16, -1);
                 if (var13 == 0) {
                     var16 += 2;
                 }
@@ -495,7 +495,7 @@ public class UtilsFX {
         double iPY = Mth.lerp(partialTicks, player.yOld, player.getY());
         double iPZ = Mth.lerp(partialTicks, player.zOld, player.getZ());
 
-        com.mojang.blaze3d.vertex.PoseStack poseStack = new com.mojang.blaze3d.vertex.PoseStack();
+        PoseStack poseStack = new PoseStack();
         poseStack.translate(-iPX + x2, -iPY + y2, -iPZ + z2);
 
         float time = (float)(System.nanoTime() / 30000000L);
@@ -562,7 +562,7 @@ public class UtilsFX {
     }
 
     public static void drawFloatyGUILine(double x, double y, double x2, double y2, float partialTicks, int color, String texture, float speed, float distance) {
-        com.mojang.blaze3d.vertex.PoseStack poseStack = new com.mojang.blaze3d.vertex.PoseStack();
+        PoseStack poseStack = new PoseStack();
         poseStack.pushPose();
         poseStack.translate(x2, y2, 0.0D);
 

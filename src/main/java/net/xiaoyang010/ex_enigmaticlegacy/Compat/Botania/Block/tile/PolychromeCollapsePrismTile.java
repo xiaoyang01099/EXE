@@ -46,6 +46,7 @@ import java.util.function.Supplier;
 
 public class PolychromeCollapsePrismTile extends BlockEntityBase implements ISparkAttachable, IManaReceiver {
     public static final Supplier<IMultiblock> MULTIBLOCK = Suppliers.memoize(() -> PatchouliAPI.get().makeMultiblock(
+
             new String[][] {
                     {
                             "_______________",

@@ -97,7 +97,7 @@ public class PolychromeRecipe implements IPolychromeRecipe {
     }
 
     public static class Type implements RecipeType<PolychromeRecipe> {
-        public static final PolychromeRecipe.Type INSTANCE = new PolychromeRecipe.Type();
+        public static final Type INSTANCE = new Type();
         public static final String ID = "polychrome";
 
         public Type() {

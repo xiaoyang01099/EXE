@@ -59,7 +59,7 @@ public class PocketWardrobe extends ItemRelic implements INoEMCItem {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return new PocketWardrobe.RelicCapProvider(stack);
+        return new RelicCapProvider(stack);
     }
 
     private static class RelicCapProvider implements ICapabilityProvider {

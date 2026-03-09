@@ -18,7 +18,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityInfinityCompressor;
 
 public class BlockInfinityCompressor extends MachineBlock {
-    public BlockInfinityCompressor(BlockBehaviour.Properties properties) {
+    public BlockInfinityCompressor(Properties properties) {
         super(properties, ModBlockEntities.INFINITY_COMPRESSOR_TILE::get);
         this.registerDefaultState((BlockState)((BlockState)this.defaultBlockState().setValue(FACING, Direction.NORTH)).setValue(ACTIVE, false));
     }

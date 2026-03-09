@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 public class StarfuelItem extends Item {
 
     public StarfuelItem() {
-        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
+        super(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
                 .stacksTo(64)
                 .fireResistant()
                 .rarity(Rarity.EPIC));

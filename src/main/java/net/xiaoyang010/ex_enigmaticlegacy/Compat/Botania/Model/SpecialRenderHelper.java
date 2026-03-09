@@ -42,7 +42,7 @@ public final class SpecialRenderHelper extends RenderType {
 
     static {
         //彩虹魔力
-        RenderType.CompositeState glState = RenderType.CompositeState.builder()
+        CompositeState glState = CompositeState.builder()
                 .setTextureState(BLOCK_SHEET_MIPPED)
                 .setShaderState(new ShaderStateShard(SpecialCoreShaders::rainbowManaWater))
                 .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
@@ -54,7 +54,7 @@ public final class SpecialRenderHelper extends RenderType {
                 DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
 
         //多谱坍缩纹理
-        glState = RenderType.CompositeState.builder().setTextureState(BLOCK_SHEET_MIPPED)
+        glState = CompositeState.builder().setTextureState(BLOCK_SHEET_MIPPED)
                 .setShaderState(new ShaderStateShard(SpecialCoreShaders::polychromeCollapsePrismOverlay))
                 .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                 .setOutputState(ITEM_ENTITY_TARGET)
@@ -63,9 +63,9 @@ public final class SpecialRenderHelper extends RenderType {
                 DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
 
         //宇宙背景
-        glState = RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(SpecialCoreShaders::cosmicBackground))
-                .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
+        glState = CompositeState.builder()
+                .setShaderState(new ShaderStateShard(SpecialCoreShaders::cosmicBackground))
+                .setTextureState(MultiTextureStateShard.builder()
                         .add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
                         .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false)
                         .build())
@@ -79,7 +79,7 @@ public final class SpecialRenderHelper extends RenderType {
                 DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, glState);
 
         //邪恶魔力
-        glState = RenderType.CompositeState.builder()
+        glState = CompositeState.builder()
                 .setTextureState(BLOCK_SHEET_MIPPED)
                 .setShaderState(new ShaderStateShard(SpecialCoreShaders::evilWater))
                 .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
@@ -90,28 +90,22 @@ public final class SpecialRenderHelper extends RenderType {
         EVIL_WATER = makeLayer(ExEnigmaticlegacyMod.MODID + "evil_water",
                 DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
 
-        glState = RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(SpecialCoreShaders::getStarrySkyShader))
-                .setTextureState(NO_TEXTURE)
+        glState = CompositeState.builder()
+                .setShaderState(new ShaderStateShard(SpecialCoreShaders::getStarrySkyShader))
                 .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                .setLightmapState(NO_LIGHTMAP)
-                .setOverlayState(NO_OVERLAY)
-                .setCullState(NO_CULL)
                 .setWriteMaskState(COLOR_WRITE)
-                .setDepthTestState(LEQUAL_DEPTH_TEST)
+                .setOutputState(ITEM_ENTITY_TARGET)
+                .setLightmapState(LIGHTMAP)
                 .createCompositeState(false);
 
         STARRY_SKY = makeLayer(ExEnigmaticlegacyMod.MODID + ":starry_sky",
                 DefaultVertexFormat.POSITION_TEX,
                 VertexFormat.Mode.QUADS, 256, glState);
 
-        glState = RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(SpecialCoreShaders::getBlackHoleShader))
+        glState = CompositeState.builder()
+                .setShaderState(new ShaderStateShard(SpecialCoreShaders::getBlackHoleShader))
                 .setTextureState(NO_TEXTURE)
                 .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                .setLightmapState(NO_LIGHTMAP)
-                .setOverlayState(NO_OVERLAY)
-                .setCullState(NO_CULL)
                 .setWriteMaskState(COLOR_WRITE)
                 .setDepthTestState(LEQUAL_DEPTH_TEST)
                 .createCompositeState(false);

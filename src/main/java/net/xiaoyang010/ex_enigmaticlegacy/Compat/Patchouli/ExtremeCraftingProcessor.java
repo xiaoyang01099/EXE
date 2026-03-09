@@ -3,6 +3,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Compat.Patchouli;
 import morph.avaritia.recipe.ExtremeShapedRecipe;
 import morph.avaritia.recipe.ExtremeShapelessRecipe;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -13,8 +14,9 @@ import vazkii.patchouli.api.IVariable;
 import vazkii.patchouli.api.IVariableProvider;
 
 public class ExtremeCraftingProcessor implements IComponentProcessor {
+
     private Recipe<?> recipe;
-    private boolean isShaped = false;
+    private boolean shapeless = false;
     private int width = 9;
     private int height = 9;
 
@@ -22,19 +24,17 @@ public class ExtremeCraftingProcessor implements IComponentProcessor {
     public void setup(IVariableProvider variables) {
         String recipeId = variables.get("recipe").asString();
 
-        if (Minecraft.getInstance().level == null) {
-            return;
-        }
-
         RecipeManager manager = Minecraft.getInstance().level.getRecipeManager();
-        this.recipe = manager.byKey(new ResourceLocation(recipeId)).orElse(null);
+        ResourceLocation id = new ResourceLocation(recipeId);
 
-        if (recipe instanceof ExtremeShapedRecipe shapedRecipe) {
-            this.isShaped = true;
-            this.width = shapedRecipe.getWidth();
-            this.height = shapedRecipe.getHeight();
-        } else if (recipe instanceof ExtremeShapelessRecipe) {
-            this.isShaped = false;
+        this.recipe = manager.byKey(id).orElse(null);
+
+        if (recipe instanceof ExtremeShapelessRecipe) {
+            shapeless = true;
+        } else if (recipe instanceof ExtremeShapedRecipe) {
+            ExtremeShapedRecipe shaped = (ExtremeShapedRecipe) recipe;
+            this.width = shaped.getWidth();
+            this.height = shaped.getHeight();
         }
     }
 
@@ -44,89 +44,83 @@ public class ExtremeCraftingProcessor implements IComponentProcessor {
             return null;
         }
 
-        // 处理输出物品
         if (key.equals("output")) {
-            if (recipe instanceof ExtremeShapedRecipe shapedRecipe) {
-                return IVariable.from(shapedRecipe.getResultItem());
-            } else if (recipe instanceof ExtremeShapelessRecipe shapelessRecipe) {
-                return IVariable.from(shapelessRecipe.getResultItem());
-            }
+            return IVariable.from(recipe.getResultItem());
         }
 
-        // 处理配方标题
-        if (key.equals("recipe_name")) {
-            ItemStack result = ItemStack.EMPTY;
-            if (recipe instanceof ExtremeShapedRecipe shapedRecipe) {
-                result = shapedRecipe.getResultItem();
-            } else if (recipe instanceof ExtremeShapelessRecipe shapelessRecipe) {
-                result = shapelessRecipe.getResultItem();
-            }
-            return result.isEmpty() ? null : IVariable.wrap(result.getHoverName().getString());
-        }
-
-        // 处理配方类型文本
         if (key.equals("recipe_type")) {
-            return IVariable.wrap(isShaped ? "有序配方" : "无序配方");
+            return IVariable.wrap(shapeless ? "extreme_shapeless" : "extreme_shaped");
         }
 
-        // 处理 9x9 网格 (grid0-grid80)
-        if (key.startsWith("grid")) {
-            try {
-                int index = Integer.parseInt(key.substring(4));
+        if (key.equals("width")) {
+            return IVariable.wrap(width);
+        }
 
-                if (recipe instanceof ExtremeShapedRecipe shapedRecipe) {
-                    return getShapedIngredient(shapedRecipe, index);
-                } else if (recipe instanceof ExtremeShapelessRecipe shapelessRecipe) {
-                    return getShapelessIngredient(shapelessRecipe, index);
+        if (key.equals("height")) {
+            return IVariable.wrap(height);
+        }
+
+
+        if (key.startsWith("item")) {
+            String[] parts = key.substring(4).split("_");
+            if (parts.length == 2) {
+                try {
+                    int row = Integer.parseInt(parts[0]) - 1;
+                    int col = Integer.parseInt(parts[1]) - 1;
+
+                    if (row >= 0 && row < 9 && col >= 0 && col < 9) {
+                        int index = row * 9 + col;
+                        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+
+                        if (shapeless) {
+                            if (index < ingredients.size()) {
+                                Ingredient ingredient = ingredients.get(index);
+                                ItemStack[] stacks = ingredient.getItems();
+                                if (stacks.length > 0) {
+                                    return IVariable.from(stacks);
+                                }
+                            }
+                        } else if (recipe instanceof ExtremeShapedRecipe) {
+                            ExtremeShapedRecipe shaped = (ExtremeShapedRecipe) recipe;
+
+                            if (row < height && col < width) {
+                                int recipeIndex = row * width + col;
+                                if (recipeIndex < ingredients.size()) {
+                                    Ingredient ingredient = ingredients.get(recipeIndex);
+                                    ItemStack[] stacks = ingredient.getItems();
+                                    if (stacks.length > 0) {
+                                        return IVariable.from(stacks);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (NumberFormatException e) {
                 }
-            } catch (NumberFormatException e) {
-                return null;
             }
-        }
 
-        return null;
-    }
-
-    /**
-     * 获取有序配方的材料
-     */
-    private IVariable getShapedIngredient(ExtremeShapedRecipe recipe, int gridIndex) {
-        int row = gridIndex / 9;
-        int col = gridIndex % 9;
-
-        // 检查是否在配方范围内
-        if (col >= width || row >= height) {
             return IVariable.from(ItemStack.EMPTY);
         }
 
-        // 计算配方中的实际索引
-        int recipeIndex = col + row * width;
+        if (key.startsWith("input")) {
+            try {
+                int index = Integer.parseInt(key.substring(5)) - 1;
+                NonNullList<Ingredient> ingredients = recipe.getIngredients();
 
-        if (recipeIndex < recipe.getIngredients().size()) {
-            Ingredient ingredient = recipe.getIngredients().get(recipeIndex);
-            ItemStack[] stacks = ingredient.getItems();
+                if (index >= 0 && index < ingredients.size()) {
+                    Ingredient ingredient = ingredients.get(index);
+                    ItemStack[] stacks = ingredient.getItems();
 
-            if (stacks.length > 0) {
-                return IVariable.from(stacks[0]);
+                    if (stacks.length > 0) {
+                        return IVariable.from(stacks);
+                    }
+                }
+            } catch (NumberFormatException e) {
             }
+
+            return IVariable.from(ItemStack.EMPTY);
         }
 
-        return IVariable.from(ItemStack.EMPTY);
-    }
-
-    /**
-     * 获取无序配方的材料（以螺旋形式排列）
-     */
-    private IVariable getShapelessIngredient(ExtremeShapelessRecipe recipe, int gridIndex) {
-        if (gridIndex < recipe.getIngredients().size()) {
-            Ingredient ingredient = recipe.getIngredients().get(gridIndex);
-            ItemStack[] stacks = ingredient.getItems();
-
-            if (stacks.length > 0) {
-                return IVariable.from(stacks[0]);
-            }
-        }
-
-        return IVariable.from(ItemStack.EMPTY);
+        return null;
     }
 }

@@ -34,7 +34,7 @@ public class NeutroniumDecompressorBlock extends HorizontalDirectionalBlock impl
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public NeutroniumDecompressorBlock() {
-        super(BlockBehaviour.Properties.of(Material.METAL)
+        super(Properties.of(Material.METAL)
                 .strength(50.0F, 1200.0F)
                 .sound(SoundType.METAL)
                 .requiresCorrectToolForDrops()

@@ -254,12 +254,12 @@ public class FullAltarTile extends TileSimpleInventory implements IPetalApotheca
 
     @Override
     public void setFluid(State fluid) {
-        level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(FullAltarBlock.FLUID, IPetalApothecary.State.WATER));
+        level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(FullAltarBlock.FLUID, State.WATER));
     }
 
     @Override
     public State getFluid() {
-        return IPetalApothecary.State.WATER;
+        return State.WATER;
     }
 
     public boolean canAddLastRecipe() {

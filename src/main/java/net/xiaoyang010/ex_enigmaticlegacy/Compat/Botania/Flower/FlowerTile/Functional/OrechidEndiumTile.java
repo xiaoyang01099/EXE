@@ -126,7 +126,7 @@ public class OrechidEndiumTile extends SubTileOrechid {
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap, LazyOptional.of(()-> new OrechidEndiumTile.FunctionalWandHud(this)).cast());
+        return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap, LazyOptional.of(()-> new FunctionalWandHud(this)).cast());
     }
 
 }

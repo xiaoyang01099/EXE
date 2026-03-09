@@ -18,7 +18,7 @@ public class WeatherStone extends Item {
     private int weatherIndex = 0; // 0:晴天, 1:雨天, 2:雷雨天
 
     public WeatherStone() {
-        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(1).fireResistant().rarity(Rarity.EPIC));
+        super(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(1).fireResistant().rarity(Rarity.EPIC));
     }
 
     @Override

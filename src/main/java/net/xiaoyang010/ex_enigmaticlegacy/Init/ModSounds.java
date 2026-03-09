@@ -32,6 +32,9 @@ public class ModSounds {
 	public static final ResourceLocation AQUA_SWORD_ID = new ResourceLocation("ex_enigmaticlegacy", "aqua_sword");
 	public static final ResourceLocation BOARD_CUBE_ID = new ResourceLocation("ex_enigmaticlegacy", "board_cube");
 	public static final ResourceLocation HORN_PLENTY_ID = new ResourceLocation("ex_enigmaticlegacy", "horn_plenty_using");
+	public static final ResourceLocation WASTELAYER_ID = new ResourceLocation("ex_enigmaticlegacy", "wastelayer");
+	public static final ResourceLocation SONG_OF_THE_ABYSS_ID = new ResourceLocation("ex_enigmaticlegacy", "song_of_the_abyss");
+
 
 
 	public static final SoundEvent CAPYBARA_AMBIENT_1 = new SoundEvent(CAPYBARA_AMBIENT_1_ID);
@@ -52,8 +55,12 @@ public class ModSounds {
 	public static final SoundEvent FLOWEY_LAUGH = new SoundEvent(FLOWEY_LAUGH_ID);
 	public static final SoundEvent GOLDEN_LAUREL = new SoundEvent(GOLDEN_LAUREL_ID);
 	public static final SoundEvent HORN_PLENTY = new SoundEvent(HORN_PLENTY_ID);
+	public static final SoundEvent WASTELAYER = new SoundEvent(WASTELAYER_ID);
+	public static final SoundEvent SONG_OF_THE_ABYSS = new SoundEvent(SONG_OF_THE_ABYSS_ID);
 
 	static {
+		REGISTRY.put(WASTELAYER_ID, WASTELAYER);
+		REGISTRY.put(SONG_OF_THE_ABYSS_ID, SONG_OF_THE_ABYSS);
 		REGISTRY.put(HORN_PLENTY_ID, HORN_PLENTY);
 		REGISTRY.put(BOARD_CUBE_ID, BOARD_CUBE);
 		REGISTRY.put(AQUA_SWORD_ID, AQUA_SWORD);

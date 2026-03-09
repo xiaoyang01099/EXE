@@ -73,7 +73,7 @@ public class GhastlySkull extends Item implements ICurioItem, INoEMCItem, ICurse
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @org.jetbrains.annotations.Nullable CompoundTag nbt) {
-        return new GhastlySkull.RelicCapProvider(stack);
+        return new RelicCapProvider(stack);
     }
 
     private static class RelicCapProvider implements ICapabilityProvider {
@@ -330,12 +330,12 @@ public class GhastlySkull extends Item implements ICurioItem, INoEMCItem, ICurse
         ItemNBTHelper.setBoolean(stack, DEATH_PROTECTION_TAG, true);
         ItemNBTHelper.setLong(stack, PROTECTION_START_TIME, player.level.getGameTime());
 
-        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
-                net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE, DEATH_DELAY_TICKS, 100)); // 抗性提升IV
-        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
-                net.minecraft.world.effect.MobEffects.REGENERATION, DEATH_DELAY_TICKS, 100)); // 生命恢复II
-        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
-                net.minecraft.world.effect.MobEffects.GLOWING, DEATH_DELAY_TICKS, 0)); // 发光效果
+        player.addEffect(new MobEffectInstance(
+                MobEffects.DAMAGE_RESISTANCE, DEATH_DELAY_TICKS, 100)); // 抗性提升IV
+        player.addEffect(new MobEffectInstance(
+                MobEffects.REGENERATION, DEATH_DELAY_TICKS, 100)); // 生命恢复II
+        player.addEffect(new MobEffectInstance(
+                MobEffects.GLOWING, DEATH_DELAY_TICKS, 0)); // 发光效果
 
         player.displayClientMessage(
                 new TranslatableComponent("item.ghastly_skull.death_prevented")
@@ -587,7 +587,7 @@ public class GhastlySkull extends Item implements ICurioItem, INoEMCItem, ICurse
                             MobEffects.WITHER, 200, 4));
                     entity.addEffect(new MobEffectInstance(
                             MobEffects.WEAKNESS, 200, 1));
-                    entity.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                    entity.addEffect(new MobEffectInstance(
                             MobEffects.MOVEMENT_SLOWDOWN, 200, 2));
                 }
             }

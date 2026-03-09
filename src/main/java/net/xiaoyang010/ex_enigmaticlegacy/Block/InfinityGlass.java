@@ -12,7 +12,7 @@ import net.minecraft.world.level.material.Material;
 public class InfinityGlass extends GlassBlock {
 
     public InfinityGlass() {
-        super(BlockBehaviour.Properties.of(Material.GLASS)
+        super(Properties.of(Material.GLASS)
                 .strength(0.3F)
                 .sound(SoundType.GLASS)
                 .lightLevel(state -> 8)

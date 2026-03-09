@@ -388,7 +388,7 @@ public class TileBoardFate extends TileInventory {
                     double particleZ = centerZ + Math.sin(angle) * radius;
 
                     float hue = ((clientTick[slot] + slot * 60) % 360) / 360.0f;
-                    int color = java.awt.Color.HSBtoRGB(hue, 0.8f, 1.0f);
+                    int color = Color.HSBtoRGB(hue, 0.8f, 1.0f);
 
                     float red = ((color >> 16) & 0xFF) / 255.0f;
                     float green = ((color >> 8) & 0xFF) / 255.0f;
@@ -400,14 +400,14 @@ public class TileBoardFate extends TileInventory {
 
                     if (clientTick[slot] % 3 == 0) {
                         WispParticleData spiralWisp =
-                                vazkii.botania.client.fx.WispParticleData.wisp(
+                                WispParticleData.wisp(
                                         0.25f, red, green, blue, 0.8f
                                 );
                         level.addParticle(spiralWisp, particleX, particleY, particleZ,
                                 spiralMotionX, spiralMotionY, spiralMotionZ);
                     } else {
                         SparkleParticleData spiralSparkle =
-                                vazkii.botania.client.fx.SparkleParticleData.sparkle(
+                                SparkleParticleData.sparkle(
                                         0.6f, red, green, blue, 15
                                 );
                         level.addParticle(spiralSparkle, particleX, particleY, particleZ,
@@ -430,7 +430,7 @@ public class TileBoardFate extends TileInventory {
                 double z = centerZ + Math.sin(angle) * radius;
 
                 float hue = (i / 8.0f + (level.getGameTime() % 200) / 200.0f) % 1.0f;
-                int color = java.awt.Color.HSBtoRGB(hue, 0.6f, 0.9f);
+                int color = Color.HSBtoRGB(hue, 0.6f, 0.9f);
 
                 float red = ((color >> 16) & 0xFF) / 255.0f;
                 float green = ((color >> 8) & 0xFF) / 255.0f;

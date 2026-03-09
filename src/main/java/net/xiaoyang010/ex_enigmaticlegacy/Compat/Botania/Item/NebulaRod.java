@@ -59,7 +59,7 @@ public class NebulaRod extends Item {
     }
 
     private boolean checkWorld(String name) {
-        for(String str : ConfigHandler.lockWorldNameNebulaRod) {
+        for(Object str : ConfigHandler.lockWorldNameNebulaRod) {
             if (str.equals(name)) return false;
         }
         return true;

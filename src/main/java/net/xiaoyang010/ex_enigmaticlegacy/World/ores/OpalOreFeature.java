@@ -39,7 +39,7 @@ public class OpalOreFeature extends OreFeature {
 
     public static Feature<?> feature() {
         FEATURE = new OpalOreFeature();
-        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:opal_ore", FEATURE, new OreConfiguration(OpalOreFeature.OpalOreFeatureRuleTest.INSTANCE, ((Block) ModBlockss.OPAL_ORE.get()).defaultBlockState(), 6));
+        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:opal_ore", FEATURE, new OreConfiguration(OpalOreFeatureRuleTest.INSTANCE, ((Block) ModBlockss.OPAL_ORE.get()).defaultBlockState(), 6));
         PLACED_FEATURE = PlacementUtils.register("ex_enigmaticlegacy:opal_ore", CONFIGURED_FEATURE, List.of(CountPlacement.of(2), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-30), VerticalAnchor.absolute(60)), BiomeFilter.biome()));
         return FEATURE;
     }

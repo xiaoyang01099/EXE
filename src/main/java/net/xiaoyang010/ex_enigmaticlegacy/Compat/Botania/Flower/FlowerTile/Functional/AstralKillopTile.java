@@ -465,7 +465,7 @@ public class AstralKillopTile extends TileEntityFunctionalFlower {
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap,
-                LazyOptional.of(() -> new AstralKillopTile.FunctionalWandHud(this)).cast());
+                LazyOptional.of(() -> new FunctionalWandHud(this)).cast());
     }
 
     @Override

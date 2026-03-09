@@ -1,93 +1,137 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
+import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileMagicTable;
 
 public class MagicTableMenu extends AbstractContainerMenu {
-    private static final int TexturesX = 0;
+    private final TileMagicTable blockEntity;
+    private final ContainerLevelAccess access;
+    public int progress = 0;
+    public int progressMax = 200;
 
-    private static final int TexturesY = 0;
+    public MagicTableMenu(int containerId, Inventory playerInventory, TileMagicTable blockEntity) {
+        super(ModMenus.MAGIC_TABLE_MENU, containerId);
+        this.blockEntity = blockEntity;
+        this.access = ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos());
+        IItemHandler handler = blockEntity.getItemHandler();
+        this.addSlot(new SlotItemHandler(handler, 0, 79, 83));
+        this.addSlot(new SlotItemHandler(handler, 1, 161, 83){
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return false;
+            }
+        });
+        this.addPlayerInventory(playerInventory);
 
-    private final SimpleContainer container = new SimpleContainer(2);
-
-    private final SimpleContainer outputContainer = new SimpleContainer(2);
-
-    public MagicTableMenu(int id, Inventory inventory) {
-        super(null,id);
-        this.addSlot(new Slot(container,0,78+TexturesX,83+TexturesY));
-        this.addSlot(new Slot(inventory,0,175+TexturesX,209+TexturesY));
-        this.addSlot(new Slot(inventory,1,157+TexturesX,209+TexturesY));
-        this.addSlot(new Slot(inventory,2,139+TexturesX,209+TexturesY));
-        this.addSlot(new Slot(inventory,3,121+TexturesX,209+TexturesY));
-        this.addSlot(new Slot(inventory,4,103+TexturesX,209+TexturesY));
-        this.addSlot(new Slot(inventory,5,85+TexturesX,209+TexturesY));
-        this.addSlot(new Slot(inventory,6,67+TexturesX,209+TexturesY));
-        this.addSlot(new Slot(inventory,7,49+TexturesX,209+TexturesY));
-        this.addSlot(new Slot(inventory,8,193+TexturesX,209+TexturesY));
-        this.addSlot(new Slot(inventory,9,175+TexturesX,187+TexturesY));
-        this.addSlot(new Slot(inventory,10,193+TexturesX,187+TexturesY));
-        this.addSlot(new Slot(inventory,11,193+TexturesX,169+TexturesY));
-        this.addSlot(new Slot(inventory,12,193+TexturesX,151+TexturesY));
-        this.addSlot(new Slot(inventory,13,175+TexturesX,151+TexturesY));
-        this.addSlot(new Slot(inventory,14,175+TexturesX,169+TexturesY));
-        this.addSlot(new Slot(inventory,15,157+TexturesX,169+TexturesY));
-        this.addSlot(new Slot(inventory,16,157+TexturesX,187+TexturesY));
-        this.addSlot(new Slot(inventory,17,139+TexturesX,187+TexturesY));
-        this.addSlot(new Slot(inventory,18,121+TexturesX,187+TexturesY));
-        this.addSlot(new Slot(inventory,19,103+TexturesX,187+TexturesY));
-        this.addSlot(new Slot(inventory,20,85+TexturesX,187+TexturesY));
-        this.addSlot(new Slot(inventory,21,67+TexturesX,187+TexturesY));
-        this.addSlot(new Slot(inventory,22,49+TexturesX,187+TexturesY));
-        this.addSlot(new Slot(inventory,23,49+TexturesX,169+TexturesY));
-        this.addSlot(new Slot(inventory,24,49+TexturesX,151+TexturesY));
-        this.addSlot(new Slot(inventory,25,67+TexturesX,151+TexturesY));
-        this.addSlot(new Slot(inventory,26,67+TexturesX,169+TexturesY));
-        this.addSlot(new Slot(inventory,27,85+TexturesX,169+TexturesY));
-        this.addSlot(new Slot(inventory,28,85+TexturesX,151+TexturesY));
-        this.addSlot(new Slot(inventory,29,103+TexturesX,169+TexturesY));
-        this.addSlot(new Slot(inventory,30,103+TexturesX,151+TexturesY));
-        this.addSlot(new Slot(inventory,31,121+TexturesX,151+TexturesY));
-        this.addSlot(new Slot(inventory,32,121+TexturesX,169+TexturesY));
-        this.addSlot(new Slot(inventory,33,139+TexturesX,169+TexturesY));
-        this.addSlot(new Slot(inventory,34,139+TexturesX,151+TexturesY));
-        this.addSlot(new Slot(inventory,35,157+TexturesX,151+TexturesY));
-        this.addSlot(new OutputSlot(outputContainer,0,160+TexturesX,83+TexturesY));
+        this.addDataSlot(new DataSlot() {
+            @Override public int get() {
+                return blockEntity.getProgress();
+            }
+            @Override public void set(int value) {
+                progress = value;
+            }
+        });
+        this.addDataSlot(new DataSlot() {
+            @Override public int get() {
+                return blockEntity.getProgressMax();
+            }
+            @Override public void set(int value) {
+                progressMax = value;
+            }
+        });
     }
 
-    public MagicTableMenu(int i, Inventory inventory, FriendlyByteBuf friendlyByteBuf) {
-        super(ModMenus.MAGIC_TABLE_MENU,i);
-    }
-
-    @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
-        }
-        return itemstack;
+    public MagicTableMenu(int containerId, Inventory playerInventory, FriendlyByteBuf extraData) {
+        this(containerId, playerInventory,
+                (TileMagicTable) playerInventory.player.level
+                        .getBlockEntity(extraData.readBlockPos()));
     }
 
     @Override
     public boolean stillValid(Player player) {
-        return true;
+        return stillValid(access, player,
+            ModBlockss.MAGIC_TABLE.get());
     }
 
-    public static final class OutputSlot extends Slot {
-        OutputSlot(Container container, int index, int x, int y) {
-            super(container,index,x,y);
+    public int getProgressScaled() {
+        if (progressMax <= 0) return 0;
+        return progress * 42 / progressMax;
+    }
+
+    private void addPlayerInventory(Inventory playerInventory) {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 9; col++) {
+                this.addSlot(new Slot(playerInventory,
+                        col + row * 9 + 9,
+                        50 + col * 18, 152 + row * 18));
+            }
         }
 
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            return false;
+        for (int col = 0; col < 9; col++) {
+            this.addSlot(new Slot(playerInventory, col,
+                    50 + col * 18, 210));
         }
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+        ItemStack result = ItemStack.EMPTY;
+        Slot slot = this.slots.get(index);
+
+        if (slot == null || !slot.hasItem()) {
+            return ItemStack.EMPTY;
+        }
+
+        ItemStack stack    = slot.getItem();
+        result             = stack.copy();
+
+        if (index >= 0 && index <= 1) {
+            if (!this.moveItemStackTo(stack, 2, 29, false)) {
+                if (!this.moveItemStackTo(stack, 29, 38, false)) {
+                    return ItemStack.EMPTY;
+                }
+            }
+
+        } else if (index >= 2 && index <= 37) {
+            if (!this.moveItemStackTo(stack, 1, 2, false)) {
+                if (!this.moveItemStackTo(stack, 0, 1, false)) {
+                    if (index >= 2 && index <= 28) {
+                        if (!this.moveItemStackTo(stack, 29, 38, false)) {
+                            return ItemStack.EMPTY;
+                        }
+                    } else {
+                        if (!this.moveItemStackTo(stack, 2, 29, false)) {
+                            return ItemStack.EMPTY;
+                        }
+                    }
+                }
+            }
+        } else {
+            return ItemStack.EMPTY;
+        }
+
+        if (stack.isEmpty()) {
+            slot.set(ItemStack.EMPTY);
+        } else {
+            slot.setChanged();
+        }
+
+        if (stack.getCount() == result.getCount()) {
+            return ItemStack.EMPTY;
+        }
+
+        slot.onTake(player, stack);
+        return result;
     }
 }
-

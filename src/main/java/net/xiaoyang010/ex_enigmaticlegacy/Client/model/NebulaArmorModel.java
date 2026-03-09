@@ -40,8 +40,8 @@ public class NebulaArmorModel<T extends LivingEntity> extends HumanoidModel<T> {
 
 	public NebulaArmorModel(ModelPart root) {
 		super(root);
-		this.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-		this.rightArmPose = HumanoidModel.ArmPose.EMPTY;
+		this.leftArmPose = ArmPose.EMPTY;
+		this.rightArmPose = ArmPose.EMPTY;
 		this.head = root.getChild("head");
 		this.hat = root.getChild("hat");
 		this.body = root.getChild("body");
@@ -264,11 +264,11 @@ public class NebulaArmorModel<T extends LivingEntity> extends HumanoidModel<T> {
 			this.rightArm.y = 2.0F;
 		}
 
-		if (this.rightArmPose != HumanoidModel.ArmPose.SPYGLASS) {
+		if (this.rightArmPose != ArmPose.SPYGLASS) {
 			AnimationUtils.bobModelPart(this.rightArm, pAgeInTicks, 1.0F);
 		}
 
-		if (this.leftArmPose != HumanoidModel.ArmPose.SPYGLASS) {
+		if (this.leftArmPose != ArmPose.SPYGLASS) {
 			AnimationUtils.bobModelPart(this.leftArm, pAgeInTicks, -1.0F);
 		}
 

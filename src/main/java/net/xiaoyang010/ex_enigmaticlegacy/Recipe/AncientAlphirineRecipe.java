@@ -17,7 +17,7 @@ public class AncientAlphirineRecipe implements Recipe<Container> {
     private final ResourceLocation id;
     private final Ingredient input;
     private final ItemStack output;
-    private final int chance; // 1-100
+    private final int chance;
     public static final ResourceLocation TYPE_ID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "ancient_alphirine");
 
 
@@ -88,7 +88,7 @@ public class AncientAlphirineRecipe implements Recipe<Container> {
     }
 
     public static class Type implements RecipeType<AncientAlphirineRecipe> {
-        public static final AncientAlphirineRecipe.Type INSTANCE = new AncientAlphirineRecipe.Type();
+        public static final Type INSTANCE = new Type();
         public static final String ID = "ancient_alphirine";
 
         public Type() {

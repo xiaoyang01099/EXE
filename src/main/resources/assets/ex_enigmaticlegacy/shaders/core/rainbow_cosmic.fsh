@@ -56,10 +56,9 @@ void main (void)
     float oneOverExternalScale = 1.0 / externalScale;
     int uvtiles = 16;
 
-    // ✅ 1. 彩虹渐变背景颜色（替代原来的深色背景）
     float bgHueSpeed = 0.001;  // 背景色相变化速度
-    float bgSaturation = 0.15; // 背景饱和度（低饱和度使背景柔和）
-    float bgBrightness = 0.25; // 背景亮度（保持较暗）
+    float bgSaturation = 0.15; // 背景饱和度
+    float bgBrightness = 0.25; // 背景亮度
 
     // 基于时间和空间位置的背景色相
     float bgHue = mod(time * bgHueSpeed + texCoord0.x * 0.1 + texCoord0.y * 0.1, 1.0);
@@ -167,7 +166,6 @@ void main (void)
             float a = tcol.r * (0.5 + (1.0 / float(mult)) * 1.0) *
                      (1.0 - smoothstep(0.20, 0.48, abs(rawv - 0.5)));
 
-            // ✅ 符号彩虹渐变参数
             float hueSpeed = 0.00246;   // 色相变化速度
             float hueSpread = 0.0924;   // 层间色相差值
             float saturation = 0.45;     // 饱和度（比背景高）

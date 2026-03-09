@@ -15,9 +15,6 @@ import vazkii.botania.client.fx.WispParticleData;
 
 import javax.annotation.Nullable;
 
-/**
- * 魔力转换器 TileEntity
- */
 public class TileManaConverter extends BlockEntity implements IManaConverter {
 
     private static final String TAG_CORRUPTION = "corruption";
@@ -42,8 +39,6 @@ public class TileManaConverter extends BlockEntity implements IManaConverter {
         this.mode = mode;
     }
 
-    // ========== Tick 逻辑 ==========
-
     public static void clientTick(Level level, BlockPos pos, BlockState state, TileManaConverter converter) {
         if (converter.converting) {
             converter.spawnConversionParticles();
@@ -57,7 +52,6 @@ public class TileManaConverter extends BlockEntity implements IManaConverter {
     private void tickServer() {
         if (level == null || level.isClientSide) return;
 
-        // 查找附近的魔力池
         IManaPool normalPool = findNearbyNormalPool();
         ICursedManaPool cursedPool = findNearbyCursedPool();
 
@@ -72,26 +66,21 @@ public class TileManaConverter extends BlockEntity implements IManaConverter {
             conversionProgress = 0;
         }
 
-        // 应用污染效果
         if (corruptionLevel > 0) {
             if (level.getGameTime() % 20 == 0) {
                 ManaCorruptionManager.applyCorruptionEffects(level, worldPosition, corruptionLevel);
             }
 
-            // 污染扩散
             if (level.getGameTime() % 100 == 0) {
                 spreadCorruption();
             }
         }
 
-        // 更新方块状态
         BlockState state = getBlockState();
         if (state.getValue(BlockManaConverter.CONVERTING) != converting) {
             level.setBlockAndUpdate(worldPosition, state.setValue(BlockManaConverter.CONVERTING, converting));
         }
     }
-
-    // ========== 转换逻辑 ==========
 
     private void convertNormalToCursedTick(IManaPool normalPool, ICursedManaPool cursedPool) {
         if (normalPool.getCurrentMana() >= CONVERSION_AMOUNT && !cursedPool.isCursedManaFull()) {
@@ -103,7 +92,6 @@ public class TileManaConverter extends BlockEntity implements IManaConverter {
                 normalPool.receiveMana(-CONVERSION_AMOUNT);
                 cursedPool.receiveCursedMana(converted);
 
-                // 转换会增加污染
                 addCorruption(1);
 
                 conversionProgress = 0;
@@ -125,7 +113,6 @@ public class TileManaConverter extends BlockEntity implements IManaConverter {
                 cursedPool.receiveCursedMana(-CONVERSION_AMOUNT);
                 normalPool.receiveMana(converted);
 
-                // 净化会减少污染
                 reduceCorruption(2);
 
                 conversionProgress = 0;
@@ -136,8 +123,6 @@ public class TileManaConverter extends BlockEntity implements IManaConverter {
             conversionProgress = 0;
         }
     }
-
-    // ========== IManaConverter 实现 ==========
 
     @Override
     public Level getConverterLevel() {
@@ -157,14 +142,12 @@ public class TileManaConverter extends BlockEntity implements IManaConverter {
 
     @Override
     public int convertCursedToNormal(int cursedMana) {
-        // 诅咒魔力转换为原版魔力效率更低
         float efficiency = getConversionEfficiency() * 0.6f;
         return (int) (cursedMana * efficiency);
     }
 
     @Override
     public float getConversionEfficiency() {
-        // 污染会降低转换效率
         float corruptionPenalty = ManaCorruptionManager.getCorruptionEfficiencyPenalty(corruptionLevel);
         return BASE_EFFICIENCY * corruptionPenalty;
     }
@@ -185,10 +168,8 @@ public class TileManaConverter extends BlockEntity implements IManaConverter {
         this.corruptionLevel = Math.min(ManaCorruptionManager.MAX_CORRUPTION, this.corruptionLevel + amount);
 
         if (level != null && !level.isClientSide) {
-            // 触发污染增加事件
             MinecraftForge.EVENT_BUS.post(new CorruptionEvent.Increase(level, worldPosition, corruptionLevel, amount));
 
-            // 检查是否达到临界值
             if (oldCorruption < 75 && corruptionLevel >= 75) {
                 MinecraftForge.EVENT_BUS.post(new CorruptionEvent.Critical(level, worldPosition, corruptionLevel));
             }
@@ -203,14 +184,11 @@ public class TileManaConverter extends BlockEntity implements IManaConverter {
         this.corruptionLevel = Math.max(0, this.corruptionLevel - amount);
 
         if (level != null && !level.isClientSide) {
-            // 触发污染减少事件
             MinecraftForge.EVENT_BUS.post(new CorruptionEvent.Decrease(level, worldPosition, corruptionLevel, amount));
         }
 
         setChanged();
     }
-
-    // ========== 辅助方法 ==========
 
     @Nullable
     private IManaPool findNearbyNormalPool() {
@@ -253,7 +231,6 @@ public class TileManaConverter extends BlockEntity implements IManaConverter {
 
         int spreadAmount = ManaCorruptionManager.calculateCorruptionSpread(corruptionLevel);
 
-        // 污染附近的魔力池
         for (int x = -5; x <= 5; x++) {
             for (int y = -5; y <= 5; y++) {
                 for (int z = -5; z <= 5; z++) {
@@ -290,8 +267,6 @@ public class TileManaConverter extends BlockEntity implements IManaConverter {
                     (Math.random() - 0.5) * 0.02);
         }
     }
-
-    // ========== NBT ==========
 
     @Override
     public void load(CompoundTag tag) {

@@ -72,7 +72,7 @@ public class BlackHalo extends Item implements IBlockProvider, INoEMCItem {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @org.jetbrains.annotations.Nullable CompoundTag nbt) {
-        return new BlackHalo.RelicCapProvider(stack);
+        return new RelicCapProvider(stack);
     }
 
     private static class RelicCapProvider implements ICapabilityProvider {

@@ -13,7 +13,7 @@ public class EntityAIHurtByTarget extends Goal {
 
     public EntityAIHurtByTarget(Mob mob) {
         this.mob = mob;
-        this.setFlags(EnumSet.of(Goal.Flag.TARGET));
+        this.setFlags(EnumSet.of(Flag.TARGET));
     }
 
     @Override

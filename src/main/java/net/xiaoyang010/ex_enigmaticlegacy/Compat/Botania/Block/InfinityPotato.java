@@ -117,7 +117,7 @@ public class InfinityPotato extends Block implements SimpleWaterloggedBlock, Ent
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new InfinityPotatoTile(pos, state);
+        return ModBlockEntities.INFINITY_POTATO.get().create(pos, state);
     }
 
     @Nullable
@@ -127,7 +127,7 @@ public class InfinityPotato extends Block implements SimpleWaterloggedBlock, Ent
     }
 
     @Override
-    public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, net.minecraft.world.entity.player.Player player) {
+    public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
         return true;
     }
 

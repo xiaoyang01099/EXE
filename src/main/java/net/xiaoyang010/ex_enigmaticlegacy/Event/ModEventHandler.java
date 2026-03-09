@@ -10,8 +10,10 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -64,6 +66,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Gener
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.AntigravityCharm;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.IvyRegen;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.ManaBucket;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.SlimeNecklace;
 import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.CelestialHTMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Effect.Drowning;
@@ -75,16 +78,19 @@ import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.ManaitaArmor;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmor;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmorHelper;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.WildHuntArmor;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.weapon.Wastelayer;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.StepHeightMessage;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputPacket.JumpPacket;
 import net.xiaoyang010.ex_enigmaticlegacy.Util.ColorText;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.ContainerOverpowered;
+import net.xiaoyang010.ex_enigmaticlegacy.api.test.api.PoolCorruptionManager;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.block.ModBlocks;
 import vazkii.botania.common.block.decor.BlockTinyPotato;
 import vazkii.botania.common.block.tile.mana.TilePool;
 import vazkii.botania.common.helper.PlayerHelper;
+import vazkii.patchouli.api.PatchouliAPI;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -101,6 +107,80 @@ public class ModEventHandler {
     private static int invulnerableTimer = 0;
     private static final int INVULNERABLE_DURATION = 30;
     private static final int REPAIR_COST = 1500;
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void SlimeNecklaceHurt(LivingHurtEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (player.level.isClientSide) return;
+        if (SlimeNecklace.tryReflectProjectile(player, event.getSource(), event.getAmount())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void SlimeNecklaceAttack(LivingAttackEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (player.level.isClientSide) return;
+        if (SlimeNecklace.shouldBlockSlimeDamage(player, event.getSource())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void SlimeNecklaceDamage(LivingDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (player.level.isClientSide) return;
+        SlimeNecklace.tryTimeFreeze(player, event.getSource(), event.getAmount());
+        if (SlimeNecklace.trySlimeShield(player, event.getSource(), event.getAmount())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) return;
+
+        CompoundTag persistentData = serverPlayer.getPersistentData();
+
+        CompoundTag forgeData = persistentData.getCompound(Player.PERSISTED_NBT_TAG);
+
+        String key = ExEnigmaticlegacyMod.MODID + ":bible_book_given";
+
+        if (!forgeData.getBoolean(key)) {
+            ItemStack book = PatchouliAPI.get().getBookStack(
+                    new ResourceLocation(ExEnigmaticlegacyMod.MODID, "bible")
+            );
+            serverPlayer.getInventory().add(book);
+
+            forgeData.putBoolean(key, true);
+            persistentData.put(Player.PERSISTED_NBT_TAG, forgeData);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            PoolCorruptionManager.syncToPlayer(serverPlayer.getLevel(), serverPlayer);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            PoolCorruptionManager.syncToPlayer(serverPlayer.getLevel(), serverPlayer);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityKilled(LivingDeathEvent event) {
+        if (event.getSource().getEntity() instanceof Player killer) {
+            ItemStack weapon = killer.getMainHandItem();
+
+            if (weapon.getItem() instanceof Wastelayer wastelayer) {
+                wastelayer.onEntityKilled(weapon, event.getEntityLiving(), killer);
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void ManaOnPlayerTick(TickEvent.PlayerTickEvent event) {
@@ -213,7 +293,7 @@ public class ModEventHandler {
     }
 
     @SubscribeEvent
-    public static void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
+    public static void onBlockRightClick(RightClickBlock event) {
         Player player = (Player) event.getEntity();
         Level level = event.getWorld();
         BlockPos pos = event.getPos();
@@ -305,7 +385,7 @@ public class ModEventHandler {
                 }
             }
             if (air && b){
-                world.setBlock(pos.below(), ModBlockss.ANTIGRAVITATION_BLOCK.get().defaultBlockState(), 2);  //设置空方块
+                world.setBlock(pos.below(), ModBlockss.ANTIGRAVITATION_BLOCK.get().defaultBlockState(), 2);
             }
         }
     }
@@ -316,7 +396,7 @@ public class ModEventHandler {
         BlockPos pos = event.getPos();
         Player player = event.getPlayer();
         LevelAccessor world = event.getWorld();
-        BlockState blockState = world.getBlockState(pos.above()); //上方方块
+        BlockState blockState = world.getBlockState(pos.above());
         if (blockState.getBlock() instanceof FallingBlock fallingBlock) {
             boolean b = false;
             for (ItemStack item : player.getInventory().items) {
@@ -368,7 +448,7 @@ public class ModEventHandler {
                     double offsetZ = (serverPlayer.level.random.nextDouble() - 0.5) * 2.0;
 
                     serverPlayer.level.addParticle(
-                            net.minecraft.core.particles.ParticleTypes.TOTEM_OF_UNDYING,
+                            ParticleTypes.TOTEM_OF_UNDYING,
                             serverPlayer.getX() + offsetX,
                             serverPlayer.getY() + offsetY + 1.0,
                             serverPlayer.getZ() + offsetZ,
@@ -850,7 +930,7 @@ public class ModEventHandler {
     }
 
     @SubscribeEvent
-    public static void onItemPlaceInContainer(PlayerInteractEvent.RightClickBlock event) {
+    public static void onItemPlaceInContainer(RightClickBlock event) {
         Player player = event.getPlayer();
         Level world = event.getWorld();
         BlockPos pos = event.getPos();

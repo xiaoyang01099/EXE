@@ -11,7 +11,7 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 public class WitherEnchantment extends Enchantment {
     public WitherEnchantment() {
-        super(Enchantment.Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super(Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
     @Override
@@ -41,9 +41,7 @@ public class WitherEnchantment extends Enchantment {
 
     @Override
     public void doPostAttack(LivingEntity attacker, Entity target, int level) {
-        if (target instanceof LivingEntity) {
-            LivingEntity livingTarget = (LivingEntity) target;
-            // 根据附魔等级给予不同时长的凋零效果
+        if (target instanceof LivingEntity livingTarget) {
             int duration = level == 1 ? 100 : 200;
             livingTarget.addEffect(new MobEffectInstance(MobEffects.WITHER, duration, level - 1));
         }

@@ -8,7 +8,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.api.EXEAPI;
 
 public class BladeFallenStar extends SwordItem {
     public BladeFallenStar() {
-        super(EXEAPI.MIRACLE_ITEM_TIER, 120, -2.4F, new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).rarity(ModRarities.MIRACLE));
+        super(EXEAPI.MIRACLE_ITEM_TIER, 120, -2.4F, new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).rarity(ModRarities.MIRACLE));
 
     }
 }

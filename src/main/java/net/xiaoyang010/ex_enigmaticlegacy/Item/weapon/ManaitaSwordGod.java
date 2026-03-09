@@ -37,7 +37,7 @@ import java.util.List;
 public class ManaitaSwordGod extends SwordItem {
 
     public ManaitaSwordGod() {
-        super(EXEAPI.MIRACLE_ITEM_TIER, 200, -2.4F, new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR));
+        super(EXEAPI.MIRACLE_ITEM_TIER, 200, -2.4F, new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR));
     }
 
     @Override

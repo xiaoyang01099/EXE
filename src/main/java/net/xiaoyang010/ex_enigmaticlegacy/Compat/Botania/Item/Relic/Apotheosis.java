@@ -45,7 +45,7 @@ public class Apotheosis extends Item {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @org.jetbrains.annotations.Nullable CompoundTag nbt) {
-        return new Apotheosis.RelicCapProvider(stack);
+        return new RelicCapProvider(stack);
     }
 
     private static class RelicCapProvider implements ICapabilityProvider {

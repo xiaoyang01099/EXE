@@ -7,7 +7,7 @@ import net.minecraft.world.level.material.Material;
 
 public class MithrillBlock extends Block {
     public MithrillBlock() {
-        super(BlockBehaviour.Properties.of(Material.STONE)
+        super(Properties.of(Material.STONE)
                 .sound(SoundType.STONE)
                 .strength(2f, 10f)
                 .requiresCorrectToolForDrops());

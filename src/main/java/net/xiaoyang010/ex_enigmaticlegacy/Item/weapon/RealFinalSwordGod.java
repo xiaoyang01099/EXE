@@ -36,7 +36,7 @@ import java.util.List;
 public class RealFinalSwordGod extends SwordItem {
 
     public RealFinalSwordGod() {
-        super(EXEAPI.MIRACLE_ITEM_TIER, 10, -2.4F, new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR));
+        super(EXEAPI.MIRACLE_ITEM_TIER, 10, -2.4F, new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR));
     }
 
     @Override

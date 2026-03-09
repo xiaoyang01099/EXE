@@ -28,7 +28,7 @@ import java.util.Random;
 public class BlockAntigravitation extends Block {
 
     public BlockAntigravitation() {
-        super(BlockBehaviour.Properties.of(Material.PORTAL, MaterialColor.COLOR_PURPLE)
+        super(Properties.of(Material.PORTAL, MaterialColor.COLOR_PURPLE)
                 .strength(0.0F)
                 .lightLevel((state) -> 0)
                 .noOcclusion()

@@ -26,7 +26,7 @@ import java.util.List;
 
 public class HearthStone extends Item {
     public HearthStone() {
-        super(new Item.Properties()
+        super(new Properties()
                 .stacksTo(1)
                 .rarity(Rarity.RARE)
                 .tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM));

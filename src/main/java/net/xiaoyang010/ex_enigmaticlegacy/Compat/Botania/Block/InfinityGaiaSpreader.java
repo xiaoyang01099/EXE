@@ -46,7 +46,7 @@ public class InfinityGaiaSpreader extends BlockModWaterloggable implements Entit
     private static final VoxelShape SHAPE_SCAFFOLDING = box(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
     public final VariantE variant;
 
-    public InfinityGaiaSpreader(VariantE v, BlockBehaviour.Properties builder) {
+    public InfinityGaiaSpreader(VariantE v, Properties builder) {
         super(builder.requiresCorrectToolForDrops());
         this.registerDefaultState((BlockState)this.defaultBlockState().setValue(BotaniaStateProps.HAS_SCAFFOLDING, false));
         this.variant = v;

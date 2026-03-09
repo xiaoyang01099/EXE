@@ -39,7 +39,7 @@ import java.util.UUID;
 
 public class AncientAegis extends Item implements ICurioItem, INoEMCItem {
     private static final float ANCIENT_AEGIS_DAMAGE_REDUCTION = 0.25F;
-    private static final float HEALTH_MODIFIER = 1.0F; // +1 max health
+    private static final float HEALTH_MODIFIER = 10.0F;
 
     public AncientAegis(Properties properties) {
         super(properties);
@@ -47,7 +47,7 @@ public class AncientAegis extends Item implements ICurioItem, INoEMCItem {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @org.jetbrains.annotations.Nullable CompoundTag nbt) {
-        return new AncientAegis.RelicCapProvider(stack);
+        return new RelicCapProvider(stack);
     }
 
     private static class RelicCapProvider implements ICapabilityProvider {
@@ -147,7 +147,7 @@ public class AncientAegis extends Item implements ICurioItem, INoEMCItem {
         }
 
         return CuriosApi.getCuriosHelper().findEquippedCurio(this, slotContext.entity()).isEmpty()
-                && slotContext.identifier().equals("charm");
+                && slotContext.identifier().equals("belt");
     }
 
     @Override

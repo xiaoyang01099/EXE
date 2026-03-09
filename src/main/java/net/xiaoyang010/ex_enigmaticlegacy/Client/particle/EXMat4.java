@@ -7,12 +7,13 @@ public class EXMat4 {
         this.loadIdentity();
     }
 
-    public void loadIdentity() {
+    public EXMat4 loadIdentity() {
         this.mat = new float[16];
-        this.mat[0] = 1.0f;
-        this.mat[5] = 1.0f;
-        this.mat[10] = 1.0f;
         this.mat[15] = 1.0f;
+        this.mat[10] = 1.0f;
+        this.mat[5] = 1.0f;
+        this.mat[0] = 1.0f;
+        return this;
     }
 
     public EXVector3 translate(EXVector3 vec) {
@@ -30,29 +31,21 @@ public class EXMat4 {
         float x = axis.x;
         float y = axis.y;
         float z = axis.z;
-
-        angle *= 0.0174532925;
-
-        float cos = (float)Math.cos(angle);
+        float cos = (float)Math.cos(angle *= 0.0174532925);
         float ocos = 1.0f - cos;
         float sin = (float)Math.sin(angle);
 
         EXMat4 rotmat = new EXMat4();
-
         rotmat.mat[0] = x * x * ocos + cos;
         rotmat.mat[1] = y * x * ocos + z * sin;
         rotmat.mat[2] = x * z * ocos - y * sin;
-
         rotmat.mat[4] = x * y * ocos - z * sin;
         rotmat.mat[5] = y * y * ocos + cos;
         rotmat.mat[6] = y * z * ocos + x * sin;
-
         rotmat.mat[8] = x * z * ocos + y * sin;
         rotmat.mat[9] = y * z * ocos - x * sin;
         rotmat.mat[10] = z * z * ocos + cos;
-
         rotmat.mat[15] = 1.0f;
-
         return rotmat;
     }
 }

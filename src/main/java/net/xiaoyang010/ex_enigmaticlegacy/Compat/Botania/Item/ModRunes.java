@@ -10,7 +10,7 @@ import java.time.LocalTime;
 
 public class ModRunes extends Item implements ICustomApothecaryColor {
     public ModRunes() {
-        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)
+        super(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_BOTANIA)
                 .stacksTo(64)
                 .rarity(Rarity.EPIC));
     }

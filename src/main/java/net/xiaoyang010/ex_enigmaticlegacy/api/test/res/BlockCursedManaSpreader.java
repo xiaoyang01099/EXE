@@ -36,9 +36,6 @@ import vazkii.botania.common.item.ItemTwigWand;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-/**
- * 诅咒魔力发射器方块
- */
 public class BlockCursedManaSpreader extends BlockModWaterloggable implements EntityBlock {
 
     private static final VoxelShape SHAPE = box(2, 2, 2, 14, 14, 14);

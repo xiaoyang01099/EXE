@@ -39,7 +39,7 @@ public class PlatinumFeature extends OreFeature {
 
     public static Feature<?> feature() {
         FEATURE = new PlatinumFeature();
-        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:platinum_ore", FEATURE, new OreConfiguration(PlatinumFeature.PlatinumFeatureRuleTest.INSTANCE, ((Block) ModBlockss.PLATINUM_ORE.get()).defaultBlockState(), 7));
+        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:platinum_ore", FEATURE, new OreConfiguration(PlatinumFeatureRuleTest.INSTANCE, ((Block) ModBlockss.PLATINUM_ORE.get()).defaultBlockState(), 7));
         PLACED_FEATURE = PlacementUtils.register("ex_enigmaticlegacy:platinum_ore", CONFIGURED_FEATURE, List.of(CountPlacement.of(2), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-30), VerticalAnchor.absolute(60)), BiomeFilter.biome()));
         return FEATURE;
     }

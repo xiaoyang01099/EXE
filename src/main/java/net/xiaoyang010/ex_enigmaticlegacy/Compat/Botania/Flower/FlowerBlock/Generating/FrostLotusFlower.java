@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 public class FrostLotusFlower extends FlowerBlock {
     public FrostLotusFlower(Supplier<MobEffect> effectSupplier, int p_53513_, Properties p_53514_) {
-        super(MobEffects.MOVEMENT_SPEED,100, BlockBehaviour.Properties.of(Material.PLANT)
+        super(MobEffects.MOVEMENT_SPEED,100, Properties.of(Material.PLANT)
                 .noCollission()
                 .instabreak()
                 .sound(SoundType.GRASS));

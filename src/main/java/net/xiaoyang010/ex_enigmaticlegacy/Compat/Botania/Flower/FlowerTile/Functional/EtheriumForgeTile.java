@@ -155,7 +155,7 @@ public class EtheriumForgeTile extends TileEntityFunctionalFlower {
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap,
-                LazyOptional.of(() -> new EtheriumForgeTile.FunctionalWandHud(this)).cast());
+                LazyOptional.of(() -> new FunctionalWandHud(this)).cast());
     }
 
     public boolean isBurning() {

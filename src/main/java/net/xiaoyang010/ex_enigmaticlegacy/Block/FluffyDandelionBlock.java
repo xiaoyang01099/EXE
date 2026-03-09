@@ -23,7 +23,7 @@ import java.util.Random;
 public class FluffyDandelionBlock extends FlowerBlock {
 
     public FluffyDandelionBlock() {
-        super(MobEffects.MOVEMENT_SPEED, 100, BlockBehaviour.Properties.of(Material.PLANT)
+        super(MobEffects.MOVEMENT_SPEED, 100, Properties.of(Material.PLANT)
                 .noCollission()
                 .instabreak()
                 .sound(SoundType.GRASS)

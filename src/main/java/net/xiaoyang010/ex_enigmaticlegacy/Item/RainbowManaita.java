@@ -8,7 +8,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 public class RainbowManaita extends Item {
 
     public RainbowManaita() {
-        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(64).fireResistant().rarity(ModRarities.MIRACLE));
+        super(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(64).fireResistant().rarity(ModRarities.MIRACLE));
     }
 
     @Override

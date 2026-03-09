@@ -169,7 +169,7 @@ public class YushouCloverTile extends TileEntityFunctionalFlower {
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap, LazyOptional.of(()-> new YushouCloverTile.FunctionalWandHud(this)).cast());
+        return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap, LazyOptional.of(()-> new FunctionalWandHud(this)).cast());
     }
 
     @Override

@@ -55,11 +55,9 @@ public class EXVector3 {
 
     public EXVector3 normalize() {
         float length = this.length();
-        if (length != 0) {
-            this.x /= length;
-            this.y /= length;
-            this.z /= length;
-        }
+        this.x /= length;
+        this.y /= length;
+        this.z /= length;
         return this;
     }
 
@@ -104,7 +102,7 @@ public class EXVector3 {
     }
 
     public EXVector3 rotate(float angle, EXVector3 axis) {
-        return EXMat4.rotationMat((double)angle, axis).translate(this);
+        return EXMat4.rotationMat(angle, axis).translate(this);
     }
 
     @Override

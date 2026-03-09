@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.Block;
 public class EndlessCake extends BlockItem {
 
 
-    public EndlessCake(Block block, Item.Properties properties) {
+    public EndlessCake(Block block, Properties properties) {
         super(block, properties);
     }
 }

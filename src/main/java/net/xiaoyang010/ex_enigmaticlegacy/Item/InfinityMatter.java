@@ -9,7 +9,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Util.ColorText;
 
 public class InfinityMatter extends Item {
     public InfinityMatter() {
-        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
+        super(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
                 .stacksTo(64)
                 .fireResistant()
                 .rarity(ModRarities.MIRACLE));

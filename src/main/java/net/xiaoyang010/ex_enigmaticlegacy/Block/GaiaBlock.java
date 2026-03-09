@@ -17,7 +17,7 @@ import java.util.List;
 
 public class GaiaBlock extends Block {
     public GaiaBlock() {
-        super(BlockBehaviour.Properties.of(Material.STONE)
+        super(Properties.of(Material.STONE)
                 .sound(SoundType.STONE)
                 .strength(3f, 10f)
                 .requiresCorrectToolForDrops());

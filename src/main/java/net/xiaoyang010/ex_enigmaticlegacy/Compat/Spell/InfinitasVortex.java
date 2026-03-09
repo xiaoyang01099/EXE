@@ -32,7 +32,7 @@ public class InfinitasVortex extends SimpleAttributeCurio {
     public static final String TRANSLATION_KEY = "item.ex_enigmaticlegacy.infinitas_vortex";
 
     public InfinitasVortex() {
-        super((new Item.Properties()).tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(1), AttributeRegistry.MAX_MANA, new AttributeModifier("mana", (double)10000000.0F, AttributeModifier.Operation.ADDITION));
+        super((new Properties()).tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(1), AttributeRegistry.MAX_MANA, new AttributeModifier("mana", (double)10000000.0F, AttributeModifier.Operation.ADDITION));
     }
 
     @Override

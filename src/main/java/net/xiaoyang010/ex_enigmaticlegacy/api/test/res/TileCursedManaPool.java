@@ -10,6 +10,8 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -35,6 +37,7 @@ import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.client.gui.HUDHandler;
 import vazkii.botania.common.block.tile.mana.IThrottledPacket;
+import vazkii.botania.common.block.tile.mana.TilePool;
 import vazkii.botania.common.item.ItemManaTablet;
 import vazkii.botania.common.item.ModItems;
 
@@ -227,6 +230,7 @@ public class TileCursedManaPool extends BlockEntity implements ICursedManaPool, 
 
     private void corruptNearbyNormalPools() {
         if (level == null || level.isClientSide) return;
+        if (cursedMana < getMaxCursedMana() * 0.8) return;
 
         for (int x = -5; x <= 5; x++) {
             for (int y = -2; y <= 2; y++) {
@@ -234,25 +238,42 @@ public class TileCursedManaPool extends BlockEntity implements ICursedManaPool, 
                     BlockPos checkPos = worldPosition.offset(x, y, z);
                     BlockEntity tile = level.getBlockEntity(checkPos);
 
-                    if (tile instanceof vazkii.botania.common.block.tile.mana.TilePool normalPool
-                            && !(tile instanceof TileCursedManaPool)) {
+                    if (!(tile instanceof TilePool normalPool)
+                            || tile instanceof TileCursedManaPool) continue;
 
-                        double distance = Math.sqrt(x*x + y*y + z*z);
-                        int corruptionAmount = (int) (10 / (distance + 1));
+                    double distance = Math.sqrt(x * x + y * y + z * z);
+                    int corruptionAmount = (int) (5.0 / (distance + 1.0));
+                    if (corruptionAmount <= 0) continue;
 
-                        int normalMana = normalPool.getCurrentMana();
-                        if (normalMana > 0) {
-                            int toCorrupt = Math.min(normalMana, corruptionAmount * 10);
-                            normalPool.receiveMana(-toCorrupt);
-                            this.receiveCursedMana(toCorrupt / 2);
+                    PoolCorruptionManager.addCorruption(level, checkPos, corruptionAmount);
 
-                            this.corruptionLevel = Math.min(100, this.corruptionLevel + 1);
-                            spawnCorruptionParticles(checkPos);
-                        }
+                    PoolCorruptionData data = PoolCorruptionManager.getOrCreate(level, checkPos);
+                    if (data.getCorruption() >= 100) {
+                        convertToCursedPool(normalPool, checkPos);
                     }
                 }
             }
         }
+    }
+
+    private void convertToCursedPool(TilePool normalPool,
+                                     BlockPos poolPos) {
+        if (level == null || level.isClientSide) return;
+
+        int remainingMana = normalPool.getCurrentMana();
+        BlockState cursedPoolState = net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss
+                .CURSED_MANA_POOL.get().defaultBlockState();
+        level.setBlockAndUpdate(poolPos, cursedPoolState);
+
+        BlockEntity newTile = level.getBlockEntity(poolPos);
+        if (newTile instanceof TileCursedManaPool cursedPool) {
+            cursedPool.receiveCursedMana((int) (remainingMana * 0.5));
+        }
+
+        PoolCorruptionManager.remove(level, poolPos);
+
+        level.playSound(null, poolPos, SoundEvents.WITHER_SPAWN,
+                SoundSource.BLOCKS, 1.0F, 0.8F);
     }
 
     private void spawnCorruptionParticles(BlockPos targetPos) {

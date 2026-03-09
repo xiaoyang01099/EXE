@@ -23,7 +23,7 @@ import java.util.List;
 
 public class IridiumOre extends OreBlock {
     public IridiumOre() {
-        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(3f, 10f).requiresCorrectToolForDrops());
+        super(Properties.of(Material.STONE).sound(SoundType.STONE).strength(3f, 10f).requiresCorrectToolForDrops());
     }
 
     @Override

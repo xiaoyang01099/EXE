@@ -42,7 +42,7 @@ public class JudgmentOfAurora extends ItemManasteelSword {
 
     public JudgmentOfAurora() {
         super(EXEAPI.MIRACLE_ITEM_TIER, 90, -2.4F,
-                new Item.Properties()
+                new Properties()
                         .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
                         .rarity(ModRarities.MIRACLE));
     }

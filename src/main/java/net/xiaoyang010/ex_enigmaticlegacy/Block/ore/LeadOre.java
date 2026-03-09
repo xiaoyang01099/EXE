@@ -23,7 +23,7 @@ import java.util.List;
 
 public class LeadOre extends OreBlock {
     public LeadOre() {
-        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(1f, 2f).requiresCorrectToolForDrops());
+        super(Properties.of(Material.STONE).sound(SoundType.STONE).strength(1f, 2f).requiresCorrectToolForDrops());
     }
 
     @Override

@@ -97,7 +97,7 @@ public class EnderLavenderTile extends TileEntityFunctionalFlower {
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap, LazyOptional.of(()-> new EnderLavenderTile.FunctionalWandHud(this)).cast());
+        return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap, LazyOptional.of(()-> new FunctionalWandHud(this)).cast());
     }
 
     private int getSlowdownFactor() {

@@ -53,7 +53,7 @@ public class SpectriteCrystalEntity extends EndCrystal {
         this.setPos(pX, pY, pZ);
     }
 
-    protected Entity.MovementEmission getMovementEmission() {
+    protected MovementEmission getMovementEmission() {
         return MovementEmission.NONE;
     }
 

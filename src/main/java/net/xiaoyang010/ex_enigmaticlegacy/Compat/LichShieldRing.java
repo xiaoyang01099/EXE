@@ -33,7 +33,7 @@ public class LichShieldRing extends Item implements ICurioItem {
     public static final int SHIELD_STRENGTH = 6;
 
     public LichShieldRing() {
-        super((new Item.Properties().stacksTo(1).tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)));
+        super((new Properties().stacksTo(1).tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)));
         if (FMLEnvironment.dist == Dist.CLIENT) {
             MinecraftForge.EVENT_BUS.register(LichShieldRing.class);
         }

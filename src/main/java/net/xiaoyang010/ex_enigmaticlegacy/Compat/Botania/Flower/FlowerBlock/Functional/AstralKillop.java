@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 
 public class AstralKillop extends BlockSpecialFlower implements EntityBlock {
     public AstralKillop(MobEffect stewEffect, int stewDuration, Properties props, Supplier<BlockEntityType<? extends TileEntitySpecialFlower>> blockEntityType) {
-        super(MobEffects.MOVEMENT_SPEED, 100, BlockBehaviour.Properties.of(Material.PLANT)
+        super(MobEffects.MOVEMENT_SPEED, 100, Properties.of(Material.PLANT)
                 .noCollission()
                 .instabreak()
                 .sound(SoundType.GRASS)

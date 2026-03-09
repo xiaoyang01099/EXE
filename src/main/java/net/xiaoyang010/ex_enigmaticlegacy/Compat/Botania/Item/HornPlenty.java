@@ -205,10 +205,10 @@ public class HornPlenty extends Item {
     }
 
     public static boolean isValidEntity(LivingEntity entity) {
-        List<String> lockList = getEntityLockList();
+        List<Object> lockList = getEntityLockList();
 
         String entityClassName = entity.getClass().getSimpleName();
-        for (String lockedName : lockList) {
+        for (Object lockedName : lockList) {
             if (entityClassName.equals(lockedName)) {
                 return false;
             }
@@ -216,7 +216,7 @@ public class HornPlenty extends Item {
         return true;
     }
 
-    private static List<String> getEntityLockList() {
+    private static List<Object> getEntityLockList() {
         return ConfigHandler.lockEntityListToHorn;
     }
 }

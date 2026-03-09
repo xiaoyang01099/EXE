@@ -56,7 +56,7 @@ import java.util.function.Consumer;
 @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID)
 public class WildHuntArmor extends ItemManasteelArmor implements IManaItem, IManaProficiencyArmor {
     private static ItemStack[] armorSet;
-    private static final Properties WILD_HUNT_ARMOR = new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).durability(0).rarity(EXEAPI.rarityWildHunt).setNoRepair();
+    private static final Properties WILD_HUNT_ARMOR = new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).durability(0).rarity(EXEAPI.rarityWildHunt).setNoRepair();
     private static final String TAG_MANA = "mana";
     private static final int MAX_MANA = 500000;
     private static final ThreadLocal<ItemStack> CURRENT_STACK = new ThreadLocal<>();
@@ -269,7 +269,7 @@ public class WildHuntArmor extends ItemManasteelArmor implements IManaItem, IMan
                         player.getX(), player.getY(), player.getZ()
                 );
 
-                for (ServerPlayer serverPlayer : player.getServer().getPlayerList().getPlayers()) {
+                for (ServerPlayer serverPlayer : Objects.requireNonNull(player.getServer()).getPlayerList().getPlayers()) {
                     if (serverPlayer.level == player.level &&
                             serverPlayer.distanceToSqr(player) < 64 * 64) {
                         NetworkHandler.sendToPlayer(serverPlayer, packet);

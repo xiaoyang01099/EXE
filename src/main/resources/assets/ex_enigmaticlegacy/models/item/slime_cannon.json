@@ -1,0 +1,95 @@
+{
+	"texture_size": [64, 32],
+	"textures": {
+		"textures": "ex_enigmaticlegacy:entity/slime_cannon"
+	},
+	"elements": [
+		{
+			"name": "Shape1",
+			"from": [0, 4, 4],
+			"to": [16, 12, 12],
+			"faces": {
+				"north": {"uv": [2, 4, 6, 8], "texture": "#textures"},
+				"east": {"uv": [0, 4, 2, 8], "texture": "#textures"},
+				"south": {"uv": [8, 4, 12, 8], "texture": "#textures"},
+				"west": {"uv": [6, 4, 8, 8], "texture": "#textures"},
+				"up": {"uv": [6, 4, 2, 0], "texture": "#textures"},
+				"down": {"uv": [10, 0, 6, 4], "texture": "#textures"}
+			}
+		},
+		{
+			"name": "Shape2",
+			"from": [-2, 5, 5],
+			"to": [0, 11, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-8, 0, 0]},
+			"faces": {
+				"north": {"uv": [1.5, 12, 2, 15], "texture": "#textures"},
+				"east": {"uv": [0, 12, 1.5, 15], "texture": "#textures"},
+				"south": {"uv": [3.5, 12, 4, 15], "texture": "#textures"},
+				"west": {"uv": [2, 12, 3.5, 15], "texture": "#textures"},
+				"up": {"uv": [2, 12, 1.5, 9], "texture": "#textures"},
+				"down": {"uv": [2.5, 9, 2, 12], "texture": "#textures"}
+			}
+		},
+		{
+			"name": "Shape3",
+			"from": [5, 11, 6],
+			"to": [11, 13, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 10, 0]},
+			"faces": {
+				"north": {"uv": [6, 11, 7.5, 12], "texture": "#textures"},
+				"east": {"uv": [5, 11, 6, 12], "texture": "#textures"},
+				"south": {"uv": [8.5, 11, 10, 12], "texture": "#textures"},
+				"west": {"uv": [7.5, 11, 8.5, 12], "texture": "#textures"},
+				"up": {"uv": [7.5, 11, 6, 9], "texture": "#textures"},
+				"down": {"uv": [9, 9, 7.5, 11], "texture": "#textures"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [90, 2.22, 89.26],
+			"translation": [0.75, 0, 0],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [-90, -1.25, 89.31],
+			"translation": [0.5, 0, 0],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"firstperson_righthand": {
+			"rotation": [115.56, 10.55, 97.35],
+			"translation": [0, 0, -1.25],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"firstperson_lefthand": {
+			"rotation": [121.05, 7.2, -80.07],
+			"translation": [0.25, 0, -3.5],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"ground": {
+			"rotation": [90, -19, 12],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"gui": {
+			"rotation": [90, -34, -32],
+			"scale": [0.75, 0.75, 0.75]
+		},
+		"fixed": {
+			"rotation": [110, 48, 152],
+			"scale": [0.65, 0.65, 0.65]
+		},
+		"on_shelf": {
+			"rotation": [90, -34, -16],
+			"scale": [0.75, 0.75, 0.75]
+		}
+	},
+	"groups": [
+		{
+			"name": "bone",
+			"origin": [0, 0, 0],
+			"color": 0,
+			"children": [0, 1, 2]
+		}
+	]
+}

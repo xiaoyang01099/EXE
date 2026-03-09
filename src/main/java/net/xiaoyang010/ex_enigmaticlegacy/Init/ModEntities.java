@@ -14,11 +14,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.AlphirinePortal;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.EntityAdvancedSpark;
+import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.EntitySlingBullet;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.BlackHoleEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.biological.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Entity.others.*;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.ef.EntitySlash;
+import net.xiaoyang010.ex_enigmaticlegacy.api.test.VampireBat;
+import net.xiaoyang010.ex_enigmaticlegacy.api.test.VampireWolf;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.EntityCursedManaBurst;
 
 
@@ -44,6 +47,42 @@ public class ModEntities {
 //							.fireImmune()
 //							.build("doppleganger_vi")
 //			);
+
+	public static final RegistryObject<EntityType<EntitySlingBullet>> SLING_BULLET =
+			REGISTRY.register("sling_bullet", () ->
+					EntityType.Builder.<EntitySlingBullet>of(
+							EntitySlingBullet::new, MobCategory.MISC)
+							.sized(0.25F, 0.25F)
+							.clientTrackingRange(250)
+							.updateInterval(1)
+							.build("sling_bullet")
+			);
+
+	public static final RegistryObject<EntityType<EntitySlimeCannonBall>> SLIME_CANNON_BALL =
+			REGISTRY.register("slime_cannon_ball", () ->
+					EntityType.Builder.<EntitySlimeCannonBall>of(
+									EntitySlimeCannonBall::new, MobCategory.MISC)
+							.sized(0.51F, 0.51F)
+							.clientTrackingRange(64)
+							.updateInterval(1)
+							.build(new ResourceLocation(ExEnigmaticlegacyMod.MODID, "slime_cannon_ball").toString())
+			);
+
+	public static final RegistryObject<EntityType<VampireWolf>> VAMPIRE_WOLF =
+			REGISTRY.register("vampire_wolf", () ->
+					EntityType.Builder.<VampireWolf>of(VampireWolf::new, MobCategory.CREATURE)
+							.sized(0.6F, 0.85F)
+							.clientTrackingRange(10)
+							.build("vampire_wolf")
+			);
+
+	public static final RegistryObject<EntityType<VampireBat>> VAMPIRE_BAT =
+			REGISTRY.register("vampire_bat", () ->
+					EntityType.Builder.<VampireBat>of(VampireBat::new, MobCategory.AMBIENT)
+							.sized(0.5F, 0.9F)
+							.clientTrackingRange(5)
+							.build("vampire_bat")
+			);
 
 	public static final RegistryObject<EntityType<EntityCursedManaBurst>> CURSED_MANA_BURST =
 			REGISTRY.register("cursed_mana_burst",

@@ -142,5 +142,21 @@
         "stream": false
       }
     ]
+  },
+  "wastelayer": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:wastelayer",
+        "stream": false
+      }
+    ]
+  },
+  "song_of_the_abyss": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:song_of_the_abyss",
+        "stream": false
+      }
+    ]
   }
 }

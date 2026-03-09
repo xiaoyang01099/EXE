@@ -33,13 +33,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.StarlitCraftingParticles;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.StarlitSanctumRecipe;
 import net.xiaoyang010.ex_enigmaticlegacy.World.ritual.StructureParticleValidator;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.StarlitCraftingParticles;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.mana.IManaReceiver;
 import vazkii.botania.api.mana.spark.IManaSpark;
@@ -355,11 +355,6 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
         return true;
     }
 
-//    @Override
-//    public boolean canPlaceItem(int index, ItemStack stack) {
-//        return index != OUTPUT_SLOT;
-//    }
-
     @Override
     public int[] getSlotsForFace(Direction side) {
         switch (side) {
@@ -652,7 +647,12 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
             if (tile.isCrafting) {
                 tile.craftingTick++;
                 float progress = tile.craftingTick / (float) tile.maxCraftingTime;
-                StarlitCraftingParticles.spawnAllCraftingParticles(serverLevel, pos, tile.craftingTick, progress);
+                StarlitCraftingParticles.spawnAllCraftingParticles(
+                        serverLevel,
+                        pos,
+                        tile.craftingTick,
+                        progress
+                );
                 if (tile.craftingTick % 5 == 0) {
                     StarlitCraftingParticles.spawnPillarToCenterParticles(serverLevel, pos, tile.craftingTick);
                 }

@@ -29,7 +29,7 @@ public class TerraFarmland extends Block {
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 15.0D, 16.0D);
 
     public TerraFarmland() {
-        super(BlockBehaviour.Properties.of(Material.DIRT)
+        super(Properties.of(Material.DIRT)
                 .strength(0.6F)
                 .sound(SoundType.GRAVEL)
                 .randomTicks());

@@ -3,6 +3,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Hud;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
@@ -22,7 +23,6 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
 import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.gui.HUDHandler;
 import vazkii.botania.common.block.ModBlocks;
-import vazkii.botania.common.block.tile.TileAltar.Hud;
 
 import java.awt.Color;
 import java.nio.FloatBuffer;
@@ -30,7 +30,6 @@ import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientHelper {
-
     public static final ResourceLocation miscHuds = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "textures/misc/engineer_hopper_hud.png");
     private static final ResourceLocation END_SKY_TEXTURE = new ResourceLocation("textures/environment/end_sky.png");
     private static final ResourceLocation END_PORTAL_TEXTURE = new ResourceLocation("textures/entity/end_portal.png");
@@ -70,7 +69,7 @@ public class ClientHelper {
         poseStack.scale(12.0F, 12.0F, 1.0F);
 
         float gameTime = mc.level.getGameTime() + partialTicks;
-        poseStack.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(gameTime * 0.5F));
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(gameTime * 0.5F));
 
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tesselator.getBuilder();
@@ -82,9 +81,9 @@ public class ClientHelper {
 
         for (int i = 0; i < 64; i++) {
             poseStack.pushPose();
-            poseStack.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
-            poseStack.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
-            poseStack.mulPose(com.mojang.math.Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F));
 
             matrix = poseStack.last().pose();
             Color color = Color.getHSBColor(random.nextFloat(), 0.6F, 1.0F);

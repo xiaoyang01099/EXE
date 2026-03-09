@@ -57,7 +57,6 @@ import java.util.List;
 import java.util.Map;
 
 public class TalismanHiddenRiches extends ItemRelic implements INoEMCItem {
-
     protected static final List<CustomChestEntity> chestList = new ArrayList<>();
     protected static final ResourceLocation glowTexture = new ResourceLocation("ex_enigmaticlegacy:textures/misc/glow3.png");
     protected static final int segmentCount = 11;
@@ -71,7 +70,7 @@ public class TalismanHiddenRiches extends ItemRelic implements INoEMCItem {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return new TalismanHiddenRiches.RelicCapProvider(stack);
+        return new RelicCapProvider(stack);
     }
 
     private static class RelicCapProvider implements ICapabilityProvider {

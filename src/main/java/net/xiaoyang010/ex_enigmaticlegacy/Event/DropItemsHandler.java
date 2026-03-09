@@ -3,6 +3,7 @@ package net.xiaoyang010.ex_enigmaticlegacy.Event;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
@@ -12,16 +13,37 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModItems;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.CreeperNugget;
 
 import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class DropItemsHandler {
+
+    @SubscribeEvent
+    public void onDrops(LivingDropsEvent event) {
+        if (event.getEntity() instanceof Creeper) {
+            LivingEntity entity = event.getEntityLiving();
+            event.getDrops().add(
+                    new ItemEntity(
+                            entity.getLevel(),
+                            entity.getX(),
+                            entity.getY(),
+                            entity.getZ(),
+                            new ItemStack(
+                                    CreeperNugget.INSTANCE,
+                                    new Random().nextInt(4)
+                            )
+                    )
+            );
+        }
+    }
 
     @SubscribeEvent
     public static void onEntityDeath(LivingDeathEvent event) {

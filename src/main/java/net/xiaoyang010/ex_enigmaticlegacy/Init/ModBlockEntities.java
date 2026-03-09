@@ -28,6 +28,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.NeutroniumDecompressorTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.TileLebethronCore;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.StarrySkyBlockEntity;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.TileAdvancedSpreader;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.TileCursedGourmaryllis;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.TileCursedManaPool;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.TileCursedManaSpreader;
@@ -44,13 +45,13 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<NidavellirForgeTile>> NIDAVELLIR_FORGE_TILE = REGISTRY.register("nidavellir_forge_tile", () -> BlockEntityType.Builder.of(NidavellirForgeTile::new, ModBlockss.NIDAVELLIR_FORGE.get()).build(null));
     public static final RegistryObject<BlockEntityType<SpectriteChestTile>> SPECTRITE_CHEST_TILE = REGISTRY.register("spectrite_chest", () -> BlockEntityType.Builder.of(SpectriteChestTile::new, ModBlockss.SPECTRITE_CHEST.get()).build(null));
     public static final RegistryObject<BlockEntityType<AstralBlockEntity>> ASTRAL_BLOCK_ENTITY = REGISTRY.register("astral_block", () -> BlockEntityType.Builder.of((pos, state) -> new AstralBlockEntity(ModBlockEntities.ASTRAL_BLOCK_ENTITY.get(), pos, state), ModBlockss.ASTRAL_BLOCK.get()).build(null));
-//    public static final RegistryObject<BlockEntityType<MagicTableBlockEntity>> MAGIC_TABLE_TILE = REGISTRY.register("magic_table_tile", () -> BlockEntityType.Builder.of(MagicTableBlockEntity::new, ModBlockss.MAGIC_TABLE.get()).build(null));
     public static final RegistryObject<BlockEntityType<CosmicBlockEntity>> COSMIC_BLOCK_ENTITY = REGISTRY.register("cosmic_block", () -> BlockEntityType.Builder.of((pos, state) -> new CosmicBlockEntity(ModBlockEntities.COSMIC_BLOCK_ENTITY.get(), pos, state), ModBlockss.COSMIC_BLOCK.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileEntityExtremeAutoCrafter>> EXTREME_AUTO_CRAFTER_TILE = REGISTRY.register("extreme_auto_crafter_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityExtremeAutoCrafter(ModBlockEntities.EXTREME_AUTO_CRAFTER_TILE.get(), pos, state), ModBlockss.EXTREME_AUTO_CRAFTER.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileEntityInfinityCompressor>> INFINITY_COMPRESSOR_TILE = REGISTRY.register("infinity_compressor_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityInfinityCompressor(ModBlockEntities.INFINITY_COMPRESSOR_TILE.get(), pos, state), ModBlockss.INFINITY_COMPRESSOR.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileManaBox>> MANA_BOX_TILE = REGISTRY.register("mana_box_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileManaBox(ModBlockEntities.MANA_BOX_TILE.get(), pos, state), ModBlockss.MANA_BOX.get()).build(null));
     public static final RegistryObject<BlockEntityType<NeutroniumDecompressorTile>> NEUTRONIUM_DECOMPRESSOR_TILE = REGISTRY.register("neutronium_decompressor_tile", () -> BlockEntityType.Builder.of((pos, state) -> new NeutroniumDecompressorTile(ModBlockEntities.NEUTRONIUM_DECOMPRESSOR_TILE.get(), pos, state), ModBlockss.NEUTRONIUM_DECOMPRESSOR.get()).build(null));
     public static final RegistryObject<BlockEntityType<StarrySkyBlockEntity>> STARRY_SKY_BLOCK_ENTITY = REGISTRY.register("starry_block", () -> BlockEntityType.Builder.of((pos, state) -> new StarrySkyBlockEntity(ModBlockEntities.STARRY_SKY_BLOCK_ENTITY.get(), pos, state), ModBlockss.STARRY_SKY_BLOCK.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileMagicTable>> MAGIC_TABLE_TILE = REGISTRY.register("magic_table_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileMagicTable(ModBlockEntities.MAGIC_TABLE_TILE.get(), pos, state), ModBlockss.MAGIC_TABLE.get()).build(null));
 
 
     public static final RegistryObject<BlockEntityType<TileCursedManaPool>> CURSED_MANA_POOL =
@@ -79,7 +80,7 @@ public class ModBlockEntities {
 
 
     //botania
-    public static final RegistryObject<BlockEntityType<InfinityPotatoTile>> INFINITY_POTATO = register("infinity_potato", ModBlockss.INFINITY_POTATO, InfinityPotatoTile::new);
+    public static final RegistryObject<BlockEntityType<InfinityPotatoTile>> INFINITY_POTATO = register("infinity_potato", ModBlockss.INFINITY_POTATO, (pos, state) -> new InfinityPotatoTile(ModBlockEntities.INFINITY_POTATO.get(), pos, state));
     public static final RegistryObject<BlockEntityType<NightshadeTile>> NIGHTSHADE_TILE = register("nightshade_tile", ModBlockss.NIGHTSHADE, NightshadeTile::new);
     public static final RegistryObject<BlockEntityType<InfinityGaiaSpreaderTile>> INFINITY_SPREADER = register("infinity_spreader", ModBlockss.infinitySpreader, InfinityGaiaSpreaderTile::new);
     public static final RegistryObject<BlockEntityType<ManaChargerTile>> MANA_CHARGER_TILE = REGISTRY.register("mana_charger", () -> BlockEntityType.Builder.of((pos, state) -> new ManaChargerTile(ModBlockEntities.MANA_CHARGER_TILE.get(), pos, state), ModBlockss.MANA_CHARGER.get()).build(null));
@@ -91,6 +92,7 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<ManaBracketTile>> MANA_BRACKET_TILE = REGISTRY.register("mana_bracket", () -> BlockEntityType.Builder.of((pos, state) -> new ManaBracketTile(ModBlockEntities.MANA_BRACKET_TILE.get(), pos, state), ModBlockss.MANA_BRACKET.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileEngineerHopper>> ENGINEER_HOPPER_TILE = REGISTRY.register("engineer_hopper", () -> BlockEntityType.Builder.of((pos, state) -> new TileEngineerHopper(ModBlockEntities.ENGINEER_HOPPER_TILE.get(), pos, state), ModBlockss.ENGINEER_HOPPER.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileLebethronCore>> LEBETHRON_CORE = REGISTRY.register("lebethron_core", () -> BlockEntityType.Builder.of(TileLebethronCore::new, ModBlockss.LEBETHRON_CORE.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileAdvancedSpreader>> ADVANCED_SPREADER = register("advanced_spreader", ModBlockss.ADVANCED_SPREADER, TileAdvancedSpreader::new);
 
 
 
@@ -99,7 +101,6 @@ public class ModBlockEntities {
                             ModBlockss.MANA_CONTAINER.get(),
                             ModBlockss.CREATIVE_CONTAINER.get(),
                             ModBlockss.DILUTED_CONTAINER.get()
-                            //ModBlockss.FABULOUS_CONTAINER.get()
     ).build(null));
 
 

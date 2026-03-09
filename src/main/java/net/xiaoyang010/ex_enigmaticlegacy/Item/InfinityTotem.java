@@ -32,7 +32,7 @@ public class InfinityTotem extends Item {
     private static final int TEMP_WOLF_LIFETIME = 6000;  // 5分钟 = 300秒 = 6000 ticks
 
     public InfinityTotem() {
-        super(new Item.Properties().stacksTo(1).rarity(ModRarities.MIRACLE).tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).durability(99));
+        super(new Properties().stacksTo(1).rarity(ModRarities.MIRACLE).tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).durability(99));
     }
 
     private static final List<Supplier<Item>> REPAIR_ITEMS = Arrays.asList(

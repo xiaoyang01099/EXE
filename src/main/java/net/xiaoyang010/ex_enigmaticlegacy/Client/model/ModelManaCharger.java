@@ -16,6 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.render.RenderTileManaCharger;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.ManaChargerTile;
 import vazkii.botania.client.fx.WispParticleData;
+import vazkii.botania.common.proxy.IProxy;
 
 import java.util.Objects;
 
@@ -133,28 +134,46 @@ public class ModelManaCharger extends Model {
                         }
 
                         Vec3 itemVec = new Vec3(
-                                render.charger.getBlockPos().getX() + 0.5F + posX + (Math.random() / 8.0F - 0.0625F),
+                                render.charger.getBlockPos().getX() + 0.5 + posX + (Math.random() / 8.0 - 0.0625),
                                 render.charger.getBlockPos().getY() + 0.67 + offset1,
-                                render.charger.getBlockPos().getZ() + 0.5F + posZ + (Math.random() / 8.0F - 0.0625F)
+                                render.charger.getBlockPos().getZ() + 0.5 + posZ + (Math.random() / 8.0 - 0.0625)
                         );
 
                         Vec3 tileVec = new Vec3(
-                                render.charger.getBlockPos().getX() + 0.5F + posX,
+                                render.charger.getBlockPos().getX() + 0.5 + posX,
                                 render.charger.getBlockPos().getY() + 0.7425 + offset1 - chargeY / 2.0F,
-                                render.charger.getBlockPos().getZ() + 0.5F + posZ
+                                render.charger.getBlockPos().getZ() + 0.5 + posZ
                         );
 
                         if (Objects.requireNonNull(render.charger.getLevel()).isClientSide) {
-                            float r = 0.5F + (float) Math.random() * 0.5F;
-                            float g = 0.5F + (float) Math.random() * 0.5F;
-                            float b = 0.5F + (float) Math.random() * 0.5F;
+                            IProxy.INSTANCE.lightningFX(
+                                    itemVec,
+                                    tileVec,
+                                    10.0F,
+                                    render.charger.getLevel().random.nextLong(),
+                                    0x44DDFF,
+                                    0x5599FF
+                            );
 
-                            WispParticleData data = WispParticleData.wisp(0.5F, r, g, b, 1);
-                            Vec3 motion = tileVec.subtract(itemVec).normalize().scale(0.1);
+                            int segments = 4;
+                            for (int j = 0; j < segments; j++) {
+                                double t = j / (double) segments;
+                                Vec3 pos = itemVec.lerp(tileVec, t);
+                                WispParticleData data = WispParticleData.wisp(
+                                        0.1F + (float) Math.random() * 0.05F,
+                                        0.2F + (float) Math.random() * 0.2F,
+                                        0.2F + (float) Math.random() * 0.2F,
+                                        0.6F,
+                                        1
+                                );
+                                render.charger.getLevel().addParticle(data,
+                                        pos.x + (Math.random() - 0.5) * 0.05,
+                                        pos.y + (Math.random() - 0.5) * 0.05,
+                                        pos.z + (Math.random() - 0.5) * 0.05,
+                                        0, 0, 0);
+                            }
 
-                            render.charger.getLevel().addParticle(data,
-                                    itemVec.x, itemVec.y, itemVec.z,
-                                    motion.x, motion.y, motion.z);
+                            render.charger.clientTick[i] = 0;
                         }
                     }
                 }

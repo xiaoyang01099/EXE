@@ -159,14 +159,11 @@ public class FXLightningBolt extends Particle {
             return;
         }
 
-        // 设置颜色
         setColorByType(0);
 
-        // 第一层渲染（外发光）
         RenderSystem.setShaderTexture(0, TEXTURE_LARGE);
         renderBoltLayer(buffer, cameraPos, partialTicks, 0);
 
-        // 第二层渲染（核心）
         setColorByType(1);
         RenderSystem.setShaderTexture(0, TEXTURE_SMALL);
         renderBoltLayer(buffer, cameraPos, partialTicks, 1);
@@ -229,24 +226,20 @@ public class FXLightningBolt extends Particle {
         this.alpha = ma;
     }
 
-    private void renderBoltLayer(com.mojang.blaze3d.vertex.VertexConsumer buffer,
+    private void renderBoltLayer(VertexConsumer buffer,
                                  Vec3 cameraPos, float partialTicks, int pass) {
-        // 计算观察向量
         Vec3 viewVec = cameraPos.subtract(this.x, this.y, this.z).normalize();
         EXVector3 playervec = new EXVector3(viewVec.x, viewVec.y, viewVec.z);
 
-        // 计算年龄和透明度
         float boltage = this.main.particleAge >= 0 ?
                 (float)this.main.particleAge / (float)this.main.particleMaxAge : 0.0f;
         float mainAlpha = pass == 0 ?
                 (1.0f - boltage) * 0.4f : 1.0f - boltage * 0.5f;
 
-        // 计算渲染长度
         int renderlength = (int)(((float)this.main.particleAge + partialTicks +
                 (float)((int)(this.main.length * 3.0f))) /
                 (float)((int)(this.main.length * 3.0f)) * (float)this.main.numsegments0);
 
-        // 渲染每个段
         for (FXLightningBoltCommon.Segment segment : this.main.segments) {
             if (segment.segmentno > renderlength) continue;
 
@@ -254,7 +247,7 @@ public class FXLightningBolt extends Particle {
         }
     }
 
-    private void renderSegment(com.mojang.blaze3d.vertex.VertexConsumer buffer,
+    private void renderSegment(VertexConsumer buffer,
                                Vec3 cameraPos,
                                FXLightningBoltCommon.Segment segment,
                                EXVector3 playervec,
@@ -312,7 +305,7 @@ public class FXLightningBolt extends Particle {
         }
     }
 
-    private void addVertex(com.mojang.blaze3d.vertex.VertexConsumer buffer,
+    private void addVertex(VertexConsumer buffer,
                            float x, float y, float z, float u, float v, float alpha) {
         buffer.vertex(x, y, z)
                 .uv(u, v)

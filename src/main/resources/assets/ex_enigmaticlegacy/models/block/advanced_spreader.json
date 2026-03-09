@@ -1,0 +1,9 @@
+{
+  "parent": "botania:block/shapes/spreader",
+  "textures": {
+    "side": "ex_enigmaticlegacy:blocks/advanced_spreader_side",
+    "back": "ex_enigmaticlegacy:blocks/advanced_spreader",
+    "inside": "ex_enigmaticlegacy:blocks/advanced_spreader_side",
+    "outside": "ex_enigmaticlegacy:blocks/advanced_spreader"
+  }
+}

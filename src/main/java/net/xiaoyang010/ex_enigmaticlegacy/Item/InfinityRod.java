@@ -20,7 +20,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 
 public class InfinityRod extends Item {
     public InfinityRod() {
-        super(new Item.Properties()
+        super(new Properties()
                 .tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
                 .stacksTo(1));
     }

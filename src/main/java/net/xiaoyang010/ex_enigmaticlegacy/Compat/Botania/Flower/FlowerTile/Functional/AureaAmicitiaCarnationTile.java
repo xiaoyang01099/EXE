@@ -471,6 +471,6 @@ public class AureaAmicitiaCarnationTile extends TileEntityFunctionalFlower {
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @javax.annotation.Nullable Direction side) {
         return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap,
-                LazyOptional.of(() -> new AureaAmicitiaCarnationTile.FunctionalWandHud(this)).cast());
+                LazyOptional.of(() -> new FunctionalWandHud(this)).cast());
     }
 }

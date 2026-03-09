@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
@@ -32,11 +31,10 @@ import vazkii.botania.api.block.IWandable;
 import javax.annotation.Nullable;
 
 public class ManaChargerBlock extends BaseEntityBlock implements IWandable {
-
     private static final VoxelShape SHAPE = Block.box(3.0D, 3.0D, 3.0D, 13.0D, 13.0D, 13.0D);
 
     public ManaChargerBlock(Properties sound) {
-        super(BlockBehaviour.Properties.of(Material.STONE)
+        super(Properties.of(Material.STONE)
                 .strength(6.0F)
                 .requiresCorrectToolForDrops());
     }
@@ -68,7 +66,6 @@ public class ManaChargerBlock extends BaseEntityBlock implements IWandable {
         ItemStack stackInSlot = inventory.getStackInSlot(slotSide);
 
         if (player.isShiftKeyDown()) {
-            // 提取物品
             if (!stackInSlot.isEmpty()) {
                 ItemStack extracted = inventory.extractItem(slotSide, stackInSlot.getCount(), false);
 
@@ -86,7 +83,6 @@ public class ManaChargerBlock extends BaseEntityBlock implements IWandable {
                 return InteractionResult.SUCCESS;
             }
         } else if (!heldItem.isEmpty() && stackInSlot.isEmpty() && heldItem.getCount() == 1) {
-            // 检查是否为魔力物品
             var manaCapability = heldItem.getCapability(BotaniaForgeCapabilities.MANA_ITEM);
             if (manaCapability.isPresent()) {
                 ItemStack toInsert = heldItem.copy();
@@ -136,6 +132,13 @@ public class ManaChargerBlock extends BaseEntityBlock implements IWandable {
         super.onRemove(state, level, pos, newState, isMoving);
     }
 
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return createTickerHelper(type, ModBlockEntities.MANA_CHARGER_TILE.get(),
+                (level1, pos, state1, tile) -> tile.tick());
+    }
+
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
@@ -145,17 +148,6 @@ public class ManaChargerBlock extends BaseEntityBlock implements IWandable {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new ManaChargerTile(ModBlockEntities.MANA_CHARGER_TILE.get(), pos, state);
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide ? null :
-                (lvl, pos, st, be) -> {
-                    if (be instanceof ManaChargerTile tile) {
-                        tile.tick();
-                    }
-                };
     }
 
     @Override

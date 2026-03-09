@@ -22,7 +22,7 @@ import java.util.List;
 
 public class PlatinumOre extends OreBlock {
     public PlatinumOre() {
-        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(2f, 10f).requiresCorrectToolForDrops());
+        super(Properties.of(Material.STONE).sound(SoundType.STONE).strength(2f, 10f).requiresCorrectToolForDrops());
     }
 
     @Override

@@ -13,7 +13,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 
 public class Igniter extends Item {
     public Igniter() {
-        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
+        super(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
                 .stacksTo(1)
                 .fireResistant()
                 .rarity(Rarity.EPIC));

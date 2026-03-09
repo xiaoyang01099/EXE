@@ -168,7 +168,7 @@ public class ManaContainerTile extends BlockEntityBase implements IManaPool, ISp
             float saturation = 0.6f + manaRatio * 0.4f;
             float brightness = 0.8f + (float) Math.random() * 0.2f;
 
-            int rgb = java.awt.Color.HSBtoRGB(hue, saturation, brightness);
+            int rgb = Color.HSBtoRGB(hue, saturation, brightness);
             float red = ((rgb >> 16) & 0xFF) / 255.0f;
             float green = ((rgb >> 8) & 0xFF) / 255.0f;
             float blue = (rgb & 0xFF) / 255.0f;
@@ -382,7 +382,7 @@ public class ManaContainerTile extends BlockEntityBase implements IManaPool, ISp
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @org.jetbrains.annotations.Nullable Direction side) {
         if (cap == BotaniaForgeClientCapabilities.WAND_HUD) {
-            return LazyOptional.of(() -> new ManaContainerTile.WandHud(this)).cast();
+            return LazyOptional.of(() -> new WandHud(this)).cast();
         }
         return super.getCapability(cap, side);
     }

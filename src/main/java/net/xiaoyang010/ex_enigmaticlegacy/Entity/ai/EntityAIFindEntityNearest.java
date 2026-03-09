@@ -22,7 +22,7 @@ public class EntityAIFindEntityNearest<T extends LivingEntity> extends Goal {
         this.classToCheck = classToCheck;
         this.predicate = predicate;
         this.targetConditions = TargetingConditions.forNonCombat().range(this.getFollowRange()).selector(predicate);
-        this.setFlags(EnumSet.of(Goal.Flag.TARGET));
+        this.setFlags(EnumSet.of(Flag.TARGET));
     }
 
     @Override

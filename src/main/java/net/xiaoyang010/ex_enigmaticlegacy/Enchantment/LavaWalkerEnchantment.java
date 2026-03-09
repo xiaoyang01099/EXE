@@ -81,8 +81,7 @@ public class LavaWalkerEnchantment extends Enchantment {
                     if (aboveState.isAir()) {
                         BlockState currentState = pLevel.getBlockState(blockpos);
                         boolean isFullLava = currentState.getBlock() == Blocks.LAVA &&
-                                (currentState.hasProperty(LiquidBlock.LEVEL) ?
-                                        currentState.getValue(LiquidBlock.LEVEL) == 0 : true);
+                                (!currentState.hasProperty(LiquidBlock.LEVEL) || currentState.getValue(LiquidBlock.LEVEL) == 0);
 
                         if (currentState.getMaterial() == Material.LAVA && isFullLava &&
                                 obsidianState.canSurvive(pLevel, blockpos) &&

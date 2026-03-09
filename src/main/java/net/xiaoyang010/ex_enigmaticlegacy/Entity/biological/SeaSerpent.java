@@ -173,7 +173,7 @@ public class SeaSerpent extends ComplexCreature implements Enemy {
     protected void registerGoals() {
         this.targetSelector.addGoal(0, new EntityAIHurtByTarget(this));
         this.targetSelector.addGoal(1, new EntityAIFindEntityNearest<>(this, Player.class, CAN_TARGET));
-        this.targetSelector.addGoal(2, new SeaSerpent.AIHuntPrey(this));
+        this.targetSelector.addGoal(2, new AIHuntPrey(this));
     }
 
     public boolean isAttacking() {

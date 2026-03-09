@@ -5,6 +5,8 @@ import net.minecraft.world.item.Rarity;
 
 public class Memorize extends Item {
     public Memorize() {
-        super(new Item.Properties().rarity(Rarity.EPIC));
+        super(new Properties().rarity(Rarity.EPIC));
     }
+
+    //粒子测试
 }

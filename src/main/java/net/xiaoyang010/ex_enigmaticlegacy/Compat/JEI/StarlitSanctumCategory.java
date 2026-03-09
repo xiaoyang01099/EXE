@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -40,9 +41,9 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
     private static final int TEX_HEIGHT = 431;
 
     private float getScale() {
-//        if (ConfigHandler.starlitJeiScaleConfig != null) {
-//            return ConfigHandler.starlitJeiScaleConfig.get().floatValue();
-//        }
+        if (ConfigHandler.starlitJeiScaleConfig != null) {
+            return ConfigHandler.starlitJeiScaleConfig.get().floatValue();
+        }
         return 0.7f;
     }
 

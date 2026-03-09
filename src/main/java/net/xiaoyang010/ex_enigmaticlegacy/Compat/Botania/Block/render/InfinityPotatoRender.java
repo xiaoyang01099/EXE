@@ -95,7 +95,7 @@ public class InfinityPotatoRender implements BlockEntityRenderer<InfinityPotatoT
     }
 
     private static RenderType getRenderLayer() {
-        return RenderType.translucent();  // 使用默认的透明渲染层
+        return RenderType.translucent();
     }
 
     @Override
@@ -198,7 +198,6 @@ public class InfinityPotatoRender implements BlockEntityRenderer<InfinityPotatoT
     }
 
     private void renderItems(InfinityPotatoTile potato, Direction facing, String name, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-        // 实现 InfinityPotato 上的物品渲染逻辑
     }
 
     private void renderModel(PoseStack ms, VertexConsumer buffer, int light, int overlay, BakedModel model) {

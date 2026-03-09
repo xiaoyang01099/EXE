@@ -11,31 +11,13 @@ import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 
 import java.util.Arrays;
 
-/**
- * 极限合成拆解配方 - 专门用于 9x9 极限合成台的配方反向解析
- * 支持有序配方（ExtremeShapedRecipe）和无序配方（ExtremeShapelessRecipe）
- */
 public class ExtremeDeconRecipe {
-
-    /** 配方ID */
     private final ResourceLocation recipeId;
-
-    /** 配方结果物品（即要拆解的物品） */
     private final ItemStack result;
-
-    /** 配方原材料数组 (81格) */
     private final ItemStack[] ingredients;
-
-    /** 配方宽度 (1-9) */
     private final int width;
-
-    /** 配方高度 (1-9) */
     private final int height;
-
-    /** 配方分组 */
     private final String group;
-
-    /** 是否为无序配方 */
     private final boolean shapeless;
 
     public ExtremeDeconRecipe(ResourceLocation recipeId, String group, ItemStack result,
@@ -53,16 +35,13 @@ public class ExtremeDeconRecipe {
         }
     }
 
-    /**
-     * 从极限合成配方创建拆解配方（支持有序和无序）
-     */
     public static ExtremeDeconRecipe fromExtremeRecipe(ExtremeCraftingRecipe recipe) {
         try {
             ResourceLocation recipeId = recipe.getId();
             String group = recipe.getGroup();
             ItemStack result = recipe.getResultItem().copy();
 
-            ItemStack[] ingredients = new ItemStack[81]; //拆解配方
+            ItemStack[] ingredients = new ItemStack[81];
             int width = 0;
             int height = 0;
             boolean shapeless = false;
@@ -82,7 +61,7 @@ public class ExtremeDeconRecipe {
                     int size = list.size();
                     for (int h = 0; h < 9; h++){
                         for (int w = 0; w < 9; w++){
-                            int slot = h * 9 + w;//完整配方9*9格序数
+                            int slot = h * 9 + w;
                             int recipeSlot = h * width + w;
                             if (w >= width){
                                 nullList.set(slot, Ingredient.EMPTY);
@@ -109,7 +88,6 @@ public class ExtremeDeconRecipe {
         }
     }
 
-    //配方设置
     private static void setIngredients(ItemStack[] ingredients, NonNullList<Ingredient> list){
         int slot = 0;
         for (Ingredient ingredient : list) {
@@ -120,9 +98,6 @@ public class ExtremeDeconRecipe {
         }
     }
 
-    /**
-     * 处理单个材料并放入数组
-     */
     private static void processIngredient(Ingredient ingredient, ItemStack[] ingredients, int index) {
         if (ingredient == null || ingredient.isEmpty() || index >= ingredients.length) {
             return;
@@ -131,9 +106,8 @@ public class ExtremeDeconRecipe {
         ItemStack[] possibleItems = ingredient.getItems();
         if (possibleItems.length > 0) {
             ItemStack item = possibleItems[0].copy();
-            item.setCount(1); // 标准化数量
+            item.setCount(1);
 
-            // 跳过有容器的物品（如桶、玻璃瓶等）
             if (item.getItem().getCraftingRemainingItem() == null) {
                 ingredients[index] = normalizeItemStack(item);
             } else {
@@ -142,9 +116,6 @@ public class ExtremeDeconRecipe {
         }
     }
 
-    /**
-     * 标准化物品堆栈
-     */
     private static ItemStack normalizeItemStack(ItemStack stack) {
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
@@ -152,21 +123,17 @@ public class ExtremeDeconRecipe {
 
         ItemStack normalized = new ItemStack(stack.getItem(), 1);
 
-        // 处理耐久度
         if (stack.isDamageableItem()) {
             int damage = stack.getDamageValue();
             normalized.setDamageValue(damage == 32767 ? 0 : damage);
         }
 
-        // 复制 NBT 数据（如果需要）
         if (stack.hasTag()) {
             normalized.setTag(stack.getTag().copy());
         }
 
         return normalized;
     }
-
-    // ==================== Getter 方法 ====================
 
     public ResourceLocation getRecipeId() {
         return recipeId;
@@ -176,18 +143,10 @@ public class ExtremeDeconRecipe {
         return group;
     }
 
-    /**
-     * 获取结果物品（拆解目标）
-     * @return 物品副本
-     */
     public ItemStack getResult() {
         return result.copy();
     }
 
-    /**
-     * 获取原材料数组（拆解产物）
-     * @return 81格材料数组的深拷贝
-     */
     public ItemStack[] getIngredients() {
         ItemStack[] copy = new ItemStack[81];
         for (int i = 0; i < 81; i++) {
@@ -204,18 +163,10 @@ public class ExtremeDeconRecipe {
         return height;
     }
 
-    /**
-     * 是否为无序配方
-     */
     public boolean isShapeless() {
         return shapeless;
     }
 
-    /**
-     * 获取指定位置的材料
-     * @param x 横坐标 (0-8)
-     * @param y 纵坐标 (0-8)
-     */
     public ItemStack getIngredientAt(int x, int y) {
         if (x < 0 || x >= 9 || y < 0 || y >= 9) {
             return ItemStack.EMPTY;
@@ -224,9 +175,6 @@ public class ExtremeDeconRecipe {
         return ingredients[index] != null ? ingredients[index].copy() : ItemStack.EMPTY;
     }
 
-    /**
-     * 获取所有实际使用的材料（非空），主要用于无序配方
-     */
     public NonNullList<ItemStack> getActualIngredients() {
         NonNullList<ItemStack> actualIngredients = NonNullList.create();
         for (ItemStack stack : ingredients) {
@@ -237,35 +185,25 @@ public class ExtremeDeconRecipe {
         return actualIngredients;
     }
 
-    /**
-     * 获取非空材料数量
-     */
     public int getNonEmptyIngredientCount() {
         return (int) Arrays.stream(ingredients)
                 .filter(stack -> stack != null && !stack.isEmpty())
                 .count();
     }
 
-    /**
-     * 验证配方是否有效
-     */
     public boolean isValid() {
-        // 结果物品不能为空
         if (result.isEmpty()) {
             return false;
         }
 
-        // 至少要有一个材料
         if (getNonEmptyIngredientCount() == 0) {
             return false;
         }
 
-        // 宽高必须在合理范围内
         if (width < 1 || width > 9 || height < 1 || height > 9) {
             return false;
         }
 
-        // 配方不能自循环（材料中不能包含结果物品）
         for (ItemStack ingredient : ingredients) {
             if (ingredient != null && !ingredient.isEmpty()) {
                 if (ItemStack.isSameItemSameTags(ingredient, result)) {
@@ -277,31 +215,23 @@ public class ExtremeDeconRecipe {
         return true;
     }
 
-    /**
-     * 检查物品是否匹配此配方的结果
-     */
     public boolean matchesResult(ItemStack stack) {
         if (stack.isEmpty() || result.isEmpty()) {
             return false;
         }
 
-        // 检查物品类型
         if (!stack.is(result.getItem())) {
             return false;
         }
 
-        // 检查数量
         if (stack.getCount() < result.getCount()) {
             return false;
         }
 
-        // 检查耐久度（如果是可损坏物品）
         if (result.isDamageableItem() && stack.getDamageValue() != result.getDamageValue()) {
             return false;
         }
 
-        // 检查 NBT（如果需要精确匹配）
-        // 这里可以根据需求调整
         return true;
     }
 

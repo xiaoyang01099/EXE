@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ChaosCore extends Item {
     public ChaosCore() {
-        super(new Item.Properties()
+        super(new Properties()
                 .tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
                 .stacksTo(1)
                 .fireResistant()

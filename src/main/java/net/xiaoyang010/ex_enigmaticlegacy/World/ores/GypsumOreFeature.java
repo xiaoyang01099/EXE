@@ -39,7 +39,7 @@ public class GypsumOreFeature extends OreFeature {
 
     public static Feature<?> feature() {
         FEATURE = new GypsumOreFeature();
-        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:gypsum_ore", FEATURE, new OreConfiguration(GypsumOreFeature.GypsumOreFeatureRuleTest.INSTANCE, ((Block) ModBlockss.GYPSUM_ORE.get()).defaultBlockState(), 6));
+        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:gypsum_ore", FEATURE, new OreConfiguration(GypsumOreFeatureRuleTest.INSTANCE, ((Block) ModBlockss.GYPSUM_ORE.get()).defaultBlockState(), 6));
         PLACED_FEATURE = PlacementUtils.register("ex_enigmaticlegacy:gypsum_ore", CONFIGURED_FEATURE, List.of(CountPlacement.of(2), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-30), VerticalAnchor.absolute(60)), BiomeFilter.biome()));
         return FEATURE;
     }

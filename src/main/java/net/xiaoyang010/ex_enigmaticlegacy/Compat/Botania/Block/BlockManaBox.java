@@ -57,7 +57,7 @@ public class BlockManaBox extends BlockMod implements EntityBlock {
     private static final VoxelShape SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
 
     public BlockManaBox() {
-        super(BlockBehaviour.Properties.of(Material.STONE)
+        super(Properties.of(Material.STONE)
                 .sound(SoundType.STONE)
                 .strength(2.0F, 2000.0F)
                 .requiresCorrectToolForDrops()

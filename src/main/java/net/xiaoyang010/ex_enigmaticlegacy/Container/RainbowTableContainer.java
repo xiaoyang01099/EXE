@@ -91,7 +91,7 @@ public class RainbowTableContainer extends AbstractContainerMenu implements Supp
                     return ItemStack.EMPTY;
                 }
             }
-            else if (!this.moveItemStackTo(itemstack1, 0, 4, false)) { // 只能放入前4个输入槽
+            else if (!this.moveItemStackTo(itemstack1, 0, 4, false)) {
                 return ItemStack.EMPTY;
             }
 

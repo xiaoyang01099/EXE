@@ -7,13 +7,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.EntityCursedManaBurst;
+import vazkii.botania.common.entity.EntityManaBurst;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,8 +27,36 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LinkTimeManager {
     private static final Map<UUID, LinkTimeData> ACTIVE_PLAYERS = new ConcurrentHashMap<>();
     private static final Map<UUID, TickCounter> ENTITY_COUNTERS = new ConcurrentHashMap<>();
+    private static final Map<UUID, EntityFreezeData> FROZEN_ENTITIES = new ConcurrentHashMap<>();
+    private static final Set<BlockEntity> FROZEN_BLOCK_ENTITIES = ConcurrentHashMap.newKeySet();
     private static final int TICK_DIVISOR = 4;
     private static final int EFFECT_RADIUS = 64;
+
+    private static class EntityFreezeData {
+        final Vec3 motion;
+        final float yRot;
+        final float xRot;
+        final float yRotO;
+        final float xRotO;
+
+        EntityFreezeData(Entity entity) {
+            this.motion = entity.getDeltaMovement();
+            this.yRot = entity.getYRot();
+            this.xRot = entity.getXRot();
+            this.yRotO = entity.yRotO;
+            this.xRotO = entity.xRotO;
+        }
+
+        void restore(Entity entity) {
+            if (entity.isAlive() && !entity.isRemoved()) {
+                entity.setDeltaMovement(this.motion);
+                entity.setYRot(this.yRot);
+                entity.setXRot(this.xRot);
+                entity.yRotO = this.yRotO;
+                entity.xRotO = this.xRotO;
+            }
+        }
+    }
 
     private static class LinkTimeData {
         final UUID playerId;
@@ -69,7 +102,17 @@ public class LinkTimeManager {
         LinkTimeData removed = ACTIVE_PLAYERS.remove(player.getUUID());
 
         if (removed != null) {
+            ServerLevel level = removed.level;
+            for (Map.Entry<UUID, EntityFreezeData> entry : FROZEN_ENTITIES.entrySet()) {
+                Entity entity = level.getEntity(entry.getKey());
+                if (entity != null) {
+                    entry.getValue().restore(entity);
+                }
+            }
+
             ENTITY_COUNTERS.clear();
+            FROZEN_ENTITIES.clear();
+            FROZEN_BLOCK_ENTITIES.clear();
 
             player.level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 0.5F, 1.0F);
@@ -95,6 +138,14 @@ public class LinkTimeManager {
             }
         }
 
+        if (entity instanceof EntityCursedManaBurst) {
+            return true;
+        }
+
+        if (entity instanceof EntityManaBurst) {
+            return true;
+        }
+
         if (entity.distanceToSqr(linkPlayer) > EFFECT_RADIUS * EFFECT_RADIUS) {
             return true;
         }
@@ -104,11 +155,24 @@ public class LinkTimeManager {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        if (event.getWorld().isClientSide()) return;
+        if (!hasAnyActive()) return;
+
+        BlockEntity blockEntity = event.getWorld().getBlockEntity(event.getPos());
+        if (blockEntity != null) {
+            FROZEN_BLOCK_ENTITIES.remove(blockEntity);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onWorldTick(TickEvent.WorldTickEvent event) {
         if (event.side.isClient() || event.phase != TickEvent.Phase.START) return;
         if (!(event.world instanceof ServerLevel level)) return;
 
         if (!hasAnyActive()) return;
+
+        FROZEN_BLOCK_ENTITIES.removeIf(BlockEntity::isRemoved);
 
         for (LinkTimeData data : ACTIVE_PLAYERS.values()) {
             if (data.level != level) continue;
@@ -165,6 +229,8 @@ public class LinkTimeManager {
     }
 
     private static void freezeEntity(Entity entity) {
+        FROZEN_ENTITIES.computeIfAbsent(entity.getUUID(), k -> new EntityFreezeData(entity));
+
         Vec3 motion = entity.getDeltaMovement();
         if (motion.lengthSqr() > 0.0001) {
             entity.setDeltaMovement(Vec3.ZERO);
@@ -172,9 +238,6 @@ public class LinkTimeManager {
 
         entity.setYRot(entity.yRotO);
         entity.setXRot(entity.xRotO);
-
-        if (entity instanceof LivingEntity living) {
-        }
 
         if (entity instanceof AbstractArrow arrow) {
             arrow.setDeltaMovement(arrow.getDeltaMovement().scale(0.01));
@@ -185,13 +248,61 @@ public class LinkTimeManager {
     public static void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
 
-        if (!hasAnyActive() && !ENTITY_COUNTERS.isEmpty()) {
-            ENTITY_COUNTERS.clear();
+        if (!hasAnyActive()) {
+            if (!ENTITY_COUNTERS.isEmpty()) {
+                ENTITY_COUNTERS.clear();
+            }
+            if (!FROZEN_ENTITIES.isEmpty()) {
+                FROZEN_ENTITIES.clear();
+            }
+            if (!FROZEN_BLOCK_ENTITIES.isEmpty()) {
+                FROZEN_BLOCK_ENTITIES.clear();
+            }
+        } else {
+            FROZEN_ENTITIES.entrySet().removeIf(entry -> {
+                for (LinkTimeData data : ACTIVE_PLAYERS.values()) {
+                    Entity entity = data.level.getEntity(entry.getKey());
+                    if (entity == null || entity.isRemoved()) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onWorldUnload(WorldEvent.Unload event) {
+        if (event.getWorld().isClientSide()) return;
+
+        if (event.getWorld() instanceof ServerLevel level) {
+            ACTIVE_PLAYERS.entrySet().removeIf(entry -> {
+                LinkTimeData data = entry.getValue();
+                if (data.level == level) {
+                    Player player = level.getServer().getPlayerList().getPlayer(data.playerId);
+                    if (player != null) {
+                        for (Map.Entry<UUID, EntityFreezeData> freezeEntry : FROZEN_ENTITIES.entrySet()) {
+                            Entity entity = level.getEntity(freezeEntry.getKey());
+                            if (entity != null) {
+                                freezeEntry.getValue().restore(entity);
+                            }
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        if (!hasAnyActive()) {
+            cleanup();
         }
     }
 
     public static void cleanup() {
         ACTIVE_PLAYERS.clear();
         ENTITY_COUNTERS.clear();
+        FROZEN_ENTITIES.clear();
+        FROZEN_BLOCK_ENTITIES.clear();
     }
 }

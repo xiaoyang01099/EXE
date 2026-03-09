@@ -23,7 +23,7 @@ import java.util.UUID;
 
 public class ManaitaArmor extends ArmorItem {
 
-    public static final Properties MANAITA_ARMOR = new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).rarity(ModRarities.MIRACLE);
+    public static final Properties MANAITA_ARMOR = new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).rarity(ModRarities.MIRACLE);
     private static final UUID ARMOR_UUID = UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B");
     private static final UUID TOUGHNESS_UUID = UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D");
 

@@ -20,7 +20,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModIntegrationFlowers;
 
 public class CelestialBlueHyacinth extends FlowerBlock {
     public CelestialBlueHyacinth() {
-        super(MobEffects.MOVEMENT_SPEED, 100, BlockBehaviour.Properties.of(Material.PLANT)
+        super(MobEffects.MOVEMENT_SPEED, 100, Properties.of(Material.PLANT)
                 .noCollission()
                 .instabreak()
                 .sound(SoundType.GRASS)
@@ -33,7 +33,7 @@ public class CelestialBlueHyacinth extends FlowerBlock {
     }
 
     @Override
-    public int getFireSpreadSpeed(BlockState state, BlockGetter world, BlockPos pos, net.minecraft.core.Direction face) {
+    public int getFireSpreadSpeed(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
         return 0; // 火焰蔓延速度为0，防止火焰蔓延到植物
     }
 

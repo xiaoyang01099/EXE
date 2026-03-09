@@ -53,7 +53,7 @@ public class DormantArcanum extends Item implements ICurioItem, INoEMCItem {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @org.jetbrains.annotations.Nullable CompoundTag nbt) {
-        return new DormantArcanum.RelicCapProvider(stack);
+        return new RelicCapProvider(stack);
     }
 
     private static class RelicCapProvider implements ICapabilityProvider {
@@ -139,7 +139,7 @@ public class DormantArcanum extends Item implements ICurioItem, INoEMCItem {
                         if (player.tickCount % RECHARGE_INTERVAL == 0) {
                             ItemNBTHelper.setInt(stack, "ILifetime", lifetime - 1);
 
-                            if (player.level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                            if (player.level instanceof ServerLevel serverLevel) {
                                 serverLevel.sendParticles(
                                         net.minecraft.core.particles.ParticleTypes.ENCHANT,
                                         player.getX(), player.getY() + 1.0, player.getZ(),
@@ -165,10 +165,10 @@ public class DormantArcanum extends Item implements ICurioItem, INoEMCItem {
         });
 
         player.level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                net.minecraft.sounds.SoundEvents.PLAYER_LEVELUP,
-                net.minecraft.sounds.SoundSource.PLAYERS, 0.7F, 1.2F);
+                SoundEvents.PLAYER_LEVELUP,
+                SoundSource.PLAYERS, 0.7F, 1.2F);
 
-        if (player.level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+        if (player.level instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(
                     net.minecraft.core.particles.ParticleTypes.TOTEM_OF_UNDYING,
                     player.getX(), player.getY() + 1.0, player.getZ(),

@@ -26,7 +26,7 @@ import java.util.List;
 
 public class DimensionalMirror extends Item {
     public DimensionalMirror() {
-        super(new Item.Properties()
+        super(new Properties()
                 .tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
                 .stacksTo(1)
                 .fireResistant()

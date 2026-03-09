@@ -2,18 +2,15 @@ package net.xiaoyang010.ex_enigmaticlegacy.Item.weapon;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.PacketDistributor;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.ef.Effect;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.ef.EffectCut;
@@ -36,7 +33,7 @@ public class Crissaegrim extends SwordItem {
 
     public Crissaegrim() {
         super(EXEAPI.MIRACLE_ITEM_TIER, INFINITE_DAMAGE, INFINITE_ATTACK_SPEED,
-                new Item.Properties()
+                new Properties()
                         .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
                         .rarity(ModRarities.MIRACLE));
     }

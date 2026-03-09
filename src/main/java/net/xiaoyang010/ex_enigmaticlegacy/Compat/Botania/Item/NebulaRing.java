@@ -59,7 +59,7 @@ public class NebulaRing extends ItemBauble implements ICurioItem {
         onUnequipped(stack, slotContext.entity());
     }
 
-    public void onEquipped(ItemStack stack, net.minecraft.world.entity.LivingEntity entity) {
+    public void onEquipped(ItemStack stack, LivingEntity entity) {
     }
 
     @Override
@@ -68,7 +68,7 @@ public class NebulaRing extends ItemBauble implements ICurioItem {
                 && context.identifier().equals("ring");
     }
 
-    public void onUnequipped(ItemStack stack, net.minecraft.world.entity.LivingEntity entity) {
+    public void onUnequipped(ItemStack stack, LivingEntity entity) {
     }
 
     @Override
@@ -132,7 +132,7 @@ public class NebulaRing extends ItemBauble implements ICurioItem {
 
     private IManaItem getManaCapability(ItemStack stack) {
         return stack.getCapability(BotaniaForgeCapabilities.MANA_ITEM)
-                .orElse(new NebulaRing.ManaItem(stack));
+                .orElse(new ManaItem(stack));
     }
 
     public static class ManaItem implements IManaItem {
@@ -196,7 +196,7 @@ public class NebulaRing extends ItemBauble implements ICurioItem {
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return new ICapabilityProvider() {
-            private final LazyOptional<IManaItem> manaHandler = LazyOptional.of(() -> new NebulaRing.ManaItem(stack));
+            private final LazyOptional<IManaItem> manaHandler = LazyOptional.of(() -> new ManaItem(stack));
 
             @Override
             public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {

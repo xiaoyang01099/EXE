@@ -114,7 +114,7 @@ public class TileCursedGourmaryllis extends TileCursedGeneratingFlower {
         for (int i = 0; i < 15; i++) {
             WispParticleData data = WispParticleData.wisp(
                     0.15F * intensity,
-                    0.8F, 1.0F, 0.2F, // 黄绿色
+                    0.8F, 1.0F, 0.2F,
                     true
             );
             level.addParticle(data,
@@ -126,11 +126,6 @@ public class TileCursedGourmaryllis extends TileCursedGeneratingFlower {
                     (Math.random() - 0.5) * 0.03
             );
         }
-    }
-
-    @Override
-    public @Nullable BlockPos findClosestTarget() {
-        return super.findClosestTarget();
     }
 
     @Override
@@ -156,7 +151,7 @@ public class TileCursedGourmaryllis extends TileCursedGeneratingFlower {
 
     @NotNull
     @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @org.jetbrains.annotations.Nullable Direction side) {
-        return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap, LazyOptional.of(()-> new TileCursedGeneratingFlower.CursedGeneratingWandHud<>(this)).cast());
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap, LazyOptional.of(()-> new CursedGeneratingWandHud<>(this)).cast());
     }
 }

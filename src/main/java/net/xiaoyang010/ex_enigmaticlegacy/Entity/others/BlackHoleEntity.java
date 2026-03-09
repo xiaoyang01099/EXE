@@ -70,7 +70,7 @@ public class BlackHoleEntity extends GapingVoidEntity {
         if (age == 0 && !this.level.isClientSide) {
             this.level.playLocalSound(
                     this.getX(), this.getY(), this.getZ(),
-                    (SoundEvent) AvaritiaModContent.GAPING_VOID_SOUND.get(),
+                    AvaritiaModContent.GAPING_VOID_SOUND.get(),
                     SoundSource.HOSTILE, 8.0F, 1.0F, true
             );
         }

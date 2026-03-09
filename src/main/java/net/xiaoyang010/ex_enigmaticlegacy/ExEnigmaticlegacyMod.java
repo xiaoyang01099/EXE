@@ -5,6 +5,9 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.OverlayRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -19,6 +22,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.ModParticleTypes;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.shader.AvaritiaShaders;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.PolychromeCollapsePrismTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.*;
@@ -33,9 +37,14 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.EventHa
 import net.xiaoyang010.ex_enigmaticlegacy.Event.CrissaegrimEventHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.ef.EffectManager;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.fx.FXHandler;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.StarlitSanctumTile;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.BloodBarHud;
+import net.xiaoyang010.ex_enigmaticlegacy.Util.WaveNameData;
+import net.xiaoyang010.ex_enigmaticlegacy.Util.WaveNameTooltipComponent;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.CurseAbilityHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import vazkii.patchouli.api.PatchouliAPI;
 
 import java.util.AbstractMap;
 import java.util.Collection;
@@ -90,17 +99,17 @@ public class ExEnigmaticlegacyMod {
 		ModIntegrationFlowers.BLOCK_ENTITY_REGISTRY.register(bus);
 		ModIntegrationFlowers.BLOCK_ITEM_REGISTRY.register(bus);
 
-		if (ModList.get().isLoaded("projecte")) {
-			MinecraftForge.EVENT_BUS.register(NoEMCEventHandler.class);
-			MinecraftForge.EVENT_BUS.register(NoEMCCommandInterceptor.class);
-		}
-
 		MinecraftForge.EVENT_BUS.register(new CurseAbilityHandler());
 		MinecraftForge.EVENT_BUS.register(new RelicsEventHandler());
 		MinecraftForge.EVENT_BUS.register(new TooltipEvent());
 		MinecraftForge.EVENT_BUS.register(new SpectatorModeHandler());
 		MinecraftForge.EVENT_BUS.register(EventHandler.class);
 		MinecraftForge.EVENT_BUS.register(new CrissaegrimEventHandler());
+
+		if (ModList.get().isLoaded("projecte")) {
+			MinecraftForge.EVENT_BUS.register(NoEMCEventHandler.class);
+			MinecraftForge.EVENT_BUS.register(NoEMCCommandInterceptor.class);
+		}
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			MinecraftForge.EVENT_BUS.register(new EffectManager());
@@ -117,6 +126,21 @@ public class ExEnigmaticlegacyMod {
 	}
 
 	public void onCommonSetup(FMLCommonSetupEvent event) {
+		event.enqueueWork(() -> {
+			PatchouliAPI.get().registerMultiblock(
+					new ResourceLocation("ex_enigmaticlegacy", "polychrome_collapse_prism"),
+					PolychromeCollapsePrismTile.MULTIBLOCK.get()
+			);
+			PatchouliAPI.get().registerMultiblock(
+					new ResourceLocation("ex_enigmaticlegacy", "starlit_sanctum"),
+					StarlitSanctumTile.MULTIBLOCK.get()
+			);
+		});
+		OverlayRegistry.registerOverlayAbove(
+				ForgeIngameGui.FOOD_LEVEL_ELEMENT,
+				"blood_bar",
+				BloodBarHud.INSTANCE
+		);
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
@@ -142,10 +166,15 @@ public class ExEnigmaticlegacyMod {
 	}
 
 	private void clientSetup(final FMLClientSetupEvent event) {
-		ItemBlockRenderTypes.setRenderLayer(ModBlockss.INFINITYGlASS.get(), RenderType.translucent());
-		ItemBlockRenderTypes.setRenderLayer(ModBlockss.PAGED_CHEST.get(), RenderType.cutoutMipped());
 		event.enqueueWork(() ->{
+			ItemBlockRenderTypes.setRenderLayer(ModBlockss.INFINITYGlASS.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(ModBlockss.PAGED_CHEST.get(), RenderType.cutoutMipped());
 		});
+
+		MinecraftForgeClient.registerTooltipComponentFactory(
+				WaveNameData.class,
+				WaveNameTooltipComponent::new
+		);
 	}
 
 	public void Continuum() {

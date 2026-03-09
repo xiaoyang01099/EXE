@@ -37,7 +37,12 @@ import static vazkii.botania.common.block.BlockMod.createTickerHelper;
 
 public class StarlitSanctum extends Block implements EntityBlock {
     public StarlitSanctum() {
-        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(10f, 10f).lightLevel(s -> 2).requiresCorrectToolForDrops().hasPostProcess((bs, br, bp) -> true).emissiveRendering((bs, br, bp) -> true));
+        super(Properties.of(Material.STONE).sound(SoundType.STONE).strength(10f, 10f).lightLevel(s -> 2).requiresCorrectToolForDrops().hasPostProcess((bs, br, bp) -> true).emissiveRendering((bs, br, bp) -> true));
+    }
+
+    @Override
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override

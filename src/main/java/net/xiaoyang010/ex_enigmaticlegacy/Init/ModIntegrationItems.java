@@ -7,6 +7,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.PetrifyingWand;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.LichShieldRing;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.EMCWand;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Spell.InfinitasVortex;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Spell.LumenAureum;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
@@ -27,6 +28,9 @@ public class ModIntegrationItems {
     public static RegistryObject<Item> MATTER_PROTO_MAX;
     public static RegistryObject<Item> MATTER_TEMPORAL_MAX;
     public static RegistryObject<Item> MATTER_VOID_MAX;
+    //同时加入建筑手杖
+    public static RegistryObject<Item> EMC_WAND;
+
 
     // Iron's Spellbooks 联动物品
     public static RegistryObject<Item> INFINITAS_VORTEX;
@@ -51,6 +55,7 @@ public class ModIntegrationItems {
             MATTER_PROTO_MAX = REGISTRY.register("matter_proto_max", ModAmorphous::new);
             MATTER_TEMPORAL_MAX = REGISTRY.register("matter_temporal_max", ModAmorphous::new);
             MATTER_VOID_MAX = REGISTRY.register("matter_void_max", ModAmorphous::new);
+            EMC_WAND = REGISTRY.register("emc_wand", EMCWand::new);
         }
 
         // Iron's Spellbooks 联动注册

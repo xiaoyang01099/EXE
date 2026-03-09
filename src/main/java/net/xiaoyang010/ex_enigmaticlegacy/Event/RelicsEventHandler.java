@@ -593,6 +593,25 @@ public class RelicsEventHandler {
                 event.setAmount(event.getAmount() * (float)(Math.random() * 2.0F));
             }
 
+            // 古老圣盾伤害减免
+            if (hasBauble(player, ModItems.ANCIENT_AEGIS.get())
+                    && !event.isCanceled()
+                    && !isDamageTypeAbsolute(event.getSource())) {
+                event.setAmount(event.getAmount() * (1.0F - 0.25F));
+            }
+
+            // 古老圣盾伤害分担逻辑
+            if (!event.getEntity().level.isClientSide
+                    && !hasBauble(player, ModItems.ANCIENT_AEGIS.get())
+                    && !event.isCanceled()) {
+
+                Player aegisOwner = findPlayerWithBauble(event.getEntity().level, 32, ModItems.ANCIENT_AEGIS.get(), player);
+                if (aegisOwner != null) {
+                    aegisOwner.hurt(event.getSource(), event.getAmount() * 0.4F);
+                    event.setAmount(event.getAmount() * 0.6F);
+                }
+            }
+
             // 暗日之戒超高伤害保护 - 添加装备检查
             if (event.getAmount() > 100.0F
                     && !isDamageTypeAbsolute(event.getSource())
@@ -611,25 +630,7 @@ public class RelicsEventHandler {
                 event.setAmount(amplifiedAmount);
             }
 
-            // 古老圣盾伤害分担逻辑
-            if (!event.getEntity().level.isClientSide
-                    && !hasBauble(player, ModItems.ANCIENT_AEGIS.get())
-                    && !event.isCanceled()) {
-
-                Player aegisOwner = findPlayerWithBauble(event.getEntity().level, 32, ModItems.ANCIENT_AEGIS.get(), player);
-                if (aegisOwner != null) {
-                    aegisOwner.hurt(event.getSource(), event.getAmount() * 0.4F);
-                    event.setAmount(event.getAmount() * 0.6F);
-                }
-            }
-
-            // 古老圣盾伤害减免
-            if (hasBauble(player, ModItems.ANCIENT_AEGIS.get())
-                    && !event.isCanceled()
-                    && !isDamageTypeAbsolute(event.getSource())) {
-                event.setAmount(event.getAmount() * (1.0F - 0.25F));
-            }
-
+            // 叠加态指环伤害分摊
             if (!(event.getSource() instanceof ModDamageSources.DamageSourceSuperposition)
                     && !(event.getSource() instanceof ModDamageSources.DamageSourceSuperpositionDefined)
                     && hasBauble(player, ModItems.SUPERPOSITION_RING.get())) {

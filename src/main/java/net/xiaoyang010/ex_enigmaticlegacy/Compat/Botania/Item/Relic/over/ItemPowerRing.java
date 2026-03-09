@@ -172,7 +172,7 @@ public class ItemPowerRing extends Item implements ICurioItem {
                         return false;
                     }
                     var relicCap = stack.getCapability(
-                            vazkii.botania.api.BotaniaForgeCapabilities.RELIC);
+                            BotaniaForgeCapabilities.RELIC);
                     if (relicCap.isPresent()) {
                         var relic = relicCap.orElse(null);
                         if (relic != null && !relic.isRightPlayer(player)) {

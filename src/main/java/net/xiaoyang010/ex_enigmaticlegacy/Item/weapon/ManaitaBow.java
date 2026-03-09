@@ -35,7 +35,7 @@ public class ManaitaBow extends BowItem {
     private final Random random = new Random();
 
     public ManaitaBow() {
-        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
+        super(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
                 .rarity(ModRarities.MIRACLE)
         );
     }

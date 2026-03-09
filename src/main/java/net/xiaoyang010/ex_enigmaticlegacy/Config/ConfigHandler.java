@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ConfigHandler {
-    public static List<String> lockWorldNameNebulaRod = new ArrayList<>();
+    public static List<Object> lockWorldNameNebulaRod = new ArrayList<>();
     public static int nebulaWandCooldownTick = 20;
     public static int nebulaRodManaCost = 100;
     public static int limitXZCoords = 30000;
@@ -34,7 +34,12 @@ public class ConfigHandler {
     public static float starlitGuiScale = 0.7f;
     public static float starlitJeiScale = 0.7f;
 
-    public static List<String> lockEntityListToHorn = new ArrayList<>();
+    public static int spreaderMaxMana = 128000;
+    public static int spreaderBurstMana = 32000;
+
+    public static boolean peacefulTableInAllDifficulties = false;
+
+    public static List<Object> lockEntityListToHorn = new ArrayList<>();
 
     private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
     private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
@@ -67,7 +72,6 @@ public class ConfigHandler {
     public static ForgeConfigSpec.BooleanValue ONLY_REPAIR_EQUIPMENTS;
     public static ForgeConfigSpec.IntValue REPAIR_TICK;
 
-    public static ForgeConfigSpec.BooleanValue useManaChargerAnimation;
     public static ForgeConfigSpec.BooleanValue enableDragonArmorOverlayConfig;
 
     public static ForgeConfigSpec.DoubleValue starlitGuiScaleConfig;
@@ -88,21 +92,20 @@ public class ConfigHandler {
     public static ForgeConfigSpec.IntValue astralKillopEffectLevelConfig;
     public static ForgeConfigSpec.IntValue astralKillopMaxManaConfig;
 
+    public static ForgeConfigSpec.IntValue spreaderMaxManaConfig;
+    public static ForgeConfigSpec.IntValue spreaderBurstManaConfig;
+
+    public static ForgeConfigSpec.BooleanValue peacefulTableInAllDifficultiesConfig;
+
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> lockEntityListToHornConfig;
 
     static {
-        // ========== 客户端配置 ==========
         CLIENT_BUILDER.comment("Client Settings").push("client");
-
-        useManaChargerAnimation = CLIENT_BUILDER
-                .comment("Activating the charging animation for the Mana Charger")
-                .define("manaChargerLighting", true);
 
         enableDragonArmorOverlayConfig = CLIENT_BUILDER
                 .comment("Enable/disable the Dragon Crystal Armor helmet overlay effect")
                 .define("enableDragonArmorOverlay", true);
 
-        // ========== 新增：Starlit Sanctum GUI 缩放配置 ==========
         CLIENT_BUILDER.comment("Starlit Sanctum GUI Settings").push("starlit_gui");
 
         starlitGuiScaleConfig = CLIENT_BUILDER
@@ -123,15 +126,23 @@ public class ConfigHandler {
                 )
                 .defineInRange("jeiScale", 0.7, 0.1, 1.0);
 
-        CLIENT_BUILDER.pop(); // starlit_gui
+        CLIENT_BUILDER.pop();
 
         CLIENT_BUILDER.pop();
         CLIENT_SPEC = CLIENT_BUILDER.build();
 
-        // ========== 通用配置（保持不变）==========
         COMMON_BUILDER.comment("Common Settings").push("common");
 
-        // Timeless Ivy
+        COMMON_BUILDER.comment("Peaceful Table Settings").push("peaceful_table");
+        peacefulTableInAllDifficultiesConfig = COMMON_BUILDER
+                .comment(
+                        "Allow Peaceful Table to work in all difficulties",
+                        "Default: false (only works in Peaceful difficulty)",
+                        "Set to true to enable in all difficulties"
+                )
+                .define("peacefulTableInAllDifficulties", false);
+        COMMON_BUILDER.pop();
+
         COMMON_BUILDER.comment("Timeless Ivy settings").push("timeless_ivy");
         MANA_COST_PER_DAMAGE = COMMON_BUILDER
                 .comment("Mana cost per point of durability")
@@ -150,7 +161,6 @@ public class ConfigHandler {
                 .defineInRange("repair_tick", 1, 1, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
 
-        // Sprawl Rod
         COMMON_BUILDER.comment("Sprawl Rod Settings").push("sprawl_rod");
         sprawlRodSpeedConfig = COMMON_BUILDER
                 .comment("Speed multiplier for Sprawl Rod projectiles")
@@ -160,7 +170,6 @@ public class ConfigHandler {
                 .defineInRange("sprawlMaxArea", 64, 1, 256);
         COMMON_BUILDER.pop();
 
-        // Nebula Rod
         COMMON_BUILDER.comment("Nebula Rod Settings").push("nebula_rod");
         lockWorldNameNebulaRodConfig = COMMON_BUILDER
                 .comment("List of world names where Nebula Rod is disabled")
@@ -176,13 +185,21 @@ public class ConfigHandler {
                 .defineInRange("coordinateLimit", 30000, 1000, 30000000);
         COMMON_BUILDER.pop();
 
-        //horn
+        COMMON_BUILDER.comment("Advanced Botany Spreader Settings").push("ab_spreader");
+        spreaderMaxManaConfig = COMMON_BUILDER
+                .comment("Maximum amount of mana held in an Advanced Botany mana spreader")
+                .defineInRange("spreaderMaxMana", 128000, 1000, 10000000);
+        spreaderBurstManaConfig = COMMON_BUILDER
+                .comment("Amount of mana in a mana burst from Advanced Botany spreader")
+                .defineInRange("spreaderBurstMana", 32000, 100, 1000000);
+        COMMON_BUILDER.pop();
+
         COMMON_BUILDER.comment("Horn of Plenty Settings").push("horn_plenty");
         lockEntityListToHornConfig = COMMON_BUILDER
                 .comment(
                         "Block entities from being affected by Horn of Plenty's double drop effect",
                         "Enter the simple class name of the entity (e.g., 'Zombie', 'Creeper', 'EnderDragon')",
-                        "Example: [\"EnderDragon\", \"WitherBoss\"]"
+                        "Example: ['EnderDragon', 'WitherBoss']"
                 )
                 .defineList(
                         "lockEntityList",
@@ -191,7 +208,6 @@ public class ConfigHandler {
                 );
         COMMON_BUILDER.pop();
 
-        // Flowers
         COMMON_BUILDER.comment("Flower Settings").push("flowers");
         maxDictariusCountConfig = COMMON_BUILDER
                 .comment("Maximum number of Dictarius flowers allowed near each other")
@@ -204,7 +220,6 @@ public class ConfigHandler {
                 .comment("Maximum mana capacity for EMCFlower")
                 .defineInRange("maxMana", 1000, 100, 100000);
 
-        // AstralKillop
         COMMON_BUILDER.comment("AstralKillop Flower Settings").push("astral_killop");
         astralKillopManaCostConfig = COMMON_BUILDER
                 .comment("Mana cost per day")
@@ -230,10 +245,9 @@ public class ConfigHandler {
         astralKillopMaxManaConfig = COMMON_BUILDER
                 .comment("Maximum mana capacity")
                 .defineInRange("maxMana", 10000, 1000, 100000);
-        COMMON_BUILDER.pop(); // astral_killop
-        COMMON_BUILDER.pop(); // flowers
+        COMMON_BUILDER.pop();
+        COMMON_BUILDER.pop();
 
-        // Power Inventory 配置
         COMMON_BUILDER.comment("Power Inventory Settings").push("power_inventory");
 
         COMMON_BUILDER.comment("Experience Costs").push("experience");
@@ -267,7 +281,7 @@ public class ConfigHandler {
         SHOW_GUI_BUTTON = COMMON_BUILDER
                 .comment("Show button in vanilla inventory")
                 .define("showGuiButton", true);
-        COMMON_BUILDER.pop(); // display
+        COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Gameplay Settings").push("gameplay");
         PERSIST_ON_DEATH = COMMON_BUILDER
@@ -279,10 +293,10 @@ public class ConfigHandler {
         FILTER_RANGE = COMMON_BUILDER
                 .comment("Range for filter/dump buttons")
                 .defineInRange("filterRange", 32, 8, 128);
-        COMMON_BUILDER.pop(); // gameplay
+        COMMON_BUILDER.pop();
 
-        COMMON_BUILDER.pop(); // power_inventory
-        COMMON_BUILDER.pop(); // common
+        COMMON_BUILDER.pop();
+        COMMON_BUILDER.pop();
 
         COMMON_SPEC = COMMON_BUILDER.build();
     }
@@ -311,7 +325,7 @@ public class ConfigHandler {
     public static void syncCommonConfig() {
         emcFlowerManaPerEMC = emcFlowerManaPerEMCConfig.get();
         emcFlowerMaxMana = emcFlowerMaxManaConfig.get();
-        lockWorldNameNebulaRod = new ArrayList<>(lockWorldNameNebulaRodConfig.get());
+        lockWorldNameNebulaRod = new ArrayList<Object>(lockWorldNameNebulaRodConfig.get());
         nebulaWandCooldownTick = nebulaWandCooldownTickConfig.get();
         nebulaRodManaCost = nebulaRodManaCostConfig.get();
         limitXZCoords = limitXZCoordsConfig.get();
@@ -327,15 +341,22 @@ public class ConfigHandler {
         astralKillopEffectDuration = astralKillopEffectDurationConfig.get();
         astralKillopEffectLevel = astralKillopEffectLevelConfig.get();
         astralKillopMaxMana = astralKillopMaxManaConfig.get();
-        lockEntityListToHorn = new ArrayList<>(lockEntityListToHornConfig.get());
+        lockEntityListToHorn = new ArrayList<Object>(lockEntityListToHornConfig.get());
+
+        spreaderMaxMana = spreaderMaxManaConfig.get();
+        spreaderBurstMana = spreaderBurstManaConfig.get();
+
+        peacefulTableInAllDifficulties = peacefulTableInAllDifficultiesConfig.get();
 
         ExEnigmaticlegacyMod.LOGGER.info("Horn of Plenty entity blacklist loaded: {}", lockEntityListToHorn);
+        ExEnigmaticlegacyMod.LOGGER.info("Advanced Botany Spreader config loaded: MaxMana={}, BurstMana={}",
+                spreaderMaxMana, spreaderBurstMana);
+        ExEnigmaticlegacyMod.LOGGER.info("Peaceful Table config loaded: AllDifficulties={}",
+                peacefulTableInAllDifficulties);
     }
 
     public static void syncClientConfig() {
         enableDragonArmorOverlay = enableDragonArmorOverlayConfig.get();
-
-        // ========== 新增：同步 GUI 缩放配置 ==========
         starlitGuiScale = starlitGuiScaleConfig.get().floatValue();
         starlitJeiScale = starlitJeiScaleConfig.get().floatValue();
 
@@ -405,7 +426,7 @@ public class ConfigHandler {
     }
 
     public static class NebulaRodConfig {
-        public static List<String> getLockWorldNames() { return lockWorldNameNebulaRod; }
+        public static List getLockWorldNames() { return lockWorldNameNebulaRod; }
         public static double getSprawlRodSpeed() { return sprawlRodSpeed; }
         public static int getSprawlRodMaxArea() { return sprawlRodMaxArea; }
         public static int getCooldownTicks() { return nebulaWandCooldownTick; }
@@ -432,7 +453,7 @@ public class ConfigHandler {
     }
 
     public static class HornPlentyConfig {
-        public static List<String> getLockEntityList() {
+        public static List getLockEntityList() {
             return lockEntityListToHorn;
         }
 
@@ -442,20 +463,28 @@ public class ConfigHandler {
     }
 
     public static class StarlitGuiConfig {
-        /**
-         * 获取 GUI 缩放比例
-         * @return 缩放比例 (0.1 - 1.0)
-         */
         public static float getGuiScale() {
             return starlitGuiScale;
         }
 
-        /**
-         * 获取 JEI 缩放比例
-         * @return 缩放比例 (0.1 - 1.0)
-         */
         public static float getJeiScale() {
             return starlitJeiScale;
+        }
+    }
+
+    public static class ABSpreaderConfig {
+        public static int getSpreaderMaxMana() {
+            return spreaderMaxMana;
+        }
+
+        public static int getSpreaderBurstMana() {
+            return spreaderBurstMana;
+        }
+    }
+
+    public static class PeacefulTableConfig {
+        public static boolean isEnabledInAllDifficulties() {
+            return peacefulTableInAllDifficulties;
         }
     }
 }

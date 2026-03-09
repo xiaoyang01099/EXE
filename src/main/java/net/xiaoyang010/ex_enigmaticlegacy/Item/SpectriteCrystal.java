@@ -30,7 +30,7 @@ import java.util.List;
 public class SpectriteCrystal extends Item {
 
     public SpectriteCrystal() {
-        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(64).fireResistant().rarity(Rarity.EPIC));
+        super(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(64).fireResistant().rarity(Rarity.EPIC));
     }
 
     @Override

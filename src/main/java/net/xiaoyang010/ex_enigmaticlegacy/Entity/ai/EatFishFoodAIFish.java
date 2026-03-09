@@ -26,7 +26,7 @@ public class EatFishFoodAIFish extends Goal {
         this.entity = entity;
         this.level = entity.level;
         this.targetSorter = new ItemsSorter(entity);
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+        this.setFlags(EnumSet.of(Flag.MOVE));
     }
 
     @Override

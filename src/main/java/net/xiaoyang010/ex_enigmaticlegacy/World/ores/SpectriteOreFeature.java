@@ -39,7 +39,7 @@ public class SpectriteOreFeature extends OreFeature {
 
     public static Feature<?> feature() {
         FEATURE = new SpectriteOreFeature();
-        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:spectrite_ore", FEATURE, new OreConfiguration(SpectriteOreFeature.SpectriteOreFeatureRuleTest.INSTANCE, ModBlockss.SPECTRITE_ORE.get().defaultBlockState(), 7));
+        CONFIGURED_FEATURE = FeatureUtils.register("ex_enigmaticlegacy:spectrite_ore", FEATURE, new OreConfiguration(SpectriteOreFeatureRuleTest.INSTANCE, ModBlockss.SPECTRITE_ORE.get().defaultBlockState(), 7));
         PLACED_FEATURE = PlacementUtils.register("ex_enigmaticlegacy:spectrite_ore", CONFIGURED_FEATURE, List.of(CountPlacement.of(2), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-30), VerticalAnchor.absolute(60)), BiomeFilter.biome()));
         return FEATURE;
     }

@@ -20,8 +20,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Container.CobblesStoneMenu;
 public class Cobblestone extends CraftingTableBlock {
     private static final Component CONTAINER_TITLE = new TranslatableComponent("container.crafting");
     public Cobblestone() {
-        super(BlockBehaviour
-                .Properties.of(Material.STONE)
+        super(Properties.of(Material.STONE)
                 .sound(SoundType.STONE).strength(1.5f, 10f)
                 .requiresCorrectToolForDrops());
     }

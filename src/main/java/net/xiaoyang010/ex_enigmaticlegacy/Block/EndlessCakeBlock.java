@@ -30,7 +30,7 @@ public class EndlessCakeBlock extends CakeBlock {
     public static final IntegerProperty BITES = IntegerProperty.create("bites", 0, 6);
 
     public EndlessCakeBlock() {
-        super(Block.Properties.of(Material.CAKE).strength(0.5f).noOcclusion());
+        super(Properties.of(Material.CAKE).strength(0.5f).noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(BITES, 0));
     }
 
@@ -102,7 +102,7 @@ public class EndlessCakeBlock extends CakeBlock {
     }
 
     @Override
-    public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, net.minecraft.world.entity.player.Player player) {
+    public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
         return true;
     }
 

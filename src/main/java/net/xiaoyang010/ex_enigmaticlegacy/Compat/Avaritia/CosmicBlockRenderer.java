@@ -50,7 +50,6 @@ public class CosmicBlockRenderer implements BlockEntityRenderer<CosmicBlockEntit
         float b = 1.0f;
         float a = 1.0f;
 
-        // 渲染每个面
         renderFace(matrix, buffer, Direction.UP, r, g, b, a, light, overlay);
         renderFace(matrix, buffer, Direction.DOWN, r, g, b, a, light, overlay);
         renderFace(matrix, buffer, Direction.NORTH, r, g, b, a, light, overlay);
@@ -81,27 +80,27 @@ public class CosmicBlockRenderer implements BlockEntityRenderer<CosmicBlockEntit
 
     private float[][] getFaceVertices(Direction direction) {
         switch (direction) {
-            case UP: // 顶面 (Y = 1)
+            case UP:
                 return new float[][]{
                         {0, 1, 1}, {1, 1, 1}, {1, 1, 0}, {0, 1, 0}
                 };
-            case DOWN: // 底面 (Y = 0)
+            case DOWN:
                 return new float[][]{
                         {0, 0, 0}, {1, 0, 0}, {1, 0, 1}, {0, 0, 1}
                 };
-            case NORTH: // 北面 (Z = 0)
+            case NORTH:
                 return new float[][]{
                         {1, 0, 0}, {0, 0, 0}, {0, 1, 0}, {1, 1, 0}
                 };
-            case SOUTH: // 南面 (Z = 1)
+            case SOUTH:
                 return new float[][]{
                         {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}
                 };
-            case WEST: // 西面 (X = 0)
+            case WEST:
                 return new float[][]{
                         {0, 0, 0}, {0, 0, 1}, {0, 1, 1}, {0, 1, 0}
                 };
-            case EAST: // 东面 (X = 1)
+            case EAST:
                 return new float[][]{
                         {1, 0, 1}, {1, 0, 0}, {1, 1, 0}, {1, 1, 1}
                 };

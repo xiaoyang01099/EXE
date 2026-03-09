@@ -617,7 +617,7 @@ public class TileEntityRuneFlower extends TileEntityHybridFlower {
 
             Block doubleFlower = Registry.BLOCK.getOptional(
                     new ResourceLocation(
-                            vazkii.botania.api.BotaniaAPI.MODID,
+                            BotaniaAPI.MODID,
                             doubleFlowerPath
                     )
             ).orElse(null);
@@ -711,7 +711,7 @@ public class TileEntityRuneFlower extends TileEntityHybridFlower {
             double offsetY = level.random.nextDouble() * 0.5;
             double offsetZ = (level.random.nextDouble() - 0.5) * 0.8;
 
-            vazkii.botania.api.BotaniaAPI.instance().sparkleFX(level,
+            BotaniaAPI.instance().sparkleFX(level,
                     pos.getX() + 0.5 + offsetX,
                     pos.getY() + offsetY,
                     pos.getZ() + 0.5 + offsetZ,
@@ -784,7 +784,7 @@ public class TileEntityRuneFlower extends TileEntityHybridFlower {
                 if (crop.isMaxAge(state)) {
                     // 收割作物
                     List<ItemStack> drops = Block
-                            .getDrops(state, (net.minecraft.server.level.ServerLevel) level,
+                            .getDrops(state, (ServerLevel) level,
                                     pos, null);
 
                     // 10%概率双倍掉落
@@ -859,8 +859,8 @@ public class TileEntityRuneFlower extends TileEntityHybridFlower {
 
             // 播放激活音效
             level.playSound(null, worldPosition,
-                    vazkii.botania.common.handler.ModSounds.enchanterForm,
-                    net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 1.5F);
+                    ModSounds.enchanterForm,
+                    SoundSource.BLOCKS, 1.0F, 1.5F);
 
             setChanged();
             sync();
@@ -925,7 +925,7 @@ public class TileEntityRuneFlower extends TileEntityHybridFlower {
             if (mainHand.isEmpty()) continue;
 
             // 方式1: 通过Capability充能（标准植物魔法道具）
-            if (mainHand.getItem() instanceof vazkii.botania.api.mana.IManaItem manaItem) {
+            if (mainHand.getItem() instanceof IManaItem manaItem) {
                 int currentMana = manaItem.getMana();
                 int maxMana = manaItem.getMaxMana();
 
@@ -936,8 +936,8 @@ public class TileEntityRuneFlower extends TileEntityHybridFlower {
                         workDone = true;
                         spawnManaChargeParticles(player);
                         level.playSound(null, player.blockPosition(),
-                                vazkii.botania.common.handler.ModSounds.manaPoolCraft,
-                                net.minecraft.sounds.SoundSource.PLAYERS, 0.3F, 1.0F);
+                                ModSounds.manaPoolCraft,
+                                SoundSource.PLAYERS, 0.3F, 1.0F);
                     }
                 }
             }
@@ -961,8 +961,8 @@ public class TileEntityRuneFlower extends TileEntityHybridFlower {
 
                                 spawnManaChargeParticles(player);
                                 level.playSound(null, player.blockPosition(),
-                                        vazkii.botania.common.handler.ModSounds.manaPoolCraft,
-                                        net.minecraft.sounds.SoundSource.PLAYERS, 0.3F, 1.0F);
+                                        ModSounds.manaPoolCraft,
+                                        SoundSource.PLAYERS, 0.3F, 1.0F);
                             }
                         }
                     });
@@ -976,8 +976,8 @@ public class TileEntityRuneFlower extends TileEntityHybridFlower {
 
                     spawnRepairParticles(player);
                     level.playSound(null, player.blockPosition(),
-                            net.minecraft.sounds.SoundEvents.ANVIL_USE,
-                            net.minecraft.sounds.SoundSource.PLAYERS, 0.5F, 1.5F);
+                            SoundEvents.ANVIL_USE,
+                            SoundSource.PLAYERS, 0.5F, 1.5F);
                 }
             }
         }
@@ -1000,7 +1000,7 @@ public class TileEntityRuneFlower extends TileEntityHybridFlower {
             double offsetZ = Math.sin(angle) * radius;
             double offsetY = i * 0.1;
 
-            vazkii.botania.api.BotaniaAPI.instance().sparkleFX(level,
+            BotaniaAPI.instance().sparkleFX(level,
                     player.getX() + offsetX,
                     player.getY() + 1.0 + offsetY,
                     player.getZ() + offsetZ,
@@ -1020,7 +1020,7 @@ public class TileEntityRuneFlower extends TileEntityHybridFlower {
             double offsetY = level.random.nextDouble() * 2.0;
             double offsetZ = (level.random.nextDouble() - 0.5) * 1.5;
 
-            vazkii.botania.api.BotaniaAPI.instance().sparkleFX(level,
+            BotaniaAPI.instance().sparkleFX(level,
                     player.getX() + offsetX,
                     player.getY() + offsetY,
                     player.getZ() + offsetZ,
@@ -1257,7 +1257,7 @@ public class TileEntityRuneFlower extends TileEntityHybridFlower {
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         return BotaniaForgeClientCapabilities.WAND_HUD.orEmpty(cap,
-                LazyOptional.of(() -> new TileEntityRuneFlower.RuneFlowerWandHud(this)).cast());
+                LazyOptional.of(() -> new RuneFlowerWandHud(this)).cast());
     }
 
     public static class RuneFlowerWandHud extends HybridWandHud<TileEntityRuneFlower> {

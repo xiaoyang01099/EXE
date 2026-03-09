@@ -22,7 +22,6 @@ import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy", bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class RuneFlowerEventHandler {
-
     private static final Random RANDOM = new Random();
 
     @SubscribeEvent
@@ -92,7 +91,6 @@ public class RuneFlowerEventHandler {
             }
         }
 
-        // 生成掉落物
         for (ItemStack drop : bonusDrops) {
             ItemEntity itemEntity = new ItemEntity(level,
                     pos.getX() + 0.5,
@@ -100,7 +98,6 @@ public class RuneFlowerEventHandler {
                     pos.getZ() + 0.5,
                     drop);
 
-            // 添加一些随机速度
             itemEntity.setDeltaMovement(
                     (RANDOM.nextDouble() - 0.5) * 0.1,
                     RANDOM.nextDouble() * 0.2,
@@ -109,7 +106,6 @@ public class RuneFlowerEventHandler {
 
             level.addFreshEntity(itemEntity);
 
-            // 播放粒子效果
             spawnBonusDropParticles(serverLevel, pos);
         }
     }
@@ -136,7 +132,7 @@ public class RuneFlowerEventHandler {
                 pos.getX() + 0.5,
                 pos.getY() + 0.5,
                 pos.getZ() + 0.5,
-                0.8F, 0.2F, 0.8F, // 紫色
+                0.8F, 0.2F, 0.8F,
                 1.5F, 20);
     }
 }

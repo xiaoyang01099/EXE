@@ -6,7 +6,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 
 public class ModDetermination extends Item {
     public ModDetermination() {
-        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
+        super(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM)
                 .stacksTo(64)
                 .rarity(Rarity.EPIC));
     }

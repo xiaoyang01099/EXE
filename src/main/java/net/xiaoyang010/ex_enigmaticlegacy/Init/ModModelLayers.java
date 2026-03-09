@@ -26,4 +26,7 @@ public class ModModelLayers {
     public static final ModelLayerLocation VINE_AND_PIECE = new ModelLayerLocation(
             new ResourceLocation(ExEnigmaticlegacyMod.MODID, "vine_and_piece"), "main");
 
+    public static final ModelLayerLocation SLIME_CANNON = new ModelLayerLocation
+            (new ResourceLocation("ex_enigmaticlegacy", "slime_cannon"), "main");
+
 }

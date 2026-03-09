@@ -59,7 +59,7 @@ public class MithrillRing extends ItemBauble implements ICurioItem  {
         onUnequipped(stack, slotContext.entity());
     }
 
-    public void onEquipped(ItemStack stack, net.minecraft.world.entity.LivingEntity entity) {
+    public void onEquipped(ItemStack stack, LivingEntity entity) {
     }
 
     @Override
@@ -68,7 +68,7 @@ public class MithrillRing extends ItemBauble implements ICurioItem  {
                 && context.identifier().equals("ring");
     }
 
-    public void onUnequipped(ItemStack stack, net.minecraft.world.entity.LivingEntity entity) {
+    public void onUnequipped(ItemStack stack, LivingEntity entity) {
     }
 
     @Override

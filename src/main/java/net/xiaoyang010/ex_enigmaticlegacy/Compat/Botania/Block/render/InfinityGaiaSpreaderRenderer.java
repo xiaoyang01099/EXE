@@ -103,7 +103,7 @@ public class InfinityGaiaSpreaderRenderer implements BlockEntityRenderer<Infinit
     }
 
     private BakedModel getPaddingModel(DyeColor color) {
-        return (BakedModel)MiscellaneousModels.INSTANCE.spreaderPaddings.get(color);
+        return MiscellaneousModels.INSTANCE.spreaderPaddings.get(color);
     }
 
     private BakedModel getScaffoldingModel(InfinityGaiaSpreaderTile tile) {

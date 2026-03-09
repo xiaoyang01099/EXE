@@ -107,7 +107,7 @@ public class ShieldHandler {
                 double d0 = entity.getRandom().nextGaussian() * 0.02D;
                 double d1 = entity.getRandom().nextGaussian() * 0.02D;
                 double d2 = entity.getRandom().nextGaussian() * 0.02D;
-                entity.level.addParticle(net.minecraft.core.particles.ParticleTypes.CRIT,
+                entity.level.addParticle(ParticleTypes.CRIT,
                         entity.getX() + entity.getRandom().nextDouble() * entity.getBbWidth() * 2.0D - entity.getBbWidth(),
                         entity.getY() + entity.getRandom().nextDouble() * entity.getBbHeight(),
                         entity.getZ() + entity.getRandom().nextDouble() * entity.getBbWidth() * 2.0D - entity.getBbWidth(),
@@ -115,7 +115,7 @@ public class ShieldHandler {
             }
 
             for (int i = 0; i < 15; i++) {
-                entity.level.addParticle(net.minecraft.core.particles.ParticleTypes.LAVA,
+                entity.level.addParticle(ParticleTypes.LAVA,
                         entity.getX() + (entity.getRandom().nextDouble() - 0.5D) * 2.0D,
                         entity.getY() + entity.getRandom().nextDouble() * 2.0D,
                         entity.getZ() + (entity.getRandom().nextDouble() - 0.5D) * 2.0D,

@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower;
+package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerTile.Generating;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;

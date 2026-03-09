@@ -21,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
@@ -31,6 +32,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockEntities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModEffects;
+import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.internal.VanillaPacketDispatcher;
 import vazkii.botania.common.ModStats;
 
@@ -50,8 +52,8 @@ public class InfinityPotatoTile extends BlockEntity implements Container, Worldl
     public Component name = new TextComponent(""); // 方块的自定义名称
     private final NonNullList<ItemStack> items = NonNullList.withSize(6, ItemStack.EMPTY); // 存储物品
 
-    public InfinityPotatoTile(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.INFINITY_POTATO.get(), pos, state);
+    public InfinityPotatoTile(@NotNull BlockEntityType<InfinityPotatoTile> Type, BlockPos pos, BlockState state) {
+        super(Type, pos, state);
     }
 
     // 设置自定义名称

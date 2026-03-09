@@ -29,14 +29,21 @@ public class Shadowbreaker extends SwordItem {
     private static final int MANA = 100;
 
     public Shadowbreaker() {
-        super(EXEAPI.MIRACLE_ITEM_TIER, 10, -2.4F, new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).rarity(ModRarities.MIRACLE));
+        super(EXEAPI.MIRACLE_ITEM_TIER, 10, -2.4F, new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).rarity(ModRarities.MIRACLE));
     }
 
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, level, entity, slot, selected);
 
-        if (!selected || !(entity instanceof Player player)) {
+        if (!(entity instanceof Player player)) {
+            return;
+        }
+
+        boolean isInMainHand = player.getMainHandItem() == stack;
+        boolean isInOffHand = player.getOffhandItem() == stack;
+
+        if (!isInMainHand && !isInOffHand) {
             return;
         }
 

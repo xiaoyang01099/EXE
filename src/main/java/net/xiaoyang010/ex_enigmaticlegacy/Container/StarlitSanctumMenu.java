@@ -1,7 +1,10 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Container;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -9,6 +12,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -150,10 +154,10 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
         }
 
         this.customSlots.put(INPUT_LEFT_SLOT, this.addSlot(new BSlot(internal, INPUT_LEFT_SLOT, inputLeftX, inputLeftY){
-//            @Override
-//            public boolean mayPlace(ItemStack stack) {
-//                return !stack.isEmpty() && stack.is(STARLIT) && super.mayPlace(stack);
-//            }
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return !stack.isEmpty() && stack.is(StarlitSanctumTile.STARLIT) && super.mayPlace(stack);
+            }
         }));
         this.customSlots.put(INPUT_RIGHT_SLOT, this.addSlot(new BSlot(internal, INPUT_RIGHT_SLOT, inputRightX, inputRightY)));
         this.customSlots.put(OUTPUT_SLOT, this.addSlot(new SlotItemHandler(internal, OUTPUT_SLOT, outputX, outputY) {
@@ -305,7 +309,6 @@ public class StarlitSanctumMenu extends AbstractContainerMenu implements Supplie
     public void updateMana(int current, int max) {
         updateManaLong(current, max);
     }
-
 
     public int getCraftingProgress() {
         return this.craftingProgress.get();

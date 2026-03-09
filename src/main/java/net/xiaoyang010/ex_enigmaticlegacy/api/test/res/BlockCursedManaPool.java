@@ -58,7 +58,7 @@ public class BlockCursedManaPool extends BlockModWaterloggable implements Entity
 
     public final Variant variant;
 
-    public BlockCursedManaPool(BlockCursedManaPool.Variant v, Properties builder) {
+    public BlockCursedManaPool(Variant v, Properties builder) {
         super(builder);
         this.variant = v;
     }

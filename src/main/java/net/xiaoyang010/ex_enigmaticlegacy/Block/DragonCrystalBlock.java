@@ -13,7 +13,7 @@ import net.minecraft.world.level.material.Material;
 
 public class DragonCrystalBlock extends Block {
     public DragonCrystalBlock() {
-        super(BlockBehaviour.Properties.of(Material.STONE)
+        super(Properties.of(Material.STONE)
                 .sound(SoundType.STONE)
                 .strength(3f, 10f)
                 .requiresCorrectToolForDrops());

@@ -44,8 +44,8 @@ public class Manaita extends Item implements INoEMCItem {
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @org.jetbrains.annotations.Nullable CompoundTag nbt) {
-        return new Manaita.RelicCapProvider(stack);
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        return new RelicCapProvider(stack);
     }
 
     private static class RelicCapProvider implements ICapabilityProvider {
@@ -56,7 +56,7 @@ public class Manaita extends Item implements INoEMCItem {
         }
 
         @Override
-        public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @org.jetbrains.annotations.Nullable Direction direction) {
+        public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction direction) {
             if (capability == BotaniaForgeCapabilities.RELIC) {
                 return relic.cast();
             }

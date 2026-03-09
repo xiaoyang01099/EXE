@@ -335,7 +335,7 @@ public abstract class ComplexCreature extends AquaticCreature implements IComple
     }
 
     @Override
-    public void remove(Entity.RemovalReason reason) {
+    public void remove(RemovalReason reason) {
         super.remove(reason);
         for (BodyPart bodyPart : this.getParts()) {
             this.level.broadcastEntityEvent(bodyPart, (byte)3);

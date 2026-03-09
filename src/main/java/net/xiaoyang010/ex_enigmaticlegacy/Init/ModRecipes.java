@@ -45,7 +45,7 @@ public class ModRecipes {
 
     public static final RecipeType<AncientAlphirineRecipe> ANCIENT_ALPHIRINE_TYPE = new AncientAlphirineRecipe.Type();
     public static final RecipeType<PolychromeRecipe> POLYCHROME_TYPE = new PolychromeRecipe.Type();
-    public static final RecipeType<CelestialTransmuteRecipe> CHT_TYPE = new CelestialTransmuteRecipe.Type();
+    public static final RecipeType<CelestialTransmuteRecipe> CHT_TYPE = new Type();
     public static final RecipeType<RainbowTableRecipe> RAINBOW_TABLE_TYPE = new RainbowTableRecipe.Type();
     public static final RecipeType<NidavellirForgeRecipe> NIDAVELLIR_FORGE_TYPE = new NidavellirForgeRecipe.Type();
     public static final RecipeType<StarlitSanctumRecipe> STARLIT_TYPE = new StarlitSanctumRecipe.Type();

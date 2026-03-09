@@ -28,7 +28,7 @@ public class Paradox extends SwordItem {
         super(Tiers.NETHERITE,
                 3,
                 -2.4F,
-                new Item.Properties()
+                new Properties()
                         .stacksTo(1)
                         .rarity(Rarity.EPIC)
                         .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)

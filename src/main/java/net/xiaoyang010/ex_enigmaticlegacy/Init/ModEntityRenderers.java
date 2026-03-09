@@ -1,8 +1,10 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
 import morph.avaritia.client.render.entity.GapingVoidEntityRenderer;
+import net.minecraft.client.renderer.entity.BatRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.entity.WolfRenderer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -50,6 +52,10 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.ENTITY_SLASH.get(), EntityNullRender::new);
 		event.registerEntityRenderer(ModEntities.BLACK_HOLE.get(), GapingVoidEntityRenderer::new);
 		event.registerEntityRenderer(ModEntities.CURSED_MANA_BURST.get(), NoopRenderer::new);
+		event.registerEntityRenderer(ModEntities.VAMPIRE_BAT.get(), BatRenderer::new);
+		event.registerEntityRenderer(ModEntities.VAMPIRE_WOLF.get(), WolfRenderer::new);
+		event.registerEntityRenderer(ModEntities.SLIME_CANNON_BALL.get(), RendererSlimeCannonBall::new);
+		event.registerEntityRenderer(ModEntities.SLING_BULLET.get(), RenderSlingBullet::new);
 //		event.registerEntityRenderer(ModEntities.RAINBOW_WITHER_SKULL.get(), RainbowWitherSkullRenderer::new);
 	}
 

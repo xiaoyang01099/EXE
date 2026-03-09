@@ -33,7 +33,7 @@ public class EntityMateAIFishBase extends Goal {
         this.level = animal.level;
         this.mateClass = mateClass;
         this.moveSpeed = speedIn;
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }
 
     @Override

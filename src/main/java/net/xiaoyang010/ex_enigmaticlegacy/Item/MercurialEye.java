@@ -7,6 +7,6 @@ import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 
 public class MercurialEye extends Item {
     public MercurialEye() {
-        super(new Item.Properties().stacksTo(1).rarity(ModRarities.MIRACLE).tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM));
+        super(new Properties().stacksTo(1).rarity(ModRarities.MIRACLE).tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM));
     }
 }

@@ -33,7 +33,7 @@ public class Flarebringer extends SwordItem {
 
     public Flarebringer() {
         super(EXEAPI.MIRACLE_ITEM_TIER, 10, -2.4F,
-                new Item.Properties()
+                new Properties()
                         .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
                         .rarity(ModRarities.MIRACLE));
     }

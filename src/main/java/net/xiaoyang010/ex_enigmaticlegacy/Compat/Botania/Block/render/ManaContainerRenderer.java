@@ -4,20 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
-
-import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.model.ModelManaContainer;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.ManaContainerBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.ManaContainerTile;
@@ -27,19 +22,14 @@ import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModModelLayers;
 import vazkii.botania.api.mana.IPoolOverlayProvider;
 import vazkii.botania.client.core.handler.ClientTickHandler;
-import vazkii.botania.client.core.handler.MiscellaneousModels;
 import vazkii.botania.client.core.helper.RenderHelper;
-import vazkii.botania.common.helper.ColorHelper;
-import vazkii.botania.common.helper.MathHelper;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class ManaContainerRenderer implements BlockEntityRenderer<ManaContainerTile> {
     private static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "textures/blocks/mana_container/mana_container.png");
     private static final ResourceLocation CREATIVE_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "textures/blocks/mana_container/creative_container.png");
     private static final ResourceLocation DILUTED_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "textures/blocks/mana_container/diluted_container.png");
-    private static final ResourceLocation FABULOUS_TEXTURE = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "textures/blocks/mana_container/mana_container.png");
 
     public static int cartMana = -1;
     private final BlockRenderDispatcher blockRenderDispatcher;
@@ -57,26 +47,6 @@ public class ManaContainerRenderer implements BlockEntityRenderer<ManaContainerT
     @Override
     public void render(@Nullable ManaContainerTile pool, float f, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
         ms.pushPose();
-
-        boolean fab = pool != null && ((ManaContainerBlock) pool.getBlockState().getBlock()).variant == ManaContainerBlock.Variant.FABULOUS;
-
-        if (fab) {
-            float time = ClientTickHandler.ticksInGame + ClientTickHandler.partialTicks;
-            time += new Random(pool.getBlockPos().getX() ^ pool.getBlockPos().getY() ^ pool.getBlockPos().getZ()).nextInt(100000);
-            time *= 0.005F;
-            int poolColor = ColorHelper.getColorValue(pool.getColor());
-            int color = MathHelper.multiplyColor(Mth.hsvToRgb(Mth.frac(time), 0.6F, 1F), poolColor);
-
-            int red = (color & 0xFF0000) >> 16;
-            int green = (color & 0xFF00) >> 8;
-            int blue = color & 0xFF;
-            BlockState state = pool.getBlockState();
-            BakedModel model = blockRenderDispatcher.getBlockModel(state);
-            VertexConsumer buffer = buffers.getBuffer(ItemBlockRenderTypes.getRenderType(state, false));
-            blockRenderDispatcher.getModelRenderer()
-                    .renderModel(ms.last(), buffer, state, model, red / 255F, green / 255F, blue / 255F, light, overlay);
-        }
-
         ms.translate(0.5F, 1.5F, 0.5F);
 
         int mana = pool == null ? cartMana : pool.getCurrentMana();
@@ -144,7 +114,6 @@ public class ManaContainerRenderer implements BlockEntityRenderer<ManaContainerT
             return switch (block.variant) {
                 case CREATIVE -> CREATIVE_TEXTURE;
                 case DILUTED -> DILUTED_TEXTURE;
-                case FABULOUS -> FABULOUS_TEXTURE;
                 default -> DEFAULT_TEXTURE;
             };
         }

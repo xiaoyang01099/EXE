@@ -65,7 +65,7 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
     private static final UUID HEAD_UUID = UUID.fromString("cfb111e4-9caa-12bf-6a67-01bccaabe34d");
     private static final UUID HEAD_REVEAL_UUID = UUID.fromString("584424ee-c473-d5b7-85b9-aa4081577bd7");
 
-    private static final Properties NEBULA_ARMOR = new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).durability(1000).rarity(EXEAPI.rarityNebula);
+    private static final Properties NEBULA_ARMOR = new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR).durability(1000).rarity(EXEAPI.rarityNebula);
 
     public NebulaArmor(EquipmentSlot slot) {
         super(slot, ArmorMaterials.NETHERITE, NEBULA_ARMOR);
@@ -238,8 +238,8 @@ public class NebulaArmor extends ItemManasteelArmor implements IManaItem, IManaP
         consumer.accept(new IItemRenderProperties() {
             @Override
             @OnlyIn(Dist.CLIENT)
-            public net.minecraft.client.model.HumanoidModel<?> getArmorModel(LivingEntity entity,
-                                                                             ItemStack stack, EquipmentSlot slot, net.minecraft.client.model.HumanoidModel<?> defaultModel) {
+            public HumanoidModel<?> getArmorModel(LivingEntity entity,
+                                                                             ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
                 ModelPart modelPart = Minecraft.getInstance().getEntityModels()
                         .bakeLayer(ModelArmorNebula.LAYER_LOCATION);
 

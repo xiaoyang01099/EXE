@@ -21,7 +21,7 @@ public class OmegaCore extends Item {
     private static UUID timeStopPlayerUUID = null; // 跟踪当前时停的玩家
 
     public OmegaCore() {
-        super(new Item.Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(1).fireResistant().rarity(ModRarities.MIRACLE));
+        super(new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_ITEM).stacksTo(1).fireResistant().rarity(ModRarities.MIRACLE));
     }
 
     @Override

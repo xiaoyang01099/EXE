@@ -21,7 +21,7 @@ public class WitherSkullAttackGoal extends Goal {
         this.mob = mob;
         this.attackRadius = attackRadius;
         this.attackInterval = attackInterval;
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }
 
     @Override

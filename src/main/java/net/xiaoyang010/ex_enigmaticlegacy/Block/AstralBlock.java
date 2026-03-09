@@ -14,8 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AstralBlock extends Block implements EntityBlock {
-    public AstralBlock(BlockBehaviour.Properties properties) {
-        super(properties.explosionResistance(120000000000.0F));
+    public AstralBlock(Properties properties) {
+        super(properties.explosionResistance(120000000000.0F).lightLevel(state -> 7));
     }
 
     @Override

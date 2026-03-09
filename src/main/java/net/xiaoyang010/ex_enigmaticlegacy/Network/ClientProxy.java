@@ -57,7 +57,7 @@ public class ClientProxy extends CommonProxy {
     public static void crucibleBubble(Level world, float x, float y, float z, float cr, float cg, float cb) {
         FXBubble fb = new FXBubble((ClientLevel)world, (double)x, (double)y, (double)z, 0.0D, 0.0D, 0.0D, 1);
         fb.setColor(cr, cg, cb);
-        ParticleEngine.INSTANCE.addEffect(world, fb);
+        ParticleEngine.instance.addEffect(world, fb);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -65,7 +65,7 @@ public class ClientProxy extends CommonProxy {
         FXBubble fb = new FXBubble((ClientLevel)world, (double)x, (double)y, (double)z, 0.0D, 0.0D, 0.0D, -4);
         fb.setColor(0.5F, 0.5F, 0.7F);
         fb.setFroth();
-        ParticleEngine.INSTANCE.addEffect(world, fb);
+        ParticleEngine.instance.addEffect(world, fb);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -73,7 +73,7 @@ public class ClientProxy extends CommonProxy {
         FXBubble fb = new FXBubble((ClientLevel)world, (double)x, (double)y, (double)z, 0.0D, 0.0D, 0.0D, -4);
         fb.setColor(0.5F, 0.5F, 0.7F);
         fb.setFroth2();
-        ParticleEngine.INSTANCE.addEffect(world, fb);
+        ParticleEngine.instance.addEffect(world, fb);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -169,7 +169,7 @@ public class ClientProxy extends CommonProxy {
         ef.setGravity(gravity);
         ef.shrink = shrink;
         ef.hasPhysics = hasPhysics;
-        ParticleEngine.INSTANCE.addEffect(level, ef);
+        ParticleEngine.instance.addEffect(level, ef);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -177,7 +177,7 @@ public class ClientProxy extends CommonProxy {
         FXWisp ef = new FXWisp((ClientLevel) level, posX, posY, posZ, targetX, targetY, targetZ, size, type);
         ef.setGravity(gravity);
         ef.shrink = shrink;
-        ParticleEngine.INSTANCE.addEffect(level, ef);
+        ParticleEngine.instance.addEffect(level, ef);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -185,7 +185,7 @@ public class ClientProxy extends CommonProxy {
         FXWisp ef = new FXWisp((ClientLevel) level, posX, posY, posZ, target, type);
         ef.setGravity(gravity);
         ef.shrink = shrink;
-        ParticleEngine.INSTANCE.addEffect(level, ef);
+        ParticleEngine.instance.addEffect(level, ef);
     }
 
     @Override

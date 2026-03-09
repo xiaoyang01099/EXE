@@ -1,5 +1,6 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Hud.TChest;
 
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -48,12 +49,12 @@ public class SlotItemChest extends Slot {
     }
 
     @Override
-    public boolean allowModification(net.minecraft.world.entity.player.Player player) {
+    public boolean allowModification(Player player) {
         return this.itemChestInv.stillValid(player);
     }
 
     @Override
-    public boolean mayPickup(net.minecraft.world.entity.player.Player player) {
+    public boolean mayPickup(Player player) {
         return this.itemChestInv.stillValid(player);
     }
 

@@ -73,7 +73,7 @@ public class InfinityGaiaSpreaderTile extends TileExposedSimpleInventory impleme
     private int mana;
     public float rotationX;
     public float rotationY;
-    @javax.annotation.Nullable
+    @Nullable
     public DyeColor paddingColor = null;
     private boolean requestsClientUpdate = false;
     private boolean hasReceivedInitialPacket = false;
@@ -372,13 +372,13 @@ public class InfinityGaiaSpreaderTile extends TileExposedSimpleInventory impleme
         } else {
             Iterator var1 = this.lastTentativeBurst.iterator();
 
-            EntityManaBurst.PositionProperties props;
+            PositionProperties props;
             do {
                 if (!var1.hasNext()) {
                     return false;
                 }
 
-                props = (EntityManaBurst.PositionProperties)var1.next();
+                props = (PositionProperties)var1.next();
             } while(props.contentsEqual(this.level));
 
             this.invalidTentativeBurst = props.isInvalidIn(this.level);
@@ -696,7 +696,7 @@ public class InfinityGaiaSpreaderTile extends TileExposedSimpleInventory impleme
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @org.jetbrains.annotations.Nullable Direction side) {
         if (cap == BotaniaForgeClientCapabilities.WAND_HUD) {
-            return LazyOptional.of(() -> new InfinityGaiaSpreaderTile.WandHud(this)).cast();
+            return LazyOptional.of(() -> new WandHud(this)).cast();
         }
         return super.getCapability(cap, side);
     }
