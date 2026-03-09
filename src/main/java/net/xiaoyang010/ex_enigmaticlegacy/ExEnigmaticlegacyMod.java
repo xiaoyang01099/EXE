@@ -146,6 +146,7 @@ public class ExEnigmaticlegacyMod {
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		AvaritiaShaders.init();
 		event.enqueueWork(this::Continuum);
+
 	}
 
 	public static ResourceLocation path(String path) {
