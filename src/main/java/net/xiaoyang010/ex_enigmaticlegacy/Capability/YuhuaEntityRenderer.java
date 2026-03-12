@@ -29,7 +29,7 @@ import java.util.*;
 public class YuhuaEntityRenderer {
     private static final Map<UUID, long[]> YUHUA_MAP = new HashMap<>();
     private static final Map<UUID, Integer> SAVED_DEATH_TIME = new HashMap<>();
-    private static final float INFLATE = 0.05f;
+    private static final float INFLATE = 0.1f;
     private static final int WRAP_ANIM_TICKS = 20;
     private static Field layersField = null;
     private static boolean layersFieldSearched = false;
