@@ -21,8 +21,8 @@ import java.util.Objects;
 @OnlyIn(Dist.CLIENT)
 public class AvaritiaShaders {
     public static boolean inventoryRender = false;
-    static int renderTime;
-    static float renderFrame;
+    public static int renderTime;
+    public static float renderFrame;
 
     public static TextureAtlasSprite[] MASK_SPRITES = new TextureAtlasSprite[1];
     public static TextureAtlasSprite MASK;

@@ -58,6 +58,7 @@ import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.InfinityPotato;
@@ -78,6 +79,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.ManaitaArmor;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmor;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.NebulaArmorHelper;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.armor.WildHuntArmor;
+import net.xiaoyang010.ex_enigmaticlegacy.Item.weapon.WIP.BladeFallenStar;
 import net.xiaoyang010.ex_enigmaticlegacy.Item.weapon.Wastelayer;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.inputMessage.StepHeightMessage;
@@ -107,6 +109,7 @@ public class ModEventHandler {
     private static int invulnerableTimer = 0;
     private static final int INVULNERABLE_DURATION = 30;
     private static final int REPAIR_COST = 1500;
+
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void SlimeNecklaceHurt(LivingHurtEvent event) {

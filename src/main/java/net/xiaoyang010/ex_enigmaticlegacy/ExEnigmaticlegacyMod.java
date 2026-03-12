@@ -2,7 +2,6 @@ package net.xiaoyang010.ex_enigmaticlegacy;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -16,12 +15,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.xiaoyang010.ex_enigmaticlegacy.Capability.YuhuaEntityRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.ModParticleTypes;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.shader.AvaritiaShaders;
+import net.xiaoyang010.ex_enigmaticlegacy.Capability.YuHuaShaders;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.PolychromeCollapsePrismTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Config.ConfigHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.*;
@@ -49,19 +47,12 @@ import vazkii.patchouli.api.PatchouliAPI;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 @Mod(ExEnigmaticlegacyMod.MODID)
 public class ExEnigmaticlegacyMod {
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final String MODID = "ex_enigmaticlegacy";
-	private static final String PROTOCOL_VERSION = "1";
 	public static boolean isEx = false;
-	public static final SimpleChannel PACKET_HANDLER = NetworkRegistry.newSimpleChannel(
-			new ResourceLocation(MODID, MODID), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
-	private static int messageID = 0;
 	public static CommonProxy proxy = DistExecutor.unsafeRunForDist(
 			() -> ClientProxy::new,
 			() -> CommonProxy::new
@@ -116,17 +107,19 @@ public class ExEnigmaticlegacyMod {
 			FXHandler.registerEffects();
 		});
 
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 		bus.addListener(this::commonSetup);
 		bus.addListener(this::clientSetup);
-		bus.addListener(this::onCommonSetup);
 		bus.addListener(this::kpo);
 	}
 
-	public void onCommonSetup(FMLCommonSetupEvent event) {
+	private void commonSetup(final FMLCommonSetupEvent event) {
+		AvaritiaShaders.init();
+		YuHuaShaders.init();
+		YuhuaEntityRenderer.register();
 		event.enqueueWork(() -> {
+			ForgeRegistries.ITEMS.forEach(ContinuumItem::addPossibleItem);
+			ForgeRegistries.BLOCKS.forEach(ContinuumItem::addPossibleItem);
+
 			PatchouliAPI.get().registerMultiblock(
 					new ResourceLocation("ex_enigmaticlegacy", "polychrome_collapse_prism"),
 					PolychromeCollapsePrismTile.MULTIBLOCK.get()
@@ -135,7 +128,10 @@ public class ExEnigmaticlegacyMod {
 					new ResourceLocation("ex_enigmaticlegacy", "starlit_sanctum"),
 					StarlitSanctumTile.MULTIBLOCK.get()
 			);
+
+			NetworkHandler.register();
 		});
+
 		OverlayRegistry.registerOverlayAbove(
 				ForgeIngameGui.FOOD_LEVEL_ELEMENT,
 				"blood_bar",
@@ -143,22 +139,10 @@ public class ExEnigmaticlegacyMod {
 		);
 	}
 
-	private void commonSetup(final FMLCommonSetupEvent event) {
-		AvaritiaShaders.init();
-		event.enqueueWork(this::Continuum);
-
-	}
-
 	public static ResourceLocation path(String path) {
 		return new ResourceLocation("ex_enigmaticlegacy", path);
 	}
 
-	private void doClientStuff(final FMLClientSetupEvent event) {
-	}
-
-	private void setup(final FMLCommonSetupEvent event) {
-		event.enqueueWork(NetworkHandler::register);
-	}
 
 	private void kpo(final FMLClientSetupEvent event) {
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
@@ -176,17 +160,6 @@ public class ExEnigmaticlegacyMod {
 				WaveNameData.class,
 				WaveNameTooltipComponent::new
 		);
-	}
-
-	public void Continuum() {
-		ForgeRegistries.ITEMS.forEach(ContinuumItem::addPossibleItem);
-		ForgeRegistries.BLOCKS.forEach(ContinuumItem::addPossibleItem);
-	}
-
-	public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder,
-											 Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
-		PACKET_HANDLER.registerMessage(messageID, messageType, encoder, decoder, messageConsumer);
-		messageID++;
 	}
 }
 

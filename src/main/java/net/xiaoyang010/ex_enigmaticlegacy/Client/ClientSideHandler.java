@@ -3,7 +3,6 @@ package net.xiaoyang010.ex_enigmaticlegacy.Client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -15,8 +14,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.FluffyDandelionBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.custom.CustomSaplingBlock;
+import net.xiaoyang010.ex_enigmaticlegacy.Capability.YuhuaCosmicParticle;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.AsgardandelionParticle;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.DandelionFluffParticle;
+import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.RainbowParticle;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Generating.EMCFlower;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Hybrid.AquaticAnglerNarcissus;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Flower.FlowerBlock.Functional.*;
@@ -113,5 +114,15 @@ public class ClientSideHandler {
         Minecraft.getInstance().particleEngine.register(
                 ModParticleTypes.ASGARDANDELION.get(),
                 AsgardandelionParticle.Factory::new);
+
+        Minecraft.getInstance().particleEngine.register(
+                ModParticleTypes.RAINBOW.get(),
+                RainbowParticle.Provider::new
+        );
+
+        Minecraft.getInstance().particleEngine.register(
+                ModParticleTypes.YUHUA_COSMIC.get(),
+                YuhuaCosmicParticle.Provider::new
+        );
     }
 }
