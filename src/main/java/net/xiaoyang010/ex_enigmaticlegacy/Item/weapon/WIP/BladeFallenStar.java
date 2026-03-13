@@ -9,8 +9,15 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.xiaoyang010.ex_enigmaticlegacy.Capability.PacketYuhuaBreak;
 import net.xiaoyang010.ex_enigmaticlegacy.Capability.PacketYuhuaMark;
+import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRarities;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModTabs;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
@@ -21,11 +28,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+@Mod.EventBusSubscriber(modid = ExEnigmaticlegacyMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class BladeFallenStar extends SwordItem {
     private static final Map<UUID, YuhuaData> YUHUA_ENTITIES = new HashMap<>();
     private static final int   MAX_HITS        = 3;
     private static final float YUHUA_THRESHOLD = 0.25f;
-    private static final int   YUHUA_DURATION  = 40;
+    private static final int   YUHUA_DURATION  = 40; // 2秒
 
     private static class YuhuaData {
         int hitCount;
@@ -44,6 +52,49 @@ public class BladeFallenStar extends SwordItem {
                 new Properties()
                         .tab(ModTabs.TAB_EXENIGMATICLEGACY_WEAPON_ARMOR)
                         .rarity(ModRarities.MIRACLE));
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onLivingAttack(LivingAttackEvent event) {
+        LivingEntity target = event.getEntityLiving();
+        if (target.level.isClientSide()) return;
+
+        UUID uuid = target.getUUID();
+        if (!YUHUA_ENTITIES.containsKey(uuid)) return;
+
+        YuhuaData data = YUHUA_ENTITIES.get(uuid);
+
+        Entity source = event.getSource().getEntity();
+        if (source instanceof LivingEntity attacker) {
+            ItemStack weapon = attacker.getMainHandItem();
+            if (weapon.getItem() instanceof BladeFallenStar) {
+                return;
+            }
+        }
+        event.setCanceled(true);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onLivingHurt(LivingHurtEvent event) {
+        LivingEntity target = event.getEntityLiving();
+        if (target.level.isClientSide()) return;
+
+        UUID uuid = target.getUUID();
+        if (!YUHUA_ENTITIES.containsKey(uuid)) return;
+
+        event.setCanceled(true);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onLivingDeath(LivingDeathEvent event) {
+        LivingEntity target = event.getEntityLiving();
+        if (target.level.isClientSide()) return;
+
+        UUID uuid = target.getUUID();
+        if (!YUHUA_ENTITIES.containsKey(uuid)) return;
+
+        event.setCanceled(true);
+        target.setHealth(1.0f);
     }
 
     @Override
@@ -82,6 +133,8 @@ public class BladeFallenStar extends SwordItem {
         if (inThreshold && willDie) {
             target.setHealth(1.0f);
             target.setDeltaMovement(0, 0, 0);
+            target.hurtTime = 0;
+            target.invulnerableTime = 0;
             freezeEntity(target);
 
             YUHUA_ENTITIES.put(uuid, new YuhuaData(0, true));
@@ -96,6 +149,7 @@ public class BladeFallenStar extends SwordItem {
         return super.hurtEnemy(stack, target, attacker);
     }
 
+
     private static void executeYuhuaKill(UUID uuid, LivingEntity target) {
         NetworkHandler.sendToTrackingEntity(
                 new PacketYuhuaBreak(uuid), target
@@ -106,12 +160,10 @@ public class BladeFallenStar extends SwordItem {
         if (target instanceof Mob mob) {
             mob.setNoAi(false);
         }
-
         target.setTicksFrozen(0);
 
         target.invulnerableTime = 0;
         target.hurtTime = 0;
-
         target.setHealth(0);
         target.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
 
@@ -119,7 +171,6 @@ public class BladeFallenStar extends SwordItem {
             target.setHealth(0);
             target.kill();
         }
-
         if (!target.isRemoved()) {
             target.discard();
         }
@@ -160,8 +211,10 @@ public class BladeFallenStar extends SwordItem {
 
                 if (data.ticksAlive >= YUHUA_DURATION) {
                     it.remove();
-                    YUHUA_ENTITIES.remove(uuid);
 
+                    NetworkHandler.sendToTrackingEntity(
+                            new PacketYuhuaBreak(uuid), living
+                    );
 
                     if (living instanceof Mob mob) {
                         mob.setNoAi(false);
@@ -169,10 +222,6 @@ public class BladeFallenStar extends SwordItem {
                     living.setTicksFrozen(0);
                     living.invulnerableTime = 0;
                     living.hurtTime = 0;
-
-                    NetworkHandler.sendToTrackingEntity(
-                            new PacketYuhuaBreak(uuid), living
-                    );
 
                     living.setHealth(0);
                     living.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
@@ -205,14 +254,15 @@ public class BladeFallenStar extends SwordItem {
 
                 living.hurtTime = 0;
                 living.invulnerableTime = 0;
-
                 living.hurtMarked = false;
+
                 living.yBodyRot = living.yBodyRotO;
                 living.yHeadRot = living.yHeadRotO;
                 living.setYRot(living.yRotO);
                 living.setXRot(living.xRotO);
                 living.animationSpeed = 0;
                 living.animationSpeedOld = 0;
+                living.animationPosition = 0;
             }
         }
     }

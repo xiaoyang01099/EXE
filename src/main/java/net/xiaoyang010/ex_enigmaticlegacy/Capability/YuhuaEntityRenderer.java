@@ -29,7 +29,7 @@ import java.util.*;
 public class YuhuaEntityRenderer {
     private static final Map<UUID, long[]> YUHUA_MAP = new HashMap<>();
     private static final Map<UUID, Integer> SAVED_DEATH_TIME = new HashMap<>();
-    private static final float INFLATE = 0.1f;
+    private static final float INFLATE = 0.01f;
     private static final int WRAP_ANIM_TICKS = 20;
     private static Field layersField = null;
     private static boolean layersFieldSearched = false;
@@ -110,24 +110,27 @@ public class YuhuaEntityRenderer {
         float wrapProgress = calcWrapProgress(uuid, partialTick);
         boolean freezeAge = (entity instanceof Chicken);
 
+        mainModel.young = entity.isBaby();
+
         setupAnimForModel(mainModel, entity, partialTick, freezeAge);
         applyShaderUniforms(entity, opacity);
 
         renderYuhuaModel(
                 event.getPoseStack(), event.getMultiBufferSource(),
                 mainModel, event.getPackedLight(), opacity,
-                entity, partialTick, renderer, wrapProgress, INFLATE
+                entity, partialTick, renderer, wrapProgress
         );
 
         List<LayerModelEntry> entries = collectLayerModels(renderer, entity);
         for (LayerModelEntry entry : entries) {
             copyModelProperties(mainModel, entry.model);
+            entry.model.young = entity.isBaby();
             setupAnimForModel(entry.model, entity, partialTick, freezeAge);
 
             renderYuhuaModel(
                     event.getPoseStack(), event.getMultiBufferSource(),
                     entry.model, event.getPackedLight(), opacity,
-                    entity, partialTick, renderer, wrapProgress, INFLATE
+                    entity, partialTick, renderer, wrapProgress
             );
         }
     }
@@ -155,7 +158,7 @@ public class YuhuaEntityRenderer {
 
     private record LayerModelEntry(EntityModel<?> model, RenderLayer<?, ?> layer) {}
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"rawtypes"})
     private static List<LayerModelEntry> collectLayerModels(
             LivingEntityRenderer renderer, LivingEntity entity) {
 
@@ -267,7 +270,8 @@ public class YuhuaEntityRenderer {
                 if (found != null) break;
                 clazz = clazz.getSuperclass();
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         LAYER_MODEL_FIELD_CACHE.put(layerClass, found);
 
@@ -282,7 +286,10 @@ public class YuhuaEntityRenderer {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static void copyModelProperties(EntityModel from, EntityModel to) {
-        try { from.copyPropertiesTo(to); } catch (Exception ignored) {}
+        try {
+            from.copyPropertiesTo(to);
+        } catch (Exception ignored) {
+        }
     }
 
     private static void setupAnimForModel(EntityModel<?> model, LivingEntity entity,
@@ -332,7 +339,7 @@ public class YuhuaEntityRenderer {
                                          EntityModel model, int packedLight, float opacity,
                                          LivingEntity entity, float partialTick,
                                          LivingEntityRenderer renderer,
-                                         float wrapProgress, float inflate) {
+                                         float wrapProgress) {
         TextureAtlasSprite placeholder = AvaritiaShaders.COSMIC_SPRITES[0];
         if (placeholder == null) return;
 
@@ -344,6 +351,9 @@ public class YuhuaEntityRenderer {
         invokeScale(renderer, entity, poseStack, partialTick);
         poseStack.translate(0.0F, -1.501F, 0.0F);
 
+        float s = 1.0f + INFLATE;
+        poseStack.scale(s, s, s);
+
         RenderType renderType = YuhuaRenderType.getYuhuaEntityRenderType();
         VertexConsumer rawConsumer = buffers.getBuffer(renderType);
 
@@ -351,7 +361,7 @@ public class YuhuaEntityRenderer {
                 rawConsumer, packedLight, opacity,
                 placeholder.getU0(), placeholder.getU1(),
                 placeholder.getV0(), placeholder.getV1(),
-                inflate, wrapProgress
+                wrapProgress
         );
 
         model.renderToBuffer(
@@ -428,13 +438,10 @@ public class YuhuaEntityRenderer {
         private final int   forcedLight;
         private final float baseAlpha;
         private final float pu0, pu1, pv0, pv1;
-        private final float inflate;
         private final float wrapProgress;
-
         private static final float MODEL_Y_TOP    = 0.0f;
         private static final float MODEL_Y_BOTTOM = 24.0f;
         private static final float EDGE_FADE      = 3.0f;
-
         private float vx, vy, vz;
         private float r = 1f, g = 1f, b = 1f, a;
         private float nx, ny, nz;
@@ -442,13 +449,12 @@ public class YuhuaEntityRenderer {
 
         WrapAnimAdapter(VertexConsumer delegate, int forcedLight, float alpha,
                         float pu0, float pu1, float pv0, float pv1,
-                        float inflate, float wrapProgress) {
+                        float wrapProgress) {
             this.delegate      = delegate;
             this.forcedLight   = forcedLight;
             this.baseAlpha     = alpha;
             this.pu0 = pu0; this.pu1 = pu1;
             this.pv0 = pv0; this.pv1 = pv1;
-            this.inflate       = inflate;
             this.wrapProgress  = wrapProgress;
             this.a             = alpha;
         }
@@ -483,15 +489,11 @@ public class YuhuaEntityRenderer {
         }
         @Override
         public void endVertex() {
-            float finalX = vx + nx * inflate;
-            float finalY = vy + ny * inflate;
-            float finalZ = vz + nz * inflate;
             float finalU = pu0 + modelU * (pu1 - pu0);
             float finalV = pv0 + modelV * (pv1 - pv0);
             float wrapAlpha = calcWrapAlpha(vy);
             float finalAlpha = a * wrapAlpha;
-
-            delegate.vertex(finalX, finalY, finalZ)
+            delegate.vertex(vx, vy, vz)
                     .color(r, g, b, finalAlpha)
                     .uv(finalU, finalV)
                     .overlayCoords(OverlayTexture.NO_OVERLAY)
