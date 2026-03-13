@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Capability;
+package net.xiaoyang010.ex_enigmaticlegacy.api.test.yuhua;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;

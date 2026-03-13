@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.FluffyDandelionBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.custom.CustomSaplingBlock;
-import net.xiaoyang010.ex_enigmaticlegacy.Capability.YuhuaCosmicParticle;
+import net.xiaoyang010.ex_enigmaticlegacy.api.test.yuhua.YuhuaCosmicParticle;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.AsgardandelionParticle;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.DandelionFluffParticle;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.RainbowParticle;

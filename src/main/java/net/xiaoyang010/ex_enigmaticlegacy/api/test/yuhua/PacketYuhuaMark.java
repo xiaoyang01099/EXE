@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Capability;
+package net.xiaoyang010.ex_enigmaticlegacy.api.test.yuhua;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;

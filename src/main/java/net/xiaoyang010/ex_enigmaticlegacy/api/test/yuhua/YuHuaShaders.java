@@ -1,4 +1,4 @@
-package net.xiaoyang010.ex_enigmaticlegacy.Capability;
+package net.xiaoyang010.ex_enigmaticlegacy.api.test.yuhua;
 
 import codechicken.lib.render.shader.CCShaderInstance;
 import com.mojang.blaze3d.shaders.Uniform;
