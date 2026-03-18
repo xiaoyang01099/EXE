@@ -19,8 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class NidavellirForgeRecipe implements Recipe<Container> {
-    public static final ResourceLocation TYPE_ID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "nidavellir_forge");
-
     private final ResourceLocation id;
     private final ItemStack output;
     private final int color;
@@ -125,7 +123,7 @@ public class NidavellirForgeRecipe implements Recipe<Container> {
 
     @Override
     public RecipeType<?> getType() {
-        return ModRecipes.NIDAVELLIR_FORGE_TYPE;
+        return ModRecipes.NIDAVELLIR_FORGE_TYPE.get();
     }
 
     public static class Type implements RecipeType<NidavellirForgeRecipe> {

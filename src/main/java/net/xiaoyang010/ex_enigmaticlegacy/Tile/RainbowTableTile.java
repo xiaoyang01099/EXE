@@ -93,7 +93,7 @@ public class RainbowTableTile extends BlockEntity implements MenuProvider, Conta
             tile.data.set(1, tile.getCurrentMana());
         }
 
-        Optional<RainbowTableRecipe> recipeFor = level.getRecipeManager().getRecipeFor(ModRecipes.RAINBOW_TABLE_TYPE, tile, level);
+        Optional<RainbowTableRecipe> recipeFor = level.getRecipeManager().getRecipeFor(ModRecipes.RAINBOW_TABLE_TYPE.get(), tile, level);
         if (recipeFor.isPresent() && tile.getCurrentMana() >= SHRINK_MANA) {
             tile.data.set(0, tile.data.get(0) + 1);
             ItemStack resultItem = recipeFor.get().getResultItem();

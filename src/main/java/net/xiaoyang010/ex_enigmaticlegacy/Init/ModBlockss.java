@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.Material;
+import net.minecraftforge.fml.ModList;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.custom.CustomSaplingBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Block.ore.*;
@@ -34,6 +35,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.BlockLebethronCor
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.BlockLebethronWoodGlowing;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.StarrySkyBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.BlockAdvancedSpreader;
+import net.xiaoyang010.ex_enigmaticlegacy.Block.MagicTableBlock;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.BlockCursedManaPool;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.BlockCursedManaSpreader;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.BlockManaConverter;
@@ -111,8 +113,7 @@ public class ModBlockss {
 	public static final RegistryObject<Block> ADVANCED_SPREADER = REGISTRY.register("advanced_spreader", () -> new BlockAdvancedSpreader(BlockAdvancedSpreader.VariantN.NATURE, Properties.copy(Blocks.BIRCH_WOOD).isValidSpawn(NO_SPAWN)));
 
 
-	//其他
-	public static final RegistryObject<Block> MAGIC_TABLE = REGISTRY.register("magic_table", () -> new MagicTableBlock(Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD).noOcclusion()));
+	public static RegistryObject<Block> MAGIC_TABLE = null;
 	public static final RegistryObject<Block> SPECTRITE_CHEST = REGISTRY.register("spectrite_chest", SpectriteChest::new);
 	public static final RegistryObject<Block> INFINITYGlASS = REGISTRY.register("infinityglass", InfinityGlass::new);
 	public static final RegistryObject<Block> STARLIT_SANCTUM = REGISTRY.register("starlit_sanctum", StarlitSanctum::new);
@@ -239,4 +240,11 @@ public class ModBlockss {
 	public static final RegistryObject<Block> MINERS_HEAVEN_PORTAL = REGISTRY.register("heaven_portal", MinersHeavenPortalBlock::new);
 	public static final RegistryObject<Block> ANOTHER_PORTAL = REGISTRY.register("another_portal", AnotherPortalBlock::new);
 
+
+	static {
+		if (ModList.get().isLoaded("projecte")) {
+			MAGIC_TABLE = REGISTRY.register("magic_table",
+					() -> new MagicTableBlock(Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD).noOcclusion()));
+		}
+	}
 }

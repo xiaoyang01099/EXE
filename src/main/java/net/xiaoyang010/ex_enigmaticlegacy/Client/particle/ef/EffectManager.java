@@ -41,6 +41,7 @@ public class EffectManager {
         }
     }
 
+    @SuppressWarnings("removal")
     @SubscribeEvent
     public void onRenderLast(RenderLevelLastEvent event) {
         PoseStack poseStack = event.getPoseStack();

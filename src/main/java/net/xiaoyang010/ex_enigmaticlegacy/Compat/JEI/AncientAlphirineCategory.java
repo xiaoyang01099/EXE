@@ -43,12 +43,14 @@ public class AncientAlphirineCategory implements IRecipeCategory<AncientAlphirin
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModItems.ANCIENT_ALPHIRINE.get()));
     }
 
+    @SuppressWarnings("removal")
     @Nonnull
     @Override
     public ResourceLocation getUid() {
         return UID;
     }
 
+    @SuppressWarnings("removal")
     @Nonnull
     @Override
     public Class<? extends AncientAlphirineRecipe>getRecipeClass() {
@@ -80,6 +82,7 @@ public class AncientAlphirineCategory implements IRecipeCategory<AncientAlphirin
         RenderSystem.disableBlend();
     }
 
+    @SuppressWarnings("removal")
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull AncientAlphirineRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         Ingredient input = recipe.getInput();

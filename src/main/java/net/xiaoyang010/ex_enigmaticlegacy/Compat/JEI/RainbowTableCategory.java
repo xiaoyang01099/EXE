@@ -33,11 +33,13 @@ public class RainbowTableCategory implements IRecipeCategory<RainbowTableRecipe>
         this.title = new TranslatableComponent("gui." + ExEnigmaticlegacyMod.MODID + ".category.rainbow_table");
     }
 
+    @SuppressWarnings("removal")
     @Override
     public ResourceLocation getUid() {
         return UID;
     }
 
+    @SuppressWarnings("removal")
     @Override
     public Class<? extends RainbowTableRecipe> getRecipeClass() {
         return RainbowTableRecipe.class;

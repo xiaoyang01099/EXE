@@ -36,13 +36,9 @@ public class StarlitSanctumTransferHandler implements IRecipeTransferHandler<Sta
         return StarlitSanctumRecipe.class;
     }
 
+    @SuppressWarnings("removal")
     @Override
-    public @Nullable IRecipeTransferError transferRecipe(StarlitSanctumMenu container,
-                                                         StarlitSanctumRecipe recipe,
-                                                         IRecipeSlotsView recipeSlots,
-                                                         Player player,
-                                                         boolean maxTransfer,
-                                                         boolean doTransfer) {
+    public @Nullable IRecipeTransferError transferRecipe(StarlitSanctumMenu container, StarlitSanctumRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
         Map<Integer, RequiredItem> slotRequirements = new HashMap<>();
 
         var patternGroups = recipe.getPatternGroups();

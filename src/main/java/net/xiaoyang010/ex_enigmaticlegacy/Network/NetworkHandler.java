@@ -6,10 +6,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.Factory.MagicTableNetworkFactory;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.yuhua.PacketYuhuaBreak;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.yuhua.PacketYuhuaMark;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.*;
@@ -38,6 +40,35 @@ public class NetworkHandler {
     private static int packetId = 0;
 
     public static void register() {
+        if (ModList.get().isLoaded("projecte")) {
+            MagicTableNetworkFactory.register(CHANNEL, packetId);
+        }
+        packetId += 3;
+
+        CHANNEL.registerMessage(
+                packetId++,
+                MagicTableConvertPacket.class,
+                MagicTableConvertPacket::encode,
+                MagicTableConvertPacket::decode,
+                MagicTableConvertPacket::handle
+        );
+
+        CHANNEL.registerMessage(
+                packetId++,
+                MagicTableGearPacket.class,
+                MagicTableGearPacket::encode,
+                MagicTableGearPacket::decode,
+                MagicTableGearPacket::handle
+        );
+
+        CHANNEL.registerMessage(
+                packetId++,
+                MagicTableCustomAmountPacket.class,
+                MagicTableCustomAmountPacket::encode,
+                MagicTableCustomAmountPacket::decode,
+                MagicTableCustomAmountPacket::handle
+        );
+
         CHANNEL.registerMessage(
                 packetId++,
                 PacketYuhuaMark.class,
@@ -46,6 +77,7 @@ public class NetworkHandler {
                 PacketYuhuaMark::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
+
         CHANNEL.registerMessage(
                 packetId++,
                 PacketYuhuaBreak.class,

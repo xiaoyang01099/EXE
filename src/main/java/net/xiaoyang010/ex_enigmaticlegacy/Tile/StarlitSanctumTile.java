@@ -611,7 +611,7 @@ public class StarlitSanctumTile extends RandomizableContainerBlockEntity impleme
             StarlitCraftingParticles.spawnPylonEnergyParticles(serverLevel, pos, tile.tickCounter);
         }
         Optional<StarlitSanctumRecipe> recipeOpt = level.getRecipeManager()
-                .getRecipeFor(ModRecipes.STARLIT_TYPE, tile, level);
+                .getRecipeFor(ModRecipes.STARLIT_TYPE.get(), tile, level);
         if (recipeOpt.isPresent()) {
             StarlitSanctumRecipe recipe = recipeOpt.get();
             ItemStack resultItem = recipe.getResultItem();

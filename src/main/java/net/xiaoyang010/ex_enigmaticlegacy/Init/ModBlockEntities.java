@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
@@ -29,6 +30,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.Tile.NeutroniumDecompressorTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.TileLebethronCore;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.StarrySkyBlockEntity;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Block.tile.TileAdvancedSpreader;
+import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileMagicTable;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.TileCursedGourmaryllis;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.TileCursedManaPool;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.res.TileCursedManaSpreader;
@@ -51,8 +53,17 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<TileManaBox>> MANA_BOX_TILE = REGISTRY.register("mana_box_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileManaBox(ModBlockEntities.MANA_BOX_TILE.get(), pos, state), ModBlockss.MANA_BOX.get()).build(null));
     public static final RegistryObject<BlockEntityType<NeutroniumDecompressorTile>> NEUTRONIUM_DECOMPRESSOR_TILE = REGISTRY.register("neutronium_decompressor_tile", () -> BlockEntityType.Builder.of((pos, state) -> new NeutroniumDecompressorTile(ModBlockEntities.NEUTRONIUM_DECOMPRESSOR_TILE.get(), pos, state), ModBlockss.NEUTRONIUM_DECOMPRESSOR.get()).build(null));
     public static final RegistryObject<BlockEntityType<StarrySkyBlockEntity>> STARRY_SKY_BLOCK_ENTITY = REGISTRY.register("starry_block", () -> BlockEntityType.Builder.of((pos, state) -> new StarrySkyBlockEntity(ModBlockEntities.STARRY_SKY_BLOCK_ENTITY.get(), pos, state), ModBlockss.STARRY_SKY_BLOCK.get()).build(null));
-    public static final RegistryObject<BlockEntityType<TileMagicTable>> MAGIC_TABLE_TILE = REGISTRY.register("magic_table_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileMagicTable(ModBlockEntities.MAGIC_TABLE_TILE.get(), pos, state), ModBlockss.MAGIC_TABLE.get()).build(null));
 
+    public static RegistryObject<BlockEntityType<TileMagicTable>> MAGIC_TABLE_TILE = null;
+    static {
+        if (ModList.get().isLoaded("projecte") && ModBlockss.MAGIC_TABLE != null) {
+            MAGIC_TABLE_TILE = REGISTRY.register("magic_table_tile",
+                    () -> BlockEntityType.Builder.of(
+                            (pos, state) ->
+                                    new TileMagicTable(ModBlockEntities.MAGIC_TABLE_TILE.get(), pos, state),
+                            ModBlockss.MAGIC_TABLE.get()).build(null));
+        }
+    }
 
     public static final RegistryObject<BlockEntityType<TileCursedManaPool>> CURSED_MANA_POOL =
             REGISTRY.register("cursed_mana_pool", () ->

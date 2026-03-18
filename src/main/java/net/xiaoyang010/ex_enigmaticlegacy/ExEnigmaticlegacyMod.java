@@ -77,7 +77,7 @@ public class ExEnigmaticlegacyMod {
 		ModFoods.ITEMS.register(bus);
 		ModEffects.registerEffects();
 		ModParticleTypes.register(bus);
-		ModRecipes.SERIALIZERS.register(bus);
+		ModRecipes.register(bus);
 		ModRarities.register();
 		ModFeatures.REGISTRY.register(bus);
 		ModBiomes.REGISTRY.register(bus);

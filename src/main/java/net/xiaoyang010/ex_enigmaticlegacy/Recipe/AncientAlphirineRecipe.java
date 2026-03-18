@@ -20,7 +20,6 @@ public class AncientAlphirineRecipe implements Recipe<Container> {
     private final int chance;
     public static final ResourceLocation TYPE_ID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "ancient_alphirine");
 
-
     public AncientAlphirineRecipe(ResourceLocation id, Ingredient input, ItemStack output, int chance) {
         this.id = id;
         this.input = input;
@@ -61,7 +60,7 @@ public class AncientAlphirineRecipe implements Recipe<Container> {
 
     @Override
     public RecipeType<?> getType() {
-        return ModRecipes.ANCIENT_ALPHIRINE_TYPE;
+        return ModRecipes.ANCIENT_ALPHIRINE_TYPE.get();
     }
 
     @Override

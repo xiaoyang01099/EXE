@@ -93,7 +93,7 @@ public class AncientAlphirineTile extends TileEntityFunctionalFlower {
         Container container = new SimpleContainer(1);
         container.setItem(0, input);
 
-        return recipeManager.getAllRecipesFor(ModRecipes.ANCIENT_ALPHIRINE_TYPE)
+        return recipeManager.getAllRecipesFor(ModRecipes.ANCIENT_ALPHIRINE_TYPE.get())
                 .stream()
                 .filter(recipe -> recipe.matches(container, level))
                 .findFirst();

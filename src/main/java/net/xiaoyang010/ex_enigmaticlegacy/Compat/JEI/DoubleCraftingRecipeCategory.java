@@ -71,11 +71,13 @@ public class DoubleCraftingRecipeCategory implements IRecipeCategory<CraftingRec
         }
     }
 
+    @SuppressWarnings("removal")
     @Override
     public ResourceLocation getUid() {
         return UID;
     }
 
+    @SuppressWarnings("removal")
     @Override
     public Class<? extends CraftingRecipe> getRecipeClass() {
         return CraftingRecipe.class;

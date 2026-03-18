@@ -134,12 +134,14 @@ public class PolychromeRecipeCategory implements IRecipeCategory<PolychromeRecip
         map.put(c, guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, stack));
     }
 
+    @SuppressWarnings("removal")
     @Nonnull
     @Override
     public ResourceLocation getUid() {
         return UID;
     }
 
+    @SuppressWarnings("removal")
     @Nonnull
     @Override
     public Class<? extends PolychromeRecipe> getRecipeClass() {

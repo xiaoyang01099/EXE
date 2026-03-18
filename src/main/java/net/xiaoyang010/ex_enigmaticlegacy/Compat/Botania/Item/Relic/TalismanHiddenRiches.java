@@ -230,6 +230,7 @@ public class TalismanHiddenRiches extends ItemRelic implements INoEMCItem {
         return InteractionResultHolder.success(stack);
     }
 
+    @SuppressWarnings("removal")
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onRenderWorldLast(RenderLevelLastEvent event) {

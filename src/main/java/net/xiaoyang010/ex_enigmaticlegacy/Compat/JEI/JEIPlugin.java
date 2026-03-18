@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.common.crafting.IShapedRecipe;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.CelestialHTScreen;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.gui.RainbowTableScreen;
@@ -22,6 +23,7 @@ import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModBlockss;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModRecipes;
 import net.xiaoyang010.ex_enigmaticlegacy.Recipe.*;
+import net.xiaoyang010.ex_enigmaticlegacy.Recipe.MagicTableRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +52,16 @@ public class JEIPlugin implements IModPlugin {
                 new DoubleCraftingRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new StarlitSanctumCategory(registration.getJeiHelpers().getGuiHelper())
         );
+
+        if (ModList.get().isLoaded("projecte")) {
+            registration.addRecipeCategories(
+                    new MagicTableRecipeCategory(registration.getJeiHelpers().getGuiHelper())
+            );
+        }
     }
 
     //配方显示位置，大小
+    @SuppressWarnings("removal")
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addRecipeClickArea(CelestialHTScreen.class, 0, 0, 0, 0, CelestialTransmuteRecipe.TYPE_ID);
@@ -60,6 +69,7 @@ public class JEIPlugin implements IModPlugin {
     }
 
     //+号
+    @SuppressWarnings("removal")
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
         registration.addRecipeTransferHandler(CelestialHTMenu.class, CelestialTransmuteRecipe.TYPE_ID, 1, 4, 5, 36);
@@ -69,6 +79,7 @@ public class JEIPlugin implements IModPlugin {
     }
 
     //用合成方块查找配方
+    @SuppressWarnings("removal")
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(ModBlockss.CELESTIAL_HOLINESS_TRANSMUTER.get()), CelestialTransmuteRecipe.TYPE_ID);
@@ -77,37 +88,47 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(ModBlockss.NIDAVELLIR_FORGE.get()), NidavellirCategory.UID);
         registration.addRecipeCatalyst(new ItemStack(ModBlockss.EXTREME_AUTO_CRAFTER.get()), EXTREME_CRAFTING_TYPE);
         registration.addRecipeCatalyst(new ItemStack(ModBlockss.STARLIT_SANCTUM.get()), StarlitSanctumCategory.UID);
+
+        if (ModList.get().isLoaded("projecte") && ModBlockss.MAGIC_TABLE != null) {
+            registration.addRecipeCatalyst(new ItemStack(ModBlockss.MAGIC_TABLE.get()), MagicTableRecipeCategory.UID);
+        }
     }
 
     //配方查看
+    @SuppressWarnings("removal")
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         RecipeManager recipeManager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
 
-        List<NidavellirForgeRecipe> nidavellirForgeRecipes = recipeManager.getAllRecipesFor(ModRecipes.NIDAVELLIR_FORGE_TYPE);
+        List<NidavellirForgeRecipe> nidavellirForgeRecipes = recipeManager.getAllRecipesFor(ModRecipes.NIDAVELLIR_FORGE_TYPE.get());
         registration.addRecipes(nidavellirForgeRecipes, NidavellirCategory.UID);
 
-        List<CelestialTransmuteRecipe> celestialRecipes = recipeManager.getAllRecipesFor(ModRecipes.CHT_TYPE)
+        List<CelestialTransmuteRecipe> celestialRecipes = recipeManager.getAllRecipesFor(ModRecipes.CHT_TYPE.get())
                 .stream().filter(Objects::nonNull).toList();
         registration.addRecipes(celestialRecipes, CelestialTransmuteRecipe.TYPE_ID);
 
-        List<RainbowTableRecipe> rainbowRecipes = recipeManager.getAllRecipesFor(ModRecipes.RAINBOW_TABLE_TYPE)
+        List<RainbowTableRecipe> rainbowRecipes = recipeManager.getAllRecipesFor(ModRecipes.RAINBOW_TABLE_TYPE.get())
                 .stream().filter(Objects::nonNull).toList();
         registration.addRecipes(rainbowRecipes, RainbowTableRecipe.TYPE_ID);
 
-        List<AncientAlphirineRecipe> ancientAlphirineRecipes = recipeManager.getAllRecipesFor(ModRecipes.ANCIENT_ALPHIRINE_TYPE)
+        List<AncientAlphirineRecipe> ancientAlphirineRecipes = recipeManager.getAllRecipesFor(ModRecipes.ANCIENT_ALPHIRINE_TYPE.get())
                 .stream().filter(Objects::nonNull).toList();
         registration.addRecipes(ancientAlphirineRecipes, AncientAlphirineRecipe.TYPE_ID);
 
-        List<PolychromeRecipe> polychromeRecipes = recipeManager.getAllRecipesFor(ModRecipes.POLYCHROME_TYPE)
+        List<PolychromeRecipe> polychromeRecipes = recipeManager.getAllRecipesFor(ModRecipes.POLYCHROME_TYPE.get())
                 .stream().filter(Objects::nonNull).toList();
         registration.addRecipes(polychromeRecipes, PolychromeRecipeCategory.UID);
 
         List<StarlitSanctumRecipe> starlitRecipes = new ArrayList<>(
-                recipeManager.getAllRecipesFor(ModRecipes.STARLIT_TYPE)
-                        .stream().filter(Objects::nonNull).toList()
+                recipeManager.getAllRecipesFor(ModRecipes.STARLIT_TYPE.get()).stream().filter(Objects::nonNull).toList()
         );
         registration.addRecipes(starlitRecipes, StarlitSanctumCategory.UID);
+
+        if (ModList.get().isLoaded("projecte") && ModRecipes.MAGIC_TABLE_TYPE != null) {
+            List<MagicTableRecipe> magicTableRecipes = recipeManager.getAllRecipesFor(ModRecipes.MAGIC_TABLE_TYPE.get())
+                    .stream().filter(Objects::nonNull).toList();
+            registration.addRecipes(magicTableRecipes, MagicTableRecipeCategory.UID);
+        }
 
         ClientLevel lvl = Minecraft.getInstance().level;
         if (lvl != null) {
@@ -122,7 +143,6 @@ public class JEIPlugin implements IModPlugin {
                     }
                 }
             }
-            registration.addRecipes(DOUBLE_CRAFTING_RECIPE_TYPE, recipes);
         }
     }
 }

@@ -93,7 +93,7 @@ public class CelestialTransmuteRecipe implements Recipe<Container> {
 
     @Override
     public RecipeType<?> getType() {
-        return ModRecipes.CHT_TYPE;
+        return ModRecipes.CHT_TYPE.get();
     }
 
     public static class Type implements RecipeType<CelestialTransmuteRecipe> {

@@ -73,9 +73,11 @@ public class StarlitSanctumCategory implements IRecipeCategory<StarlitSanctumRec
         this.emptyDrawable = guiHelper.createBlankDrawable(0, 0);
     }
 
+    @SuppressWarnings("removal")
     @Override
     public ResourceLocation getUid() { return UID; }
 
+    @SuppressWarnings("removal")
     @Override
     public Class<? extends StarlitSanctumRecipe> getRecipeClass() { return StarlitSanctumRecipe.class; }
 

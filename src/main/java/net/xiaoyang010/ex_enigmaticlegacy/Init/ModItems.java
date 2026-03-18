@@ -6,6 +6,7 @@ import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.ForgeSpawnEggItem;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -168,7 +169,12 @@ public class ModItems {
 	public static final RegistryObject<Item> PEACEFUL_TABLE = block(ModBlockss.PEACEFUL_TABLE, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
 	public static final RegistryObject<Item> MANA_BOX_ITEM = REGISTRY.register("mana_box", BlockItemManaBox::new);
 
-
+	public static RegistryObject<Item> MAGIC_TABLE = null;
+	static {
+		if (ModList.get().isLoaded("projecte") && ModBlockss.MAGIC_TABLE != null) {
+			MAGIC_TABLE = block(ModBlockss.MAGIC_TABLE, ModTabs.TAB_EXENIGMATICLEGACY_ITEM);
+		}
+	}
 
 	//31个物品通用属性
 	private static final Properties INGOT_PROPERTIES = new Properties().tab(ModTabs.TAB_EXENIGMATICLEGACY_MINERAL).stacksTo(64);

@@ -469,6 +469,7 @@ public class UltimateValkyrieEvents {
     /**
      * 防止凋零骷髅设置玩家为目标（只保护穿全套的玩家）
      */
+    @SuppressWarnings("removal")
     @SubscribeEvent
     public static void onSetAttackTarget(LivingSetAttackTargetEvent event) {
         if (event.getEntity() instanceof WitherSkeleton skeleton) {

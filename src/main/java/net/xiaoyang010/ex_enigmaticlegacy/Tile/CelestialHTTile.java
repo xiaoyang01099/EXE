@@ -119,7 +119,7 @@ public class CelestialHTTile extends RandomizableContainerBlockEntity implements
 
 		if (!isInput) return;
 
-		Optional<CelestialTransmuteRecipe> recipes = level.getRecipeManager().getRecipeFor(ModRecipes.CHT_TYPE, tile, level);
+		Optional<CelestialTransmuteRecipe> recipes = level.getRecipeManager().getRecipeFor(ModRecipes.CHT_TYPE.get(), tile, level);
 		recipes.ifPresent(recipe -> {
 			ItemStack resultItem = recipe.getResultItem();
 			if (resultItem.isEmpty()) return;

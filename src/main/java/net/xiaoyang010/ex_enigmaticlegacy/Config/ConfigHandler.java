@@ -97,6 +97,7 @@ public class ConfigHandler {
     public static ForgeConfigSpec.IntValue spreaderMaxManaConfig;
     public static ForgeConfigSpec.IntValue spreaderBurstManaConfig;
 
+    public static ForgeConfigSpec.BooleanValue magicTableUseLongConfig;
     public static ForgeConfigSpec.BooleanValue peacefulTableInAllDifficultiesConfig;
 
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> lockEntityListToHornConfig;
@@ -298,6 +299,16 @@ public class ConfigHandler {
                 .define("showGuiButton", true);
         COMMON_BUILDER.pop();
 
+        COMMON_BUILDER.comment("Magic Table Settings").push("magic_table");
+        magicTableUseLongConfig = COMMON_BUILDER
+                .comment(
+                        "Enable long (64-bit) count mode for Magic Table output",
+                        "Default: false (uses int max = 2,147,483,647)",
+                        "Set to true to use long max = 9,223,372,036,854,775,807"
+                )
+                .define("useLongCount", false);
+        COMMON_BUILDER.pop();
+
         COMMON_BUILDER.comment("Gameplay Settings").push("gameplay");
         PERSIST_ON_DEATH = COMMON_BUILDER
                 .comment("Keep inventory and unlocks on death")
@@ -440,6 +451,12 @@ public class ConfigHandler {
 
         public static int getFilterRange() {
             return FILTER_RANGE.get();
+        }
+    }
+
+    public static class MagicTableConfig {
+        public static boolean useLongCount() {
+            return magicTableUseLongConfig.get();
         }
     }
 

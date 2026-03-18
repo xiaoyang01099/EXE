@@ -41,6 +41,7 @@ public class ItemEntityNameplateHandler {
         }
     }
 
+    @SuppressWarnings("removal")
     @SubscribeEvent
     public static void onRenderLevelLast(RenderLevelLastEvent event) {
         pendingLabels.clear();

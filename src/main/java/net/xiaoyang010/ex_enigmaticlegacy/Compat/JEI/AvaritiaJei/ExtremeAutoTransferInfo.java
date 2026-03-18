@@ -35,10 +35,12 @@ public class ExtremeAutoTransferInfo implements IRecipeTransferInfo<ContainerExt
         return container.slots.stream().filter((s) -> s.index >= 163).toList();
     }
 
+    @SuppressWarnings("removal")
     public Class<ExtremeCraftingRecipe> getRecipeClass() {
         return  SneakyUtils.unsafeCast(this.getRecipeType().getRecipeClass());
     }
 
+    @SuppressWarnings("removal")
     public ResourceLocation getRecipeCategoryUid() {
         return this.getRecipeType().getUid();
     }

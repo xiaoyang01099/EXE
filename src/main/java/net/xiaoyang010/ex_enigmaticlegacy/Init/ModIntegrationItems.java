@@ -28,7 +28,6 @@ public class ModIntegrationItems {
     public static RegistryObject<Item> MATTER_PROTO_MAX;
     public static RegistryObject<Item> MATTER_TEMPORAL_MAX;
     public static RegistryObject<Item> MATTER_VOID_MAX;
-    //同时加入建筑手杖
     public static RegistryObject<Item> EMC_WAND;
 
 

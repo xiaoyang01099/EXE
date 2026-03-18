@@ -225,7 +225,7 @@ public class PolychromeCollapsePrismTile extends BlockEntityBase implements ISpa
         if (items.isEmpty()) {
             return null;
         }
-        return level.getRecipeManager().getRecipeFor(ModRecipes.POLYCHROME_TYPE, items, level).orElse(null);
+        return level.getRecipeManager().getRecipeFor(ModRecipes.POLYCHROME_TYPE.get(), items, level).orElse(null);
     }
 
     private boolean isActive() {

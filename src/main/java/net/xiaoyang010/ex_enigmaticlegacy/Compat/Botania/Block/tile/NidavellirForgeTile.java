@@ -252,7 +252,7 @@ public class NidavellirForgeTile extends BlockEntity implements ISparkAttachable
         NidavellirForgeRecipe foundRecipe = null;
 
         if (level != null) {
-            for (NidavellirForgeRecipe recipe : level.getRecipeManager().getAllRecipesFor(ModRecipes.NIDAVELLIR_FORGE_TYPE)) {
+            for (NidavellirForgeRecipe recipe : level.getRecipeManager().getAllRecipesFor(ModRecipes.NIDAVELLIR_FORGE_TYPE.get())) {
                 if (recipe.matches(this, level)) {
                     foundRecipe = recipe;
 

@@ -45,7 +45,9 @@ import vazkii.botania.api.mana.ILens;
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.common.block.tile.mana.IThrottledPacket;
 import vazkii.botania.common.block.tile.mana.TilePool;
+import vazkii.botania.common.handler.ModSounds;
 import vazkii.botania.common.helper.MathHelper;
+import vazkii.botania.xplat.BotaniaConfig;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -360,11 +362,14 @@ public class TileCursedManaSpreader extends BlockEntity implements ICursedManaSp
         EntityCursedManaBurst burst = createBurst(variant);
         if (burst != null) {
             cursedMana -= variant.burstMana;
-            level.addFreshEntity(burst);
-            level.playSound(null, worldPosition, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 0.1F, 1.5F);
+            if (level != null) {
+                level.addFreshEntity(burst);
+            }
+            if (!BotaniaConfig.common().silentSpreaders()) {
+                this.level.playSound(null, this.worldPosition, ModSounds.spreaderFire, SoundSource.BLOCKS, 0.05F * (this.paddingColor != null ? 0.2F : 1.0F), 0.7F + 0.3F * (float)Math.random());
+            }
             burst.ping();
             canShoot = false;
-
             setChanged();
             markDispatchable();
         }

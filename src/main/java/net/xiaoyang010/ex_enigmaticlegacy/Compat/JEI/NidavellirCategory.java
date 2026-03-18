@@ -27,7 +27,6 @@ import java.util.Iterator;
 
 public class NidavellirCategory implements IRecipeCategory<NidavellirForgeRecipe> {
     public static final ResourceLocation UID = new ResourceLocation(ExEnigmaticlegacyMod.MODID, "nidavellir_forge");
-
     private final Component title;
     private final IDrawable background;
     private final IDrawable icon;
@@ -40,11 +39,13 @@ public class NidavellirCategory implements IRecipeCategory<NidavellirForgeRecipe
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlockss.NIDAVELLIR_FORGE.get()));
     }
 
+    @SuppressWarnings("removal")
     @Override
     public ResourceLocation getUid() {
         return UID;
     }
 
+    @SuppressWarnings("removal")
     @Override
     public Class<? extends NidavellirForgeRecipe> getRecipeClass() {
         return NidavellirForgeRecipe.class;

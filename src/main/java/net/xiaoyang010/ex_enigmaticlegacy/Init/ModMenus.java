@@ -1,6 +1,5 @@
 package net.xiaoyang010.ex_enigmaticlegacy.Init;
 
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -8,9 +7,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.IContainerFactory;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Hud.TChest.ContainerItemChest;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.Factory.MagicTableMenuFactory;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.*;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.PagedChestBlockTile;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.SpectriteChestTile;
@@ -19,8 +20,6 @@ import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityExtremeAutoCrafter;
 import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityInfinityCompressor;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.NeutroniumDecompressorMenu;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.ContainerOverpowered;
-//import net.xiaoyang010.ex_enigmaticlegacy.Container.ContainerInfinityCompressor;
-//import net.xiaoyang010.ex_enigmaticlegacy.Tile.TileEntityInfinityCompressor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +38,9 @@ public class ModMenus {
 
     public static final MenuType<NeutroniumDecompressorMenu> NEUTRONIUM_DECOMPRESSOR_MENU = register("neutronium_decompressor", NeutroniumDecompressorMenu::new);
 
-    public static final MenuType<MagicTableMenu> MAGIC_TABLE_MENU = register("magic_table", MagicTableMenu::new);
+    public static MenuType<?> MAGIC_TABLE_MENU = null;
 
-    public static final MenuType<ContainerOverpowered> OVERPOWERED_CONTAINER = register("overpowered_container", ((windowId, inv, data) -> new ContainerOverpowered(windowId, inv))
-    );
+    public static final MenuType<ContainerOverpowered> OVERPOWERED_CONTAINER = register("overpowered_container", ((windowId, inv, data) -> new ContainerOverpowered(windowId, inv)));
 
     public static final MenuType<DoubleCraftingMenu> DOUBLE_CRAFTING_MENU =
             register("double_crafting_menu", (windowId, inv, ignored) ->
@@ -85,7 +83,7 @@ public class ModMenus {
                 BlockPos pos = data.readBlockPos();
                 Level level = inv.player.level;
                 return new PagedChestContainer(windowId, inv,
-                        (PagedChestBlockTile)level.getBlockEntity(pos));
+                        (PagedChestBlockTile) level.getBlockEntity(pos));
             });
 
     public static final MenuType<SpectriteChestContainer> SPECTRITE_CHEST_CONTAINER = register("spectrite_chest",
@@ -93,7 +91,7 @@ public class ModMenus {
                 BlockPos pos = data.readBlockPos();
                 Level level = inv.player.level;
                 return new SpectriteChestContainer(windowId, inv,
-                        (SpectriteChestTile)level.getBlockEntity(pos));
+                        (SpectriteChestTile) level.getBlockEntity(pos));
             });
 
     private static <T extends AbstractContainerMenu> MenuType<T> register(String registryname, IContainerFactory<T> containerFactory) {
@@ -106,5 +104,9 @@ public class ModMenus {
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
         event.getRegistry().registerAll(REGISTRY.toArray(new MenuType[0]));
+
+        if (ModList.get().isLoaded("projecte")) {
+            MAGIC_TABLE_MENU = MagicTableMenuFactory.createAndRegister(event);
+        }
     }
 }

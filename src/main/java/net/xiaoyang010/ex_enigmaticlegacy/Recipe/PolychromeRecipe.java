@@ -70,7 +70,7 @@ public class PolychromeRecipe implements IPolychromeRecipe {
 
     @Override
     public @NotNull RecipeType<?> getType() {
-        return ModRecipes.POLYCHROME_TYPE;
+        return ModRecipes.POLYCHROME_TYPE.get();
     }
 
     @Nonnull

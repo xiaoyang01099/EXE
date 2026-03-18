@@ -5,6 +5,15 @@
     "ex_enigmaticlegacy:celestial_holiness_transmuter",
     "ex_enigmaticlegacy:rainbow_table",
     "ex_enigmaticlegacy:cobble_stone",
+    "ex_enigmaticlegacy:mana_charger",
+    "ex_enigmaticlegacy:extreme_auto_crafter",
+    "ex_enigmaticlegacy:infinity_compressor",
+    "ex_enigmaticlegacy:deconstruction_table",
+    "ex_enigmaticlegacy:extreme_crafting_disassembly_table",
+    "ex_enigmaticlegacy:neutronium_decompressor",
+    "ex_enigmaticlegacy:starlit_sanctum",
+    "ex_enigmaticlegacy:magic_table",
+    "twilightforest:uncrafting_table",
     "botania:runic_altar",
     "botania:apothecary_default",
     "avaritia:compressor",
@@ -14,14 +23,6 @@
     "minecraft:anvil",
     "minecraft:chipped_anvil",
     "minecraft:damaged_anvil",
-    "minecraft:furnace",
-    "ex_enigmaticlegacy:mana_charger",
-    "ex_enigmaticlegacy:extreme_auto_crafter",
-    "ex_enigmaticlegacy:infinity_compressor",
-    "ex_enigmaticlegacy:deconstruction_table",
-    "twilightforest:uncrafting_table",
-    "ex_enigmaticlegacy:extreme_crafting_disassembly_table",
-    "ex_enigmaticlegacy:neutronium_decompressor",
-    "ex_enigmaticlegacy:starlit_sanctum"
+    "minecraft:furnace"
   ]
 }

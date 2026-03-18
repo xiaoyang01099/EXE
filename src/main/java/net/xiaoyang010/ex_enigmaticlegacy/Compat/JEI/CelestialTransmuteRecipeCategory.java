@@ -92,11 +92,13 @@ public class CelestialTransmuteRecipeCategory implements IRecipeCategory<Celesti
         return icon;
     }
 
+    @SuppressWarnings("removal")
     @Override
     public ResourceLocation getUid() {
         return UID;
     }
 
+    @SuppressWarnings("removal")
     @Override
     @NotNull
     public Class<? extends CelestialTransmuteRecipe> getRecipeClass() {

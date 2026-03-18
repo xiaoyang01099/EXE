@@ -61,7 +61,7 @@ public class PolychromeCollapsePrism extends BlockModWaterloggable implements En
     }
 
     private static boolean usesItem(ItemStack stack, Level world) {
-        for (Recipe<?> value : ((AccessorRecipeManager) world.getRecipeManager()).botania_getAll(ModRecipes.POLYCHROME_TYPE).values()) {
+        for (Recipe<?> value : ((AccessorRecipeManager) world.getRecipeManager()).botania_getAll(ModRecipes.POLYCHROME_TYPE.get()).values()) {
             for (Ingredient i : value.getIngredients()) {
                 if (i.test(stack)) {
                     return true;

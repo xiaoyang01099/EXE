@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 public class StarlitSanctumRecipe implements Recipe<Container> {
-    public static final String RECIPE_ID = "starlit_crafting";
     private static final int INPUT_LEFT_SLOT = 486;
     private static final int INPUT_RIGHT_SLOT = 487;
     private static final int GRID_ROWS = 18;
@@ -164,7 +163,7 @@ public class StarlitSanctumRecipe implements Recipe<Container> {
 
     @Override
     public RecipeType<?> getType() {
-        return ModRecipes.STARLIT_TYPE;
+        return ModRecipes.STARLIT_TYPE.get();
     }
 
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<StarlitSanctumRecipe> {

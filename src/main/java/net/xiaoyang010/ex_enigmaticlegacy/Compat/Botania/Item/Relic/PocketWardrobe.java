@@ -248,6 +248,7 @@ public class PocketWardrobe extends ItemRelic implements INoEMCItem {
         return getPrioritySet(stack) == segment ? glowPriorityTexture : glowTexture;
     }
 
+    @SuppressWarnings("removal")
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onRenderWorldLast(RenderLevelLastEvent event) {

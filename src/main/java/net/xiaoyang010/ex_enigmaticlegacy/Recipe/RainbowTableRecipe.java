@@ -78,7 +78,7 @@ public class RainbowTableRecipe implements Recipe<Container> {
 
     @Override
     public RecipeType<?> getType() {
-        return ModRecipes.RAINBOW_TABLE_TYPE;
+        return ModRecipes.RAINBOW_TABLE_TYPE.get();
     }
 
     public NonNullList<Ingredient> getRecipeItems() {
