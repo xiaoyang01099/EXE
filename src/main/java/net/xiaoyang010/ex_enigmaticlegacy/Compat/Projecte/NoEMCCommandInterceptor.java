@@ -32,7 +32,7 @@ public class NoEMCCommandInterceptor {
                 event.setCanceled(true);
 
                 var source = event.getParseResults().getContext().getSource();
-                Component errorMessage = EComponent.literal("§c无法对该物品执行EMC操作：该物品实现了INoEMCItem接口！")
+                Component errorMessage = EComponent.literal("tooltip.no.ex_enigmaticlegacy.emc")
                         .withStyle(style -> style.withColor(TextColor.fromRgb(0xFF5555)));
 
                 source.sendFailure(errorMessage);

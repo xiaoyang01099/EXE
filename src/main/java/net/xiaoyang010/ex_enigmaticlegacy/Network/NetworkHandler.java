@@ -43,31 +43,7 @@ public class NetworkHandler {
         if (ModList.get().isLoaded("projecte")) {
             MagicTableNetworkFactory.register(CHANNEL, packetId);
         }
-        packetId += 3;
-
-        CHANNEL.registerMessage(
-                packetId++,
-                MagicTableConvertPacket.class,
-                MagicTableConvertPacket::encode,
-                MagicTableConvertPacket::decode,
-                MagicTableConvertPacket::handle
-        );
-
-        CHANNEL.registerMessage(
-                packetId++,
-                MagicTableGearPacket.class,
-                MagicTableGearPacket::encode,
-                MagicTableGearPacket::decode,
-                MagicTableGearPacket::handle
-        );
-
-        CHANNEL.registerMessage(
-                packetId++,
-                MagicTableCustomAmountPacket.class,
-                MagicTableCustomAmountPacket::encode,
-                MagicTableCustomAmountPacket::decode,
-                MagicTableCustomAmountPacket::handle
-        );
+        packetId += 8;
 
         CHANNEL.registerMessage(
                 packetId++,

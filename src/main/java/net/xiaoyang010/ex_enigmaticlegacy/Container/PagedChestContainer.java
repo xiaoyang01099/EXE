@@ -10,6 +10,7 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.xiaoyang010.ex_enigmaticlegacy.Container.slot.PagedSlot;
+import net.xiaoyang010.ex_enigmaticlegacy.Container.slot.TrashSlot;
 import net.xiaoyang010.ex_enigmaticlegacy.Init.ModMenus;
 
 public class PagedChestContainer extends AbstractContainerMenu {
@@ -17,6 +18,18 @@ public class PagedChestContainer extends AbstractContainerMenu {
     private static final int PAGES = 5;
     private static final int SLOTS_PER_PAGE = 117;
     private static ContainerData pageData;
+    private final SimpleContainer trashContainer = new SimpleContainer(1) {
+        @Override
+        public void setItem(int index, ItemStack stack) {
+            super.setItem(index, ItemStack.EMPTY);
+        }
+    };
+
+    public static final int TRASH_SLOT_INDEX = SLOTS_PER_PAGE;
+    private static final int PLAYER_INV_START = SLOTS_PER_PAGE + 1;
+    private static final int PLAYER_INV_END = PLAYER_INV_START + 27;
+    private static final int PLAYER_HOTBAR_START = PLAYER_INV_END;
+    private static final int PLAYER_HOTBAR_END = PLAYER_HOTBAR_START + 9;
 
     public PagedChestContainer(int windowId, Inventory playerInventory) {
         this(windowId, playerInventory, new SimpleContainer(585), new SimpleContainerData(1));
@@ -57,9 +70,11 @@ public class PagedChestContainer extends AbstractContainerMenu {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 13; col++) {
                 int index = col + (row * 13);
-                this.addSlot(new PagedSlot(container,this, index, 12 + col * 18, 8 + row * 18));
+                this.addSlot(new PagedSlot(container, this, index, 12 + col * 18, 8 + row * 18));
             }
         }
+
+        this.addSlot(new TrashSlot(trashContainer, 0, 228, 232));
 
         int playerInvY = 174;
         for (int row = 0; row < 3; row++) {
@@ -84,14 +99,14 @@ public class PagedChestContainer extends AbstractContainerMenu {
     }
 
     public void nextPage() {
-        if (getCurrentPage() < (PAGES-1)) {
-            pageData.set(0,getCurrentPage()+1);
+        if (getCurrentPage() < (PAGES - 1)) {
+            pageData.set(0, getCurrentPage() + 1);
         }
     }
 
     public void previousPage() {
         if (getCurrentPage() > 0) {
-            pageData.set(0,getCurrentPage()-1);
+            pageData.set(0, getCurrentPage() - 1);
         }
     }
 
@@ -127,11 +142,15 @@ public class PagedChestContainer extends AbstractContainerMenu {
             ItemStack stackInSlot = slot.getItem();
             itemstack = stackInSlot.copy();
 
+            if (index == TRASH_SLOT_INDEX) {
+                return ItemStack.EMPTY;
+            }
+
             if (index < SLOTS_PER_PAGE) {
-                if (!this.moveItemStackTo(stackInSlot, SLOTS_PER_PAGE, this.slots.size(), true)) {
+                if (!this.moveItemStackTo(stackInSlot, PLAYER_INV_START, PLAYER_HOTBAR_END, true)) {
                     return ItemStack.EMPTY;
                 }
-            } else {
+            } else if (index >= PLAYER_INV_START) {
                 if (!this.moveItemStackTo(stackInSlot, 0, SLOTS_PER_PAGE, false)) {
                     return ItemStack.EMPTY;
                 }

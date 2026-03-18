@@ -39,6 +39,7 @@ public class ModMenus {
     public static final MenuType<NeutroniumDecompressorMenu> NEUTRONIUM_DECOMPRESSOR_MENU = register("neutronium_decompressor", NeutroniumDecompressorMenu::new);
 
     public static MenuType<?> MAGIC_TABLE_MENU = null;
+    public static MenuType<?> EMC_MENU = null;
 
     public static final MenuType<ContainerOverpowered> OVERPOWERED_CONTAINER = register("overpowered_container", ((windowId, inv, data) -> new ContainerOverpowered(windowId, inv)));
 
@@ -106,7 +107,8 @@ public class ModMenus {
         event.getRegistry().registerAll(REGISTRY.toArray(new MenuType[0]));
 
         if (ModList.get().isLoaded("projecte")) {
-            MAGIC_TABLE_MENU = MagicTableMenuFactory.createAndRegister(event);
+            MAGIC_TABLE_MENU = MagicTableMenuFactory.MagicRegister(event);
+            EMC_MENU = MagicTableMenuFactory.EmcRegister(event);
         }
     }
 }

@@ -16,6 +16,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.EMCEventHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.api.test.yuhua.YuhuaEntityRenderer;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.ModParticleTypes;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Avaritia.shader.AvaritiaShaders;
@@ -30,7 +31,6 @@ import net.xiaoyang010.ex_enigmaticlegacy.Network.CommonProxy;
 import net.xiaoyang010.ex_enigmaticlegacy.Network.NetworkHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.TooltipEvent;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.NoEMCCommandInterceptor;
-import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.NoEMCEventHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.EventHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Event.CrissaegrimEventHandler;
 import net.xiaoyang010.ex_enigmaticlegacy.Client.particle.ef.EffectManager;
@@ -98,7 +98,7 @@ public class ExEnigmaticlegacyMod {
 		MinecraftForge.EVENT_BUS.register(new CrissaegrimEventHandler());
 
 		if (ModList.get().isLoaded("projecte")) {
-			MinecraftForge.EVENT_BUS.register(NoEMCEventHandler.class);
+			MinecraftForge.EVENT_BUS.register(EMCEventHandler.class);
 			MinecraftForge.EVENT_BUS.register(NoEMCCommandInterceptor.class);
 		}
 
@@ -142,7 +142,6 @@ public class ExEnigmaticlegacyMod {
 	public static ResourceLocation path(String path) {
 		return new ResourceLocation("ex_enigmaticlegacy", path);
 	}
-
 
 	private void kpo(final FMLClientSetupEvent event) {
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {

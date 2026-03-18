@@ -7,7 +7,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Botania.Item.PetrifyingWand;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.LichShieldRing;
-import net.xiaoyang010.ex_enigmaticlegacy.Item.EMCWand;
+import net.xiaoyang010.ex_enigmaticlegacy.Compat.Projecte.EMCWand;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Spell.InfinitasVortex;
 import net.xiaoyang010.ex_enigmaticlegacy.Compat.Spell.LumenAureum;
 import net.xiaoyang010.ex_enigmaticlegacy.ExEnigmaticlegacyMod;
