@@ -1,0 +1,21 @@
+{
+  "name": "Starlit Sanctum",
+  "icon": "ex_enigmaticlegacy:starlit_sanctum",
+  "category": "ex_enigmaticlegacy:sanctum",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The magnificent building, located on the top of a moonlit mountain, looks like a piece of debris falling from the starry sky. Its existence itself is a mystery, attracting countless adventurers to explore. Legend has it that the building was built by an ancient civilization that wielded powerful magic and advanced technology, but eventually mysteriously disappeared. Today, the building is a mecca for adventurers to pursue treasures and secrets, but it is also full of dangers and unknowns. "
+    },
+    {
+      "type": "multiblock",
+      "name": "Starlit Sanctum",
+      "multiblock_id": "ex_enigmaticlegacy:starlit_sanctum",
+      "text": "The construction of this deconstruction is far more difficult than imagined. Every line of it defies gravity, like a spell written with mathematical formulas, accurate and crazy. Standing in front of it, you feel an ancient vertigo – a force that comes from beyond the reach of reason, as if the building itself is breathing, gazing. When light passes through it, it turns, stays, and suddenly lights up where it shouldn't be bright. And when you try to remember its shape, you find that the memory is quietly being erased."
+    },
+    {
+      "type": "text",
+      "text": "The keel must be taken from the wurm living in the crater, and it must be taken alive at the last moment before it breathes; No adhesive can be used at the joint, only by obsidian nails engraved with reverse runes at a certain angle, so that the 'repulsive force' between the materials becomes the structure itself; The foundation needs to be poured with liquid moonlight, which solidifies at the moment of the total lunar eclipse. And what really makes it mysterious and powerful is the way the magic is injected - the builder must be a person who was born left-handed but switched to his right hand before the age of seven, standing in the center of the structure so that his shadow overlaps with the shadow of the building, at which point the magic will pour back into the void, allowing the entire building to breathe, so that each stone remembers the name of the first person to step in, and one day in the future, make a choice for that person that has not yet happened."
+    }
+  ]
+}

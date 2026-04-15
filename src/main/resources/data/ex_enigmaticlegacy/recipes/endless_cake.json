@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "CAC",
+    "MNW"
+  ],
+  "key": {
+    "N": {
+      "item": "avaritia:infinity_ingot"
+    },
+
+    "M": {
+      "item": "avaritia:ultimate_stew"
+    },
+
+    "W": {
+      "item": "avaritia:cosmic_meatballs"
+    },
+
+    "A": {
+      "item": "minecraft:cake"
+    },
+
+    "B": {
+      "item": "minecraft:enchanted_golden_apple"
+    },
+
+    "C": {
+      "item": "ex_enigmaticlegacy:chaos_core"
+    }
+  },
+  "result": {
+    "item": "ex_enigmaticlegacy:endless_cake",
+    "count": 1
+  }
+}

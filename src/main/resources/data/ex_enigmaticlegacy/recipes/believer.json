@@ -1,0 +1,36 @@
+{
+  "type": "botania:runic_altar",
+  "output": {
+    "item": "ex_enigmaticlegacy:believer"
+  },
+  "mana": 11451,
+  "ingredients": [
+    {
+      "item": "botania:rune_lust"
+    },
+    {
+      "item": "botania:rune_sloth"
+    },
+    {
+      "item": "botania:rune_pride"
+    },
+    {
+      "item": "botania:terrasteel_nugget"
+    },
+    {
+      "item": "botania:living_root"
+    },
+    {
+      "item": "botania:cosmetic_tiny_potato_mask"
+    },
+    {
+      "item": "botania:tiny_potato"
+    },
+    {
+      "item": "minecraft:observer"
+    },
+    {
+      "item": "minecraft:wither_skeleton_skull"
+    }
+  ]
+}

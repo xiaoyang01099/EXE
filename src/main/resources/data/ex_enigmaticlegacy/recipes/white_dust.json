@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:celestial_transmute",
+  "inputs": [
+    {
+      "item": "minecraft:redstone",
+      "count": 64
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 64
+    },
+    {
+      "item": "minecraft:clay_ball",
+      "count": 64
+    },
+    {
+      "item": "minecraft:feather",
+      "count": 64
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:white_dust",
+    "count": 1
+  }
+}

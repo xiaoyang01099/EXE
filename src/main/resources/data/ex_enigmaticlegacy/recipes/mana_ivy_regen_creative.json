@@ -1,0 +1,74 @@
+{
+  "type": "avaritia:extreme_shaped",
+  "result": {
+    "item": "ex_enigmaticlegacy:mana_ivy_regen",
+    "nbt": {
+      "mana": 500000,
+      "creative": 1
+    }
+  },
+  "pattern": [
+    "WRRRXRRRE",
+    "I       O",
+    "I P   P O",
+    "I   Y   O",
+    "X  UAU  X",
+    "I   C   O",
+    "I P   P O",
+    "I       O",
+    "QTTTXTTTN"
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:vine"
+    },
+    "C": {
+      "item": "ex_enigmaticlegacy:asgardandelion"
+    },
+    "X": {
+      "item": "avaritia:infinity_catalyst"
+    },
+    "Q": {
+      "item": "botania:infinite_fruit"
+    },
+    "W": {
+      "item": "ex_enigmaticlegacy:chaos_core"
+    },
+    "E": {
+      "type": "forge:nbt",
+      "item": "botania:mana_tablet",
+      "nbt": {
+        "mana": 500000,
+        "creative": 1
+      }
+    },
+    "R": {
+      "item": "ex_enigmaticlegacy:mana_nether_star"
+    },
+    "T": {
+      "item": "ex_enigmaticlegacy:grass_ingot"
+    },
+    "Y": {
+      "item": "ex_enigmaticlegacy:daybloom"
+    },
+    "U": {
+      "item": "ex_enigmaticlegacy:astral_pile"
+    },
+    "I": {
+      "item": "botania:terrasteel_block"
+    },
+    "O": {
+      "item": "botania:elementium_block"
+    },
+    "P": {
+      "item": "ex_enigmaticlegacy:blocknature"
+    },
+    "A": {
+      "type": "forge:nbt",
+      "item": "ex_enigmaticlegacy:mana_ivy_regen",
+      "nbt": {
+        "mana": 500000
+      }
+    }
+  }
+}

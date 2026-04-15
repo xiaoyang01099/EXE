@@ -1,0 +1,6 @@
+{
+  "message_id": "soul_drain",
+  "exhaustion": 0.1,
+  "scaling": "never",
+  "effects": "hurt"
+}

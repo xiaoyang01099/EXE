@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:celestial_transmute",
+  "inputs": [
+    {
+      "item": "ex_enigmaticlegacy:death_ingot",
+      "count": 1
+    },
+    {
+      "item": "ex_enigmaticlegacy:ice_ingot",
+      "count": 1
+    },
+    {
+      "item": "ex_enigmaticlegacy:grass_ingot",
+      "count": 1
+    },
+    {
+      "item": "ex_enigmaticlegacy:custom_ingot",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:ingot_animation",
+    "count": 1
+  }
+}

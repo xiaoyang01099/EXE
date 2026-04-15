@@ -1,0 +1,76 @@
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:entity/superconductive_spark"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:items/res/superconductive_spark_star"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:models/nebula_eyes"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:blocks/polychrome/polychrome_collapse_prism_overlay"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:blocks/mana_water/rainbow_mana_water"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:blocks/mana_water/evil_water"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:shader/cosmic_0"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:shader/cosmic_1"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:shader/cosmic_2"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:shader/cosmic_3"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:shader/cosmic_4"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:shader/cosmic_5"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:shader/cosmic_6"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:shader/cosmic_7"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:shader/cosmic_8"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:shader/cosmic_9"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:shader/cosmic_10"
+    },
+    {
+      "type": "single",
+      "resource": "ex_enigmaticlegacy:particle/infinity_chest_particle"
+    }
+  ]
+}

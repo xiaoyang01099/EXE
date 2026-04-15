@@ -1,0 +1,6 @@
+{
+  "parent": "item/bow",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:item/weapons/manaita_bow"
+  }
+}

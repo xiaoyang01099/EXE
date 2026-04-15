@@ -1,0 +1,13 @@
+{
+  "type": "endless:neutronium",
+  "input": {
+    "item": "botania:gaia_ingot"
+  },
+  "count": 10000,
+  "output": {
+    "item": "endless:singularity",
+    "nbt": {
+      "type": "gaia"
+    }
+  }
+}

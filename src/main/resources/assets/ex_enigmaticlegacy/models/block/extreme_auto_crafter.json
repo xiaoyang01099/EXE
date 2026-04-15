@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ex_enigmaticlegacy:block/auto/nightmare_bottom",
+    "up": "ex_enigmaticlegacy:block/auto/nightmare_top",
+    "down": "ex_enigmaticlegacy:block/auto/nightmare_bottom",
+    "north": "ex_enigmaticlegacy:block/auto/nightmare_side",
+    "south": "ex_enigmaticlegacy:block/auto/nightmare_side",
+    "east": "ex_enigmaticlegacy:block/auto/nightmare_side",
+    "west": "ex_enigmaticlegacy:block/auto/nightmare_side"
+  }
+}

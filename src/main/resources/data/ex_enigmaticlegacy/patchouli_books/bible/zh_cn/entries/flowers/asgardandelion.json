@@ -1,0 +1,11 @@
+{
+  "name": "阿斯加德蒲公英",
+  "icon": "ex_enigmaticlegacy:asgardandelion",
+  "category": "ex_enigmaticlegacy:flowers",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "阿斯加德蒲公英是一种神秘的花，只生长在最神圣的地方。它的金色花瓣闪烁着神圣的能量，传说它能实现心地纯洁的人的愿望。"
+    }
+  ]
+}

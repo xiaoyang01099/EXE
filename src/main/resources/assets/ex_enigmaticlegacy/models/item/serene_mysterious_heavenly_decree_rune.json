@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:item/runes/serene_mysterious_heavenly_decree_rune"
+  }
+}

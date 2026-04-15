@@ -1,0 +1,6 @@
+{
+  "parent": "botania:block/shapes/pool",
+  "textures": {
+    "all": "ex_enigmaticlegacy:block/cursed_mana_pool"
+  }
+}

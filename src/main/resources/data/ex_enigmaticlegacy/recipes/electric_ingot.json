@@ -1,0 +1,34 @@
+{
+  "type": "ex_enigmaticlegacy:celestial_transmute",
+  "inputs": [
+    {
+      "item": "avaritia:infinity_catalyst",
+      "count": 1
+    },
+    {
+      "item": "ex_enigmaticlegacy:custom_ingot",
+      "count": 1
+    },
+    {
+      "type": "forge:nbt",
+      "item": "minecraft:enchanted_book",
+      "nbt": {
+        "StoredEnchantments": [
+          {
+            "id": "minecraft:channeling",
+            "lvl": 1
+          }
+        ]
+      },
+      "count": 1
+    },
+    {
+      "item": "avaritia:iron_singularity",
+      "count": 5
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:electric_ingot",
+    "count": 1
+  }
+}

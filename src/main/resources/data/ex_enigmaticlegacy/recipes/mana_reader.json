@@ -1,0 +1,21 @@
+{
+  "type": "botania:runic_altar",
+  "output": {
+    "item": "ex_enigmaticlegacy:mana_reader"
+  },
+  "mana": 5000,
+  "ingredients": [
+    {
+      "item": "botania:livingwood_twig"
+    },
+    {
+      "item": "botania:mana_pearl"
+    },
+    {
+      "item": "botania:elementium_ingot"
+    },
+    {
+      "item": "botania:quartz_elven"
+    }
+  ]
+}

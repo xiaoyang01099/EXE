@@ -1,0 +1,11 @@
+{
+  "name": "Asgardandelion",
+  "icon": "ex_enigmaticlegacy:asgardandelion",
+  "category": "ex_enigmaticlegacy:flowers",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The Asgardandelion is a mystical flower that grows only in the most sacred places. Its golden petals shimmer with divine energy, and legend says it can grant wishes to those pure of heart."
+    }
+  ]
+}

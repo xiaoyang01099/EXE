@@ -1,0 +1,7 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "ex_enigmaticlegacy:block/flowers/orechid_endium",
+    "particle": "ex_enigmaticlegacy:block/flowers/orechid_endium"
+  }
+}

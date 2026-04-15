@@ -1,0 +1,70 @@
+{
+  "type": "avaritia:extreme_shaped",
+  "result": {
+    "item": "botania:creative_pool"
+  },
+  "pattern": [
+    "UBNVVVNBU",
+    "EKJJJJJKE",
+    "AMLPUPLSA",
+    "AMZQRQZSA",
+    "AMCRORCSA",
+    "AMZQRQZSA",
+    "AMLPUPLSA",
+    "EKJJJJJKE",
+    "UBNVVVNBU"
+  ],
+  "key": {
+    "Q": {
+      "item": "avaritia:infinity_catalyst"
+    },
+    "E": {
+      "item": "avaritia:neutronium_block"
+    },
+    "R": {
+      "item": "botania:gaia_head"
+    },
+    "O": {
+      "item": "ex_enigmaticlegacy:gaia_singularity"
+    },
+    "P": {
+      "item": "botania:rune_sloth"
+    },
+    "Z": {
+      "item": "botania:rune_lust"
+    },
+    "V": {
+      "item": "botania:dragonstone_block"
+    },
+    "A": {
+      "item": "botania:fabulous_pool"
+    },
+    "B": {
+      "item": "botania:mana_pool"
+    },
+    "M": {
+      "item": "botania:mana_diamond_block"
+    },
+    "N": {
+      "item": "botania:terrasteel_block"
+    },
+    "L": {
+      "item": "botania:rune_mana"
+    },
+    "U": {
+      "item": "ex_enigmaticlegacy:evilblock"
+    },
+    "C": {
+      "item": "enigmaticlegacy:forbidden_fruit"
+    },
+    "S": {
+      "item": "ex_enigmaticlegacy:gaia_block"
+    },
+    "K": {
+      "item": "ex_enigmaticlegacy:nickel_block"
+    },
+    "J": {
+      "item": "ex_enigmaticlegacy:iridium_block"
+    }
+  }
+}

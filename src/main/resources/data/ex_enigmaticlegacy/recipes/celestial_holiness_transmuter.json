@@ -1,0 +1,49 @@
+{
+  "type": "endless:extreme_craft",
+  "pattern": [
+    "RQQQQQQQR",
+    "TCC   CCY",
+    "TC     CY",
+    "T  AXA  Y",
+    "T  NWN  Y",
+    "T  AEA  Y",
+    "TC     CY",
+    "TCC   CCY",
+    "RQQQQQQQR"
+  ],
+  "key": {
+    "N": {
+      "item": "endless:infinity_catalyst"
+    },
+    "C": {
+      "item": "endless:infinity_ingot"
+    },
+    "X": {
+      "item": "endless:endest_pearl"
+    },
+    "Q": {
+      "item": "endless:crystal_matrix_block"
+    },
+    "W": {
+      "item": "endless:extreme_crafting_table"
+    },
+    "E": {
+      "item": "endless:neutron_compressor"
+    },
+    "R": {
+      "item": "endless:infinity_block"
+    },
+    "T": {
+      "item": "ex_enigmaticlegacy:evilblock"
+    },
+    "Y": {
+      "item": "botania:dragonstone_block"
+    },
+    "A": {
+      "item": "enigmaticlegacy:etherium_block"
+    }
+  },
+  "result": {
+    "item": "ex_enigmaticlegacy:celestial_holiness_transmuter"
+  }
+}

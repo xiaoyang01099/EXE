@@ -1,0 +1,29 @@
+{
+  "type": "botania:petal_apothecary",
+  "output": {
+    "item": "ex_enigmaticlegacy:curse_thistle"
+  },
+  "ingredients": [
+    {
+      "item": "botania:pink_petal"
+    },
+    {
+      "item": "botania:white_petal"
+    },
+    {
+      "item": "botania:pixie_dust"
+    },
+    {
+      "item": "minecraft:milk_bucket"
+    },
+    {
+      "item": "botania:rune_mana"
+    },
+    {
+      "item": "botania:rune_summer"
+    },
+    {
+      "item": "minecraft:lily_pad"
+    }
+  ]
+}

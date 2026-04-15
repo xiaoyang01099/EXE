@@ -1,0 +1,35 @@
+{
+  "type": "ex_enigmaticlegacy:nidavellir_forge",
+  "mana": 3000000,
+  "color": 65535,
+  "ingredients": [
+    {
+      "item": "botania:manasteel_block",
+      "count": 3
+    },
+    {
+      "item": "botania:life_essence",
+      "count": 2
+    },
+    {
+      "item": "botania:mana_powder",
+      "count": 8
+    },
+    {
+      "item": "botania:mana_diamond",
+      "count": 2
+    },
+    {
+      "item": "botania:terrasteel_ingot",
+      "count": 6
+    },
+    {
+      "item": "botania:mana_pearl",
+      "count": 6
+    }
+  ],
+  "output": {
+    "item": "ex_enigmaticlegacy:mithrill",
+    "count": 1
+  }
+}

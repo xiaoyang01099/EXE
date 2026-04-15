@@ -1,0 +1,11 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:item/singularity/bedrock_singularity",
+    "layer1": "ex_enigmaticlegacy:item/singularity/bedrock_singularity_overlay"
+  },
+  "loader": "ex_enigmaticlegacy:rainbow_cosmic",
+  "rainbow_cosmic": {
+    "mask": "ex_enigmaticlegacy:item/singularity/singularity_mask"
+  }
+}

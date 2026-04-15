@@ -1,0 +1,164 @@
+{
+  "blend": {
+    "func": "add",
+    "srcrgb": "srcalpha",
+    "dstrgb": "1-srcalpha"
+  },
+  "vertex": "blackhole",
+  "fragment": "blackhole",
+  "attributes": [
+    "Position",
+    "Color",
+    "UV0",
+    "Normal"
+  ],
+  "samplers": [
+    {
+      "name": "DiffuseSampler"
+    },
+    {
+      "name": "DepthSampler"
+    },
+    {
+      "name": "NoiseSampler"
+    }
+  ],
+  "uniforms": [
+    {
+      "name": "ProjMat",
+      "type": "matrix4x4",
+      "count": 16,
+      "values": [
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      ]
+    },
+    {
+      "name": "ModelViewMat",
+      "type": "matrix4x4",
+      "count": 16,
+      "values": [
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      ]
+    },
+    {
+      "name": "DiffuseSampler",
+      "type": "int",
+      "count": 1,
+      "values": [0]
+    },
+    {
+      "name": "DepthSampler",
+      "type": "int",
+      "count": 1,
+      "values": [1]
+    },
+    {
+      "name": "NoiseSampler",
+      "type": "int",
+      "count": 1,
+      "values": [2]
+    },
+    {
+      "name": "ScreenSize",
+      "type": "float",
+      "count": 2,
+      "values": [1920.0, 1080.0]
+    },
+    {
+      "name": "Time",
+      "type": "float",
+      "count": 1,
+      "values": [0.0]
+    },
+    {
+      "name": "BlackHolePos",
+      "type": "float",
+      "count": 3,
+      "values": [0.5, 0.5, 0.0]
+    },
+    {
+      "name": "BlackHoleStrength",
+      "type": "float",
+      "count": 1,
+      "values": [5.0]
+    },
+    {
+      "name": "BlackHoleRadius",
+      "type": "float",
+      "count": 1,
+      "values": [0.1]
+    },
+    {
+      "name": "BlackHoleMass",
+      "type": "float",
+      "count": 1,
+      "values": [10.0]
+    },
+    {
+      "name": "AccretionDiskIntensity",
+      "type": "float",
+      "count": 1,
+      "values": [0.7]
+    },
+    {
+      "name": "AccretionDiskTemperature",
+      "type": "float",
+      "count": 1,
+      "values": [10000.0]
+    },
+    {
+      "name": "ViewerVelocity",
+      "type": "float",
+      "count": 3,
+      "values": [0.0, 0.0, 0.0]
+    },
+    {
+      "name": "BlackHoleVelocity",
+      "type": "float",
+      "count": 3,
+      "values": [0.0, 0.0, 0.0]
+    },
+    {
+      "name": "SpinParameter",
+      "type": "float",
+      "count": 1,
+      "values": [0.8]
+    },
+    {
+      "name": "InclinationAngle",
+      "type": "float",
+      "count": 1,
+      "values": [0.785398]
+    },
+    {
+      "name": "EnableLenseThirring",
+      "type": "int",
+      "count": 1,
+      "values": [1]
+    },
+    {
+      "name": "EnableFrameDragging",
+      "type": "int",
+      "count": 1,
+      "values": [1]
+    },
+    {
+      "name": "PlanckLength",
+      "type": "float",
+      "count": 1,
+      "values": [1.616255e-35]
+    },
+    {
+      "name": "CosmologicalConstant",
+      "type": "float",
+      "count": 1,
+      "values": [1.1056e-52]
+    }
+  ]
+}

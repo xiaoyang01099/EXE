@@ -1,0 +1,10 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:item/ingots/astral_nugget"
+  },
+  "loader": "endless:cosmic",
+  "cosmic": {
+    "mask": "ex_enigmaticlegacy:item/ingots/astral_nugget_mask"
+  }
+}

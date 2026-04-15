@@ -1,0 +1,31 @@
+{
+  "type": "ex_enigmaticlegacy:nidavellir_forge",
+  "mana": 3000000,
+  "color": 65535,
+  "ingredients": [
+    {
+      "item": "minecraft:nether_star",
+      "count": 1
+    },
+    {
+      "item": "avaritia:diamond_lattice",
+      "count": 5
+    },
+    {
+      "item": "botania:life_essence",
+      "count": 16
+    },
+    {
+      "item": "ex_enigmaticlegacy:mithrill_nugget",
+      "count": 1
+    },
+    {
+      "item": "ex_enigmaticlegacy:mithrill",
+      "count": 4
+    }
+  ],
+  "output": {
+    "item": "ex_enigmaticlegacy:mana_nether_star",
+    "count": 1
+  }
+}

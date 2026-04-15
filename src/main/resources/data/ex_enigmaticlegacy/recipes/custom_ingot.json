@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:celestial_transmute",
+  "inputs": [
+    {
+      "item": "ex_enigmaticlegacy:custom_nugget",
+      "count": 8
+    },
+    {
+      "item": "avaritia:neutron_nugget",
+      "count": 50
+    },
+    {
+      "item": "avaritia:crystal_matrix_block",
+      "count": 30
+    },
+    {
+      "item": "avaritia:neutronium_ingot",
+      "count": 40
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:custom_ingot",
+    "count": 2
+  }
+}

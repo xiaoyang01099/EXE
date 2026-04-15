@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:nether_star"
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:nether_star_nugget",
+    "count": 9
+  }
+}

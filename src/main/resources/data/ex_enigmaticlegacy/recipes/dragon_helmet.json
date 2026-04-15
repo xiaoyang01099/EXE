@@ -1,0 +1,25 @@
+{
+  "type": "avaritia:extreme_shaped",
+  "pattern": [
+    "  AAAAA  ",
+    " AAAAAAA ",
+    " AAAAAAA ",
+    " AAABAAA ",
+    " AB   BA ",
+    " AB   BA ",
+    "         ",
+    "         ",
+    "         "
+  ],
+  "key": {
+    "A": {
+      "item": "ex_enigmaticlegacy:dragoncrystal"
+    },
+    "B": {
+      "item": "ex_enigmaticlegacy:wild_hunt_fragment"
+    }
+  },
+  "result": {
+    "item": "ex_enigmaticlegacy:dragon_helmet"
+  }
+}

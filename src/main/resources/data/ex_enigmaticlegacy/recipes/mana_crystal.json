@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "HAH",
+    "SGS",
+    "FDF"
+  ],
+  "key": {
+    "A": {
+      "item": "botania:spark"
+    },
+    "S": {
+      "item": "botania:mana_glass"
+    },
+    "D": {
+      "item": "botania:manasteel_ingot"
+    },
+    "F": {
+      "item": "botania:dreamwood"
+    },
+    "G": {
+      "item": "botania:twig_wand"
+    },
+    "H": {
+      "item": "botania:terrasteel_nugget"
+    }
+  },
+  "result": {
+    "item": "ex_enigmaticlegacy:mana_crystal",
+    "count": 1
+  }
+}

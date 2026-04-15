@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ex_enigmaticlegacy:blocknature"
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:natureingot",
+    "count": 9
+  }
+}

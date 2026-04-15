@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=north,waterlogged=false": { "model": "ex_enigmaticlegacy:block/spectrite_chest_item", "y": 180 },
+    "facing=south,waterlogged=false": { "model": "ex_enigmaticlegacy:block/spectrite_chest_item" },
+    "facing=east,waterlogged=false":  { "model": "ex_enigmaticlegacy:block/spectrite_chest_item", "y": 90 },
+    "facing=west,waterlogged=false":  { "model": "ex_enigmaticlegacy:block/spectrite_chest_item", "y": 270 },
+    "facing=north,waterlogged=true":  { "model": "ex_enigmaticlegacy:block/spectrite_chest_item", "y": 180 },
+    "facing=south,waterlogged=true":  { "model": "ex_enigmaticlegacy:block/spectrite_chest_item" },
+    "facing=east,waterlogged=true":   { "model": "ex_enigmaticlegacy:block/spectrite_chest_item", "y": 90 },
+    "facing=west,waterlogged=true":   { "model": "ex_enigmaticlegacy:block/spectrite_chest_item", "y": 270 }
+  }
+}

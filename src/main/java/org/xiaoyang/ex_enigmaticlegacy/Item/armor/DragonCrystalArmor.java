@@ -1,0 +1,432 @@
+package org.xiaoyang.ex_enigmaticlegacy.Item.armor;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.xiaoyang.ex_enigmaticlegacy.Init.ModArmors;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public class DragonCrystalArmor extends ArmorItem {
+    private static final ResourceLocation OVERLAY = new ResourceLocation("ex_enigmaticlegacy", "textures/overlay.png");
+    private static final Map<UUID, Boolean> playerWearingFullSet = new HashMap<>();
+    private static final Map<UUID, Boolean> playerOriginalFlightStatus = new HashMap<>();
+    private static final Map<UUID, Float> playerOriginalFlySpeed = new HashMap<>();
+    private static final int REGENERATION_TICKS = 5;
+    private static final float REGENERATION_AMOUNT = 20.0F;
+    private static final Map<UUID, Integer> playerRegenerationTimer = new HashMap<>();
+    private static final float DRAGON_ARMOR_FLY_SPEED = 0.5F;
+    private static final float DEFAULT_FLY_SPEED = 0.05F;
+
+    public DragonCrystalArmor(ArmorMaterial material, ArmorItem.Type slot) {
+        super(material, slot, new Properties().durability(0).setNoRepair());
+        MinecraftForge.EVENT_BUS.register(DragonCrystalArmor.class);
+    }
+
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+        return slot != EquipmentSlot.LEGS ?
+                "ex_enigmaticlegacy:textures/models/armor/dragonarmor_layer_1.png" :
+                "ex_enigmaticlegacy:textures/models/armor/dragonarmor_layer_2.png";
+    }
+
+    private static boolean isWearingFullSet(Player player) {
+        return player.getItemBySlot(EquipmentSlot.FEET).getItem() == ModArmors.dragonArmorBoots.get() &&
+                player.getItemBySlot(EquipmentSlot.LEGS).getItem() == ModArmors.dragonArmorLegs.get() &&
+                player.getItemBySlot(EquipmentSlot.CHEST).getItem() == ModArmors.dragonArmorChest.get() &&
+                player.getItemBySlot(EquipmentSlot.HEAD).getItem() == ModArmors.dragonArmorHelm.get();
+    }
+
+    private static boolean isDragonArmorSpeed(float speed) {
+        return Math.abs(speed - DRAGON_ARMOR_FLY_SPEED) < 0.001F;
+    }
+
+    private static float getSafeOriginalSpeed(Player player) {
+        float currentSpeed = player.getAbilities().getFlyingSpeed();
+        if (isDragonArmorSpeed(currentSpeed)) {
+            Float saved = playerOriginalFlySpeed.get(player.getUUID());
+            if (saved != null && !isDragonArmorSpeed(saved)) {
+                return saved;
+            }
+            return DEFAULT_FLY_SPEED;
+        }
+        return currentSpeed;
+    }
+
+    private static boolean getSafeOriginalFlightStatus(Player player) {
+        if (player.isCreative() || player.isSpectator()) {
+            return true;
+        }
+        Boolean saved = playerOriginalFlightStatus.get(player.getUUID());
+        if (saved != null) {
+            return saved;
+        }
+        boolean wasWearing = playerWearingFullSet.getOrDefault(player.getUUID(), false);
+        if (wasWearing) {
+            return false;
+        }
+        return player.getAbilities().mayfly;
+    }
+
+    @Override
+    public void onArmorTick(ItemStack stack, Level world, Player player) {
+        if (!world.isClientSide) {
+            if (!(stack.getItem() instanceof DragonCrystalArmor)) {
+                return;
+            }
+
+            UUID playerUUID = player.getUUID();
+            boolean fullSet = isWearingFullSet(player);
+            boolean previousFullSet = playerWearingFullSet.getOrDefault(playerUUID, false);
+
+            if (fullSet) {
+                if (!previousFullSet) {
+                    playerOriginalFlightStatus.put(playerUUID, getSafeOriginalFlightStatus(player));
+                    playerOriginalFlySpeed.put(playerUUID, getSafeOriginalSpeed(player));
+                    playerWearingFullSet.put(playerUUID, true);
+                }
+
+                boolean needUpdate = false;
+                if (!player.getAbilities().mayfly) {
+                    player.getAbilities().mayfly = true;
+                    needUpdate = true;
+                }
+                if (!isDragonArmorSpeed(player.getAbilities().getFlyingSpeed())) {
+                    player.getAbilities().setFlyingSpeed(DRAGON_ARMOR_FLY_SPEED);
+                    needUpdate = true;
+                }
+                if (needUpdate) {
+                    player.onUpdateAbilities();
+                }
+
+                processRegeneration(player, world);
+                applyEffects(player);
+            } else if (previousFullSet) {
+                cleanupPlayerEffects(player, playerUUID);
+            }
+        }
+    }
+
+    private static void cleanupPlayerEffects(Player player, UUID playerUUID) {
+        removeAllEffectsStatic(player);
+
+        Boolean originalFlight = playerOriginalFlightStatus.remove(playerUUID);
+        Float originalSpeed = playerOriginalFlySpeed.remove(playerUUID);
+
+        boolean hasInnateFlight = player.isCreative() || player.isSpectator();
+
+        if (hasInnateFlight) {
+            player.getAbilities().mayfly = true;
+            player.getAbilities().setFlyingSpeed(DEFAULT_FLY_SPEED);
+        } else {
+            boolean restoreFlight = (originalFlight != null) ? originalFlight : false;
+            float restoreSpeed = (originalSpeed != null && !isDragonArmorSpeed(originalSpeed))
+                    ? originalSpeed : DEFAULT_FLY_SPEED;
+
+            player.getAbilities().mayfly = restoreFlight;
+            if (!restoreFlight) {
+                player.getAbilities().flying = false;
+            }
+            player.getAbilities().setFlyingSpeed(restoreSpeed);
+        }
+
+        player.onUpdateAbilities();
+        playerRegenerationTimer.remove(playerUUID);
+        playerWearingFullSet.put(playerUUID, false);
+    }
+
+    private static void forceCleanup(Player player) {
+        UUID playerUUID = player.getUUID();
+        boolean wasWearing = playerWearingFullSet.getOrDefault(playerUUID, false);
+        if (wasWearing || isDragonArmorSpeed(player.getAbilities().getFlyingSpeed())) {
+            cleanupPlayerEffects(player, playerUUID);
+        }
+    }
+
+    private static void purgePlayerData(UUID uuid) {
+        playerWearingFullSet.remove(uuid);
+        playerOriginalFlightStatus.remove(uuid);
+        playerOriginalFlySpeed.remove(uuid);
+        playerRegenerationTimer.remove(uuid);
+    }
+
+    private static void ensureNormalSpeed(Player player) {
+        if (!isWearingFullSet(player) && isDragonArmorSpeed(player.getAbilities().getFlyingSpeed())) {
+            player.getAbilities().setFlyingSpeed(DEFAULT_FLY_SPEED);
+            player.onUpdateAbilities();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerDeath(LivingDeathEvent event) {
+        if (event.getEntity() instanceof Player player && !player.level().isClientSide) {
+            forceCleanup(player);
+            purgePlayerData(player.getUUID());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        Player player = event.getEntity();
+        if (!player.level().isClientSide) {
+            purgePlayerData(player.getUUID());
+            ensureNormalSpeed(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        Player player = event.getEntity();
+        if (!player.level().isClientSide) {
+            purgePlayerData(player.getUUID());
+            ensureNormalSpeed(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        Player player = event.getEntity();
+        if (!player.level().isClientSide && !isWearingFullSet(player)) {
+            if (playerWearingFullSet.getOrDefault(player.getUUID(), false)) {
+                cleanupPlayerEffects(player, player.getUUID());
+            } else {
+                ensureNormalSpeed(player);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerClone(PlayerEvent.Clone event) {
+        purgePlayerData(event.getOriginal().getUUID());
+        Player newPlayer = event.getEntity();
+        if (!newPlayer.level().isClientSide) {
+            ensureNormalSpeed(newPlayer);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingHurtEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            if (isWearingFullSet(player)) {
+                if (event.getSource().is(DamageTypeTags.IS_EXPLOSION)) {
+                    event.setCanceled(true);
+                } else {
+                    float originalDamage = event.getAmount();
+                    float reducedDamage = originalDamage * 0.1f;
+                    event.setAmount(reducedDamage);
+                    if (player.level() instanceof ServerLevel serverLevel) {
+                        spawnDamageParticles(player, serverLevel);
+                    }
+                }
+            }
+        }
+    }
+
+    private void processRegeneration(Player player, Level level) {
+        if (level.isClientSide) return;
+
+        UUID playerUUID = player.getUUID();
+        int timer = playerRegenerationTimer.getOrDefault(playerUUID, 0);
+        timer++;
+
+        if (timer >= REGENERATION_TICKS) {
+            timer = 0;
+
+            if (player.getHealth() < player.getMaxHealth()) {
+                player.heal(REGENERATION_AMOUNT);
+
+                level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS,
+                        0.3F, 0.5F + level.random.nextFloat() * 0.5F);
+
+                if (level instanceof ServerLevel) {
+                    ServerLevel serverLevel = (ServerLevel) level;
+                    spawnHealingParticles(player, serverLevel);
+                }
+            }
+        }
+
+        playerRegenerationTimer.put(playerUUID, timer);
+    }
+
+    private void applyEffects(Player player) {
+        applyEffectIfNeeded(player, MobEffects.DAMAGE_BOOST, 127);
+        applyEffectIfNeeded(player, MobEffects.WATER_BREATHING, 10);
+        applyEffectIfNeeded(player, MobEffects.MOVEMENT_SPEED, 40);
+        applyEffectIfNeeded(player, MobEffects.NIGHT_VISION, 5);
+        applyEffectIfNeeded(player, MobEffects.FIRE_RESISTANCE, 5);
+    }
+
+    private void applyEffectIfNeeded(Player player, MobEffect effect, int amplifier) {
+        MobEffectInstance existingEffect = player.getEffect(effect);
+        if (existingEffect == null || existingEffect.getDuration() < 100) {
+            player.addEffect(new MobEffectInstance(effect, Integer.MAX_VALUE, amplifier, false, false));
+        }
+    }
+
+    private static void removeAllEffectsStatic(Player player) {
+        removeEffectIfDragonArmor(player, MobEffects.DAMAGE_BOOST);
+        removeEffectIfDragonArmor(player, MobEffects.WATER_BREATHING);
+        removeEffectIfDragonArmor(player, MobEffects.MOVEMENT_SPEED);
+        removeEffectIfDragonArmor(player, MobEffects.NIGHT_VISION);
+        removeEffectIfDragonArmor(player, MobEffects.FIRE_RESISTANCE);
+    }
+
+    private static void removeEffectIfDragonArmor(Player player, MobEffect effect) {
+        MobEffectInstance instance = player.getEffect(effect);
+        if (instance != null && instance.getDuration() > 1000000) {
+            player.removeEffect(effect);
+        }
+    }
+
+    @Override
+    public boolean isDamageable(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public void setDamage(ItemStack stack, int damage) {
+        super.setDamage(stack, 0);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void renderHelmetOverlay(GuiGraphics guiGraphics, float partialTick) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
+        if (player == null) return;
+        int amount = 0;
+        if (player.getItemBySlot(EquipmentSlot.FEET).getItem() == ModArmors.dragonArmorBoots.get()) amount++;
+        if (player.getItemBySlot(EquipmentSlot.LEGS).getItem() == ModArmors.dragonArmorLegs.get()) amount++;
+        if (player.getItemBySlot(EquipmentSlot.CHEST).getItem() == ModArmors.dragonArmorChest.get()) amount++;
+        if (player.getItemBySlot(EquipmentSlot.HEAD).getItem() == ModArmors.dragonArmorHelm.get()) amount++;
+        if (amount >= 4) {
+            RenderSystem.disableDepthTest();
+            RenderSystem.depthMask(false);
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.enableBlend();
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            int width = minecraft.getWindow().getGuiScaledWidth();
+            int height = minecraft.getWindow().getGuiScaledHeight();
+            guiGraphics.blit(OVERLAY, 0, 0, 0, 0, width, height, width, height);
+            RenderSystem.depthMask(true);
+            RenderSystem.enableDepthTest();
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        }
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        player.playSound(SoundEvents.ENDER_DRAGON_GROWL, 1.0F, 1.0F);
+        return super.use(world, player, hand);
+    }
+
+    private void spawnHealingParticles(Player player, ServerLevel serverLevel) {
+        for (int i = 0; i < 16; i++) {
+            double angle = i * Math.PI * 2 / 16;
+            double radius = 0.7;
+            double x = player.getX() + Math.cos(angle) * radius;
+            double y = player.getY() + 1.0;
+            double z = player.getZ() + Math.sin(angle) * radius;
+
+            serverLevel.sendParticles(
+                    ParticleTypes.PORTAL,
+                    x, y, z,
+                    3,
+                    0.02, 0.1, 0.02,
+                    0.05
+            );
+
+            serverLevel.sendParticles(
+                    ParticleTypes.END_ROD,
+                    x, y, z,
+                    1,
+                    0.05, 0.05, 0.05,
+                    0.01
+            );
+        }
+
+        for (int i = 0; i < 8; i++) {
+            double yOffset = 2.0 + i * 0.25;
+
+            serverLevel.sendParticles(
+                    ParticleTypes.END_ROD,
+                    player.getX(), player.getY() + yOffset, player.getZ(),
+                    1,
+                    0.1, 0.0, 0.1,
+                    0.02
+            );
+
+            serverLevel.sendParticles(
+                    ParticleTypes.GLOW,
+                    player.getX(), player.getY() + yOffset, player.getZ(),
+                    1,
+                    0.15, 0.05, 0.15,
+                    0.07
+            );
+        }
+    }
+
+    private static void spawnDamageParticles(Player player, ServerLevel serverLevel) {
+        for (int i = 0; i < 30; i++) {
+            double phi = Math.PI * 2 * serverLevel.random.nextDouble();
+            double theta = Math.PI * serverLevel.random.nextDouble();
+
+            double radius = 1.0;
+            double x = player.getX() + radius * Math.sin(theta) * Math.cos(phi);
+            double y = player.getY() + 1.0 + radius * Math.cos(theta);
+            double z = player.getZ() + radius * Math.sin(theta) * Math.sin(phi);
+
+            double velocityX = (x - player.getX()) * 0.1;
+            double velocityY = (y - (player.getY() + 1.0)) * 0.1;
+            double velocityZ = (z - player.getZ()) * 0.1;
+
+            serverLevel.sendParticles(
+                    ParticleTypes.ENCHANTED_HIT,
+                    x, y, z,
+                    1,
+                    velocityX, velocityY, velocityZ,
+                    0.05
+            );
+
+            if (i % 3 == 0) {
+                serverLevel.sendParticles(
+                        ParticleTypes.END_ROD,
+                        x, y, z,
+                        1,
+                        velocityX * 0.5, velocityY * 0.5, velocityZ * 0.5,
+                        0.02
+                );
+            }
+        }
+    }
+}

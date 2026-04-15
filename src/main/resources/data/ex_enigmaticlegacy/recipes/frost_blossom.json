@@ -1,0 +1,54 @@
+{
+  "type": "botania:runic_altar",
+  "output": {
+    "item": "ex_enigmaticlegacy:frost_blossom"
+  },
+  "mana": 150000,
+  "ingredients": [
+    {
+      "item": "botania:rune_pride"
+    },
+    {
+      "item": "botania:rune_mana"
+    },
+    {
+      "item": "botania:rune_winter"
+    },
+    {
+      "item": "minecraft:ice"
+    },
+    {
+      "item": "minecraft:snow_block"
+    },
+    {
+      "item": "ex_enigmaticlegacy:arcane_ice_chunk"
+    },
+    {
+      "item": "botania:dreamwood_twig"
+    },
+    {
+      "item": "botania:mana_powder"
+    },
+    {
+      "item": "botania:pure_daisy"
+    },
+    {
+      "item": "botania:mana_bottle"
+    },
+    {
+      "item": "botania:quartz_mana"
+    },
+    {
+      "item": "botania:light_blue_petal"
+    },
+    {
+      "item": "botania:blue_petal"
+    },
+    {
+      "item": "botania:mana_string"
+    },
+    {
+      "item": "botania:mana_string"
+    }
+  ]
+}

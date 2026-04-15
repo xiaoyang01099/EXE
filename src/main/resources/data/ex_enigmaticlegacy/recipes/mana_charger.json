@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "HAH",
+    "SGS",
+    " D "
+  ],
+  "key": {
+    "A": {
+      "item": "botania:livingrock"
+    },
+    "S": {
+      "item": "botania:bellows"
+    },
+    "D": {
+      "item": "botania:rune_mana"
+    },
+    "G": {
+      "item": "botania:mana_pylon"
+    },
+    "H": {
+      "item": "botania:terrasteel_nugget"
+    }
+  },
+  "result": {
+    "item": "ex_enigmaticlegacy:mana_charger",
+    "count": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "ex_enigmaticlegacy:magic_table",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "projecte"
+    }
+  ],
+  "input": {
+    "item": "minecraft:iron_block"
+  },
+  "input_count": 8,
+  "output": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "output_count": 1000,
+  "emc_cost": 500000,
+  "craft_ticks": 300
+}

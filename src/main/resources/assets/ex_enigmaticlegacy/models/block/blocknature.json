@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "ex_enigmaticlegacy:block/block_nature",
+    "particle": "ex_enigmaticlegacy:block/block_nature"
+  }
+}

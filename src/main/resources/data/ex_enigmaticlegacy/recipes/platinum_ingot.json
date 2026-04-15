@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ex_enigmaticlegacy:iridium_block"
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:iridium_ingot",
+    "count": 9
+  }
+}

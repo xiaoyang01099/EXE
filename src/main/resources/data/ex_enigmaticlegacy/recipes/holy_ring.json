@@ -1,0 +1,11 @@
+{
+  "type": "ex_enigmaticlegacy:ancient_alphirine",
+  "input":
+  { "item": "enigmaticlegacy:cursed_ring"
+  },
+  "output":
+  { "item": "ex_enigmaticlegacy:holy_ring",
+    "count": 1
+  },
+  "chance": 1
+}

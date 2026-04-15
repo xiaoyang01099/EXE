@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ex_enigmaticlegacy:block/infinity_compressor"
+    },
+    "facing=south": {
+      "model": "ex_enigmaticlegacy:block/infinity_compressor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "ex_enigmaticlegacy:block/infinity_compressor",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "ex_enigmaticlegacy:block/infinity_compressor",
+      "y": 90
+    }
+  }
+}

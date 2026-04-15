@@ -1,0 +1,31 @@
+{
+  "type": "avaritia:extreme_shaped",
+  "result": {
+    "item": "ex_enigmaticlegacy:infinitydrop"
+  },
+  "pattern": [
+    "    A    ",
+    "   ABA   ",
+    "  ACBDA  ",
+    " ABDCDBA ",
+    " ACDCDCA ",
+    " ADCDCDA ",
+    " ABCDCBA ",
+    "  ADBCA  ",
+    "   AAA   "
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:ghast_tear"
+    },
+    "B": {
+      "item": "avaritia:infinity_catalyst"
+    },
+    "C": {
+      "item": "avaritia:neutron_nugget"
+    },
+    "D": {
+      "item": "avaritia:neutron_pile"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "ex_enigmaticlegacy:celestial_transmute",
+  "inputs": [
+    {
+      "item": "avaritia:crystal_matrix_ingot",
+      "count": 16
+    },
+    {
+      "item": "minecraft:magma_block",
+      "count": 64
+    },
+    {
+      "item": "avaritia:infinity_catalyst",
+      "count": 1
+    },
+    {
+      "item": "ex_enigmaticlegacy:custom_ingot",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "ex_enigmaticlegacy:lava_ingot",
+    "count": 1
+  }
+}

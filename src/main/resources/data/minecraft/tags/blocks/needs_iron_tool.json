@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "ex_enigmaticlegacy:amethyst_ore",
+    "ex_enigmaticlegacy:bauxite_ore",
+    "ex_enigmaticlegacy:chromite_ore",
+    "ex_enigmaticlegacy:fluorite_ore",
+    "ex_enigmaticlegacy:gypsum_ore",
+    "ex_enigmaticlegacy:lead_ore",
+    "ex_enigmaticlegacy:bronze_ore",
+    "ex_enigmaticlegacy:infinity_potato",
+    "ex_enigmaticlegacy:mana_crystal",
+    "ex_enigmaticlegacy:mana_charger",
+    "ex_enigmaticlegacy:mana_container",
+    "ex_enigmaticlegacy:polychrome_collapse_prism",
+    "ex_enigmaticlegacy:creative_container",
+    "ex_enigmaticlegacy:diluted_container",
+    "ex_enigmaticlegacy:board_fate",
+    "ex_enigmaticlegacy:game_board"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "type": "avaritia:extreme_shaped",
+  "result": {
+    "item": "ex_enigmaticlegacy:infinity_spreader"
+  },
+  "pattern": [
+    "GGGGGGGGG",
+    "GAABBBAAG",
+    "GACCCCCAG",
+    "GDEEEECBG",
+    "GDDDFECBG",
+    "GDEEEECBG",
+    "GACCCCCAG",
+    "GAABBBAAG",
+    "GGGGGGGGG"
+  ],
+  "key": {
+    "A": {
+      "item": "avaritia:infinity_ingot"
+    },
+    "B": {
+      "item": "avaritia:crystal_matrix_ingot"
+    },
+    "C": {
+      "item": "botania:gaia_ingot"
+    },
+    "D": {
+      "item": "avaritia:infinity_catalyst"
+    },
+    "E": {
+      "item": "botania:glimmering_dreamwood"
+    },
+    "F": {
+      "item": "botania:gaia_spreader"
+    },
+    "G": {
+      "item": "botania:dragonstone_block"
+    }
+  }
+}

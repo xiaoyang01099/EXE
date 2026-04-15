@@ -1,0 +1,110 @@
+{
+  "type": "avaritia:extreme_shaped",
+  "result": {
+    "item": "botania:mana_tablet",
+    "nbt": {
+      "mana": 500000,
+      "creative": 1
+    }
+  },
+  "pattern": [
+    "QXXXUCCCW",
+    "VeOJLHOeB",
+    "VOPPGPPOB",
+    "VZPASAPKB",
+    "EPPSDSPPR",
+    "NFPASAPFM",
+    "NOPPPPPOM",
+    "NeOFPFOeM",
+    "TqqqIwwwY"
+  ],
+  "key": {
+    "Q": {
+      "item": "botania:rune_envy"
+    },
+    "W": {
+      "item": "botania:rune_winter"
+    },
+    "E": {
+      "item": "botania:rune_lust"
+    },
+    "R": {
+      "item": "botania:rune_pride"
+    },
+    "T": {
+      "item": "botania:rune_wrath"
+    },
+    "Y": {
+      "item": "botania:rune_sloth"
+    },
+    "U": {
+      "item": "botania:rune_gluttony"
+    },
+    "I": {
+      "item": "botania:rune_greed"
+    },
+    "O": {
+      "item": "botania:fabulous_pool"
+    },
+    "P": {
+      "item": "botania:terrasteel_block"
+    },
+    "A": {
+      "item": "botania:spawner_mover"
+    },
+    "S": {
+      "item": "botania:mana_mirror"
+    },
+    "D": {
+      "item": "botania:mana_tablet"
+    },
+    "F": {
+      "item": "botania:dice"
+    },
+    "G": {
+      "item": "botania:flugel_eye"
+    },
+    "H": {
+      "item": "botania:king_key"
+    },
+    "J": {
+      "item": "botania:infinite_fruit"
+    },
+    "K": {
+      "item": "botania:thor_ring"
+    },
+    "L": {
+      "item": "botania:flight_tiara"
+    },
+    "Z": {
+      "item": "botania:odin_ring"
+    },
+    "X": {
+      "item": "ex_enigmaticlegacy:decay_block"
+    },
+    "C": {
+      "item": "ex_enigmaticlegacy:nickel_block"
+    },
+    "V": {
+      "item": "ex_enigmaticlegacy:iridium_block"
+    },
+    "B": {
+      "item": "ex_enigmaticlegacy:arcane_ice_chunk"
+    },
+    "N": {
+      "item": "enigmaticlegacy:etherium_block"
+    },
+    "M": {
+      "item": "ex_enigmaticlegacy:evilblock"
+    },
+    "q": {
+      "item": "ex_enigmaticlegacy:blocknature"
+    },
+    "w": {
+      "item": "botania:elementium_block"
+    },
+    "e": {
+      "item": "avaritia:infinity_catalyst"
+    }
+  }
+}

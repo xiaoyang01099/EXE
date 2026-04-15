@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:diamond",
+    "minecraft:nether_star",
+    "minecraft:emerald",
+    "minecraft:gold_block",
+    "minecraft:iron_ingot",
+    "minecraft:lapis_lazuli",
+    "minecraft:quartz",
+    "minecraft:redstone",
+    "minecraft:glowstone_dust"
+  ]
+}

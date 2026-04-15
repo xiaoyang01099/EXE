@@ -1,0 +1,10 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ex_enigmaticlegacy:block/flowers/astral_killop"
+  },
+  "loader": "ex_enigmaticlegacy:rainbow_cosmic",
+  "rainbow_cosmic": {
+    "mask": "ex_enigmaticlegacy:block/flowers/astral_killop_mask"
+  }
+}

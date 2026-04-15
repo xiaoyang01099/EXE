@@ -1,0 +1,8 @@
+{
+  "name": "item.ex_enigmaticlegacy.bible",
+  "landing_text": "info.ex_enigmaticlegacy.bible",
+  "book_texture": "ex_enigmaticlegacy:textures/gui/book.png",
+  "model": "ex_enigmaticlegacy:bible",
+  "version": 114514,
+  "creative_tab": "ex_enigmaticlegacy"
+}

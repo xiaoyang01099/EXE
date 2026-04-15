@@ -1,0 +1,20 @@
+{
+  "blend": {
+    "func": "add",
+    "srcrgb": "srcalpha",
+    "dstrgb": "1-srcalpha"
+  },
+  "vertex": "prisma",
+  "fragment": "prisma",
+  "attributes": [
+    "Position",
+    "UV0"
+  ],
+  "samplers": [
+    { "name": "Sampler0" }
+  ],
+  "uniforms": [
+    { "name": "iTime",       "type": "float", "count": 1, "values": [0.0]            },
+    { "name": "iResolution", "type": "float", "count": 2, "values": [1920.0, 1080.0] }
+  ]
+}

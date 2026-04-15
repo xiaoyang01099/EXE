@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "ex_enigmaticlegacy:evil_singularity"
+  },
+  "cost": 600,
+  "ingredients": [
+    {
+      "item": "ex_enigmaticlegacy:evilblock"
+    }
+  ]
+}

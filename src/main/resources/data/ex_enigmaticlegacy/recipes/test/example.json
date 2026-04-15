@@ -1,0 +1,99 @@
+{
+  "type": "ex_enigmaticlegacy:starlit_crafting",
+  "mana": 10000000000000,
+  "left_input": {
+    "item": "minecraft:diamond",
+    "count": 64
+  },
+  "right_input": {
+    "item": "minecraft:emerald",
+    "count": 64
+  },
+  "patterns": [
+    {
+      "pattern": [
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD",
+        "DDDDDDDDD"
+      ],
+      "key": {
+        "D": {
+          "item": "minecraft:diamond_block"
+        }
+      }
+    },
+    {
+      "pattern": [
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE",
+        "EEEEEEEEE"
+      ],
+      "key": {
+        "E": {
+          "item": "minecraft:emerald_block"
+        }
+      }
+    },
+    {
+      "pattern": [
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN",
+        "NNNNNNNNN"
+      ],
+      "key": {
+        "N": {
+          "item": "minecraft:netherite_block"
+        }
+      }
+    }
+  ],
+  "result": {
+    "item": "minecraft:nether_star",
+    "count": 1
+  }
+}

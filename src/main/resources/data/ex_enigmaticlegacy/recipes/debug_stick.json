@@ -1,0 +1,12 @@
+{
+  "type": "avaritia:compressor",
+  "result": {
+    "item": "minecraft:debug_stick"
+  },
+  "cost": 5000000000,
+  "ingredients": [
+    {
+      "item": "minecraft:stick"
+    }
+  ]
+}

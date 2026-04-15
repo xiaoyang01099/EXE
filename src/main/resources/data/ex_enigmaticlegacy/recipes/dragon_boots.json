@@ -1,0 +1,28 @@
+{
+  "type": "avaritia:extreme_shaped",
+  "pattern": [
+    " AAA AAA ",
+    " ABA ABA ",
+    " ABA ABA ",
+    "AABA ABAA",
+    "ABCA ACBA",
+    "AAAA AAAA",
+    "         ",
+    "         ",
+    "         "
+  ],
+  "key": {
+    "A": {
+      "item": "ex_enigmaticlegacy:dragoncrystal"
+    },
+    "B": {
+      "item": "ex_enigmaticlegacy:wild_hunt_fragment"
+    },
+    "C": {
+      "item": "ex_enigmaticlegacy:mat_inscribed_ingot"
+    }
+  },
+  "result": {
+    "item": "ex_enigmaticlegacy:dragon_boots"
+  }
+}
