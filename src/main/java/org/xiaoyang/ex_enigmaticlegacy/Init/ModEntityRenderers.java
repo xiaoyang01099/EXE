@@ -10,6 +10,9 @@ import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.block.*;
 import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.others.*;
 import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.tile.*;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.render.*;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.NebulaBowArrowAroundEffectRenderer;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.NebulaBowArrowLowRenderer;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.ShockwaveRenderer;
 
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -23,6 +26,7 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.MANAITA_ARROW.get(), ManaitaArrowRenderer::new);
 		event.registerEntityRenderer(ModEntities.SPECTRITE_CRYSTAL.get(), SpectriteCrystalRenderer::new);
 		event.registerEntityRenderer(ModEntities.KIND_MIAO.get(), MiaoMiaoRenderer::new);
+		event.registerEntityRenderer(ModEntities.GIUL_BSEN.get(), GiulBsenRenderer::new);
 		event.registerEntityRenderer(ModEntities.CLONE_ENTITY.get(), CloneEntityRenderer::new);
 		event.registerEntityRenderer(ModEntities.SACABAMBASPIS.get(), SacabambaspisRender::new);
 		event.registerEntityRenderer(ModEntities.ALPHIRINE_PORTAL.get(), AlphirinePortalRenderer::new);
@@ -46,6 +50,9 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.SLIME_CANNON_BALL.get(), RendererSlimeCannonBall::new);
 		event.registerEntityRenderer(ModEntities.SLING_BULLET.get(), RenderSlingBullet::new);
 		event.registerEntityRenderer(ModEntities.INFINITY_ARROW_LEVEL_ENTITY.get(), EntityInfinityArrowLevelRenderer::new);
+		event.registerEntityRenderer(ModEntities.SHOCK_WAVE.get(), ShockwaveRenderer::new);
+		event.registerEntityRenderer(ModEntities.NEBULA_ARROW.get(), NebulaBowArrowLowRenderer::new);
+		event.registerEntityRenderer(ModEntities.NEBULA_ARROW_AROUND.get(), NebulaBowArrowAroundEffectRenderer::new);
 	}
 
 }

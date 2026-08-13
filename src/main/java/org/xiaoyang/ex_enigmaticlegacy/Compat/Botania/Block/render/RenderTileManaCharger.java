@@ -19,7 +19,6 @@ import vazkii.botania.client.core.handler.ClientTickHandler;
 
 import java.util.Random;
 
-@SuppressWarnings("removal")
 public class RenderTileManaCharger implements BlockEntityRenderer<ManaChargerTile> {
     private static final ResourceLocation TEXTURE = new ResourceLocation("ex_enigmaticlegacy:textures/item/entity/mana_charger.png");
     private final ModelManaCharger model;

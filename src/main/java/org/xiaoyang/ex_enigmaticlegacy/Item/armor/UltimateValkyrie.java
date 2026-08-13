@@ -14,6 +14,7 @@ import org.xiaoyang.ex_enigmaticlegacy.Item.armor.UV.UltimateValkyrieBoots;
 import org.xiaoyang.ex_enigmaticlegacy.Item.armor.UV.UltimateValkyrieChestplate;
 import org.xiaoyang.ex_enigmaticlegacy.Item.armor.UV.UltimateValkyrieHelmet;
 import org.xiaoyang.ex_enigmaticlegacy.Item.armor.UV.UltimateValkyrieLeggings;
+import org.xiaoyang.ex_enigmaticlegacy.Item.armor.material.ValkyrieMaterial;
 
 import java.util.List;
 

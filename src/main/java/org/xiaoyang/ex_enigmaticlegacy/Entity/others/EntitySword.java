@@ -45,7 +45,7 @@ public class EntitySword extends ThrowableProjectile implements ItemSupplier {
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
         this.getEntityData().define(DAMAGE, 0.0F);
         this.getEntityData().define(ATTACKER, "");
         this.getEntityData().define(PIERCE_COUNT, 0);

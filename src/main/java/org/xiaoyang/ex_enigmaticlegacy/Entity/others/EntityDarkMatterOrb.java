@@ -146,7 +146,7 @@ public class EntityDarkMatterOrb extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
     }
 
     public float getShadowRadius() {

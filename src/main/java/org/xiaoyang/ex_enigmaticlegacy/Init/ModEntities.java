@@ -18,11 +18,41 @@ import org.xiaoyang.ex_enigmaticlegacy.Client.particle.ef.EntitySlash;
 import org.xiaoyang.ex_enigmaticlegacy.Entity.biological.*;
 import org.xiaoyang.ex_enigmaticlegacy.Entity.others.*;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.NebulaBowArrowAroundEffect;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.NebulaBowArrowLow;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.Shockwave;
 
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModEntities {
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Exe.MODID);
+
+	public static final RegistryObject<EntityType<NebulaBowArrowAroundEffect>> NEBULA_ARROW_AROUND =
+			ENTITIES.register("nebula_bow_arrow_around_effect", () -> EntityType.Builder
+					.<NebulaBowArrowAroundEffect>of(NebulaBowArrowAroundEffect::new, MobCategory.MISC)
+					.sized(0.5f, 0.5f)
+					.clientTrackingRange(64)
+					.updateInterval(20)
+					.build("nebula_bow_arrow_around_effect")
+			);
+
+	public static final RegistryObject<EntityType<NebulaBowArrowLow>> NEBULA_ARROW =
+			ENTITIES.register("nebula_arrow", () -> EntityType.Builder
+					.<NebulaBowArrowLow>of(NebulaBowArrowLow::new, MobCategory.MISC)
+					.sized(0.5f, 0.5f)
+					.clientTrackingRange(64)
+					.updateInterval(20)
+					.build("nebula_arrow")
+			);
+
+	public static final RegistryObject<EntityType<Shockwave>> SHOCK_WAVE =
+			ENTITIES.register("shock_wave", () -> EntityType.Builder.of(
+					Shockwave::new, MobCategory.MISC)
+					.sized(0.5f, 0.5f)
+					.clientTrackingRange(64)
+					.updateInterval(1)
+					.build("shock_wave")
+			);
 
 	public static final RegistryObject<EntityType<EntityInfinityArrowLevel>> INFINITY_ARROW_LEVEL_ENTITY =
 			ENTITIES.register("infinity_arrow_level", () ->
@@ -257,6 +287,9 @@ public class ModEntities {
 	public static final RegistryObject<EntityType<Xingyun2825Entity>> XINGYUN2825 = register("xingyun_2825", EntityType.Builder.<Xingyun2825Entity>of(Xingyun2825Entity::new, MobCategory.CREATURE).setShouldReceiveVelocityUpdates(true)
 			.setTrackingRange(100).setUpdateInterval(3).setCustomClientFactory(Xingyun2825Entity::new).fireImmune().sized(0.6f, 1.8f));
 
+	public static final RegistryObject<EntityType<GiuIBsenEntity>> GIUL_BSEN = register("giul_bsen", EntityType.Builder.<GiuIBsenEntity>of(GiuIBsenEntity::new, MobCategory.CREATURE).setShouldReceiveVelocityUpdates(true)
+			.setTrackingRange(100).setUpdateInterval(3).setCustomClientFactory(GiuIBsenEntity::new).fireImmune().sized(0.6f, 1.8f));
+
 	public static final RegistryObject<EntityType<EntityRainBowLightningBlot>> LIGHTNING_BLOT = register("lightning_blot", EntityType.Builder.<EntityRainBowLightningBlot>of(EntityRainBowLightningBlot::new, MobCategory.MISC).setShouldReceiveVelocityUpdates(true)
 			.setTrackingRange(100).setUpdateInterval(3).fireImmune().sized(0.6f, 1.8f));
 
@@ -286,10 +319,10 @@ public class ModEntities {
 	@SubscribeEvent
 	public static void registerAttributes(EntityAttributeCreationEvent event) {
 		event.put(XIAOYANG_010.get(), Xiaoyang010Entity.createAttributes().build());
+		event.put(GIUL_BSEN.get(), GiuIBsenEntity.createAttributes().build());
 		event.put(XINGYUN2825.get(),Xingyun2825Entity.createAttributes().build());
 		event.put(KIND_MIAO.get(), CatMewEntity.createAttributes().build());
 		event.put(CLONE_ENTITY.get(), CloneEntity.createAttributes().build());
 		event.put(SACABAMBASPIS.get(), SacabambaspisEntity.createAttributes().build());
 	}
-
 }

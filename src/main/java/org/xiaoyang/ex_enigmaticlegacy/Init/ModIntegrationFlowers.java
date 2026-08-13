@@ -12,6 +12,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.functional.*;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.generating.CertusQuartzFlower;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.generating.CertusQuartzFlowerEntity;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.generating.EMCFlower;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.generating.EMCFlowerTile;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.ItemBlockFlower;
@@ -28,18 +30,27 @@ public class ModIntegrationFlowers {
     public static RegistryObject<Block> ALCHEMY_AZALEA;
     public static RegistryObject<Block> ALCHEMY_SUNFLOWER;
     public static RegistryObject<Block> EMC_FLOWER;
+    public static RegistryObject<Block> CERTUS_QUARTZ_FLOWER;
+    public static RegistryObject<Block> TRINARY_SYNTHESIS;
+    public static RegistryObject<Block> VOLTAGE_ROSE;
 
     //物品
     public static RegistryObject<Item> CELESTIAL_BLUE_HYACINTH_ITEM;
     public static RegistryObject<Item> ALCHEMY_AZALEA_ITEM;
     public static RegistryObject<Item> ALCHEMY_SUNFLOWER_ITEM;
     public static RegistryObject<Item> EMC_FLOWER_ITEM;
+    public static RegistryObject<Item> CERTUS_QUARTZ_FLOWER_ITEM;
+    public static RegistryObject<Item> TRINARY_SYNTHESIS_ITEM;
+    public static RegistryObject<Item> VOLTAGE_ROSE_ITEM;
 
     //方块实体
     public static RegistryObject<BlockEntityType<CelestialBlueHyacinthTile>> CELESTIAL_BLUE_HYACINTH_TILE;
     public static RegistryObject<BlockEntityType<AlchemyAzaleaTile>> ALCHEMY_AZALEA_TILE;
     public static RegistryObject<BlockEntityType<AlchemySunflowerTile>> ALCHEMY_SUNFLOWER_TILE;
     public static RegistryObject<BlockEntityType<EMCFlowerTile>> EMC_FLOWER_TILE;
+    public static RegistryObject<BlockEntityType<CertusQuartzFlowerEntity>> CERTUS_QUARTZ_FLOWER_TILE;
+    public static RegistryObject<BlockEntityType<TrinarySynthesisEntity>> TRINARY_SYNTHESIS_TILE;
+    public static RegistryObject<BlockEntityType<VoltageRoseEntity>> VOLTAGE_ROSE_TILE;
 
     static {
         if (ModList.get().isLoaded("projecte")) {
@@ -90,6 +101,43 @@ public class ModIntegrationFlowers {
             CELESTIAL_BLUE_HYACINTH_ITEM = blockFlowerLinkage(ModIntegrationFlowers.CELESTIAL_BLUE_HYACINTH);
             ALCHEMY_AZALEA_ITEM = blockFlowerLinkage(ModIntegrationFlowers.ALCHEMY_AZALEA);
             ALCHEMY_SUNFLOWER_ITEM = blockFlowerLinkage(ModIntegrationFlowers.ALCHEMY_SUNFLOWER);
+        }
+        if (ModList.get().isLoaded("ae2")) {
+
+            CERTUS_QUARTZ_FLOWER = BLOCK_REGISTRY.register("certus_quartz_flower",
+                    () -> new CertusQuartzFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS,
+                            () -> CERTUS_QUARTZ_FLOWER_TILE.get())
+            );
+
+            TRINARY_SYNTHESIS = BLOCK_REGISTRY.register("trinary_synthesis",
+                    () -> new CertusQuartzFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS,
+                            () -> TRINARY_SYNTHESIS_TILE.get())
+            );
+
+            VOLTAGE_ROSE = BLOCK_REGISTRY.register("vboltage_rose",
+                    () -> new VoltageRose(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS,
+                            () -> CERTUS_QUARTZ_FLOWER_TILE.get())
+            );
+
+            CERTUS_QUARTZ_FLOWER_TILE = BLOCK_ENTITY_REGISTRY.register("certus_quartz_flower_tile",
+                    () -> BlockEntityType.Builder.of((pos, state) ->
+                                    new CertusQuartzFlowerEntity(ModIntegrationFlowers.CERTUS_QUARTZ_FLOWER_TILE.get(), pos, state),
+                            ModIntegrationFlowers.CERTUS_QUARTZ_FLOWER.get()).build(null));
+
+            TRINARY_SYNTHESIS_TILE = BLOCK_ENTITY_REGISTRY.register("trinary_synthesis_tile",
+                    () -> BlockEntityType.Builder.of((pos, state) ->
+                                    new TrinarySynthesisEntity(ModIntegrationFlowers.TRINARY_SYNTHESIS_TILE.get(), pos, state),
+                            ModIntegrationFlowers.TRINARY_SYNTHESIS.get()).build(null));
+
+            VOLTAGE_ROSE_TILE = BLOCK_ENTITY_REGISTRY.register("vboltage_rose_tile",
+                    () -> BlockEntityType.Builder.of((pos, state) ->
+                                    new VoltageRoseEntity(ModIntegrationFlowers.VOLTAGE_ROSE_TILE.get(), pos, state),
+                            ModIntegrationFlowers.VOLTAGE_ROSE.get()).build(null));
+
+
+            CERTUS_QUARTZ_FLOWER_ITEM = blockFlowerLinkage(ModIntegrationFlowers.CERTUS_QUARTZ_FLOWER);
+            TRINARY_SYNTHESIS_ITEM = blockFlowerLinkage(ModIntegrationFlowers.TRINARY_SYNTHESIS);
+            VOLTAGE_ROSE_ITEM = blockFlowerLinkage(ModIntegrationFlowers.VOLTAGE_ROSE);
         }
     }
 

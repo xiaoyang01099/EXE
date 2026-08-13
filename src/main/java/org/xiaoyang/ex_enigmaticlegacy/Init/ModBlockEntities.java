@@ -9,7 +9,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
@@ -26,8 +25,10 @@ import org.xiaoyang.ex_enigmaticlegacy.Tile.*;
 
 
 public class ModBlockEntities {
+
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Exe.MODID);
     //魔法花实体
+    public static final RegistryObject<BlockEntityType<PrismFlowerBlockEntity>> PRISM_FLOWER_TILE = BLOCK_ENTITIES.register("prism_flower", () -> BlockEntityType.Builder.of(PrismFlowerBlockEntity::new, ModBlocks.PRISM_FLOWER.get()).build(null));
     public static final RegistryObject<BlockEntityType<AstralKillopTile>> ASTRAL_KILLOP_TILE = BLOCK_ENTITIES.register("astral_killop", () -> BlockEntityType.Builder.of(AstralKillopTile::new, ModBlocks.ASTRAL_KILLOP.get()).build(null));
     public static final RegistryObject<BlockEntityType<RainbowGeneratingFlowerTile>> RAINBOW_GENERATING_FLOWER_TILE = BLOCK_ENTITIES.register("rainbow_generating_flower", () -> BlockEntityType.Builder.of(RainbowGeneratingFlowerTile::new, ModBlocks.RAINBOW_GENERATING_FLOWER.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileEntityRuneFlower>> RUNE_FLOWER_TILE = BLOCK_ENTITIES.register("rune_flower_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityRuneFlower(ModBlockEntities.RUNE_FLOWER_TILE.get(), pos, state), ModBlocks.RUNE_FLOWER.get()).build(null));
@@ -64,6 +65,7 @@ public class ModBlockEntities {
 
 
     //其他方块
+    public static final RegistryObject<BlockEntityType<EntityPrismFlame>> PRISM_FLAME_TILE = BLOCK_ENTITIES.register("prism_flame_tile", () -> BlockEntityType.Builder.of(EntityPrismFlame::new, ModBlocks.PRISM_FLAME.get()).build(null));
     public static final RegistryObject<BlockEntityType<StarlitSanctumTile>> STARLIT_SANCTUM_OF_MYSTIQUE = register("starlit_sanctum_of_mystique", ModBlocks.STARLIT_SANCTUM, StarlitSanctumTile::new);
     public static final RegistryObject<BlockEntityType<CelestialHTTile>> CELESTIAL_HOLINESS_TRANSMUTER_TILE = register("celestial_holiness_transmuter_tile", ModBlocks.CELESTIAL_HOLINESS_TRANSMUTER, CelestialHTTile::new);
     public static final RegistryObject<BlockEntityType<PagedChestBlockTile>> PAGED_CHEST = BLOCK_ENTITIES.register("paged_chest", () -> BlockEntityType.Builder.of(PagedChestBlockTile::new, ModBlocks.PAGED_CHEST.get()).build(null));

@@ -10,7 +10,6 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-@SuppressWarnings("removal")
 public class FXBurst extends TextureSheetParticle {
     public static final ResourceLocation nodetex = new ResourceLocation("ex_enigmaticlegacy", "textures/misc/nodes.png");
 

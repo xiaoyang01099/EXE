@@ -1,10 +1,8 @@
 package org.xiaoyang.ex_enigmaticlegacy.Entity.ai;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -13,11 +11,10 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.xiaoyang.ex_enigmaticlegacy.Entity.biological.EntityFishBase;
+import org.xiaoyang.ex_enigmaticlegacy.Entity.all.EntityFishBase;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Random;
 
 public class EntityMateAIFishBase extends Goal {
     private final EntityFishBase animal;

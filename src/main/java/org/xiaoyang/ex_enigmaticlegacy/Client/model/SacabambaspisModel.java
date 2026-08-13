@@ -15,7 +15,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 
-@SuppressWarnings("removal")
 public class SacabambaspisModel<T extends Entity> extends EntityModel<T> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
             new ResourceLocation(Exe.MODID, "sacabambaspis"), "main");

@@ -22,7 +22,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import vazkii.botania.api.BotaniaAPI;
 
-import java.util.Random;
 
 public class BlockAntigravitation extends Block {
     public BlockAntigravitation() {

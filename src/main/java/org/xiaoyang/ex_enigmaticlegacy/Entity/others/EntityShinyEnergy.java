@@ -47,7 +47,7 @@ public class EntityShinyEnergy extends ThrowableProjectile implements IEntityAdd
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
         this.entityData.define(TARGET_ID, -1);
         this.entityData.define(LOCK_X, 0.0F);
         this.entityData.define(LOCK_Y, 0.0F);

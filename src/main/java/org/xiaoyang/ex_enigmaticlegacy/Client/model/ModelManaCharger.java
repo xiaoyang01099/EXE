@@ -24,7 +24,6 @@ import vazkii.botania.common.proxy.Proxy;
 import java.util.Objects;
 
 
-@SuppressWarnings("removal")
 public class ModelManaCharger extends Model {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
             new ResourceLocation("ex_enigmaticlegacy", "mana_charger"), "main");

@@ -61,7 +61,7 @@ public class EntityBabylonWeaponSS extends ThrowableProjectile implements IEntit
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
         this.entityData.define(CHARGING, (byte) 0);
         this.entityData.define(VARIETY, 0);
         this.entityData.define(CHARGE_TICKS, 0);

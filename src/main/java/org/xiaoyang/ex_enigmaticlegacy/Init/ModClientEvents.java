@@ -8,21 +8,17 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterShadersEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.block.RainbowTableRenderer;
+import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.layer.SlimeArmorLayer;
 import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.tile.FloweyTileRenderer;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.render.*;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.tile.TileAdvancedSpreader;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.MithrillMultiTool;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.SphereNavigation;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.TerraShovel;
@@ -35,10 +31,6 @@ import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.layer.WitherArmorLayer;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.EndPortalHaloLoader;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.RainbowCosmicModelLoader;
-import vazkii.botania.api.BotaniaForgeClientCapabilities;
-import vazkii.botania.api.block_entity.BindableSpecialFlowerBlockEntity.BindableFlowerWandHud;
-import vazkii.botania.common.lib.ResourceLocationHelper;
-import vazkii.botania.forge.CapabilityUtil;
 
 import java.io.IOException;
 
@@ -62,6 +54,13 @@ public class ModClientEvents {
         event.registerLayerDefinition(ModModelLayers.DICE_FATE, ModelDiceFate::createBodyLayer);
         event.registerLayerDefinition(ModModelLayers.ENGINEER_HOPPER, ModelEngineerHopper::createBodyLayer);
         event.registerLayerDefinition(ModModelLayers.SLIME_CANNON, ModelSlimeCannon::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayers.SLIME_ARMOR, ModelSlimeArmor::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayers.GIUL_BSEN_LAYER, GiuIBsenModel::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayers.FENRIS_ARMOR, ModelArmorFenris::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayers.ECLIPSE_ARMOR, ModelArmorEclipse::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayers.SUNMAKER_ARMOR, ModelArmorSunmaker::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayers.STAR_PIECES, StarPiecesModel::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayers.VINE_HAND, VineHandModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -124,21 +123,6 @@ public class ModClientEvents {
                     }
             );
         });
-
-        IEventBus bus = MinecraftForge.EVENT_BUS;
-        bus.addGenericListener(BlockEntity.class, ModClientEvents::attachBeCapabilities); //魔力 hud
-    }
-
-    /**
-     * 注册魔力条hud渲染能力
-     */
-    public static void attachBeCapabilities(AttachCapabilitiesEvent<BlockEntity> e) {
-        BlockEntity be = e.getObject();
-//        if (be instanceof TileAdvancedSpreader tile) {
-//            e.addCapability(ResourceLocationHelper.prefix("wand_hud"),
-//                    CapabilityUtil.makeProvider(BotaniaForgeClientCapabilities.WAND_HUD, new TileAdvancedSpreader.WandHud(tile))
-//            );
-//        }
     }
 
     @SubscribeEvent
@@ -168,7 +152,6 @@ public class ModClientEvents {
         BlockEntityRenderers.register(ModBlockEntities.ADVANCED_SPREADER.get(), RenderTileAdvancedSpreader::new);
     }
 
-
     @SubscribeEvent
     public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
         for (String skinName : event.getSkins()) {
@@ -180,6 +163,11 @@ public class ModClientEvents {
                 ));
             }
         }
+
+        addValkyrieLayerToPlayerSkin(event, "default");
+        addValkyrieLayerToPlayerSkin(event, "slim");
+        addSlimeLayerToPlayer(event, "default");
+        addSlimeLayerToPlayer(event, "slim");
     }
 
     @SubscribeEvent
@@ -197,10 +185,12 @@ public class ModClientEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onAddValkyrieArmorLayers(EntityRenderersEvent.AddLayers event) {
-        addValkyrieLayerToPlayerSkin(event, "default");
-        addValkyrieLayerToPlayerSkin(event, "slim");
+    private static void addSlimeLayerToPlayer(
+            EntityRenderersEvent.AddLayers event, String skinType) {
+        PlayerRenderer renderer = event.getSkin(skinType);
+        if (renderer != null) {
+            renderer.addLayer(new SlimeArmorLayer<>(renderer));
+        }
     }
 
     @SubscribeEvent

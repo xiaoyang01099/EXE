@@ -2,8 +2,10 @@ package org.xiaoyang.ex_enigmaticlegacy.Font;
 
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +16,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModItems;
+import org.xiaoyang.ex_enigmaticlegacy.Item.res.HolyRing;
 import org.xiaoyang.ex_enigmaticlegacy.api.exboapi.IWaveName;
 import vazkii.botania.api.mana.ManaItem;
 import vazkii.botania.xplat.XplatAbstractions;
@@ -58,14 +61,14 @@ public class TooltipEvent {
 
     @SubscribeEvent
     public static void onRenderTooltipColor(RenderTooltipEvent.Color event) {
-//        if (event.getItemStack().getItem().equals(ModItems.PRISMATICRADIANCEBLOCK.get())) {
-//            Random random = new Random();
-//            int color = random.nextInt() | 0xFF000000;
-//            event.setBorderStart(color);
-//            event.setBorderEnd(color);
-//            event.setBackgroundStart(color);
-//            event.setBackgroundEnd(color);
-//        }
+        if (event.getItemStack().getItem().equals(ModItems.PRISMATICRADIANCEBLOCK.get())) {
+            Random random = new Random();
+            int color = random.nextInt() | 0xFF000000;
+            event.setBorderStart(color);
+            event.setBorderEnd(color);
+            event.setBackgroundStart(color);
+            event.setBackgroundEnd(color);
+        }
 
         if (event.getItemStack().getItem().equals(ModItems.PRISMATICRADIANCEINGOT.get())) {
             Random random = new Random();
@@ -77,17 +80,17 @@ public class TooltipEvent {
         }
     }
 
-//    @SubscribeEvent
-//    public static void onTooltip(RenderTooltipEvent.Color event) {
-//        float hue = (float) Util.getMillis() / 5000.0F % 1.0F;
-//        int c = 0xFF000000 | Mth.hsvToRgb(hue, 2.0F, 1.5F);
-//        int cd = 0xFF000000 | Mth.hsvToRgb(hue, 2.0F, 0.1F);
-//        if (event.getItemStack().getItem() instanceof HolyRing) {
-//            event.setBorderEnd(c);
-//            event.setBorderStart(c);
-//            event.setBackground(cd);
-//        }
-//    }
+    @SubscribeEvent
+    public static void onTooltip(RenderTooltipEvent.Color event) {
+        float hue = (float) Util.getMillis() / 5000.0F % 1.0F;
+        int c = 0xFF000000 | Mth.hsvToRgb(hue, 2.0F, 1.5F);
+        int cd = 0xFF000000 | Mth.hsvToRgb(hue, 2.0F, 0.1F);
+        if (event.getItemStack().getItem() instanceof HolyRing) {
+            event.setBorderEnd(c);
+            event.setBorderStart(c);
+            event.setBackground(cd);
+        }
+    }
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)

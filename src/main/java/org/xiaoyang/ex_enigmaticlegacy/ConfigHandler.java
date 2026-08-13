@@ -1,13 +1,17 @@
 package org.xiaoyang.ex_enigmaticlegacy;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
+import org.xiaoyang.ex_enigmaticlegacy.Block.BlockPeacefulTable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ConfigHandler {
     public static List<Object> lockWorldNameNebulaRod = new ArrayList<>();
@@ -37,6 +41,7 @@ public class ConfigHandler {
     public static int spreaderBurstMana = 32000;
 
     public static boolean peacefulTableInAllDifficulties = false;
+    public static List<String> peacefulTableEntityBlacklist = new ArrayList<>();
 
     public static List<Object> lockEntityListToHorn = new ArrayList<>();
 
@@ -99,11 +104,11 @@ public class ConfigHandler {
 
     public static ForgeConfigSpec.BooleanValue magicTableUseLongConfig;
     public static ForgeConfigSpec.BooleanValue peacefulTableInAllDifficultiesConfig;
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> peacefulTableEntityBlacklistConfig;
 
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> lockEntityListToHornConfig;
     public static ForgeConfigSpec.BooleanValue itemNameplateEnabledConfig;
     public static ForgeConfigSpec.BooleanValue infinityPotatoDrawHaloConfig;
-
 
     static {
         CLIENT_BUILDER.comment("Client Settings").push("client");
@@ -113,7 +118,6 @@ public class ConfigHandler {
                 .define("enableDragonArmorOverlay", true);
 
         CLIENT_BUILDER.comment("Starlit Sanctum GUI Settings").push("starlit_gui");
-
         starlitGuiScaleConfig = CLIENT_BUILDER
                 .comment(
                         "Scale factor for Starlit Sanctum GUI",
@@ -122,7 +126,6 @@ public class ConfigHandler {
                         "1.0 = full size, 0.5 = half size"
                 )
                 .defineInRange("guiScale", 0.7, 0.1, 1.0);
-
         starlitJeiScaleConfig = CLIENT_BUILDER
                 .comment(
                         "Scale factor for Starlit Sanctum JEI recipe display",
@@ -131,34 +134,30 @@ public class ConfigHandler {
                         "Should match guiScale for consistency"
                 )
                 .defineInRange("jeiScale", 0.7, 0.1, 1.0);
+        CLIENT_BUILDER.pop(); // starlit_gui
 
         CLIENT_BUILDER.comment("Item Nameplate Settings").push("item_nameplate");
-
         itemNameplateEnabledConfig = CLIENT_BUILDER
                 .comment(
                         "Enable/disable the animated nameplate above rare item entities on the ground",
                         "Default: true"
                 )
                 .define("enabled", true);
-
-        CLIENT_BUILDER.pop();
-
-        CLIENT_BUILDER.pop();
+        CLIENT_BUILDER.pop(); // item_nameplate
 
         CLIENT_BUILDER.comment("Infinity Potato Settings").push("infinity_potato");
-
         infinityPotatoDrawHaloConfig = CLIENT_BUILDER
                 .comment(
                         "Enable/disable the halo effect rendered behind the Infinity Potato block",
                         "Default: true"
                 )
                 .define("drawHalo", true);
+        CLIENT_BUILDER.pop(); // infinity_potato
 
-        CLIENT_BUILDER.pop();
-
-        CLIENT_BUILDER.pop();
+        CLIENT_BUILDER.pop(); // client
         CLIENT_SPEC = CLIENT_BUILDER.build();
 
+        // ========== COMMON ==========
         COMMON_BUILDER.comment("Common Settings").push("common");
 
         COMMON_BUILDER.comment("Peaceful Table Settings").push("peaceful_table");
@@ -169,7 +168,21 @@ public class ConfigHandler {
                         "Set to true to enable in all difficulties"
                 )
                 .define("peacefulTableInAllDifficulties", false);
-        COMMON_BUILDER.pop();
+        peacefulTableEntityBlacklistConfig = COMMON_BUILDER
+                .comment(
+                        "Entity blacklist for Peaceful Table - these entities will never be spawned",
+                        "Enter full entity registry IDs",
+                        "Format: [\"modid:entity_name\", \"modid:entity_name\"]",
+                        "Example: [\"minecraft:wither\", \"botania:doppleganger\", \"alexsmobs:warped_mosco\"]"
+                )
+                .defineList(
+                        "entityBlacklist",
+                        Arrays.asList(
+                                "botania:doppleganger"
+                        ),
+                        obj -> obj instanceof String s && !s.isEmpty()
+                );
+        COMMON_BUILDER.pop(); // peaceful_table
 
         COMMON_BUILDER.comment("Timeless Ivy settings").push("timeless_ivy");
         MANA_COST_PER_DAMAGE = COMMON_BUILDER
@@ -187,7 +200,7 @@ public class ConfigHandler {
         REPAIR_TICK = COMMON_BUILDER
                 .comment("Ticks between repair attempts")
                 .defineInRange("repair_tick", 1, 1, Integer.MAX_VALUE);
-        COMMON_BUILDER.pop();
+        COMMON_BUILDER.pop(); // timeless_ivy
 
         COMMON_BUILDER.comment("Sprawl Rod Settings").push("sprawl_rod");
         sprawlRodSpeedConfig = COMMON_BUILDER
@@ -196,7 +209,7 @@ public class ConfigHandler {
         sprawlRodMaxAreaConfig = COMMON_BUILDER
                 .comment("Area of effect for Sprawl Rod projectile")
                 .defineInRange("sprawlMaxArea", 64, 1, 256);
-        COMMON_BUILDER.pop();
+        COMMON_BUILDER.pop(); // sprawl_rod
 
         COMMON_BUILDER.comment("Nebula Rod Settings").push("nebula_rod");
         lockWorldNameNebulaRodConfig = COMMON_BUILDER
@@ -211,7 +224,7 @@ public class ConfigHandler {
         limitXZCoordsConfig = COMMON_BUILDER
                 .comment("Maximum X/Z coordinate limit for teleportation")
                 .defineInRange("coordinateLimit", 30000, 1000, 30000000);
-        COMMON_BUILDER.pop();
+        COMMON_BUILDER.pop(); // nebula_rod
 
         COMMON_BUILDER.comment("Advanced Botany Spreader Settings").push("ab_spreader");
         spreaderMaxManaConfig = COMMON_BUILDER
@@ -220,7 +233,7 @@ public class ConfigHandler {
         spreaderBurstManaConfig = COMMON_BUILDER
                 .comment("Amount of mana in a mana burst from Advanced Botany spreader")
                 .defineInRange("spreaderBurstMana", 32000, 100, 1000000);
-        COMMON_BUILDER.pop();
+        COMMON_BUILDER.pop(); // ab_spreader
 
         COMMON_BUILDER.comment("Horn of Plenty Settings").push("horn_plenty");
         lockEntityListToHornConfig = COMMON_BUILDER
@@ -234,13 +247,12 @@ public class ConfigHandler {
                         Arrays.asList(),
                         obj -> obj instanceof String
                 );
-        COMMON_BUILDER.pop();
+        COMMON_BUILDER.pop(); // horn_plenty
 
         COMMON_BUILDER.comment("Flower Settings").push("flowers");
         maxDictariusCountConfig = COMMON_BUILDER
                 .comment("Maximum number of Dictarius flowers allowed near each other")
                 .defineInRange("maxDictariusCount", 64, 1, 256);
-
         emcFlowerManaPerEMCConfig = COMMON_BUILDER
                 .comment("Mana generated per EMC consumed by EMCFlower")
                 .defineInRange("manaPerEMC", 10, 1, 1000);
@@ -273,11 +285,10 @@ public class ConfigHandler {
         astralKillopMaxManaConfig = COMMON_BUILDER
                 .comment("Maximum mana capacity")
                 .defineInRange("maxMana", 10000, 1000, 100000);
-        COMMON_BUILDER.pop();
-        COMMON_BUILDER.pop();
+        COMMON_BUILDER.pop(); // astral_killop
+        COMMON_BUILDER.pop(); // flowers
 
         COMMON_BUILDER.comment("Power Inventory Settings").push("power_inventory");
-
         COMMON_BUILDER.comment("Experience Costs").push("experience");
         EXP_COST_PEARL = COMMON_BUILDER
                 .comment("Experience levels to unlock ender pearl slot")
@@ -309,7 +320,7 @@ public class ConfigHandler {
         SHOW_GUI_BUTTON = COMMON_BUILDER
                 .comment("Show button in vanilla inventory")
                 .define("showGuiButton", true);
-        COMMON_BUILDER.pop();
+        COMMON_BUILDER.pop(); // display
 
         COMMON_BUILDER.comment("Magic Table Settings").push("magic_table");
         magicTableUseLongConfig = COMMON_BUILDER
@@ -319,7 +330,7 @@ public class ConfigHandler {
                         "Set to true to use long max = 9,223,372,036,854,775,807"
                 )
                 .define("useLongCount", false);
-        COMMON_BUILDER.pop();
+        COMMON_BUILDER.pop(); // magic_table
 
         COMMON_BUILDER.comment("Gameplay Settings").push("gameplay");
         PERSIST_ON_DEATH = COMMON_BUILDER
@@ -331,11 +342,9 @@ public class ConfigHandler {
         FILTER_RANGE = COMMON_BUILDER
                 .comment("Range for filter/dump buttons")
                 .defineInRange("filterRange", 32, 8, 128);
-        COMMON_BUILDER.pop();
+        COMMON_BUILDER.pop(); // gameplay
 
-        COMMON_BUILDER.pop();
-        COMMON_BUILDER.pop();
-
+        COMMON_BUILDER.pop(); // common
         COMMON_SPEC = COMMON_BUILDER.build();
     }
 
@@ -363,7 +372,7 @@ public class ConfigHandler {
     public static void syncCommonConfig() {
         emcFlowerManaPerEMC = emcFlowerManaPerEMCConfig.get();
         emcFlowerMaxMana = emcFlowerMaxManaConfig.get();
-        lockWorldNameNebulaRod = new ArrayList<Object>(lockWorldNameNebulaRodConfig.get());
+        lockWorldNameNebulaRod = new ArrayList<>(lockWorldNameNebulaRodConfig.get());
         nebulaWandCooldownTick = nebulaWandCooldownTickConfig.get();
         nebulaRodManaCost = nebulaRodManaCostConfig.get();
         limitXZCoords = limitXZCoordsConfig.get();
@@ -379,19 +388,19 @@ public class ConfigHandler {
         astralKillopEffectDuration = astralKillopEffectDurationConfig.get();
         astralKillopEffectLevel = astralKillopEffectLevelConfig.get();
         astralKillopMaxMana = astralKillopMaxManaConfig.get();
-        lockEntityListToHorn = new ArrayList<Object>(lockEntityListToHornConfig.get());
-
+        lockEntityListToHorn = new ArrayList<>(lockEntityListToHornConfig.get());
         spreaderMaxMana = spreaderMaxManaConfig.get();
         spreaderBurstMana = spreaderBurstManaConfig.get();
-
         peacefulTableInAllDifficulties = peacefulTableInAllDifficultiesConfig.get();
 
+        BlockPeacefulTable.clearCache();
+
+        Exe.LOGGER.info("Peaceful Table config loaded: AllDifficulties={}, Blacklist={}",
+                peacefulTableInAllDifficulties,
+                PeacefulTableConfig.getEntityBlacklist());
         Exe.LOGGER.info("Horn of Plenty entity blacklist loaded: {}", lockEntityListToHorn);
         Exe.LOGGER.info("Advanced Botany Spreader config loaded: MaxMana={}, BurstMana={}",
                 spreaderMaxMana, spreaderBurstMana);
-        Exe.LOGGER.info("Peaceful Table config loaded: AllDifficulties={}",
-                peacefulTableInAllDifficulties);
-
     }
 
     public static void syncClientConfig() {
@@ -402,81 +411,41 @@ public class ConfigHandler {
         itemNameplateEnabled = itemNameplateEnabledConfig.get();
         Exe.LOGGER.info("Starlit Sanctum GUI scales loaded: GUI={}, JEI={}",
                 starlitGuiScale, starlitJeiScale);
-        Exe.LOGGER.info("Infinity Potato config loaded: drawHalo={}",
-                infinityPotatoDrawHalo);
+        Exe.LOGGER.info("Infinity Potato config loaded: drawHalo={}", infinityPotatoDrawHalo);
     }
 
     private static void syncPowerInventoryConfig() {
         if (IS_LARGE_SCREEN.get()) {
-            if (INVO_WIDTH.get() < 508) {
-                INVO_WIDTH.set(508);
-            }
-            if (INVO_HEIGHT.get() < 346) {
-                INVO_HEIGHT.set(346);
-            }
-            if (MAX_SECTIONS.get() < 15) {
-                MAX_SECTIONS.set(15);
-            }
+            if (INVO_WIDTH.get() < 508) INVO_WIDTH.set(508);
+            if (INVO_HEIGHT.get() < 346) INVO_HEIGHT.set(346);
+            if (MAX_SECTIONS.get() < 15) MAX_SECTIONS.set(15);
         } else {
-            if (INVO_WIDTH.get() > 342) {
-                INVO_WIDTH.set(342);
-            }
-            if (INVO_HEIGHT.get() > 230) {
-                INVO_HEIGHT.set(230);
-            }
-            if (MAX_SECTIONS.get() > 6) {
-                MAX_SECTIONS.set(6);
-            }
+            if (INVO_WIDTH.get() > 342) INVO_WIDTH.set(342);
+            if (INVO_HEIGHT.get() > 230) INVO_HEIGHT.set(230);
+            if (MAX_SECTIONS.get() > 6) MAX_SECTIONS.set(6);
         }
-
         Exe.LOGGER.info("Power Inventory config synced: {}x{}, {} sections",
                 INVO_WIDTH.get(), INVO_HEIGHT.get(), MAX_SECTIONS.get());
     }
 
+    // ========== 内部类（不变）==========
     public static class PowerInventoryConfig {
-        public static int getWidth() {
-            return INVO_WIDTH.get();
-        }
-
-        public static int getHeight() {
-            return INVO_HEIGHT.get();
-        }
-
-        public static int getMaxSections() {
-            return MAX_SECTIONS.get();
-        }
-
-        public static boolean isLargeScreen() {
-            return IS_LARGE_SCREEN.get();
-        }
-
-        public static boolean persistOnDeath() {
-            return PERSIST_ON_DEATH.get();
-        }
-
-        public static boolean requireRing() {
-            return REQUIRE_RING.get();
-        }
-
-        public static boolean showGuiButton() {
-            return SHOW_GUI_BUTTON.get();
-        }
-
-        public static int getFilterRange() {
-            return FILTER_RANGE.get();
-        }
+        public static int getWidth() { return INVO_WIDTH.get(); }
+        public static int getHeight() { return INVO_HEIGHT.get(); }
+        public static int getMaxSections() { return MAX_SECTIONS.get(); }
+        public static boolean isLargeScreen() { return IS_LARGE_SCREEN.get(); }
+        public static boolean persistOnDeath() { return PERSIST_ON_DEATH.get(); }
+        public static boolean requireRing() { return REQUIRE_RING.get(); }
+        public static boolean showGuiButton() { return SHOW_GUI_BUTTON.get(); }
+        public static int getFilterRange() { return FILTER_RANGE.get(); }
     }
 
     public static class MagicTableConfig {
-        public static boolean useLongCount() {
-            return magicTableUseLongConfig.get();
-        }
+        public static boolean useLongCount() { return magicTableUseLongConfig.get(); }
     }
 
     public static class ItemNameplateConfig {
-        public static boolean isEnabled() {
-            return itemNameplateEnabled;
-        }
+        public static boolean isEnabled() { return itemNameplateEnabled; }
     }
 
     public static class NebulaRodConfig {
@@ -507,44 +476,41 @@ public class ConfigHandler {
     }
 
     public static class HornPlentyConfig {
-        public static List getLockEntityList() {
-            return lockEntityListToHorn;
-        }
-
+        public static List getLockEntityList() { return lockEntityListToHorn; }
         public static boolean isEntityLocked(String entityClassName) {
             return lockEntityListToHorn.contains(entityClassName);
         }
     }
 
     public static class StarlitGuiConfig {
-        public static float getGuiScale() {
-            return starlitGuiScale;
-        }
-
-        public static float getJeiScale() {
-            return starlitJeiScale;
-        }
+        public static float getGuiScale() { return starlitGuiScale; }
+        public static float getJeiScale() { return starlitJeiScale; }
     }
 
     public static class ABSpreaderConfig {
-        public static int getSpreaderMaxMana() {
-            return spreaderMaxMana;
-        }
-
-        public static int getSpreaderBurstMana() {
-            return spreaderBurstMana;
-        }
+        public static int getSpreaderMaxMana() { return spreaderMaxMana; }
+        public static int getSpreaderBurstMana() { return spreaderBurstMana; }
     }
 
     public static class PeacefulTableConfig {
         public static boolean isEnabledInAllDifficulties() {
-            return peacefulTableInAllDifficulties;
+            return peacefulTableInAllDifficultiesConfig.get();
+        }
+
+        public static List<String> getEntityBlacklist() {
+            if (peacefulTableEntityBlacklistConfig == null) return Collections.emptyList();
+            return peacefulTableEntityBlacklistConfig.get()
+                    .stream()
+                    .map(Object::toString)
+                    .collect(Collectors.toList());
+        }
+
+        public static boolean isEntityBlacklisted(ResourceLocation entityId) {
+            return getEntityBlacklist().contains(entityId.toString());
         }
     }
 
     public static class InfinityPotatoConfig {
-        public static boolean isDrawHalo() {
-            return infinityPotatoDrawHalo;
-        }
+        public static boolean isDrawHalo() { return infinityPotatoDrawHalo; }
     }
 }

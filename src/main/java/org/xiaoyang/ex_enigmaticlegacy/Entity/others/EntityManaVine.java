@@ -54,7 +54,7 @@ public class EntityManaVine extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
         this.entityData.define(ATTACKER, "");
     }
 

@@ -54,7 +54,7 @@ public class EntityRageousMissile extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
         this.entityData.define(DATA_EVIL, false);
         this.entityData.define(DATA_TARGET_ID, -1);
         this.entityData.define(DATA_THROWER_NAME, "");

@@ -3,6 +3,7 @@ package org.xiaoyang.ex_enigmaticlegacy.Block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
@@ -11,7 +12,6 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Ravager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.BlockGetter;
@@ -26,30 +26,56 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.xiaoyang.ex_enigmaticlegacy.ConfigHandler;
+import org.xiaoyang.ex_enigmaticlegacy.Exe;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class BlockPeacefulTable extends Block {
-    private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 14, 0, 16, 16, 16), Block.box(0, 0, 0, 2, 14, 2), Block.box(0, 0, 14, 2, 14, 16), Block.box(14, 0, 0, 16, 14, 2), Block.box(14, 0, 14, 16, 14, 16));
-    private static final Set<EntityType<?>> BOSS_BLACKLIST = Set.of(EntityType.ENDER_DRAGON, EntityType.WITHER);
     private static List<EntityType<?>> cachedHostileTypes = null;
+    private static final VoxelShape SHAPE = Shapes.or(
+            Block.box(0, 14, 0, 16, 16, 16),
+            Block.box(0, 0, 0, 2, 14, 2),
+            Block.box(0, 0, 14, 2, 14, 16),
+            Block.box(14, 0, 0, 16, 14, 2),
+            Block.box(14, 0, 14, 16, 14, 16)
+    );
 
     public BlockPeacefulTable(Properties properties) {
         super(properties);
     }
 
-    private static List<EntityType<?>> getHostileTypes() {
-        if (cachedHostileTypes == null) {
-            cachedHostileTypes = BuiltInRegistries.ENTITY_TYPE.stream().filter(type -> type.getCategory() == MobCategory.MONSTER).filter(EntityType::canSummon).filter(type -> !BOSS_BLACKLIST.contains(type)).collect(Collectors.toList());
-        }
-        return cachedHostileTypes;
-    }
-
     public static void clearCache() {
         cachedHostileTypes = null;
+        Exe.LOGGER.info("PeacefulTable: cache cleared");
+    }
+
+    private static void rebuildCache() {
+        List<String> blacklist = ConfigHandler.PeacefulTableConfig.getEntityBlacklist();
+        Exe.LOGGER.debug("PeacefulTable: rebuilding cache with blacklist={}", blacklist);
+        cachedHostileTypes = BuiltInRegistries.ENTITY_TYPE.stream()
+                .filter(type -> type.getCategory() == MobCategory.MONSTER)
+                .filter(type -> {
+                    ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
+                    if (id == null) return false;
+                    String idStr = id.toString();
+                    boolean blacklisted = blacklist.contains(idStr);
+                    if (blacklisted) {
+                        Exe.LOGGER.debug("PeacefulTable: blacklisted {}", idStr);
+                    }
+                    return !blacklisted;
+                })
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private static List<EntityType<?>> getHostileTypes() {
+        if (cachedHostileTypes == null) {
+            rebuildCache();
+        }
+        return cachedHostileTypes;
     }
 
     @Override
@@ -58,22 +84,62 @@ public class BlockPeacefulTable extends Block {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos,
+                               CollisionContext context) {
         return SHAPE;
     }
 
     @Override
     public void randomTick(BlockState state, ServerLevel world, BlockPos pos, @NotNull RandomSource random) {
-        if (!ConfigHandler.PeacefulTableConfig.isEnabledInAllDifficulties() && world.getDifficulty() != Difficulty.PEACEFUL) {
+        if (!ConfigHandler.PeacefulTableConfig.isEnabledInAllDifficulties()
+                && world.getDifficulty() != Difficulty.PEACEFUL) {
             return;
         }
 
         List<EntityType<?>> hostileTypes = getHostileTypes();
-        if (hostileTypes.isEmpty()) return;
-        EntityType<?> selectedType = EntityType.ZOMBIE;//hostileTypes.get(random.nextInt(hostileTypes.size()));
+        if (hostileTypes.isEmpty()) {
+            return;
+        }
+
+        Mob monster = null;
+        EntityType<?> selectedType = null;
+        int attempts = 0;
+
+        while (monster == null && attempts < 5) {
+            int index = random.nextInt(hostileTypes.size());
+            selectedType = hostileTypes.get(index);
+            ResourceLocation selectedId = BuiltInRegistries.ENTITY_TYPE.getKey(selectedType);
+
+            Entity rawEntity;
+            try {
+                rawEntity = selectedType.create(world);
+            } catch (Exception e) {
+                Exe.LOGGER.warn("PeacefulTable: failed to create entity {}, removing from cache. Error: {}", selectedId, e.getMessage()
+                );
+                final EntityType<?> failed = selectedType;
+                cachedHostileTypes.removeIf(t -> t == failed);
+                attempts++;
+                continue;
+            }
+
+            if (rawEntity instanceof Mob mob) {
+                monster = mob;
+            } else {
+                if (rawEntity != null) rawEntity.discard();
+                Exe.LOGGER.warn("PeacefulTable: entity {} is not a Mob, removing from cache", selectedId
+                );
+                final EntityType<?> failed = selectedType;
+                cachedHostileTypes.removeIf(t -> t == failed);
+                attempts++;
+            }
+        }
+
+        if (monster == null) return;
+
         Container swordInv = null;
         int swordSlot = -1;
         ItemStack sword = ItemStack.EMPTY;
+
         for (Direction dir : Direction.values()) {
             BlockPos neighborPos = pos.relative(dir);
             BlockEntity te = world.getBlockEntity(neighborPos);
@@ -90,37 +156,58 @@ public class BlockPeacefulTable extends Block {
                 if (!sword.isEmpty()) break;
             }
         }
-        if (sword.isEmpty()) return;
-        Entity rawEntity;
-        try {
-            rawEntity = selectedType.create(world);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-        if (!(rawEntity instanceof Mob monster)) {
-            if (rawEntity != null) rawEntity.discard();
+
+        if (sword.isEmpty()) {
+            monster.discard();
             return;
         }
 
-        if (rawEntity instanceof Ravager) return;
-        AABB searchBox = new AABB(pos.getX() - 2, pos.getY(), pos.getZ() - 2, pos.getX() + 3, pos.getY() + 4, pos.getZ() + 3);
+        AABB searchBox = new AABB(
+                pos.getX() - 2, pos.getY(), pos.getZ() - 2,
+                pos.getX() + 3, pos.getY() + 4, pos.getZ() + 3
+        );
         Set<UUID> beforeItemUUIDs = new HashSet<>();
-        for (ItemEntity item : world.getEntitiesOfClass(ItemEntity.class, searchBox, e -> !e.isRemoved())) {
+        for (ItemEntity item : world.getEntitiesOfClass(
+                ItemEntity.class, searchBox, e -> !e.isRemoved())) {
             beforeItemUUIDs.add(item.getUUID());
         }
-        monster.moveTo(pos.getX() + 0.5, pos.getY() + 1.25, pos.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
+
+        monster.moveTo(
+                pos.getX() + 0.5,
+                pos.getY() + 1.25,
+                pos.getZ() + 0.5,
+                random.nextFloat() * 360.0F, 0.0F
+        );
         monster.setNoAi(true);
         world.addFreshEntity(monster);
 
-        DifficultyInstance hardDifficulty = new DifficultyInstance(Difficulty.HARD, 0L, 0L, 0.0F);
-        monster.finalizeSpawn(world, hardDifficulty, MobSpawnType.TRIGGERED, null, null);
+        DifficultyInstance hardDifficulty =
+                new DifficultyInstance(Difficulty.HARD, 0L, 0L, 0.0F);
+        try {
+            monster.finalizeSpawn(world, hardDifficulty, MobSpawnType.TRIGGERED, null, null);
+        } catch (Exception e) {
+            Exe.LOGGER.warn(
+                    "PeacefulTable: finalizeSpawn failed for {}: {}",
+                    BuiltInRegistries.ENTITY_TYPE.getKey(selectedType), e.getMessage()
+            );
+        }
+
         FakePlayer fakePlayer = FakePlayerFactory.getMinecraft(world);
-        ItemStack swordRef = swordInv.getItem(swordSlot);
-        fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, swordRef);
+        fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, swordInv.getItem(swordSlot));
+        fakePlayer.setYRot(random.nextFloat() * 360.0F);
+        fakePlayer.setXRot(random.nextFloat() * 180.0F - 90.0F);
+
         float hpBefore = monster.getHealth();
-        fakePlayer.attack(monster);
+        try {
+            fakePlayer.attack(monster);
+        } catch (Exception e) {
+            Exe.LOGGER.warn(
+                    "PeacefulTable: attack failed for {}: {}",
+                    BuiltInRegistries.ENTITY_TYPE.getKey(selectedType), e.getMessage()
+            );
+        }
         float hpAfter = monster.getHealth();
+
         if (!monster.isDeadOrDying()) {
             ItemStack currentSword = fakePlayer.getMainHandItem();
             if (!currentSword.isEmpty()) {
@@ -128,36 +215,51 @@ public class BlockPeacefulTable extends Block {
                 if (dmgPerHit > 0) {
                     int extraHits = (int) Math.ceil(hpAfter / dmgPerHit);
                     for (int i = 0; i < extraHits && !currentSword.isEmpty(); i++) {
-                        currentSword.hurtAndBreak(1, fakePlayer, p -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
+                        currentSword.hurtAndBreak(1, fakePlayer,
+                                p -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
                     }
                 }
             }
-            monster.hurt(world.damageSources().playerAttack(fakePlayer), 2);
+            try {
+                monster.hurt(world.damageSources().playerAttack(fakePlayer), Float.MAX_VALUE);
+            } catch (Exception e) {
+                Exe.LOGGER.warn(
+                        "PeacefulTable: final hurt failed for {}: {}",
+                        BuiltInRegistries.ENTITY_TYPE.getKey(selectedType), e.getMessage()
+                );
+            }
             monster.setDeltaMovement(0, 0, 0);
         }
+
         ItemStack handItem = fakePlayer.getMainHandItem();
-        if (handItem.isEmpty()) {
-            swordInv.setItem(swordSlot, ItemStack.EMPTY);
-        } else {
-            swordInv.setItem(swordSlot, handItem);
-        }
+        swordInv.setItem(swordSlot, handItem.isEmpty() ? ItemStack.EMPTY : handItem);
         swordInv.setChanged();
         fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+
         if (!monster.isRemoved()) {
-            monster.kill();
-//            monster.die(fakePlayer.damageSources().genericKill());
-//            monster.remove(Entity.RemovalReason.KILLED);
+            monster.remove(Entity.RemovalReason.KILLED);
         }
-        List<ItemEntity> afterItems = world.getEntitiesOfClass(ItemEntity.class, searchBox, e -> !e.isRemoved());
+
+        List<ItemEntity> afterItems = world.getEntitiesOfClass(
+                ItemEntity.class, searchBox, e -> !e.isRemoved());
+
         for (ItemEntity itemEntity : afterItems) {
             if (beforeItemUUIDs.contains(itemEntity.getUUID())) continue;
+
             Direction[] dirs = Direction.values().clone();
             shuffleArray(dirs, random);
+
             ItemStack toInsert = itemEntity.getItem().copy();
             boolean fullyInserted = false;
+
             for (Direction dir : dirs) {
                 BlockPos neighborPos = pos.relative(dir);
-                Container neighborInv = HopperBlockEntity.getContainerAt(world, neighborPos.getX() + 0.5, neighborPos.getY() + 0.5, neighborPos.getZ() + 0.5);
+                Container neighborInv = HopperBlockEntity.getContainerAt(
+                        world,
+                        neighborPos.getX() + 0.5,
+                        neighborPos.getY() + 0.5,
+                        neighborPos.getZ() + 0.5
+                );
                 if (neighborInv != null) {
                     toInsert = insertItem(neighborInv, toInsert);
                     if (toInsert.isEmpty()) {
@@ -166,6 +268,7 @@ public class BlockPeacefulTable extends Block {
                     }
                 }
             }
+
             if (fullyInserted) {
                 itemEntity.remove(Entity.RemovalReason.DISCARDED);
             } else if (toInsert.getCount() < itemEntity.getItem().getCount()) {
@@ -178,6 +281,7 @@ public class BlockPeacefulTable extends Block {
         if (stack.isEmpty()) return ItemStack.EMPTY;
         int maxStack = Math.min(stack.getMaxStackSize(), inv.getMaxStackSize());
         int remaining = stack.getCount();
+
         for (int i = 0; i < inv.getContainerSize() && remaining > 0; i++) {
             if (!inv.canPlaceItem(i, stack)) continue;
             ItemStack slot = inv.getItem(i);
@@ -192,6 +296,7 @@ public class BlockPeacefulTable extends Block {
                 }
             }
         }
+
         for (int i = 0; i < inv.getContainerSize() && remaining > 0; i++) {
             if (!inv.canPlaceItem(i, stack)) continue;
             ItemStack slot = inv.getItem(i);
@@ -204,6 +309,7 @@ public class BlockPeacefulTable extends Block {
                 inv.setChanged();
             }
         }
+
         if (remaining <= 0) return ItemStack.EMPTY;
         ItemStack ret = stack.copy();
         ret.setCount(remaining);

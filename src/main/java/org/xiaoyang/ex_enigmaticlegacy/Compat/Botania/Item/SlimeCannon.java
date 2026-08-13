@@ -24,6 +24,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import org.xiaoyang.ex_enigmaticlegacy.Entity.others.EntitySlimeCannonBall;
 import org.xiaoyang.ex_enigmaticlegacy.Font.StyleMarker;
+import org.xiaoyang.ex_enigmaticlegacy.Util.SlimeCannonGuardAbsorb;
 import org.xiaoyang.ex_enigmaticlegacy.api.exboapi.IWaveName;
 import top.theillusivec4.curios.api.CuriosApi;
 import vazkii.botania.api.BotaniaForgeCapabilities;
@@ -107,6 +108,7 @@ public class SlimeCannon extends Item implements IWaveName {
 
         if (isAbsorbMode(stack)) {
             tickAbsorb(stack, player, level);
+            SlimeCannonGuardAbsorb.autoAbsorbTick(stack, player, level);
         }
     }
 
@@ -117,13 +119,16 @@ public class SlimeCannon extends Item implements IWaveName {
             tag.putInt(TAG_ABSORB_TIMER, timer - 1);
             return;
         }
+        double range = SlimeCannonGuardAbsorb.getAbsorbRadius(player);
+
         var hit = ProjectileUtil.getEntityHitResult(
                 level, player,
                 player.getEyePosition(),
-                player.getEyePosition().add(player.getLookAngle().scale(8.0)),
-                player.getBoundingBox().inflate(8.0),
+                player.getEyePosition().add(player.getLookAngle().scale(range)),
+                player.getBoundingBox().inflate(range),
                 e -> e instanceof Slime s && s.isAlive() && !s.isInvisible()
         );
+
         if (hit != null && hit.getEntity() instanceof Slime slime) {
             tryAbsorbSlime(stack, slime, player, level);
             int cooldown = ABSORB_COOLDOWN_TICKS;
@@ -133,7 +138,8 @@ public class SlimeCannon extends Item implements IWaveName {
             tag.putInt(TAG_ABSORB_TIMER, cooldown);
         } else {
             player.displayClientMessage(
-                    Component.translatable("message.slime_cannon.absorbing")
+                    net.minecraft.network.chat.Component.translatable(
+                                    "message.slime_cannon.absorbing")
                             .withStyle(ChatFormatting.GRAY),
                     true);
         }

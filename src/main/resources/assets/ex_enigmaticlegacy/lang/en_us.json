@@ -29,6 +29,10 @@
   "entity.ex_enigmaticlegacy.spectrite_wither": "Spectrite Wither",
   "entity.ex_enigmaticlegacy.spotted_garden_eel_bucket": "Spotted Garden Eel",
 
+
+  "block.ex_enigmaticlegacy.certus_quartz_flower": "Certus Quartz Flower",
+  "block.ex_enigmaticlegacy.trinary_synthesis": "Trinary Synthesis",
+  "block.ex_enigmaticlegacy.vboltage_rose": "Voltage Rose",
   "block.ex_enigmaticlegacy.magic_table": "Magic Table",
   "block.ex_enigmaticlegacy.peaceful_table": "Silent Peace Table",
   "block.ex_enigmaticlegacy.advanced_spreader": "Natural Mana Spreader",
@@ -51,8 +55,6 @@
   "block.ex_enigmaticlegacy.full_altar": "Water God Full Apothecary",
   "block.ex_enigmaticlegacy.evil_forge": "Evil Forge",
   "block.ex_enigmaticlegacy.etherium_forge": "Etherium Forge",
-  "block.ex_enigmaticlegacy.gear_flower": "Gear Flower(WIP)",
-  "block.ex_enigmaticlegacy.trinary_synthesis": "Trinary Synthesis(WIP)",
   "block.ex_enigmaticlegacy.dictarius": "Dictarius",
   "block.ex_enigmaticlegacy.ancient_alphirine": "Ancient Alphirine",
   "block.ex_enigmaticlegacy.catnip": "Catnip",
@@ -1275,7 +1277,10 @@
   "ex_enigmaticlegacy.sphereNavigation.enabled": "Sphere Navigation Enabled",
   "ex_enigmaticlegacy.sphereNavigation.disabled": "Sphere Navigation Disabled",
 
-
+  "message.ex_enigmaticlegacy.shield_expand": "Shield Expanding",
+  "message.ex_enigmaticlegacy.shield_stop"  : "Shield Holding",
+  "message.ex_enigmaticlegacy.shield_shrink": "Shield Shrinking",
+  "message.ex_enigmaticlegacy.shield_radius": "Radius: %s",
   "config.jade.plugin_ex_enigmaticlegacy.item_wave_name": "Special Text Items",
   "message.ex_enigmaticlegacy.cursed_flower.wither_warning": "§cCursed Environment Missing! Withering in %s seconds",
   "block.ex_enigmaticlegacy.mana_converter.normal_to_cursed.tooltip": "Converts vanilla mana into cursed mana",

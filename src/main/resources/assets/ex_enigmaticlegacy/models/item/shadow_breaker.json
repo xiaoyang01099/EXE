@@ -1,6 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "ex_enigmaticlegacy:item/weapons/shadow_breaker"
+    "layer0": "ex_enigmaticlegacy:item/weapons/shadow_breaker",
+    "layer1": "ex_enigmaticlegacy:item/weapons/shadow_breaker_overlay"
   }
 }

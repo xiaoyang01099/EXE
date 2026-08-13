@@ -131,9 +131,7 @@ public class Shadowbreaker extends SwordItem {
         return pushed;
     }
 
-    private void particleRing(Level level, double x, double y, double z, double range,
-                              float r, float g, float b,
-                              float motion, float verticalMotion, float size) {
+    private void particleRing(Level level, double x, double y, double z, double range, float r, float g, float b, float motion, float verticalMotion, float size) {
         if (!level.isClientSide) {
             return;
         }

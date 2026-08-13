@@ -17,6 +17,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.xiaoyang.ex_enigmaticlegacy.Font.ModRarities;
+import org.xiaoyang.ex_enigmaticlegacy.Item.armor.material.ZMaterial;
 
 import java.util.UUID;
 

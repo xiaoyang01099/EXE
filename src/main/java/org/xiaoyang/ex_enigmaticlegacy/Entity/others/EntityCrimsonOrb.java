@@ -51,7 +51,7 @@ public class EntityCrimsonOrb extends ThrowableProjectile implements IEntityAddi
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
         this.entityData.define(IS_RED, false);
         this.entityData.define(TARGET_ID, -1);
         this.entityData.define(CASTER_ID, -1);

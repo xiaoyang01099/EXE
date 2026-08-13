@@ -745,7 +745,6 @@ public class ModRarities {
         }
     }
 
-    // ===== Shatter =====
     private static ShardData[][] buildShards(Font font, String raw) {
         ShardData[][] result = new ShardData[raw.length()][];
         Random rng = new Random(SHATTER_SEED + raw.hashCode());
@@ -920,6 +919,11 @@ public class ModRarities {
         }
     }
 
-    private static float smoothstep(float t) { t=Math.max(0f,Math.min(1f,t)); return t*t*(3-2*t); }
-    private static int clamp(int v) { return Math.max(0,Math.min(255,v)); }
+    private static float smoothstep(float t) {
+        t=Math.max(0f,Math.min(1f,t)); return t*t*(3-2*t);
+    }
+
+    private static int clamp(int v) {
+        return Math.max(0,Math.min(255,v));
+    }
 }

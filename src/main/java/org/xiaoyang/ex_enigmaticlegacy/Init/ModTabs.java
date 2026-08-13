@@ -25,6 +25,7 @@ public class ModTabs {
             TABS.register("ex_enigmaticlegacy_botania", () ->
                     CreativeModeTab.builder()
                             .title(Component.translatable("itemGroup.ex_enigmaticlegacy_botania"))
+                            .withTabsBefore(CreativeModeTabs.COMBAT)
                             .withBackgroundLocation(new ResourceLocation(MODID,
                                     "textures/gui/container/creative_inventory/tab_botania.png"))
                             .icon(() -> ModItems.ANTIGRAVITY_CHARM.get().getDefaultInstance())
@@ -58,7 +59,21 @@ public class ModTabs {
         addSingularity(output);
         //决心
         addDetermination(output);
-        output.accept(ModItems.ADVANCED_SPREADER.get());
+        //AE2物品
+        addAe2Items(output);
+    }
+
+    private static void addAe2Items(CreativeModeTab.Output output) {
+        if (!ModList.get().isLoaded("ae2")) return;
+
+        if (ModIntegrationFlowers.VOLTAGE_ROSE_TILE != null && ModIntegrationFlowers.VOLTAGE_ROSE_ITEM.isPresent())
+            output.accept(ModIntegrationFlowers.VOLTAGE_ROSE_ITEM.get());
+
+        if (ModIntegrationFlowers.TRINARY_SYNTHESIS_ITEM != null && ModIntegrationFlowers.TRINARY_SYNTHESIS_ITEM.isPresent())
+            output.accept(ModIntegrationFlowers.TRINARY_SYNTHESIS_ITEM.get());
+
+        if (ModIntegrationFlowers.CERTUS_QUARTZ_FLOWER_ITEM != null && ModIntegrationFlowers.CERTUS_QUARTZ_FLOWER_ITEM.isPresent())
+            output.accept(ModIntegrationFlowers.CERTUS_QUARTZ_FLOWER_ITEM.get());
     }
 
     private static void addProjecteItems(CreativeModeTab.Output output) {
@@ -160,6 +175,7 @@ public class ModTabs {
     }
 
     private static void addFlowers(CreativeModeTab.Output output) {
+        output.accept(ModItems.PRISM_FLOWER.get());
         output.accept(ModItems.ASTRAL_KILLOP.get());
         output.accept(ModItems.RAINBOW_GENERATING_FLOWER.get());
         output.accept(ModItems.CURSET_THISTLE.get());
@@ -195,6 +211,7 @@ public class ModTabs {
     }
 
     private static void addNormalItems(CreativeModeTab.Output output) {
+        output.accept(ModItems.PRISM_ROD.get());
         output.accept(ModItems.SPAWN_CONTROL_STAFF.get());
         output.accept(ModItems.TERRA_FARMLAND.get());
         output.accept(ModItems.FREYR_SLINGSHOT.get());

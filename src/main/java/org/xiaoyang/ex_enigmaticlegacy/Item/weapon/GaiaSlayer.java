@@ -75,9 +75,7 @@ public class GaiaSlayer extends Item implements IPreventBreakInCreative {
     }
 
     @Override
-    public @NotNull Multimap<Attribute, AttributeModifier> getAttributeModifiers(
-            @NotNull EquipmentSlot slot,
-            @NotNull ItemStack stack) {
+    public @NotNull Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
 
         Multimap<Attribute, AttributeModifier> multimap = HashMultimap.create();
 

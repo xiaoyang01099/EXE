@@ -198,7 +198,7 @@ public class Xingyun2825Entity extends Monster implements PowerableMob {
     }
 
     @Override
-    protected void doAutoAttackOnTouch(LivingEntity living) {
+    public void doAutoAttackOnTouch(LivingEntity living) {
         living.hurtTime = 20;
         living.deathTime = 1;
         double x = living.getX();
@@ -262,7 +262,7 @@ public class Xingyun2825Entity extends Monster implements PowerableMob {
     }
 
     @Override
-    protected void tickDeath() {
+    public void tickDeath() {
         deathTick++;
         deathTime = -2;
         hurtTime = 1;

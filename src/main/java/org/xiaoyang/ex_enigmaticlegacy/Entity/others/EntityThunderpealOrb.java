@@ -40,7 +40,7 @@ public class EntityThunderpealOrb extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
     }
 
     public void shootLightning(Level world, Entity entity, double xx, double yy, double zz, boolean main) {

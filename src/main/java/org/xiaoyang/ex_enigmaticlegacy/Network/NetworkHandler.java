@@ -38,6 +38,14 @@ public class NetworkHandler {
 
         CHANNEL.registerMessage(
                 packetId++,
+                SyncSnowOverridePacket.class,
+                SyncSnowOverridePacket::encode,
+                SyncSnowOverridePacket::decode,
+                SyncSnowOverridePacket::handle
+        );
+
+        CHANNEL.registerMessage(
+                packetId++,
                 ScrollPagePacket.class,
                 ScrollPagePacket::encode,
                 ScrollPagePacket::decode,

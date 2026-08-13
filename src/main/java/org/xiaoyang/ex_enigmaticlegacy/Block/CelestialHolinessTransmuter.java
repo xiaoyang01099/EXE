@@ -74,7 +74,6 @@ public class CelestialHolinessTransmuter extends BaseEntityBlock {
 		return RenderShape.MODEL;
 	}
 
-	@SuppressWarnings("removal")
 	@OnlyIn(Dist.CLIENT)
 	public static void registerRenderLayer() {
 		ItemBlockRenderTypes.setRenderLayer(ModBlocks.CELESTIAL_HOLINESS_TRANSMUTER.get(), renderType -> renderType == RenderType.cutout());

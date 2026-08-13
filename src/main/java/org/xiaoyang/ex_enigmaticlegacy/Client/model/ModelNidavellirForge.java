@@ -13,7 +13,6 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
-@SuppressWarnings("removal")
 public class ModelNidavellirForge extends Model {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
             new ResourceLocation("ex_enigmaticlegacy", "nidavellir_forge"), "main");

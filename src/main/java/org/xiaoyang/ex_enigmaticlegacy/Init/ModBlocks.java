@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -33,6 +34,7 @@ public class ModBlocks {
 
 
     //方块
+    public static final RegistryObject<Block> PRISM_FLAME = BLOCKS.register("prism_flame", PrismFlameBlock::new);
     public static final RegistryObject<Block> ANTIGRAVITATION_BLOCK = BLOCKS.register("antigravitation_block", BlockAntigravitation::new);
     public static final RegistryObject<Block> TERRA_FARMLAND = BLOCKS.register("terra_farmland", TerraFarmland::new);
     public static final RegistryObject<Block> MANA_BOX = BLOCKS.register("mana_box", BlockManaBox::new);
@@ -90,25 +92,9 @@ public class ModBlocks {
 
 
     //魔法花
-
-    public static final RegistryObject<Block> ASTRAL_KILLOP = BLOCKS.register("astral_killop",
-            () -> new AstralKillop(
-                    MobEffects.HEALTH_BOOST,
-                    120,
-                    Block.Properties.copy(Blocks.POPPY),
-                    ModBlockEntities.ASTRAL_KILLOP_TILE::get
-            )
-    );
-
-    public static final RegistryObject<Block> RAINBOW_GENERATING_FLOWER = BLOCKS.register("rainbow_generating_flower",
-            () -> new RainbowGeneratingFlowerBlock(
-                    MobEffects.HEALTH_BOOST,
-                    120,
-                    Block.Properties.copy(Blocks.POPPY),
-                    ModBlockEntities.RAINBOW_GENERATING_FLOWER_TILE::get
-            )
-    );
-
+    public static final RegistryObject<Block> PRISM_FLOWER = BLOCKS.register("prism_flower", () -> new PrismFlower(MobEffects.HEALTH_BOOST, 120, Block.Properties.copy(Blocks.POPPY),ModBlockEntities.PRISM_FLOWER_TILE::get));
+    public static final RegistryObject<Block> ASTRAL_KILLOP = BLOCKS.register("astral_killop", () -> new AstralKillop(MobEffects.HEALTH_BOOST, 120, Block.Properties.copy(Blocks.POPPY), ModBlockEntities.ASTRAL_KILLOP_TILE::get));
+    public static final RegistryObject<Block> RAINBOW_GENERATING_FLOWER = BLOCKS.register("rainbow_generating_flower", () -> new RainbowGeneratingFlowerBlock(MobEffects.HEALTH_BOOST, 120, Block.Properties.copy(Blocks.POPPY), ModBlockEntities.RAINBOW_GENERATING_FLOWER_TILE::get));
     public static final RegistryObject<Block> NIGHTSHADE = BLOCKS.register("nightshade",() -> new NightshadeBlock(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.NIGHTSHADE_TILE::get));
     public static final RegistryObject<Block> DAYBLOOM = BLOCKS.register("daybloom",() -> new DaybloomBlock(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.DAYBLOOM_TILE::get));
     public static final RegistryObject<Block> FLOWEY = BLOCKS.register("flowey",() -> new FloweyBlock(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.FLOWEYTILE::get));

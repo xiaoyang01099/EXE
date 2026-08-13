@@ -10,7 +10,6 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
-@SuppressWarnings("removal")
 public class RainbowTableModel<T extends Entity> extends EntityModel<T> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("ex_enigmaticlegacy", "rainbow_table"), "main");
 	private final ModelPart part;

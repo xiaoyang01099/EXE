@@ -46,8 +46,7 @@ public class ManaChargerBlock extends BaseEntityBlock implements Wandable {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
-                                 InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof ManaChargerTile tile)) {
             return InteractionResult.PASS;
         }

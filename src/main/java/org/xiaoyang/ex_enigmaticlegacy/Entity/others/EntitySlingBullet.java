@@ -50,7 +50,7 @@ public class EntitySlingBullet extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
         this.entityData.define(ITEM, ItemStack.EMPTY);
     }
 

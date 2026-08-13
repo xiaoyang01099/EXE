@@ -42,7 +42,7 @@ public class EntitySoulEnergy extends ThrowableProjectile implements IEntityAddi
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
     }
 
     @Override

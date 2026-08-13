@@ -11,10 +11,10 @@ import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.Relic.TerrorCrown;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import org.xiaoyang.ex_enigmaticlegacy.Item.armor.*;
 import org.xiaoyang.ex_enigmaticlegacy.Item.armor.UV.*;
+import org.xiaoyang.ex_enigmaticlegacy.Item.armor.material.SMaterial;
 
 public class ModArmors {
-    public static final DeferredRegister<Item> REGISTRY =
-            DeferredRegister.create(ForgeRegistries.ITEMS, Exe.MODID);
+    public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, Exe.MODID);
 
     public static final RegistryObject<Item> MANAITA_CHESTPLATE = REGISTRY.register(
             "manaita_chestplate", () -> new ManaitaArmor(ArmorItem.Type.CHESTPLATE));
@@ -67,4 +67,22 @@ public class ModArmors {
             "ultimate_valkyrie_leggings", () -> new UltimateValkyrieLeggings(new Item.Properties()));
     public static final RegistryObject<Item> ULTIMATE_VALKYRIE_BOOTS = REGISTRY.register(
             "ultimate_valkyrie_boots", () -> new UltimateValkyrieBoots(new Item.Properties()));
+
+    public static final RegistryObject<Item> SLIME_HELMET = REGISTRY.register(
+            "slime_helmet", () -> new SlimeArmor(ArmorMaterials.NETHERITE, ArmorItem.Type.HELMET));
+    public static final RegistryObject<Item> SLIME_CHESTPLATE = REGISTRY.register(
+            "slime_chestplate", () -> new SlimeArmor(ArmorMaterials.NETHERITE,ArmorItem.Type.CHESTPLATE));
+    public static final RegistryObject<Item> SLIME_LEGGINGS = REGISTRY.register(
+            "slime_leggings", () -> new SlimeArmor(ArmorMaterials.NETHERITE,ArmorItem.Type.LEGGINGS));
+    public static final RegistryObject<Item> SLIME_BOOTS = REGISTRY.register(
+            "slime_boots", () -> new SlimeArmor(ArmorMaterials.NETHERITE,ArmorItem.Type.BOOTS));
+
+    public static final RegistryObject<ArmorSunmaker> SUNMAKER_HELMET = REGISTRY.register(
+            "sunmaker_helmet", () -> new ArmorSunmaker(ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<ArmorSunmaker> SUNMAKER_CHESTPLATE = REGISTRY.register(
+            "sunmaker_chestplate", () -> new ArmorSunmaker(ArmorItem.Type.CHESTPLATE, new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<ArmorSunmaker> SUNMAKER_LEGGINGS = REGISTRY.register(
+            "sunmaker_leggings", () -> new ArmorSunmaker(ArmorItem.Type.LEGGINGS, new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<ArmorSunmaker> SUNMAKER_BOOTS = REGISTRY.register(
+            "sunmaker_boots", () -> new ArmorSunmaker(ArmorItem.Type.BOOTS, new Item.Properties().stacksTo(1)));
 }

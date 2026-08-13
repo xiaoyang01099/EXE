@@ -43,7 +43,7 @@ public class NatureBoltEntity extends ThrowableProjectile implements ItemSupplie
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
     }
 
     public void setDamage(float damage) {

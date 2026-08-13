@@ -13,7 +13,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Zombie;
 
-@SuppressWarnings("removal")
 public class ModelArmorWildHunt<T extends LivingEntity> extends HumanoidModel<T> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
             new ResourceLocation("ex_enigmaticlegacy", "wild_hunt_armor"), "main");
@@ -292,7 +291,6 @@ public class ModelArmorWildHunt<T extends LivingEntity> extends HumanoidModel<T>
 
     private void setupMonsterAnimation(LivingEntity entity, float limbSwing, float limbSwingAmount,
                                        float ageInTicks, float netHeadYaw, float headPitch) {
-        // 特定于怪物的动画
         rightArm.xRot = -(float) Math.PI / 2F;
         leftArm.xRot = -(float) Math.PI / 2F;
 
@@ -306,7 +304,6 @@ public class ModelArmorWildHunt<T extends LivingEntity> extends HumanoidModel<T>
         rightArm.yRot = -(0.1F - f1 * 0.6F);
         leftArm.yRot = 0.1F - f1 * 0.6F;
 
-        // 应用摆动动画
         rightArm.xRot -= f1 * 1.2F - f2 * 0.4F;
         leftArm.xRot -= f1 * 1.2F - f2 * 0.4F;
         rightArm.zRot += (float) (Math.cos(ageInTicks * 0.09F) * 0.05F + 0.05F);

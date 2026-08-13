@@ -5,9 +5,11 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "exe.refmap.json",
   "mixins": [
+    "MixinBiomePrecipitation"
   ],
   "client": [
-    "MixinGuiSelectedItemName"
+    "MixinGuiSelectedItemName",
+    "PlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -21,7 +20,6 @@ public final class SpecialRenderHelper extends RenderType {
     public static final RenderType STARRY_SKY;
     public static final RenderType BLACK_HOLE;
     public static final RenderType ANDROMEDA;
-    public static final RenderType KATANA;
     public static final RenderType PRISMA;
     public static final RenderType STAR_LINE;
 
@@ -43,15 +41,13 @@ public final class SpecialRenderHelper extends RenderType {
     }
 
     static {
-        RenderType.CompositeState glState = CompositeState.builder().setShaderState(POSITION_COLOR_SHADER).setWriteMaskState(COLOR_WRITE).setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY).createCompositeState(false);
-
-//        CompositeState glState = CompositeState.builder()
-//                .setTextureState(BLOCK_SHEET_MIPPED)
-//                .setShaderState(new ShaderStateShard(SpecialCoreShaders::rainbowManaWater))
-//                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-//                .setOutputState(ITEM_ENTITY_TARGET)
-//                .setLightmapState(LIGHTMAP)
-//                .createCompositeState(false);
+        CompositeState glState = CompositeState.builder()
+                .setTextureState(BLOCK_SHEET_MIPPED)
+                .setShaderState(new ShaderStateShard(SpecialCoreShaders::rainbowManaWater))
+                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .setOutputState(ITEM_ENTITY_TARGET)
+                .setLightmapState(LIGHTMAP)
+                .createCompositeState(false);
         RAINBOW_MANA_WATER = makeLayer(Exe.MODID + ":rainbow_mana_water",
                 DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
 
@@ -121,17 +117,6 @@ public final class SpecialRenderHelper extends RenderType {
                 .setCullState(NO_CULL)
                 .createCompositeState(false);
         ANDROMEDA = makeLayer(Exe.MODID + ":andromeda",
-                DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, glState);
-
-        glState = CompositeState.builder()
-                .setShaderState(new ShaderStateShard(SpecialCoreShaders::getKatanaShader))
-                .setTextureState(NO_TEXTURE)
-                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                .setWriteMaskState(COLOR_WRITE)
-                .setDepthTestState(LEQUAL_DEPTH_TEST)
-                .setCullState(NO_CULL)
-                .createCompositeState(false);
-        KATANA = makeLayer(Exe.MODID + ":katana",
                 DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, glState);
 
         glState = CompositeState.builder()

@@ -33,6 +33,6 @@ public class FrostBlossomBlock extends ForgeSpecialFlowerBlock {
     @Override
     public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
         BlockState soil = worldIn.getBlockState(pos.below());
-        return soil.is(ModBlocks.BLOCKNATURE.get()) || soil.is(Blocks.END_STONE_BRICKS) || soil.is(Blocks.END_STONE);
+        return soil.is(ModBlocks.BLOCKNATURE.get()) || soil.is(Blocks.SNOW_BLOCK) || soil.is(Blocks.GRASS_BLOCK);
     }
 }

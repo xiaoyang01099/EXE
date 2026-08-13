@@ -44,7 +44,6 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy")
 public class TerrorCrown extends ArmorItem implements INoEMCItem, ICursed {
-
     public TerrorCrown(ArmorMaterial material, ArmorItem.Type type) {
         super(material, type, ManaitaArmor.MANAITA_ARMOR);
     }

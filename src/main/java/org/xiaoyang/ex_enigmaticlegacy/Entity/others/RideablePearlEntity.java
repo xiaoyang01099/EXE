@@ -20,12 +20,12 @@ public class RideablePearlEntity extends ThrowableItemProjectile {
     }
 
     @Override
-    protected Item getDefaultItem() {
+    public Item getDefaultItem() {
         return ModItems.RIDEABLE_PEARL.get();
     }
 
     @Override
-    protected void onHit(HitResult result) {
+    public void onHit(HitResult result) {
         super.onHit(result);
 
         if (!this.level.isClientSide) {

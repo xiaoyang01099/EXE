@@ -42,7 +42,6 @@ public class EntityLunarFlare extends ThrowableProjectile {
 
     public EntityLunarFlare(EntityType<? extends EntityLunarFlare> entityType, Level level) {
         super(entityType, level);
-        // 尺寸请在 EntityType.Builder.sized(0.0F, 0.0F) 中设置
     }
 
     public EntityLunarFlare(EntityType<? extends EntityLunarFlare> entityType, Level level, LivingEntity shooter, int x, int y, int z) {
@@ -58,7 +57,7 @@ public class EntityLunarFlare extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
         this.entityData.define(LOCK_X, 0);
         this.entityData.define(LOCK_Y, 0);
         this.entityData.define(LOCK_Z, 0);

@@ -18,7 +18,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 
-@SuppressWarnings("removal")
 @OnlyIn(Dist.CLIENT)
 public class NebulaArmorModel<T extends LivingEntity> extends HumanoidModel<T> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Exe.MODID, "armor_nebula"), "main");

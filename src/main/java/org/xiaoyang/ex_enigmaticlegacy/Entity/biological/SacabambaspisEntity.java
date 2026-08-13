@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.xiaoyang.ex_enigmaticlegacy.Entity.ai.EatFishFoodAIFish;
 import org.xiaoyang.ex_enigmaticlegacy.Entity.ai.EntityMateAIFishBase;
+import org.xiaoyang.ex_enigmaticlegacy.Entity.all.EntityFishBase;
 
 public class SacabambaspisEntity extends EntityFishBase {
 
@@ -142,17 +143,17 @@ public class SacabambaspisEntity extends EntityFishBase {
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+    public SoundEvent getHurtSound(DamageSource damageSourceIn) {
         return SoundEvents.GENERIC_HURT;
     }
 
     @Override
-    protected SoundEvent getDeathSound() {
+    public SoundEvent getDeathSound() {
         return SoundEvents.GENERIC_DEATH;
     }
 
     @Override
-    protected float getSoundVolume() {
+    public float getSoundVolume() {
         return 1.0F;
     }
 

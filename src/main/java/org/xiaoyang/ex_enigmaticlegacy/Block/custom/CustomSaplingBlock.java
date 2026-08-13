@@ -37,7 +37,6 @@ public class CustomSaplingBlock extends SaplingBlock {
         return (double)random.nextFloat() < 0.50D;
     }
 
-    @SuppressWarnings("removal")
     @OnlyIn(Dist.CLIENT)
     public static void registerRenderLayer() {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.CUSTOM_SAPLING.get(), renderType -> renderType == RenderType.cutout());

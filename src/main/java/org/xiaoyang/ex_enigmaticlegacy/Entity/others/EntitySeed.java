@@ -47,7 +47,7 @@ public class EntitySeed extends ThrowableProjectile implements ItemSupplier {
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
         this.entityData.define(DATA_SEED, new ItemStack(Blocks.AIR));
         this.entityData.define(DATA_RADIUS, 1);
         this.entityData.define(DATA_ATTACKER, "");

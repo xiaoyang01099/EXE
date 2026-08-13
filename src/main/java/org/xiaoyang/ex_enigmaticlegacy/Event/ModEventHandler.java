@@ -1,5 +1,6 @@
 package org.xiaoyang.ex_enigmaticlegacy.Event;
 
+import appeng.capabilities.Capabilities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
@@ -44,6 +45,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.*;
@@ -66,14 +68,10 @@ import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.AntigravityCharm;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.ManaBucket;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.ContainerOverpowered;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.SlimeNecklace;
-import org.xiaoyang.ex_enigmaticlegacy.Container.CelestialHTMenu;
 import org.xiaoyang.ex_enigmaticlegacy.Effect.Drowning;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import org.xiaoyang.ex_enigmaticlegacy.Init.*;
-import org.xiaoyang.ex_enigmaticlegacy.Item.armor.ManaitaArmor;
-import org.xiaoyang.ex_enigmaticlegacy.Item.armor.NebulaArmor;
-import org.xiaoyang.ex_enigmaticlegacy.Item.armor.NebulaArmorHelper;
-import org.xiaoyang.ex_enigmaticlegacy.Item.armor.WildHuntArmor;
+import org.xiaoyang.ex_enigmaticlegacy.Item.armor.*;
 import org.xiaoyang.ex_enigmaticlegacy.Item.res.BedrockBreaker;
 import org.xiaoyang.ex_enigmaticlegacy.Item.res.InfinityTotemLevel;
 import org.xiaoyang.ex_enigmaticlegacy.Item.weapon.Wastelayer;
@@ -88,10 +86,7 @@ import vazkii.botania.common.block.decor.TinyPotatoBlock;
 import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.patchouli.api.PatchouliAPI;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.AdminController.shouldKeepInventory;
 

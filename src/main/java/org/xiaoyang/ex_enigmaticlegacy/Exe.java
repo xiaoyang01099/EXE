@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.xiaoyang.ex_enigmaticlegacy.Client.particle.ef.EffectManager;
 import org.xiaoyang.ex_enigmaticlegacy.Client.particle.ef.FXHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.EventHandler;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialCoreShaders;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Projecte.Factory.ProjecteFactory;
 import org.xiaoyang.ex_enigmaticlegacy.Event.CrissaegrimEventHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Event.KeybindHandler;
@@ -48,19 +49,16 @@ public class Exe {
     public static boolean isEx = false;
     private static final Collection<AbstractMap.SimpleEntry<Runnable, Integer>> workQueue = new ConcurrentLinkedQueue<>();
 
-
     public static void queueServerWork(int tick, Runnable action) {
         workQueue.add(new AbstractMap.SimpleEntry<>(action, tick));
     }
 
-    @SuppressWarnings("removal")  //禁用过期警告
     public Exe() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         MinecraftForge.EVENT_BUS.register(this);
         isEx = ModList.get().isLoaded("enigmaticlegacy");
-
         ModEffects.registerEffects();
         ModSounds.register();
         ModRecipes.register(modEventBus);
@@ -77,6 +75,7 @@ public class Exe {
         ModArmors.REGISTRY.register(modEventBus);
         ModEnchantments.REGISTRY.register(modEventBus);
         ModParticleTypes.register(modEventBus);
+
 
         ModIntegrationFlowers.BLOCK_REGISTRY.register(modEventBus);
         ModIntegrationFlowers.BLOCK_ENTITY_REGISTRY.register(modEventBus);
@@ -115,7 +114,6 @@ public class Exe {
         });
     }
 
-    @SuppressWarnings("removal")  //禁用过期警告
     public static ResourceLocation path(String path) {
         return new ResourceLocation("ex_enigmaticlegacy", path);
     }
@@ -142,7 +140,6 @@ public class Exe {
             event.register(WaveNameData.class, WaveNameTooltipComponent::new);
         }
 
-        @SuppressWarnings("removal")  //禁用过期警告
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             AnimatedChestTexture.init();

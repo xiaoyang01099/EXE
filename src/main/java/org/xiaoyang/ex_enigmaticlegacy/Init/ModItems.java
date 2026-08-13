@@ -35,6 +35,7 @@ public class ModItems {
             () -> new DivineCloak(new Item.Properties(), DivineCloak.LOKI));
 
     //扩展花
+    public static final RegistryObject<Item> PRISM_FLOWER = blockFlower(ModBlocks.PRISM_FLOWER);
     public static final RegistryObject<Item> CURSET_THISTLE = blockFlower(ModBlocks.CURSET_THISTLE);
     public static final RegistryObject<Item> YU_SHOU_CLOVER = blockFlower(ModBlocks.YU_SHOU_CLOVER);
     public static final RegistryObject<Item> VACUITY = blockFlower(ModBlocks.VACUITY);
@@ -73,7 +74,7 @@ public class ModItems {
     public static final RegistryObject<Item> MANA_BOX_ITEM = ITEMS.register("mana_box", BlockItemManaBox::new);
     public static final RegistryObject<Item> BLOCKNATURE = blockFlower(ModBlocks.BLOCKNATURE);
     public static final RegistryObject<Item> PRISMATICRADIANCEBLOCK = blockFlower(ModBlocks.PRISMATICRADIANCEBLOCK);
-    public static final RegistryObject<Item> ADVANCED_SPREADER = block(ModBlocks.ADVANCED_SPREADER);
+    //public static final RegistryObject<Item> ADVANCED_SPREADER = block(ModBlocks.ADVANCED_SPREADER);
     public static final RegistryObject<Item> MANA_CRYSTAL = block(ModBlocks.MANA_CRYSTAL);
     public static final RegistryObject<Item> MANA_CHARGER = block(ModBlocks.MANA_CHARGER);
     public static final RegistryObject<Item> CELESTIAL_HOLINESS_TRANSMUTER = block(ModBlocks.CELESTIAL_HOLINESS_TRANSMUTER);
@@ -122,6 +123,7 @@ public class ModItems {
     //物品
     public static RegistryObject<Item> MAGIC_TABLE_ITEM = null;
     public static RegistryObject<Item> EMC_WAND = null;
+    public static final RegistryObject<Item> PRISM_ROD = ITEMS.register("prism_rod", PrismRod::new);
     public static final RegistryObject<Item> SPAWN_CONTROL_STAFF = ITEMS.register("spawn_control_staff", () -> new SpawnControlStaff(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> MANA_FLOWER = ITEMS.register("mana_flower", ManaFlower::new);
     public static final RegistryObject<Item> MANA_IVY_REGEN = ITEMS.register("mana_ivy_regen", ManaIvyRegen::new);

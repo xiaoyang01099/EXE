@@ -52,7 +52,7 @@ public class EntitySlimeCannonBall extends Projectile {
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData() {
         this.entityData.define(SLIME_SIZE, 1);
         this.entityData.define(DAMAGE, 4.0F);
     }
@@ -69,10 +69,6 @@ public class EntitySlimeCannonBall extends Projectile {
         return 10.0F + (getSlimeSize() - 1) * 5.0F;
     }
 
-    /**
-     * 1.20.1: DamageSource 必须通过 level().damageSources() 来创建，
-     * 或者使用自定义 DamageType。这里用 mob_attack 作为基础类型。
-     */
     private DamageSource createSlimeDamage() {
         Entity owner = getOwner();
         if (owner instanceof LivingEntity living) {

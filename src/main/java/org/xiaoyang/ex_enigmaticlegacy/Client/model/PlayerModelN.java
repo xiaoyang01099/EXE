@@ -24,7 +24,6 @@ import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import java.util.List;
 import java.util.Random;
 
-@SuppressWarnings("removal")
 @OnlyIn(Dist.CLIENT)
 public class PlayerModelN<T extends LivingEntity> extends HumanoidModel<T> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Exe.MODID, "model"), "main");

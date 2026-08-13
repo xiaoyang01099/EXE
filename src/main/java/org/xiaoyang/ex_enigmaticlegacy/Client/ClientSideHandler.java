@@ -67,6 +67,12 @@ public class ClientSideHandler {
             CelestialBlueHyacinth.registerRenderLayer();
             EMCFlower.registerRenderLayer();
         }
+
+        if (ModList.get().isLoaded("ae2")) {
+            CertusQuartzFlower.registerRenderLayer();
+            TrinarySynthesis.registerRenderLayer();
+            VoltageRose.registerRenderLayer();
+        }
     }
 
 

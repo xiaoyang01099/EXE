@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@SuppressWarnings("removal")
 public class TileMagicTable extends BlockEntity implements MenuProvider {
     private final MagicTableItemHandler externalHandler = new MagicTableItemHandler(this);
     private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> externalHandler);

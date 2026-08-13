@@ -74,7 +74,6 @@ public class RainbowCosmicModelLoader implements IGeometryLoader<RainbowCosmicMo
             this.maskTextureNames = maskTextureNames;
         }
 
-        @SuppressWarnings("removal")  //禁用过期警告
         public BakedModel bake(IGeometryBakingContext context, ModelBaker baker,
                                Function<Material, TextureAtlasSprite> spriteGetter,
                                ModelState modelState, ItemOverrides overrides,
@@ -94,8 +93,7 @@ public class RainbowCosmicModelLoader implements IGeometryLoader<RainbowCosmicMo
         }
 
         @Override
-        public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter,
-                                   IGeometryBakingContext context) {
+        public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter, IGeometryBakingContext context) {
             this.baseModel.resolveParents(modelGetter);
         }
     }

@@ -14,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-@SuppressWarnings("removal")
 public class DragonWingsModel extends EntityModel<LivingEntity> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("ex_enigmaticlegacy", "dragonwings_layer"), "main");
     private final ModelPart rightWing;
@@ -43,8 +42,7 @@ public class DragonWingsModel extends EntityModel<LivingEntity> {
     }
 
     @Override
-    public void setupAnim(LivingEntity entity, float limbSwing, float limbSwingAmount,
-                          float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         if (entity instanceof Player player){
 
                 float wingAnimation = (float)Math.cos(ageInTicks * 0.1F) * 0.1F;
@@ -58,8 +56,7 @@ public class DragonWingsModel extends EntityModel<LivingEntity> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight,
-                               int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.pushPose();
         poseStack.translate(0, 0, 0.2);
 
