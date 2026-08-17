@@ -11,14 +11,15 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.FlowerBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.EXERainbowCosmicBlockLateRenderQueue;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class ExralCosmicRenderHelper {
+
     private ExralCosmicRenderHelper() {
     }
 
@@ -27,50 +28,82 @@ public final class ExralCosmicRenderHelper {
     }
 
     public static void renderBlockQuads(BlockState blockState, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay, ItemStack stack, float opacity) {
-        if (EXEShaders.cosmicShader == null ||
-                EXEShaders.cosmicTime == null ||
-                EXEShaders.cosmicYaw == null ||
-                EXEShaders.cosmicPitch == null ||
-                EXEShaders.cosmicExternalScale == null ||
-                EXEShaders.cosmicOpacity == null ||
-                EXEShaders.cosmicUVs == null) {
+        if (!isShaderAvailable()) {
+            return;
+        }
+
+        if (EXERainbowCosmicBlockLateRenderQueue.shouldDefer()) {
+            EXERainbowCosmicBlockLateRenderQueue.enqueue(blockState, stack, poseStack, packedLight, packedOverlay, opacity, false);
+            return;
+        }
+
+        renderNow(blockState, poseStack, buffers, packedLight, packedOverlay, stack, opacity, EXEShaders.COSMIC_BLOCK_RENDER_TYPE
+        );
+    }
+
+    public static void renderFlower(BlockState blockState, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay, ItemStack stack) {
+        if (!isShaderAvailable()) {
+            return;
+        }
+
+        if (EXERainbowCosmicBlockLateRenderQueue.shouldDefer()) {
+            EXERainbowCosmicBlockLateRenderQueue.enqueue(blockState, stack, poseStack, packedLight, packedOverlay, 1.0F, true);
+            return;
+        }
+
+        renderNow(blockState, poseStack, buffers, packedLight, packedOverlay, stack, 1.0F, EXEShaders.COSMIC_FLOWER_BLOCK_RENDER_TYPE
+        );
+    }
+
+
+    public static void renderDeferredBlock(BlockState blockState, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay, ItemStack stack, float opacity) {
+        renderNow(blockState, poseStack, buffers, packedLight, packedOverlay, stack, opacity, EXEShaders.COSMIC_BLOCK_AFTER_LEVEL_RENDER_TYPE);
+    }
+
+    public static void renderDeferredFlower(BlockState blockState, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay, ItemStack stack) {
+        renderNow(blockState, poseStack, buffers, packedLight, packedOverlay, stack, 1.0F, EXEShaders.COSMIC_BLOCK_AFTER_LEVEL_RENDER_TYPE);
+    }
+
+    private static void renderNow(BlockState blockState, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay, ItemStack stack, float opacity, RenderType renderType) {
+        if (!isShaderAvailable()) {
             return;
         }
 
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null) return;
+        if (mc.level == null) {
+            return;
+        }
 
         setupShaderUniforms(mc, opacity);
         setupCosmicTextures(mc);
 
         BakedModel model = mc.getBlockRenderer().getBlockModel(blockState);
-        List<BakedQuad> allQuads = getAllQuads(model, blockState, mc);
+        List<BakedQuad> quads = getAllQuads(model, blockState, mc);
 
-        if (!allQuads.isEmpty()) {
-            VertexConsumer consumer = buffers.getBuffer(EXEShaders.COSMIC_BLOCK_RENDER_TYPE);
-            mc.getItemRenderer().renderQuadList(poseStack, consumer, allQuads, stack, packedLight, packedOverlay);
+        if (quads.isEmpty()) {
+            return;
         }
+
+        VertexConsumer consumer = buffers.getBuffer(renderType);
+
+        mc.getItemRenderer().renderQuadList(
+                poseStack,
+                consumer,
+                quads,
+                stack,
+                packedLight,
+                packedOverlay
+        );
     }
 
-    public static void renderFlower(BlockState blockState, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay, ItemStack stack) {
-        if (EXEShaders.cosmicShader == null || EXEShaders.cosmicUVs == null) return;
-
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null) return;
-
-        setupShaderUniforms(mc, 1.0F);
-        setupCosmicTextures(mc);
-
-        BakedModel model = mc.getBlockRenderer().getBlockModel(blockState);
-        List<BakedQuad> allQuads = getAllQuads(model, blockState, mc);
-
-        if (!allQuads.isEmpty()) {
-            RenderType renderType = isFlowerBlock(blockState) ?
-                    createFlowerCosmicRenderType() : EXEShaders.COSMIC_FLOWER_BLOCK_RENDER_TYPE;
-
-            VertexConsumer consumer = buffers.getBuffer(renderType);
-            mc.getItemRenderer().renderQuadList(poseStack, consumer, allQuads, stack, packedLight, packedOverlay);
-        }
+    private static boolean isShaderAvailable() {
+        return EXEShaders.cosmicShader != null
+                && EXEShaders.cosmicTime != null
+                && EXEShaders.cosmicYaw != null
+                && EXEShaders.cosmicPitch != null
+                && EXEShaders.cosmicExternalScale != null
+                && EXEShaders.cosmicOpacity != null
+                && EXEShaders.cosmicUVs != null;
     }
 
     private static void setupShaderUniforms(Minecraft mc, float opacity) {
@@ -79,11 +112,13 @@ public final class ExralCosmicRenderHelper {
         float scale = EXEShaders.inventoryRender ? 100.0F : 1.0F;
 
         if (!EXEShaders.inventoryRender && mc.player != null) {
-            yaw = (float)((double)(mc.player.getYRot() * 2.0F) * Math.PI / 360.0D);
-            pitch = -((float)((double)(mc.player.getXRot() * 2.0F) * Math.PI / 360.0D));
+            yaw = (float) Math.toRadians(mc.player.getYRot());
+            pitch = -(float) Math.toRadians(mc.player.getXRot());
         }
 
-        EXEShaders.cosmicTime.set((float)(System.currentTimeMillis() - (long) EXEShaders.renderTime) / 2000.0F);
+        EXEShaders.cosmicTime.set(
+                (float) EXEShaders.renderTime + EXEShaders.renderFrame
+        );
         EXEShaders.cosmicYaw.set(yaw);
         EXEShaders.cosmicPitch.set(pitch);
         EXEShaders.cosmicExternalScale.set(scale);
@@ -91,38 +126,36 @@ public final class ExralCosmicRenderHelper {
     }
 
     private static void setupCosmicTextures(Minecraft mc) {
-        for(int i = 0; i < 10; ++i) {
-            TextureAtlasSprite sprite = mc.getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS)
-                    .getSprite(Exe.path("shader/cosmic_" + i));
-            EXEShaders.COSMIC_UVS[i * 4] = sprite.getU0();
-            EXEShaders.COSMIC_UVS[i * 4 + 1] = sprite.getV0();
-            EXEShaders.COSMIC_UVS[i * 4 + 2] = sprite.getU1();
-            EXEShaders.COSMIC_UVS[i * 4 + 3] = sprite.getV1();
+        TextureAtlas atlas = mc.getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
+
+        for (int i = 0; i < 10; ++i) {
+            TextureAtlasSprite sprite = atlas.getSprite(
+                    Exe.path("shader/cosmic_" + i)
+            );
+
+            int offset = i * 4;
+            EXEShaders.COSMIC_UVS[offset] = sprite.getU0();
+            EXEShaders.COSMIC_UVS[offset + 1] = sprite.getV0();
+            EXEShaders.COSMIC_UVS[offset + 2] = sprite.getU1();
+            EXEShaders.COSMIC_UVS[offset + 3] = sprite.getV1();
         }
-        EXEShaders.cosmicUVs.glUniformF(false, EXEShaders.COSMIC_UVS);
+
+        EXEShaders.cosmicUVs.set(EXEShaders.COSMIC_UVS);
     }
 
     private static List<BakedQuad> getAllQuads(BakedModel model, BlockState blockState, Minecraft mc) {
-        List<BakedQuad> allQuads = new ArrayList<>();
+        List<BakedQuad> quads = new ArrayList<>();
 
-        for(Direction direction : Direction.values()) {
-            if (mc.level != null) {
-                allQuads.addAll(model.getQuads(blockState, direction, mc.level.random));
-            }
+        if (mc.level == null) {
+            return quads;
         }
 
-        if (mc.level != null) {
-            allQuads.addAll(model.getQuads(blockState, null, mc.level.random));
+        for (Direction direction : Direction.values()) {
+            quads.addAll(model.getQuads(blockState, direction, mc.level.random));
         }
 
-        return allQuads;
-    }
+        quads.addAll(model.getQuads(blockState, null, mc.level.random));
 
-    private static boolean isFlowerBlock(BlockState blockState) {
-        return blockState.getBlock() instanceof FlowerBlock;
-    }
-
-    private static RenderType createFlowerCosmicRenderType() {
-        return EXEShaders.COSMIC_FLOWER_BLOCK_RENDER_TYPE;
+        return quads;
     }
 }

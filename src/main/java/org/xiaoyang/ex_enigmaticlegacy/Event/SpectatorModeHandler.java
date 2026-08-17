@@ -1,6 +1,6 @@
 package org.xiaoyang.ex_enigmaticlegacy.Event;
 
-import com.yuo.endless.Items.Armor.InfinityArmor;
+import com.yuo.endless.items.armor.InfinityArmor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;

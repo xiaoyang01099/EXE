@@ -1,6 +1,5 @@
 package org.xiaoyang.ex_enigmaticlegacy.Init;
 
-import com.yuo.endless.Client.Model.CosmicModelLoader;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -204,7 +203,6 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register("rainbow_cosmic", new RainbowCosmicModelLoader());
-        event.register("cosmic", new CosmicModelLoader());
         event.register("end_portal_halo", new EndPortalHaloLoader());
     }
 

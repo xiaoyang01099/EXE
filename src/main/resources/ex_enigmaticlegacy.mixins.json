@@ -5,9 +5,20 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "exe.refmap.json",
   "mixins": [
-    "MixinBiomePrecipitation"
+    "EXECosmicBakedModelMixin",
+    "EXECosmicBlockRendererMixin",
+    "ManaEnchanterBlockEntityRendererMixin",
+    "ManaPoolBlockEntityRendererMixin",
+    "MixinBiomePrecipitation",
+    "PylonBlockEntityRendererMixin",
+    "TerrestrialAgglomerationPlateBlockEntityRendererMixin"
   ],
   "client": [
+    "EXEInfinityArmorModelMixin",
+    "EXEInfinityArmorPlayerRenderMixin",
+    "EXEOculusAfterLevelMixin",
+    "GaiaGuardianRendererAccessor",
+    "GaiaGuardianRendererMixin",
     "MixinGuiSelectedItemName",
     "PlayerRendererMixin"
   ],

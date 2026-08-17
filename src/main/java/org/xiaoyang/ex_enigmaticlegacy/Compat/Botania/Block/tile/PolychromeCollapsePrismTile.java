@@ -2,7 +2,7 @@ package org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.tile;
 
 import com.google.common.base.Predicates;
 import com.google.common.base.Suppliers;
-import com.yuo.endless.Blocks.EndlessBlocks;
+import com.yuo.endless.blocks.EndlessBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;

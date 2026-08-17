@@ -2,9 +2,9 @@ package org.xiaoyang.ex_enigmaticlegacy.Recipe.Manager;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.yuo.endless.Recipe.ExtremeCraftRecipe;
-import com.yuo.endless.Recipe.ExtremeCraftShapeRecipe;
-import com.yuo.endless.Recipe.IExtremeCraftRecipe;
+import com.yuo.endless.recipe.ExtremeCraftRecipe;
+import com.yuo.endless.recipe.ExtremeCraftShapeRecipe;
+import com.yuo.endless.recipe.IExtremeCraftRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

@@ -1,9 +1,9 @@
 package org.xiaoyang.ex_enigmaticlegacy.Tile;
 
-import com.yuo.endless.Recipe.EndlessRecipes;
-import com.yuo.endless.Recipe.ExtremeCraftRecipe;
-import com.yuo.endless.Recipe.ExtremeCraftShapeRecipe;
-import com.yuo.endless.Recipe.IExtremeCraftRecipe;
+import com.yuo.endless.recipe.EndlessRecipes;
+import com.yuo.endless.recipe.ExtremeCraftRecipe;
+import com.yuo.endless.recipe.ExtremeCraftShapeRecipe;
+import com.yuo.endless.recipe.IExtremeCraftRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;

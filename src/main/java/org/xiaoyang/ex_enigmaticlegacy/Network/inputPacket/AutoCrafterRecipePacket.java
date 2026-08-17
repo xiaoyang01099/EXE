@@ -1,8 +1,8 @@
 package org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket;
 
-import com.yuo.endless.Recipe.EndlessRecipes;
-import com.yuo.endless.Recipe.ExtremeCraftRecipe;
-import com.yuo.endless.Recipe.ExtremeCraftShapeRecipe;
+import com.yuo.endless.recipe.EndlessRecipes;
+import com.yuo.endless.recipe.ExtremeCraftRecipe;
+import com.yuo.endless.recipe.ExtremeCraftShapeRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
