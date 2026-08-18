@@ -1,6 +1,5 @@
 package org.xiaoyang.ex_enigmaticlegacy.Mixin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.yuo.endless.client.render.CosmicBlockRender;
 import com.yuo.endless.tiles.CosmicTile;
