@@ -23,7 +23,6 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.joml.Matrix4f;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.CosmicBeamLateRenderQueue;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 
 import java.util.*;
@@ -400,7 +399,7 @@ public class CosmicBeamRenderer {
             super("", () -> {}, () -> {});
         }
         private static ShaderStateShard cosmicShaderState() {
-            return new ShaderStateShard(() -> RainbowAvaritiaShaders.cosmicShader);
+            return new ShaderStateShard(() -> EXEShaders.cosmicShader);
         }
 
         private static TextureStateShard tex(String path) {
@@ -512,75 +511,60 @@ public class CosmicBeamRenderer {
     @SubscribeEvent
     public static void onRenderWorldLast(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
-        if (CosmicBeams.isEmpty()) return;Minecraft mc = Minecraft.getInstance();
+        if (CosmicBeams.isEmpty()) return;
+
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) return;
 
+        PoseStack poseStack = event.getPoseStack();
+        Camera camera = event.getCamera();
+        Vec3 cameraPos = camera.getPosition();
         float deltaTime = event.getPartialTick() * 0.016f;
+
+        MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
+
+        RenderSystem.enableBlend();
+        RenderSystem.depthMask(false);
+
+        for (CosmicBeam laser : CosmicBeams) {
+            if (laser.isActive()) {
+                if (laser.phase == CosmicBeam.CosmicPhase.CHARGING) {
+                    renderChargeRings(poseStack, bufferSource, laser, cameraPos);
+                }
+                renderLaserOrb(poseStack, bufferSource, laser, cameraPos);
+
+                // 渲染橙色外层光晕（最外层）
+                renderLaserOrangeGlow(poseStack, bufferSource, laser, cameraPos);
+
+                // 渲染激光射线主体（外层光晕）
+                renderLaserGlow(poseStack, bufferSource, laser, cameraPos);
+
+                // 渲染激光射线主体
+                renderCosmicBeam(poseStack, bufferSource, laser, cameraPos);
+
+                // 渲染激光核心
+                renderLaserCore(poseStack, bufferSource, laser, cameraPos);
+
+                // 渲染电光效果
+                renderElectricArcs(poseStack, bufferSource, laser, cameraPos);
+
+                // 渲染能量粒子
+                renderEnergyParticles(poseStack, bufferSource, laser, cameraPos);
+            }
+        }
+
+        bufferSource.endBatch();
+        RenderSystem.depthMask(true);
+        RenderSystem.disableBlend();
 
         Iterator<CosmicBeam> it = CosmicBeams.iterator();
         while (it.hasNext()) {
             CosmicBeam laser = it.next();
             laser.update(deltaTime);
-            if (!laser.isActive()) it.remove();
-        }
-
-        if (CosmicBeams.isEmpty()) return;
-
-        if (CosmicBeamLateRenderQueue.shouldDefer()) {
-            for (CosmicBeam beam : CosmicBeams) {
-                if (beam.isActive()) {
-                    CosmicBeamLateRenderQueue.enqueue(beam);
-                }
-            }
-            return;
-        }
-
-        Vec3 cameraPos = event.getCamera().getPosition();
-        MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
-        PoseStack poseStack = event.getPoseStack();
-
-        RenderSystem.enableBlend();
-        RenderSystem.depthMask(false);
-
-        for (CosmicBeam laser : CosmicBeams) {
-            if (laser.isActive()) {
-                renderSingleBeam(poseStack, bufferSource, laser, cameraPos);
+            if (!laser.isActive()) {
+                it.remove();
             }
         }
-
-        bufferSource.endBatch();
-        RenderSystem.depthMask(true);
-        RenderSystem.disableBlend();
-    }
-
-    public static void renderDeferredBeams(PoseStack poseStack, float partialTick) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null) return;
-
-        Vec3 cameraPos = mc.gameRenderer.getMainCamera().getPosition();
-        MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
-
-        RenderSystem.enableBlend();
-        RenderSystem.depthMask(false);
-
-        for (CosmicBeam laser : CosmicBeams) {
-            if (laser.isActive()) {
-                renderSingleBeam(poseStack, bufferSource, laser, cameraPos);
-            }
-        }
-
-        bufferSource.endBatch();
-        RenderSystem.depthMask(true);
-        RenderSystem.disableBlend();
-    }
-
-    private static void renderSingleBeam(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, CosmicBeam laser, Vec3 cameraPos) {
-        if (laser.phase == CosmicBeam.CosmicPhase.CHARGING) {
-            renderChargeRings(poseStack, bufferSource, laser, cameraPos);
-        }
-        renderLaserOrb(poseStack, bufferSource, laser, cameraPos);renderLaserOrangeGlow(poseStack, bufferSource, laser, cameraPos);
-        renderLaserGlow(poseStack, bufferSource, laser, cameraPos);renderCosmicBeam(poseStack, bufferSource, laser, cameraPos);renderLaserCore(poseStack, bufferSource, laser, cameraPos);renderElectricArcs(poseStack, bufferSource, laser, cameraPos);
-        renderEnergyParticles(poseStack, bufferSource, laser, cameraPos);
     }
 
     private static void renderChargeRings(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource,

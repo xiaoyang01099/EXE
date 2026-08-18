@@ -2,9 +2,9 @@ package org.xiaoyang.ex_enigmaticlegacy.api.shader;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.yuo.endless.client.lib.PerspectiveModelState;
-import com.yuo.endless.client.lib.TransformUtils;
-import com.yuo.endless.client.model.IItemRenderer;
+import com.yuo.endless.Client.Lib.PerspectiveModelState;
+import com.yuo.endless.Client.Lib.TransformUtils;
+import com.yuo.endless.Client.Model.IItemRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -15,7 +15,6 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.EXERainbowCosmicItemLateRenderQueue;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModWeapons;
 
@@ -39,22 +38,11 @@ public final class RainBowCosmicBakeModel extends RainBowWrappedItemModel implem
         }
 
         this.renderWrapped(stack, pStack, source, light, overlay, true);
+
         if (source instanceof MultiBufferSource.BufferSource bs) {
             bs.endBatch();
         }
 
-        if (EXERainbowCosmicItemLateRenderQueue.shouldDefer()) {
-            EXERainbowCosmicItemLateRenderQueue.enqueue(
-                    this, stack, transformType, pStack, light, overlay);
-            return;
-        }
-
-        renderCosmicLayer(stack, transformType, pStack, source, light, overlay);
-    }
-
-    public void renderCosmicLayer(ItemStack stack, ItemDisplayContext transformType,
-                                  PoseStack pStack, MultiBufferSource source,
-                                  int light, int overlay) {
         final Minecraft mc = Minecraft.getInstance();
         float yaw = 0.0f;
         float pitch = 0.0f;
@@ -68,7 +56,8 @@ public final class RainBowCosmicBakeModel extends RainBowWrappedItemModel implem
         }
 
         RainbowAvaritiaShaders.cosmicTime.set(
-                (float)(System.currentTimeMillis() - (long) RainbowAvaritiaShaders.renderTime) / 2000.0F);
+                (float)(System.currentTimeMillis() - (long) RainbowAvaritiaShaders.renderTime) / 2000.0F
+        );
         RainbowAvaritiaShaders.cosmicYaw.set(yaw);
         RainbowAvaritiaShaders.cosmicPitch.set(pitch);
         RainbowAvaritiaShaders.cosmicExternalScale.set(scale);
@@ -76,11 +65,12 @@ public final class RainBowCosmicBakeModel extends RainBowWrappedItemModel implem
         if (RainbowAvaritiaShaders.FogColor != null) {
             float hue = ((float) System.currentTimeMillis() / 5000.0F) % 1.0F;
             int rgb = Mth.hsvToRgb(hue, 1.0F, 1.0F);
-            RainbowAvaritiaShaders.FogColor.set(
-                    ((rgb >> 16) & 0xFF) / 255.0F,
-                    ((rgb >> 8)  & 0xFF) / 255.0F,
-                    ( rgb        & 0xFF) / 255.0F,
-                    1.0F);
+
+            float r = ((rgb >> 16) & 0xFF) / 255.0F;
+            float g = ((rgb >> 8)  & 0xFF) / 255.0F;
+            float b = ( rgb        & 0xFF) / 255.0F;
+
+            RainbowAvaritiaShaders.FogColor.set(r, g, b, 1.0F);
         }
 
         RainbowAvaritiaShaders.cosmicOpacity.set(1.0F);
@@ -102,7 +92,7 @@ public final class RainBowCosmicBakeModel extends RainBowWrappedItemModel implem
 
         List<TextureAtlasSprite> atlasSprite = new ArrayList<>();
         for (ResourceLocation res : this.maskSprite) {
-            atlasSprite.add(mc.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(res));
+            atlasSprite.add(Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(res));
         }
 
         mc.getItemRenderer().renderQuadList(pStack, cons, bakeItem(atlasSprite), stack, light, overlay);

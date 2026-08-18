@@ -1,9 +1,9 @@
 package org.xiaoyang.ex_enigmaticlegacy.Entity.others;
 
-import com.yuo.endless.client.lib.Vector3;
-import com.yuo.endless.client.sound.ModSounds;
-import com.yuo.endless.entity.EndestPearlEntity;
-import com.yuo.endless.entity.GapingVoidEntity;
+import com.yuo.endless.Client.Lib.Vector3;
+import com.yuo.endless.Client.Sound.ModSounds;
+import com.yuo.endless.Entity.EndestPearlEntity;
+import com.yuo.endless.Entity.GapingVoidEntity;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;

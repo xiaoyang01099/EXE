@@ -1,6 +1,6 @@
 package org.xiaoyang.ex_enigmaticlegacy.Init;
 
-import com.yuo.endless.client.render.GapingVoidRender;
+import com.yuo.endless.Client.Render.GapingVoidRender;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;

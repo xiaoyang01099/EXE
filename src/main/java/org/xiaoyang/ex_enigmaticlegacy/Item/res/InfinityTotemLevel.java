@@ -1,6 +1,6 @@
 package org.xiaoyang.ex_enigmaticlegacy.Item.res;
 
-import com.yuo.endless.items.EndlessItems;
+import com.yuo.endless.Items.EndlessItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;

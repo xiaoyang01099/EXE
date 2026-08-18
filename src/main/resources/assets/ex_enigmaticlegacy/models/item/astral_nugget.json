@@ -3,8 +3,8 @@
   "textures": {
     "layer0": "ex_enigmaticlegacy:item/ingots/astral_nugget"
   },
-  "loader": "ex_enigmaticlegacy:rainbow_cosmic",
-  "rainbow_cosmic": {
+  "loader": "endless:cosmic",
+  "cosmic": {
     "mask": "ex_enigmaticlegacy:item/ingots/astral_nugget_mask"
   }
 }

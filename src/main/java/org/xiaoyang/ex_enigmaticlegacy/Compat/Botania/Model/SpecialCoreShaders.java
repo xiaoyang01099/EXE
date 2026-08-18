@@ -26,20 +26,13 @@ public class SpecialCoreShaders {
     private static ShaderInstance starrySkyShader;
     private static ShaderInstance blackhole;
     private static ShaderInstance andromeda;
+    private static ShaderInstance prisma;
     private static ShaderInstance starLine;
     public static ShaderInstance warpWorld;
     public static ShaderInstance warpShader;
-    public static ShaderInstance blade;
-
 
     public static void init(ResourceProvider resourceProvider,
                             Consumer<Pair<ShaderInstance, Consumer<ShaderInstance>>> registerShader) throws IOException {
-
-        registerShader.accept(Pair.of(
-                new ShaderInstance(resourceProvider, "blade",
-                        DefaultVertexFormat.POSITION_TEX),
-                inst -> blade = inst)
-        );
 
         registerShader.accept(Pair.of(
                 new ShaderInstance(resourceProvider, "blackhole",
@@ -84,6 +77,12 @@ public class SpecialCoreShaders {
         );
 
         registerShader.accept(Pair.of(
+                new ShaderInstance(resourceProvider, "prisma",
+                        DefaultVertexFormat.POSITION_TEX),
+                inst -> prisma = inst)
+        );
+
+        registerShader.accept(Pair.of(
                 new ShaderInstance(resourceProvider, "star_line",
                         DefaultVertexFormat.POSITION_TEX),
                 inst -> starLine = inst)
@@ -102,16 +101,16 @@ public class SpecialCoreShaders {
         );
     }
 
-    public static ShaderInstance getBladeShader() {
-        return blade;
-    }
-
     public static ShaderInstance getWarpShader() {
         return warpShader;
     }
 
     public static ShaderInstance getWarpWorldShader() {
         return warpWorld;
+    }
+
+    public static ShaderInstance getPrismaShader(){
+        return prisma;
     }
 
     public static ShaderInstance getStarLineShader(){

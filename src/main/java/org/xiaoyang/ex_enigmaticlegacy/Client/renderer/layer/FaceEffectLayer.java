@@ -18,8 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.SpecialLateRenderQueue;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModArmors;
 
 public class FaceEffectLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
@@ -112,15 +110,9 @@ public class FaceEffectLayer extends RenderLayer<AbstractClientPlayer, PlayerMod
     }
 
     private void renderEndPortalOnFace(PoseStack poseStack, MultiBufferSource buffer) {
-        RenderType portalType = SpecialLateRenderQueue.shouldDefer()
-                ? SpecialRenderHelper.END_PORTAL_AFTER_LEVEL
-                : RenderType.endPortal();
-
-        VertexConsumer vertexConsumer = SpecialLateRenderQueue.shouldDefer()
-                ? SpecialLateRenderQueue.getBuffer(SpecialRenderHelper.END_PORTAL_AFTER_LEVEL)
-                : buffer.getBuffer(RenderType.endPortal());
-
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.endPortal());
         Matrix4f matrix = poseStack.last().pose();
+
         float size = 0.5F;
         vertexConsumer.vertex(matrix, -size, -size, 0).endVertex();
         vertexConsumer.vertex(matrix, -size,  size, 0).endVertex();
