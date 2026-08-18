@@ -2,8 +2,8 @@ package org.xiaoyang.ex_enigmaticlegacy.api.shader;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.yuo.endless.Client.Lib.CCShaderInstance;
-import com.yuo.endless.Client.Lib.CCUniform;
+import com.yuo.endless.client.lib.CCShaderInstance;
+import com.yuo.endless.client.lib.CCUniform;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -56,6 +56,7 @@ public final class RainbowAvaritiaShaders {
     private static final ResourceLocation[] COSMIC_LOCATIONS = new ResourceLocation[11];
     private static boolean cosmicUVsInitialized = false;
     private static boolean particleCosmicUVsInitialized = false;
+
 
     static {
         for (int i = 0; i < 10; i++) {

@@ -18,6 +18,7 @@ import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.ManaContainerBlock;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.tile.ManaContainerTile;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialMiscellaneousModels;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.SpecialLateRenderQueue;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModModelLayers;
 import vazkii.botania.api.mana.PoolOverlayProvider;
@@ -101,9 +102,8 @@ public class ManaContainerRenderer implements BlockEntityRenderer<ManaContainerT
             ms.mulPose(Axis.XP.rotationDegrees(90F));
             ms.scale(s, s, s);
 
-            VertexConsumer buffer = buffers.getBuffer(SpecialRenderHelper.RAINBOW_MANA_WATER);
-            SpecialRenderHelper.renderIcon(ms, buffer, 0, 0,
-                    SpecialMiscellaneousModels.INSTANCE.rainbowManaWater.sprite(), 16, 16, 0.5F);
+            VertexConsumer buffer = SpecialLateRenderQueue.select(buffers, SpecialRenderHelper.RAINBOW_MANA_WATER, SpecialRenderHelper.RAINBOW_MANA_WATER_AFTER_LEVEL);
+            SpecialRenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.rainbowManaWater.sprite(), 16, 16, 0.5F);
             ms.popPose();
         }
 

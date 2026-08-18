@@ -1,7 +1,7 @@
 package org.xiaoyang.ex_enigmaticlegacy.Recipe.Manager;
 
-import com.yuo.endless.Recipe.EndlessRecipes;
-import com.yuo.endless.Recipe.NeutroniumRecipe;
+import com.yuo.endless.recipe.EndlessRecipes;
+import com.yuo.endless.recipe.NeutroniumRecipe;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;

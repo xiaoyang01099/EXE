@@ -1,6 +1,6 @@
 package org.xiaoyang.ex_enigmaticlegacy.Container;
 
-import com.yuo.endless.Recipe.IExtremeCraftRecipe;
+import com.yuo.endless.recipe.IExtremeCraftRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;

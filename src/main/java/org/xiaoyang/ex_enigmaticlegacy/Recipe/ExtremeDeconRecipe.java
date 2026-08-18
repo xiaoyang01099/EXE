@@ -1,8 +1,8 @@
 package org.xiaoyang.ex_enigmaticlegacy.Recipe;
 
-import com.yuo.endless.Recipe.ExtremeCraftRecipe;
-import com.yuo.endless.Recipe.ExtremeCraftShapeRecipe;
-import com.yuo.endless.Recipe.IExtremeCraftRecipe;
+import com.yuo.endless.recipe.ExtremeCraftRecipe;
+import com.yuo.endless.recipe.ExtremeCraftShapeRecipe;
+import com.yuo.endless.recipe.IExtremeCraftRecipe;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

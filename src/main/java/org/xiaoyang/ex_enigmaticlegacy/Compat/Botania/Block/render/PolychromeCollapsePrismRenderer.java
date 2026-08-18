@@ -14,6 +14,7 @@ import net.minecraft.world.phys.AABB;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.tile.PolychromeCollapsePrismTile;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialMiscellaneousModels;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.SpecialLateRenderQueue;
 import vazkii.botania.client.core.handler.ClientTickHandler;
 
 import javax.annotation.Nonnull;
@@ -64,7 +65,11 @@ public class PolychromeCollapsePrismRenderer implements BlockEntityRenderer<Poly
         float time = (ClientTickHandler.ticksInGame + partialTicks) / 20.0F;
         float hue = (time % 120) / 120.0F;
 
-        VertexConsumer buffer = buffers.getBuffer(SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM);
+        VertexConsumer buffer = SpecialLateRenderQueue.select(
+        buffers,
+        SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM,
+        SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL
+        );
 
         ms.pushPose();
 //        ms.mulPose(Vector3f.ZP.rotationDegrees(time * 0.5F % 360F));
@@ -136,7 +141,11 @@ public class PolychromeCollapsePrismRenderer implements BlockEntityRenderer<Poly
         float ringScale = 1.0F + 0.1F * Mth.sin(time / 15.0F);
         ms.scale(ringScale, ringScale, 1.0F);
 
-        VertexConsumer buffer = buffers.getBuffer(SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM);
+        VertexConsumer buffer = SpecialLateRenderQueue.select(
+        buffers,
+        SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM,
+        SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL
+        );
 
         float hue = (time / 40.0F) % 1.0F;
         float alpha = 0.6F * completion;
@@ -184,7 +193,11 @@ public class PolychromeCollapsePrismRenderer implements BlockEntityRenderer<Poly
             float hue = ((time / 30.0F) + i * 0.33F) % 1.0F;
             float alpha = (0.3F - i * 0.08F) * completion;
 
-            VertexConsumer buffer = buffers.getBuffer(SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM);
+            VertexConsumer buffer = SpecialLateRenderQueue.select(
+        buffers,
+        SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM,
+        SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL
+        );
             SpecialRenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay.sprite(), 1, 1, alpha);
 
             ms.popPose();

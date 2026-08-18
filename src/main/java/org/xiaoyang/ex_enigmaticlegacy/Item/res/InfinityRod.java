@@ -1,17 +1,15 @@
 package org.xiaoyang.ex_enigmaticlegacy.Item.res;
 
-import com.yuo.endless.Entity.EndestPearlEntity;
-import com.yuo.endless.Entity.EntityRegistry;
+import com.yuo.endless.entity.EndestPearlEntity;
+import com.yuo.endless.entity.EntityRegistry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;

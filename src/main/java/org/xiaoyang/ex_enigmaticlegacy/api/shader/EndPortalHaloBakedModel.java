@@ -2,9 +2,9 @@ package org.xiaoyang.ex_enigmaticlegacy.api.shader;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.yuo.endless.Client.Lib.PerspectiveModelState;
-import com.yuo.endless.Client.Model.IItemRenderer;
-import com.yuo.endless.Client.Model.WrappedItemModel;
+import com.yuo.endless.client.lib.PerspectiveModelState;
+import com.yuo.endless.client.model.IItemRenderer;
+import com.yuo.endless.client.model.WrappedItemModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -16,13 +16,13 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.SpecialLateRenderQueue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EndPortalHaloBakedModel extends WrappedItemModel implements IItemRenderer {
-
-
     public enum HaloStyle { HALO, SURFACE }
     private final int size;
     private final boolean pulse;
@@ -73,15 +73,13 @@ public class EndPortalHaloBakedModel extends WrappedItemModel implements IItemRe
     }
 
     private void renderSurfaceEffect(PoseStack pStack, MultiBufferSource source) {
-        VertexConsumer portalBuffer = source.getBuffer(RenderType.endPortal());
-
+        VertexConsumer portalBuffer = getPortalBuffer(source);
         pStack.pushPose();
         pStack.translate(0.5, 0.5, 0.5);
         pStack.scale(1.01f, 1.01f, 1.01f);
         pStack.translate(-0.5, -0.5, -0.5);
         renderQuadsPortal(pStack, portalBuffer, this.portalQuads);
         pStack.popPose();
-
         pStack.pushPose();
         pStack.translate(0.5, 0.5, 0.5);
         pStack.scale(0.99f, 0.99f, 0.99f);
@@ -92,30 +90,32 @@ public class EndPortalHaloBakedModel extends WrappedItemModel implements IItemRe
 
     private void renderHaloEffect(PoseStack pStack, MultiBufferSource source, ItemDisplayContext transformType) {
         pStack.pushPose();
-
         if (transformType == ItemDisplayContext.GUI) {
             pStack.translate(0, 0, -0.01);
         } else {
             pStack.translate(0, 0, -0.05);
         }
-
         float scale = 1.0F + (this.size / 8.0F);
         pStack.translate(0.5, 0.5, 0.5);
         pStack.scale(scale, scale, scale);
-
         if (this.animated) {
             float time = (System.currentTimeMillis() % 8000L) / 8000.0F;
             pStack.mulPose(
                     new org.joml.Quaternionf().rotationZ((float)(time * 2.0F * Math.PI))
             );
         }
-
         pStack.translate(-0.5, -0.5, -0.5);
-
-        VertexConsumer portalBuffer = source.getBuffer(RenderType.endPortal());
+        VertexConsumer portalBuffer = getPortalBuffer(source);
         renderQuadsPortal(pStack, portalBuffer, this.portalQuads);
-
         pStack.popPose();
+    }
+
+    private VertexConsumer getPortalBuffer(MultiBufferSource source) {
+        if (SpecialLateRenderQueue.shouldDefer()) {
+            return SpecialLateRenderQueue.getBuffer(SpecialRenderHelper.END_PORTAL_AFTER_LEVEL);
+        } else {
+            return source.getBuffer(RenderType.endPortal());
+        }
     }
 
     private void renderPulseEffect(ItemStack stack, PoseStack pStack,
