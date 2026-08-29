@@ -1,7 +1,6 @@
 package org.xiaoyang.ex_enigmaticlegacy.Event;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -19,7 +18,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
-import org.xiaoyang.ex_enigmaticlegacy.ConfigHandler;
+import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Font.ModRarities;
 
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ItemEntityNameplateHandler {
-
     private static final List<PendingLabel> pendingLabels = new ArrayList<>();
     private static Matrix4f cachedViewProjMatrix = null;
 

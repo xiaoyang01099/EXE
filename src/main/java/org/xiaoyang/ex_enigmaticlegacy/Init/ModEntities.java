@@ -11,10 +11,17 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
+import org.xiaoyang.ex_enigmaticlegacy.Entity.others.colorful.ColorfulEntity;
+import org.xiaoyang.ex_enigmaticlegacy.Entity.others.sword.*;
+import org.xiaoyang.ex_enigmaticlegacy.Entity.others.bow.MagicArrowEntity;
+import org.xiaoyang.ex_enigmaticlegacy.Entity.others.bow.MagicBowParticleEffectEntity;
+import org.xiaoyang.ex_enigmaticlegacy.Entity.others.colorful.RailgunBeamEntity;
+import org.xiaoyang.ex_enigmaticlegacy.Entity.others.trident.HeavenlyThunderEntity;
+import org.xiaoyang.ex_enigmaticlegacy.Entity.others.trident.TridentLightningStrikeEntity;
+import org.xiaoyang.ex_enigmaticlegacy.Entity.others.trident.TridentPlusEntity;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.tile.AlphirinePortal;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.tile.EntityAdvancedSpark;
-import org.xiaoyang.ex_enigmaticlegacy.Client.particle.ef.EntitySlash;
+import org.xiaoyang.ex_enigmaticlegacy.Client.particle.effect.EntitySlash;
 import org.xiaoyang.ex_enigmaticlegacy.Entity.biological.*;
 import org.xiaoyang.ex_enigmaticlegacy.Entity.others.*;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
@@ -26,6 +33,100 @@ import org.xiaoyang.ex_enigmaticlegacy.api.test.Shockwave;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModEntities {
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Exe.MODID);
+
+	public static final RegistryObject<EntityType<FlySwordEntity>> FLY_SWORD_ENTITY =
+			ENTITIES.register("fly_sword_entity", () -> EntityType.Builder.<FlySwordEntity>of(FlySwordEntity::new, MobCategory.MISC)
+					.sized(0.3f, 1.5F)
+					.clientTrackingRange(16)
+					.updateInterval(1)
+					.build("fly_sword_entity")); // 飞剑实体。
+
+	public static final RegistryObject<EntityType<RailgunBeamEntity>> RAILGUN_BEAM_ENTITY =
+			ENTITIES.register("railgun_beam_entity", () -> EntityType.Builder.of(RailgunBeamEntity::new, MobCategory.MISC)
+					.sized(0.1f, 0.1f)
+					.build("railgun_beam_entity")); // 电磁炮光束实体。
+
+	public static final RegistryObject<EntityType<ColorfulEntity>> COLORFUL_COIN_ENTITY =
+			ENTITIES.register("colorful_coin_entity", () -> EntityType.Builder.of(ColorfulEntity::new, MobCategory.MISC)
+					.sized(0.1f, 0.1f)
+					.build("colorful_coin_entity")); // 彩色硬币光束实体。
+
+	public static final RegistryObject<EntityType<MagicArrowEntity>> MAGIC_ARROW_ENTITY =
+			ENTITIES.register("magic_arrow", () -> EntityType.Builder.of(MagicArrowEntity::new, MobCategory.MISC)
+					.sized(0.5F, 0.5F)
+					.clientTrackingRange(32)
+					.updateInterval(1)
+					.build("magic_arrow")); // 魔法箭实体。
+
+	public static final RegistryObject<EntityType<MagicBowParticleEffectEntity>> MAGIC_BOW_PARTICLE_EFFECT_ENTITY =
+			ENTITIES.register("magic_bow_particle_effect", () -> EntityType.Builder.of(MagicBowParticleEffectEntity::new, MobCategory.MISC)
+					.sized(0.1F, 0.1F)
+					.clientTrackingRange(8)
+					.updateInterval(2)
+					.build("magic_bow_particle_effect")); // 魔法弓粒子效果实体。
+
+	public static final RegistryObject<EntityType<SwordAuraEntity>> SWORD_AURA_ENTITY =
+			ENTITIES.register("sword_aura", () -> EntityType.Builder.of(SwordAuraEntity::new, MobCategory.MISC)
+					.sized(0.8F, 0.4F)
+					.clientTrackingRange(8)
+					.updateInterval(1)
+					.build("sword_aura")); // 飞剑剑气实体。
+
+	public static final RegistryObject<EntityType<DimensionSlashDomainEntity>> DIMENSION_SLASH_DOMAIN =
+			ENTITIES.register("dimension_slash_domain", () -> EntityType.Builder.of(DimensionSlashDomainEntity::new, MobCategory.MISC)
+					.sized(1.0F, 1.0F)
+					.clientTrackingRange(32)
+					.updateInterval(1)
+					.build("dimension_slash_domain")); // 次元斩领域实体。
+
+	public static final RegistryObject<EntityType<DimensionSlashStrikeEntity>> DIMENSION_SLASH_STRIKE =
+			ENTITIES.register("dimension_slash_strike", () -> EntityType.Builder.of(DimensionSlashStrikeEntity::new, MobCategory.MISC)
+					.sized(1.0F, 1.0F)
+					.clientTrackingRange(32)
+					.updateInterval(1)
+					.build("dimension_slash_strike")); // 次元斩连击实体。
+
+	public static final RegistryObject<EntityType<BattoSlashEntity>> BATTO_SLASH =
+			ENTITIES.register("batto_slash", () -> EntityType.Builder.of(BattoSlashEntity::new, MobCategory.MISC)
+					.sized(40.0F, 6.0F)
+					.clientTrackingRange(48)
+					.updateInterval(1)
+					.build("batto_slash")); // 拔刀斩实体。
+
+	public static final RegistryObject<EntityType<TridentPlusEntity>> TRIDENT_PLUS_ENTITY =
+			ENTITIES.register("trident_plus", () -> EntityType.Builder.<TridentPlusEntity>of(TridentPlusEntity::new, MobCategory.MISC)
+					.sized(0.5F, 0.5F)
+					.clientTrackingRange(8)
+					.updateInterval(1)
+					.build("trident_plus")); // 天雷战戟投掷实体。
+
+	public static final RegistryObject<EntityType<TridentLightningStrikeEntity>> TRIDENT_LIGHTNING_STRIKE =
+			ENTITIES.register("trident_lightning_strike", () -> EntityType.Builder.of(TridentLightningStrikeEntity::new, MobCategory.MISC)
+					.sized(0.1F, 0.1F)
+					.clientTrackingRange(32)
+					.updateInterval(1)
+					.build("trident_lightning_strike")); // 天雷战戟落点雷电实体。
+
+	public static final RegistryObject<EntityType<HeavenlyThunderEntity>> HEAVENLY_THUNDER =
+			ENTITIES.register("heavenly_thunder", () -> EntityType.Builder.of(HeavenlyThunderEntity::new, MobCategory.MISC)
+					.sized(0.1F, 0.1F)
+					.clientTrackingRange(96)
+					.updateInterval(1)
+					.build("heavenly_thunder")); // 天雷附魔持续法阵实体。
+
+	public static final RegistryObject<EntityType<ExcaliburChargeEntity>> EXCALIBUR_CHARGE =
+			ENTITIES.register("excalibur_charge", () -> EntityType.Builder.of(ExcaliburChargeEntity::new, MobCategory.MISC)
+					.sized(0.1F, 0.1F)
+					.clientTrackingRange(96)
+					.updateInterval(1)
+					.build("excalibur_charge")); // 咖喱棒蓄力同步实体。
+
+	public static final RegistryObject<EntityType<ExcaliburSwordWaveEntity>> EXCALIBUR_SWORD_WAVE =
+			ENTITIES.register("excalibur_sword_wave", () -> EntityType.Builder.of(ExcaliburSwordWaveEntity::new, MobCategory.MISC)
+					.sized(0.1F, 0.1F)
+					.clientTrackingRange(96)
+					.updateInterval(1)
+					.build("excalibur_sword_wave")); // EX 咖喱棒剑气控制实体。
 
 	public static final RegistryObject<EntityType<NebulaBowArrowAroundEffect>> NEBULA_ARROW_AROUND =
 			ENTITIES.register("nebula_bow_arrow_around_effect", () -> EntityType.Builder

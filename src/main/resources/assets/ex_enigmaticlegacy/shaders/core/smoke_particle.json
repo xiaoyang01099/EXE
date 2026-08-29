@@ -1,0 +1,32 @@
+{
+  "blend": {
+    "func": "add",
+    "srcrgb": "srcalpha",
+    "dstrgb": "1-srcalpha"
+  },
+  "vertex": "ex_enigmaticlegacy:smoke_particle",
+  "fragment": "ex_enigmaticlegacy:smoke_particle",
+  "attributes": [
+    "Position",
+    "UV0",
+    "InstanceCenterSize",
+    "InstanceColor",
+    "InstanceBloom",
+    "InstanceAnim",
+    "InstanceMotion"
+  ],
+  "samplers": [
+    { "name": "Sampler0" },
+    { "name": "SceneDepthSampler" }
+  ],
+  "uniforms": [
+    { "name": "GlobalParams", "type": "float", "count": 4, "values": [0.0, 44.0, 8.0, 8.0] },
+    { "name": "CameraRight", "type": "float", "count": 4, "values": [1.0, 0.0, 0.0, 0.0] },
+    { "name": "CameraUp", "type": "float", "count": 4, "values": [0.0, 1.0, 0.0, 0.0] },
+    { "name": "ScreenSize", "type": "float", "count": 4, "values": [1.0, 1.0, 0.0, 0.0] },
+    { "name": "SmokeMaskParams", "type": "float", "count": 4, "values": [0.08, 0.28, 1.20, 0.22] },
+    { "name": "SoftParticleParams", "type": "float", "count": 4, "values": [1.0, 0.00003, 0.00085, 0.0] },
+    { "name": "uView", "type": "matrix4x4", "count": 16, "values": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] },
+    { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] }
+  ]
+}

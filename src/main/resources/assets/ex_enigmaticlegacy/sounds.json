@@ -125,6 +125,46 @@
         "name": "ex_enigmaticlegacy:song_of_the_abyss",
         "stream": false
       }
-    ]
+    ],
+    "dimensional_slash_cut": {
+      "sounds": [
+        {
+          "name": "ex_enigmaticlegacy:slash_cut",
+          "stream": false,
+          "preload": true,
+          "attenuation_distance": 32
+        }
+      ]
+    },
+    "dimensional_slash_break_prepare": {
+      "sounds": [
+        {
+          "name": "ex_enigmaticlegacy:slash_break_prepare",
+          "stream": false,
+          "preload": true,
+          "attenuation_distance": 32
+        }
+      ]
+    },
+    "dimensional_slash_pressure_build": {
+      "sounds": [
+        {
+          "name": "ex_enigmaticlegacy:slash_pressure_build",
+          "stream": false,
+          "preload": true,
+          "attenuation_distance": 32
+        }
+      ]
+    },
+    "dimensional_slash_space_fracture": {
+      "sounds": [
+        {
+          "name": "ex_enigmaticlegacy:slash_space_fracture",
+          "stream": false,
+          "preload": true,
+          "attenuation_distance": 32
+        }
+      ]
+    }
   }
 }

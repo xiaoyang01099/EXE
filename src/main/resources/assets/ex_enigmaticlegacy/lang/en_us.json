@@ -445,7 +445,13 @@
   "item.ex_enigmaticlegacy.nature_gift": "Nature Gift",
   "item.ex_enigmaticlegacy.cursed_pastels": "Cursed Pastels",
   "item.ex_enigmaticlegacy.mana_pastels": "Mana Pastels",
+  "item.ex_enigmaticlegacy.sunmaker_helmet": "Sunmaker Helmet",
+  "item.ex_enigmaticlegacy.sunmaker_chestplate": "Sunmaker Chestplate",
+  "item.ex_enigmaticlegacy.sunmaker_leggings": "Sunmaker Leggings",
+  "item.ex_enigmaticlegacy.sunmaker_boots": "Sunmaker Boots",
   "item.ex_enigmaticlegacy.sling": "Sling",
+
+
 
   "itemGroup.ex_enigmaticlegacy": "§1EXENIGMATICLEGACY_ITEM",
   "itemGroup.ex_enigmaticlegacy_block": "§5EXENIGMATICLEGACY_BLOCK",

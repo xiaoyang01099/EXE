@@ -1,0 +1,35 @@
+{
+  "blend": {
+    "func": "add",
+    "srcrgb": "srcalpha",
+    "dstrgb": "1-srcalpha"
+  },
+  "vertex": "ex_enigmaticlegacy:fly_sword/fly_sword_held",
+  "fragment": "ex_enigmaticlegacy:fly_sword/fly_sword_held",
+  "attributes": [
+    "Position",
+    "UV0",
+    "Color",
+    "Normal"
+  ],
+  "samplers": [
+    { "name": "Sampler0" },
+    { "name": "Sampler1" }
+  ],
+  "uniforms": [
+    { "name": "EffectParams", "type": "float", "count": 2, "values": [0.0, 0.42] },
+    { "name": "MainSpriteUV", "type": "float", "count": 4, "values": [0.0, 0.0, 1.0, 1.0] },
+    { "name": "Noise1SpriteUV", "type": "float", "count": 4, "values": [0.0, 0.0, 1.0, 1.0] },
+    { "name": "Noise2SpriteUV", "type": "float", "count": 4, "values": [0.0, 0.0, 1.0, 1.0] },
+    { "name": "Noise3SpriteUV", "type": "float", "count": 4, "values": [0.0, 0.0, 1.0, 1.0] },
+    { "name": "FresnelParams", "type": "float", "count": 3, "values": [3.0, 0.16, 0.52] },
+    { "name": "GradientStartColor", "type": "float", "count": 3, "values": [0.20, 0.82, 1.0] },
+    { "name": "GradientEndColor", "type": "float", "count": 3, "values": [0.22, 0.72, 1.0] },
+    { "name": "EmissiveStrength", "type": "float", "count": 1, "values": [3.45] },
+    { "name": "ScreenSize", "type": "float", "count": 2, "values": [1.0, 1.0] },
+    { "name": "Noise1FlowParams", "type": "float", "count": 4, "values": [0.1, 0.5, 0.0, 0.0] },
+    { "name": "Noise2FlowParams", "type": "float", "count": 4, "values": [0.1, 0.5, 0.0, 0.0] },
+    { "name": "FlySwordModelViewMat", "type": "matrix4x4", "count": 16, "values": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] },
+    { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] }
+  ]
+}

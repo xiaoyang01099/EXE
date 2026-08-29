@@ -5,7 +5,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
-import org.xiaoyang.ex_enigmaticlegacy.ConfigHandler;
+import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 
 public class SlotEnderChest extends Slot {

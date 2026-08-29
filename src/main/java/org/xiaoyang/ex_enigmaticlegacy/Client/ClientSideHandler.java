@@ -15,6 +15,8 @@ import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.generating.*;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.hybrid.AquaticAnglerNarcissus;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.hybrid.RuneFlower;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModParticleTypes;
+import org.xiaoyang.ex_enigmaticlegacy.Client.particle.TrueDemonParticle;
+import org.xiaoyang.ex_enigmaticlegacy.Client.particle.TrueDemonStarParticle;
 
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -88,5 +90,11 @@ public class ClientSideHandler {
                 ModParticleTypes.RAINBOW.get(),
                 RainbowParticle.Provider::new
         );
+
+        event.registerSpecial(ModParticleTypes.TRUE_DEMON_PARTICLE.get(), new TrueDemonParticle.Provider());
+        event.registerSpecial(ModParticleTypes.TRUE_DEMON_SLASH_PARTICLE.get(), new TrueDemonParticle.SlashProvider());
+        event.registerSpecial(ModParticleTypes.TRUE_DEMON_STAR_PARTICLE.get(), new TrueDemonStarParticle.Provider());
+        event.registerSpecial(ModParticleTypes.TRUE_DEMON_WEAPON_PARTICLE.get(), new TrueDemonParticle.WeaponProvider());
+        event.registerSpecial(ModParticleTypes.TRUE_DEMON_CORROSION_PARTICLE.get(), new TrueDemonParticle.CorrosionProvider());
     }
 }

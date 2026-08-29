@@ -13,6 +13,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
+import org.xiaoyang.ex_enigmaticlegacy.Util.AnimatedChestTexture;
 
 @Mod.EventBusSubscriber(modid = Exe.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ItemsRemainingRender {
@@ -29,6 +30,13 @@ public class ItemsRemainingRender {
             if (ticks > 0 && !stack.isEmpty()) {
                 render(event.getGuiGraphics(), event.getPartialTick());
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void Animated(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            AnimatedChestTexture.tick();
         }
     }
 

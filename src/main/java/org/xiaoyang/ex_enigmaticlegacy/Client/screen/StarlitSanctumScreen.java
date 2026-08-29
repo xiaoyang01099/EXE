@@ -1,6 +1,7 @@
 package org.xiaoyang.ex_enigmaticlegacy.Client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -9,7 +10,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.xiaoyang.ex_enigmaticlegacy.ConfigHandler;
+import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Container.StarlitSanctumMenu;
 import org.xiaoyang.ex_enigmaticlegacy.Tile.StarlitSanctumTile;
 
@@ -159,8 +160,7 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
         float itemScreenX = getXOffset() + (slot.x * getScale());
         float itemScreenY = getYOffset() + (slot.y * getScale());
 
-        // 1.20 中仍需通过 ModelViewStack 处理缩放偏移的物品渲染
-        com.mojang.blaze3d.vertex.PoseStack modelViewStack = RenderSystem.getModelViewStack();
+        PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         modelViewStack.translate(itemScreenX, itemScreenY, 0);
         modelViewStack.scale(getScale(), getScale(), 1.0F);
@@ -174,7 +174,7 @@ public class StarlitSanctumScreen extends AbstractContainerScreen<StarlitSanctum
     }
 
     private void renderFloatingItem(GuiGraphics guiGraphics, ItemStack stack, int mouseX, int mouseY, String text) {
-        com.mojang.blaze3d.vertex.PoseStack modelViewStack = RenderSystem.getModelViewStack();
+        PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         modelViewStack.translate(mouseX, mouseY, 200);
         modelViewStack.scale(getScale(), getScale(), 1.0F);

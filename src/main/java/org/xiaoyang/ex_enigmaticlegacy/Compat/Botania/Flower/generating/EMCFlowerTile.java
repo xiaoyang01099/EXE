@@ -14,7 +14,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Projecte.PlayerEMC;
-import org.xiaoyang.ex_enigmaticlegacy.ConfigHandler;
+import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigHandler;
 import vazkii.botania.api.BotaniaForgeClientCapabilities;
 import vazkii.botania.api.block_entity.BindableSpecialFlowerBlockEntity;
 import vazkii.botania.api.block_entity.GeneratingFlowerBlockEntity;

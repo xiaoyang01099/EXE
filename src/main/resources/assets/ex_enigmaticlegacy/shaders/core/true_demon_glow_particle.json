@@ -1,0 +1,26 @@
+{
+  "blend": {
+    "func": "add",
+    "srcrgb": "one",
+    "dstrgb": "1-srcalpha"
+  },
+  "vertex": "ex_enigmaticlegacy:true_demon_glow_particle",
+  "fragment": "ex_enigmaticlegacy:true_demon_glow_particle",
+  "attributes": [
+    "Position",
+    "Color",
+    "UV0",
+    "UV2"
+  ],
+  "samplers": [],
+  "uniforms": [
+    { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+    { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+
+    { "name": "radius", "type": "float", "count": 1, "values": [0.056] },
+    { "name": "feather", "type": "float", "count": 1, "values": [0.50] },
+    { "name": "gamma", "type": "float", "count": 1, "values": [1.32] },
+    { "name": "exposure", "type": "float", "count": 1, "values": [1.35] },
+    { "name": "Layer", "type": "int", "count": 1, "values": [0] }
+  ]
+}

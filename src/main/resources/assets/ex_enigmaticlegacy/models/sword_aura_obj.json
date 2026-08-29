@@ -1,0 +1,11 @@
+{
+  "loader": "forge:obj",
+  "model": "ex_enigmaticlegacy:models/obj/sword1.obj",
+  "automatic_culling": false,
+  "shade_quads": false,
+  "flip_v": false,
+  "emissive_ambient": true,
+  "textures": {
+    "particle": "ex_enigmaticlegacy:atlases/sword1"
+  }
+}

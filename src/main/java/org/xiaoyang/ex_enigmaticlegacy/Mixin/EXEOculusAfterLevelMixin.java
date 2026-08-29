@@ -7,7 +7,11 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.xiaoyang.ex_enigmaticlegacy.Client.particle.TrueDemonWeaponParticleEmitter;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.*;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.slash.ClientEffects;
+
+import java.util.List;
 
 @Mixin(value = GameRenderer.class, priority = 500)
 public abstract class EXEOculusAfterLevelMixin {
@@ -15,6 +19,7 @@ public abstract class EXEOculusAfterLevelMixin {
     @Inject(method = "renderLevel", at = @At("HEAD"))
     private void exe_beginWorldRender(float partialTick, long finishTimeNano, PoseStack poseStack, CallbackInfo ci) {
         EXERenderFrameState.Snapshot snap = EXERenderFrameState.beginFrame();
+        ClientEffects.beginWorldRenderFrame(snap);
         SpecialLateRenderQueue.beginFrame(snap);
         CosmicBeamLateRenderQueue.beginFrame(snap);
         StarLineLateRenderQueue.beginFrame(snap);
@@ -22,18 +27,16 @@ public abstract class EXEOculusAfterLevelMixin {
         EXERainbowCosmicBlockLateRenderQueue.beginFrame(snap);
         GaiaGuardianLateRenderQueue.beginFrame(snap);
         EXECosmicItemLateRenderQueue.beginFrame(snap);
+        EXECosmicArmorLateRenderQueue.beginFrame(snap);
         EXECosmicBlockLateRenderQueue.beginFrame(snap);
+        EXEParticleLateRenderQueue.beginFrame(snap);
+        EXEEffectLateRenderQueue.beginFrame(snap);
+        TrueDemonWeaponParticleEmitter.beginWorldRender();
     }
 
-    @Inject(
-            method = "renderLevel",
-            at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/client/renderer/GameRenderer;renderHand:Z",
-                    ordinal = 0
-            )
-    )
+    @Inject(method = "renderLevel", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/GameRenderer;renderHand:Z", ordinal = 0))
     private void exe_renderLateWorldPasses(float partialTick, long finishTimeNano, PoseStack poseStack, CallbackInfo ci) {
+        ClientEffects.renderAfterWorldPipeline();
         if (!EXERenderFrameState.current().shaderPackActive()) {
             return;
         }
@@ -46,6 +49,8 @@ public abstract class EXEOculusAfterLevelMixin {
         EXERainbowCosmicBlockLateRenderQueue.renderAfterLevel();
         StarLineLateRenderQueue.renderAfterLevel(poseStack);
         EXECosmicBlockLateRenderQueue.renderAfterLevel();
+        EXEParticleLateRenderQueue.renderAfterLevel();
+        EXEEffectLateRenderQueue.renderAfterLevel();
     }
 
     @Inject(method = "renderLevel", at = @At("TAIL"))
@@ -55,41 +60,28 @@ public abstract class EXEOculusAfterLevelMixin {
 
     @Unique
     private static void exe_finishAllFrames() {
-        try {
-            SpecialLateRenderQueue.endFrame();
-        } finally {
+        List<Runnable> cleanupTasks = List.of(
+                SpecialLateRenderQueue::endFrame,
+                CosmicBeamLateRenderQueue::endFrame,
+                StarLineLateRenderQueue::endFrame,
+                EXECosmicItemLateRenderQueue::endFrame,
+                EXECosmicArmorLateRenderQueue::endFrame,
+                EXERainbowCosmicBlockLateRenderQueue::endFrame,
+                EXERainbowCosmicItemLateRenderQueue::endFrame,
+                EXECosmicBlockLateRenderQueue::endFrame,
+                GaiaGuardianLateRenderQueue::endFrame,
+                EXEParticleLateRenderQueue::endFrame,
+                TrueDemonWeaponParticleEmitter::endWorldRender,
+                EXEEffectLateRenderQueue::endFrame,
+                EXERenderFrameState::endFrame
+        );
+
+        for (Runnable task : cleanupTasks) {
             try {
-                CosmicBeamLateRenderQueue.endFrame();
-            } finally {
-                try {
-                    StarLineLateRenderQueue.endFrame();
-                } finally {
-                    try {
-                        EXECosmicItemLateRenderQueue.endFrame();
-                    } finally {
-                        try {
-                            EXECosmicArmorLateRenderQueue.endFrame();
-                        } finally {
-                            try {
-                                EXERainbowCosmicBlockLateRenderQueue.endFrame();
-                            } finally {
-                                try {
-                                    EXERainbowCosmicItemLateRenderQueue.endFrame();
-                                } finally {
-                                    try {
-                                        EXECosmicBlockLateRenderQueue.endFrame();
-                                    } finally {
-                                        try {
-                                            GaiaGuardianLateRenderQueue.endFrame();
-                                        } finally {
-                                            EXERenderFrameState.endFrame();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                task.run();
+            } catch (Exception e) {
+
+                e.printStackTrace();
             }
         }
     }

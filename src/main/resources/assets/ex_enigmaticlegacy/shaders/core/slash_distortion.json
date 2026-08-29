@@ -1,0 +1,40 @@
+{
+  "vertex": "ex_enigmaticlegacy:slash_fullscreen",
+  "fragment": "ex_enigmaticlegacy:slash_distortion",
+  "attributes": [ "Position", "UV0" ],
+  "samplers": [
+    { "name": "SceneSampler" }
+  ],
+  "uniforms": [
+    { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+    { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+    { "name": "TexelSize", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
+    { "name": "SourceTexelSize", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
+    { "name": "SourcePaddingPixels", "type": "float", "count": 1, "values": [ 0.0 ] },
+    { "name": "LineStart", "type": "float", "count": 2, "values": [ 0.0, 0.5 ] },
+    { "name": "LineEnd", "type": "float", "count": 2, "values": [ 1.0, 0.5 ] },
+    { "name": "LineWidthPixels", "type": "float", "count": 1, "values": [ 24.0 ] },
+    { "name": "LineStrengthPixels", "type": "float", "count": 1, "values": [ 24.0 ] },
+    { "name": "LineAlpha", "type": "float", "count": 1, "values": [ 1.0 ] },
+    { "name": "DirectionFlip", "type": "float", "count": 1, "values": [ 1.0 ] },
+    { "name": "CenterFadeInnerRadius", "type": "float", "count": 1, "values": [ 0.055 ] },
+    { "name": "CenterFadeOuterRadius", "type": "float", "count": 1, "values": [ 0.25 ] },
+    { "name": "CenterFadeMinStrength", "type": "float", "count": 1, "values": [ 0.12 ] },
+    { "name": "VoronoiStrength", "type": "float", "count": 1, "values": [ 0.0 ] },
+    { "name": "VoronoiAge", "type": "float", "count": 1, "values": [ 0.0 ] },
+    { "name": "VoronoiSeed", "type": "float", "count": 1, "values": [ 1.0 ] },
+    { "name": "VoronoiCellScale", "type": "float", "count": 1, "values": [ 15.0 ] },
+    { "name": "VoronoiWarpPixels", "type": "float", "count": 1, "values": [ 50.0 ] },
+    { "name": "VoronoiCrackWidthPixels", "type": "float", "count": 1, "values": [ 1.24 ] },
+    { "name": "VoronoiCrackAlpha", "type": "float", "count": 1, "values": [ 1.0 ] },
+    { "name": "VoronoiCrackColor", "type": "float", "count": 1, "values": [ 0.0 ] },
+    { "name": "VoronoiCrackRevealThreshold", "type": "float", "count": 1, "values": [ 0.01 ] },
+    { "name": "VoronoiCenterInnerRadius", "type": "float", "count": 1, "values": [ 0.12 ] },
+    { "name": "VoronoiCenterOuterRadius", "type": "float", "count": 1, "values": [ 1.16 ] },
+    { "name": "VoronoiCenterFalloffPower", "type": "float", "count": 1, "values": [ 1.25 ] },
+    { "name": "VoronoiSpreadStartRadius", "type": "float", "count": 1, "values": [ 0.024 ] },
+    { "name": "VoronoiSpreadEndRadius", "type": "float", "count": 1, "values": [ 1.42 ] },
+    { "name": "VoronoiSpreadTicks", "type": "float", "count": 1, "values": [ 15.0 ] },
+    { "name": "VoronoiSpreadFeatherRadius", "type": "float", "count": 1, "values": [ 0.075 ] }
+  ]
+}

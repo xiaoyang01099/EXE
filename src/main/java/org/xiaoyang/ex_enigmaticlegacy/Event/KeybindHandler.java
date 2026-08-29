@@ -5,34 +5,39 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.Relic.ShinyStone;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.Relic.TelekinesisTomeLevel;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.*;
-import org.xiaoyang.ex_enigmaticlegacy.ConfigHandler;
+import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModItems;
+import org.xiaoyang.ex_enigmaticlegacy.Item.armor.ArmorSunmaker;
 import org.xiaoyang.ex_enigmaticlegacy.Network.NetworkHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputMessage.DiscordKeybindMessage;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputMessage.TelekinesisTomeLevelAttackMessage;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.ShinyStoneTogglePacket;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.SpectatorModePacket;
+import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.DimensionalSlashC2SPacket;
 import top.theillusivec4.curios.api.CuriosApi;
 
 @Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class KeybindHandler {
+    private static long lastUseMs = 0L;
+    private static final long COOLDOWN_MS = 2000L;
     public static final String SHINY_STONE_TOGGLE = "key.ex_enigmaticlegacy.shiny_stone_toggle";
     public static final String KEY_CATEGORIES_AVARITIA = "key.categories.ex_enigmaticlegacy";
     public static final String KEY_TOGGLE_SPECTATOR = "key.ex_enigmaticlegacy.toggle_spectator";
     public static final String KEY_CATEGORY = "key.categories.ex_enigmaticlegacy";
-
     public static KeyMapping toggleSpectatorKey;
     public static KeyMapping keyInventory;
     public static KeyMapping keyEnderpearl;
@@ -43,6 +48,34 @@ public class KeybindHandler {
 
     private static boolean discordRingPressed = false;
     private static boolean wasAttacking = false;
+
+    public static final KeyMapping DIMENSION_SLASH_KEY = new KeyMapping(
+            "key.exe.dimension_slash",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_V,
+            "key.categories.ex_enigmaticlegacy"
+    );
+
+    public static final KeyMapping SUMMON_FLY_SWORD_KEY = new KeyMapping(
+            "key.exe.summon_fly_sword",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_Z,
+            "key.categories.ex_enigmaticlegacy"
+    );
+
+    public static final KeyMapping EXCALIBUR_KEY = new KeyMapping(
+            "key.exe.excalibur",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_N,
+            "key.categories.ex_enigmaticlegacy"
+    );
+
+    public static final KeyMapping DIMENSIONAL_SLASH_KEY = new KeyMapping(
+            "key.ex_enigmaticlegacy.dimensional_slash",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_M,
+            "key.categories.ex_enigmaticlegacy"
+    );
 
     public static void init() {
         discordRingKey = new KeyMapping(
@@ -65,7 +98,7 @@ public class KeybindHandler {
                 KEY_TOGGLE_SPECTATOR,
                 KeyConflictContext.IN_GAME,
                 InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_V,
+                GLFW.GLFW_KEY_X,
                 KEY_CATEGORIES_AVARITIA
         );
 
@@ -104,7 +137,7 @@ public class KeybindHandler {
 
     public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
         init();
-
+        event.register(DIMENSIONAL_SLASH_KEY);
         event.register(keyInventory);
         event.register(keyEnderpearl);
         event.register(keyEnderchest);
@@ -112,6 +145,30 @@ public class KeybindHandler {
         event.register(toggleSpectatorKey);
         event.register(keyShinyStone);
         event.register(discordRingKey);
+        event.register(DIMENSION_SLASH_KEY);
+        event.register(SUMMON_FLY_SWORD_KEY);
+        event.register(EXCALIBUR_KEY);
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.level == null || mc.screen != null) return;
+        while (DIMENSIONAL_SLASH_KEY.consumeClick()) {
+            if (!hasFullSunmakerSet(mc)) return;
+            long now = System.currentTimeMillis();
+            if (now - lastUseMs < COOLDOWN_MS) return;
+            lastUseMs = now;
+            NetworkHandler.CHANNEL.sendToServer(new DimensionalSlashC2SPacket());
+        }
+    }
+
+    private static boolean hasFullSunmakerSet(Minecraft mc) {
+        return mc.player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof ArmorSunmaker
+                && mc.player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ArmorSunmaker
+                && mc.player.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof ArmorSunmaker
+                && mc.player.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof ArmorSunmaker;
     }
 
     @SubscribeEvent
@@ -152,7 +209,6 @@ public class KeybindHandler {
                 player.displayClientMessage(Component.nullToEmpty(""), true);
                 return;
             }
-            // 修复：统一使用 NetworkHandler.sendToServer
             NetworkHandler.sendToServer(new EnderPearlPacket());
         }
 

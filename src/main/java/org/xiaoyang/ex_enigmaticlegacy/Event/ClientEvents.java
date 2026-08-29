@@ -16,7 +16,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.Const;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.Relic.over.GuiButtonOpenInventory;
-import org.xiaoyang.ex_enigmaticlegacy.ConfigHandler;
+import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModEffects;
 import org.xiaoyang.ex_enigmaticlegacy.Item.armor.DragonCrystalArmor;

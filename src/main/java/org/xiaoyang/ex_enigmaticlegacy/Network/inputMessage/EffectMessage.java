@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
-import org.xiaoyang.ex_enigmaticlegacy.Client.particle.ef.FXRegistry;
+import org.xiaoyang.ex_enigmaticlegacy.Client.particle.effect.FXRegistry;
 
 import java.util.function.Function;
 import java.util.function.Supplier;

@@ -59,7 +59,7 @@ public final class RainbowAvaritiaShaders {
 
 
     static {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 11; i++) {
             COSMIC_LOCATIONS[i] = new ResourceLocation(Exe.MODID, "shader/cosmic_" + i);
         }
 

@@ -1,0 +1,26 @@
+{
+  "blend": {
+    "func": "add",
+    "srcrgb": "srcalpha",
+    "dstrgb": "1-srcalpha"
+  },
+  "vertex": "ex_enigmaticlegacy:batto_slash",
+  "fragment": "ex_enigmaticlegacy:batto_slash",
+  "attributes": [
+    "Position",
+    "Color",
+    "UV0"
+  ],
+  "samplers": [
+    { "name": "Sampler0" }
+  ],
+  "uniforms": [
+    { "name": "MaterialParams", "type": "float", "count": 4, "values": [0.0, 1.6, 0.08, 1.15] },
+    { "name": "PannerParams", "type": "float", "count": 4, "values": [0.10, 0.0, 0.15, 0.0] },
+    { "name": "MainSpriteUV", "type": "float", "count": 4, "values": [0.0, 0.0, 1.0, 1.0] },
+    { "name": "TexBSpriteUV", "type": "float", "count": 4, "values": [0.0, 0.0, 1.0, 1.0] },
+    { "name": "MaskSpriteUV", "type": "float", "count": 4, "values": [0.0, 0.0, 1.0, 1.0] },
+    { "name": "uView", "type": "matrix4x4", "count": 16, "values": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] },
+    { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] }
+  ]
+}

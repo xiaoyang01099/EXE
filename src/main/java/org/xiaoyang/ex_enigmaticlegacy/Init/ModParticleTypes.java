@@ -12,7 +12,11 @@ public class ModParticleTypes {
     public static final RegistryObject<SimpleParticleType> ASGARDANDELION = PARTICLE_TYPES.register("asgardandelion", () -> new SimpleParticleType(true));
     public static final RegistryObject<SimpleParticleType> RAINBOW = PARTICLE_TYPES.register("rainbow", () -> new SimpleParticleType(true));
     public static final RegistryObject<SimpleParticleType> YUHUA_COSMIC = PARTICLE_TYPES.register("yuhua_cosmic", () -> new SimpleParticleType(false));
-
+    public static final RegistryObject<SimpleParticleType> TRUE_DEMON_PARTICLE = PARTICLE_TYPES.register("true_demon_particle", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> TRUE_DEMON_SLASH_PARTICLE = PARTICLE_TYPES.register("true_demon_slash_particle", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> TRUE_DEMON_STAR_PARTICLE = PARTICLE_TYPES.register("true_demon_star_particle", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> TRUE_DEMON_CORROSION_PARTICLE = PARTICLE_TYPES.register("true_demon_corrosion_particle", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> TRUE_DEMON_WEAPON_PARTICLE = PARTICLE_TYPES.register("true_demon_weapon_particle", () -> new SimpleParticleType(true));
 
 
 

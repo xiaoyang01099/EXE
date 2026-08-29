@@ -8,10 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import org.xiaoyang.ex_enigmaticlegacy.ConfigHandler;
+import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
-
-import java.util.List;
 
 public class GuiOverpowered extends AbstractContainerScreen<ContainerOverpowered> {
     private static final ResourceLocation BKG = new ResourceLocation(Exe.MODID, "textures/gui/overflow/inventory.png");

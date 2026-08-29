@@ -6,7 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 import org.xiaoyang.ex_enigmaticlegacy.Network.NetworkHandler;
-import org.xiaoyang.ex_enigmaticlegacy.SpawnControlConfig;
+import org.xiaoyang.ex_enigmaticlegacy.Config.SpawnControlConfig;
 
 import java.util.function.Supplier;
 

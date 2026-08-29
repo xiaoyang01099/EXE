@@ -24,7 +24,6 @@ public final class SpecialRenderHelper extends RenderType {
     public static final RenderType BLACK_HOLE;
     public static final RenderType ANDROMEDA;
     public static final RenderType STAR_LINE;
-    public static final RenderType BLADE_SLASH;
 
     public static final RenderType ENCHANTER_RUNE_AFTER_LEVEL ;
     public static final RenderType RAINBOW_MANA_WATER_AFTER_LEVEL;
@@ -69,6 +68,52 @@ public final class SpecialRenderHelper extends RenderType {
         return makeLayer(Exe.MODID + ":" + name,
                 DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 128, state);
     }
+
+    private static final RenderStateShard.ShaderStateShard BLADE_SHADER =
+            new RenderStateShard.ShaderStateShard(SpecialCoreShaders::getBladeShader);
+    private static final RenderStateShard.ShaderStateShard SLASH_SHADER =
+            new RenderStateShard.ShaderStateShard(SpecialCoreShaders::getSlashShader);
+
+    private static final RenderType.CompositeState BLADE_STATE =
+            RenderType.CompositeState.builder()
+                    .setShaderState(BLADE_SHADER)
+                    .setTransparencyState(RenderStateShard.ADDITIVE_TRANSPARENCY)
+                    .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setOverlayState(RenderStateShard.NO_OVERLAY)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                    .createCompositeState(false);
+
+    private static final RenderType.CompositeState SLASH_STATE =
+            RenderType.CompositeState.builder()
+                    .setShaderState(SLASH_SHADER)
+                    .setTransparencyState(RenderStateShard.ADDITIVE_TRANSPARENCY)
+                    .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setOverlayState(RenderStateShard.NO_OVERLAY)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                    .createCompositeState(false);
+
+    public static final RenderType BLADE = RenderType.create(
+            "ex_enigmaticlegacy_blade",
+            DefaultVertexFormat.POSITION_TEX,
+            VertexFormat.Mode.QUADS,
+            256,
+            false,
+            false,
+            BLADE_STATE
+    );
+    public static final RenderType SLASH = RenderType.create(
+            "ex_enigmaticlegacy_slash",
+            DefaultVertexFormat.POSITION_TEX,
+            VertexFormat.Mode.QUADS,
+            256,
+            false,
+            false,
+            SLASH_STATE
+    );
 
     static {
         CompositeState state = CompositeState.builder()
@@ -156,16 +201,6 @@ public final class SpecialRenderHelper extends RenderType {
                 .setCullState(NO_CULL)
                 .createCompositeState(false);
         STAR_LINE = makeLayer(Exe.MODID + ":star_line",
-                DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, state);
-
-        state = CompositeState.builder()
-                .setShaderState(new ShaderStateShard(SpecialCoreShaders::getBladeShader))
-                .setTextureState(NO_TEXTURE)
-                .setTransparencyState(ADDITIVE_TRANSPARENCY)
-                .setDepthTestState(LEQUAL_DEPTH_TEST)
-                .setWriteMaskState(COLOR_WRITE)
-                .createCompositeState(false);
-        BLADE_SLASH = makeLayer(Exe.MODID + ":blade",
                 DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, state);
 
         state = CompositeState.builder()

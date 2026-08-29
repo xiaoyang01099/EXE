@@ -1,0 +1,530 @@
+#version 430 core
+
+struct Particle {
+    // xyz: 当前位置，w: 剩余生命。
+    vec4 position;
+    // 弹道模式 xyz: 速度；圆形/径向扩散模式 xyz: 轨道平面欧拉角；方向平面随机/弧面方向模式 xyz: 主方向或目标方向；w: 总生命。
+    vec4 velocity;
+    vec4 startColor;
+    vec4 midColor;
+    vec4 endColor;
+    // x/y: 宽高，z: 旋转，w: 形状类型。
+    vec4 render;
+    // x: 运动类型；圆形 y/z/w=半径/角速度/法线速度；径向扩散 y/z/w=出生半径扰动/上抛速度/扰动；方向平面随机 y/z/w=侧向幅度/频率/速度；弧面方向 y/z/w=光柱长度/保留秒数/淡出秒数；噪声上升 y/z/w=curl强度/噪声频率/噪声速度。
+    vec4 motion;
+    // xyz: 发射位置或圆形轨道中心，w: 初始相位。
+    vec4 origin;
+    // x: 弹道重力或噪声上升径向扩散强度，y/z: 随机种子，w: 材质 ID。
+    vec4 extra;
+    // x: 起始速度或弧面劈落秒数，y: 结束速度或保留秒数，z: 速度曲线指数或淡出秒数，w: 方向符号。
+    vec4 speedParams;
+    // x: 中间颜色时间点，y: 是否叠加随机旋转，z: 普通粒子自旋速度或噪声上升出生高度下限，w: 噪声上升出生高度上限。
+    vec4 renderParams;
+    // xy: 中间尺寸，zw: 结束尺寸；出生尺寸继续使用 render.xy。
+    vec4 sizeParams;
+    // x: 中间尺寸时间点，y: 固定尺寸开关，z/w: LIGHT_EFFECT 遮罩半径/柔边宽度。
+    vec4 sizeControl;
+};
+
+struct EmitJob {
+    // xyz: 发射位置；圆形模式下作为圆心；w: 写入起点。
+    vec4 position;
+    // 弹道/方向平面随机/弧面方向模式 xyz: 发射方向或目标方向；圆形/径向扩散模式 xyz: 轨道平面欧拉角；w: 发射数量。
+    vec4 direction;
+    vec4 startColor;
+    vec4 midColor;
+    vec4 endColor;
+    // 弹道/径向扩散 x/y/z/w: 速度/扩散/生命/重力；圆形 x/z/w: 出生角/生命/角度范围；噪声上升 x/y/z/w: 速度/出生半径/生命/径向扩散。
+    vec4 physics;
+    // x/y: 宽高，z: 旋转，w: 形状类型。
+    vec4 render;
+    // x: 运动类型；圆形 y/z/w=半径/角速度/法线速度；径向扩散 y/z/w=出生半径扰动/上抛速度/扰动；方向平面随机 y/z/w=侧向幅度/频率/速度；弧面方向 y/z/w=光柱长度/保留秒数/淡出秒数；噪声上升 y/z/w=curl强度/噪声频率/噪声速度。
+    vec4 motion;
+    // x: 时间种子，y: job 序号，z: 圆形出生模式，w: 材质 ID。
+    vec4 random;
+    // x: 起始速度或弧面劈落秒数，y: 结束速度或保留秒数，z: 速度曲线指数或淡出秒数，w: 方向符号。
+    vec4 speedParams;
+    // x: 中间颜色时间点，y: 是否叠加随机旋转，z: 普通粒子自旋速度或噪声上升出生高度下限，w: 噪声上升出生高度上限。
+    vec4 renderParams;
+    // xy: 中间尺寸，zw: 结束尺寸；出生尺寸继续使用 render.xy。
+    vec4 sizeParams;
+    // x: 中间尺寸时间点，y: 固定尺寸开关，z/w: LIGHT_EFFECT 遮罩半径/柔边宽度。
+    vec4 sizeControl;
+};
+
+struct ParticleMaterialGpu {
+    // baseSpriteUV/noise/topDissolve/bloom 暂不在 compute 中使用，但结构必须与材质 SSBO 保持一致。
+    vec4 baseSpriteUV;
+    vec4 noiseSpriteUV0;
+    vec4 noiseSpriteUV1;
+    vec4 topDissolveSpriteUV;
+    vec4 noiseParams;
+    vec4 bloomParams;
+    // x: Render Pipeline ID，yzw: 预留。
+    vec4 flags;
+};
+
+layout(std430, binding = 0) buffer ParticleBuffer {
+    Particle particles[];
+};
+
+layout(std430, binding = 1) readonly buffer EmitJobBuffer {
+    EmitJob jobs[];
+};
+
+layout(std430, binding = 2) readonly buffer ParticleMaterialBuffer {
+    ParticleMaterialGpu materials[];
+};
+
+layout(std430, binding = 3) buffer ActiveIndexBuffer {
+    uint activeIndices[];
+};
+
+layout(std430, binding = 4) buffer ActiveCountBuffer {
+    uint activeCounts[];
+};
+
+uniform float uDeltaTime;
+uniform int uMaxParticles;
+uniform int uEmitJobCount;
+uniform float uTime;
+uniform int uRenderPipelineCount;
+
+const float TWO_PI = 6.2831853;
+const int ORBIT_SPAWN_FIXED = 0;
+const int ORBIT_SPAWN_RANDOM = 1;
+const int ORBIT_SPAWN_RANGE = 2;
+const int ORBIT_SPAWN_DISTRIBUTED = 3;
+const int MOTION_CIRCULAR = 1;
+const int MOTION_RADIAL_DIFFUSION = 2;
+const int MOTION_DIRECTION_PLANE_RANDOM = 4;
+const int MOTION_TURBULENT_RISE = 5;
+const int MOTION_ARC_DIRECTION = 6;
+const int MATERIAL_COUNT = 8;
+
+float rand(vec2 co) {
+    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+vec3 randomSpread(vec3 dir, float spread, float speed, float idSeed, float timeSeed) {
+    float r1 = rand(vec2(idSeed * 1.374, timeSeed));
+    float r2 = rand(vec2(idSeed * 7.153, timeSeed + 1.0));
+    float r3 = rand(vec2(idSeed * 3.927, timeSeed + 2.0));
+    return dir * speed + vec3(r1 - 0.5, r2 - 0.5, r3 - 0.5) * spread * speed;
+}
+
+// 根据生命周期进度计算当前速度倍率，start=end 时保持旧版速度语义。
+float speedScaleAtAge(Particle p) {
+    // 兼容旧 buffer 或异常数据：未写入速度参数时继续按旧版速度移动。
+    if (abs(p.speedParams.x) < 0.0001 && abs(p.speedParams.y) < 0.0001) {
+        return 1.0;
+    }
+    float age = p.velocity.w - p.position.w;
+    float totalLife = max(p.velocity.w, 0.0001);
+    float ageT = clamp(age / totalLife, 0.0, 1.0);
+    float curveT = pow(ageT, max(p.speedParams.z, 0.0001));
+    float baseSpeed = max(max(abs(p.speedParams.x), abs(p.speedParams.y)), 0.0001);
+    float currentSpeed = mix(max(abs(p.speedParams.x), 0.0), max(abs(p.speedParams.y), 0.0), curveT);
+    return currentSpeed / baseSpeed;
+}
+
+// 根据主方向生成两个垂直侧向轴，主方向向上时侧向轴自然落在 XZ 平面。
+void buildPerpendicularBasis(vec3 mainDir, out vec3 sideA, out vec3 sideB) {
+    vec3 dir = length(mainDir) < 0.0001 ? vec3(0.0, 1.0, 0.0) : normalize(mainDir);
+    vec3 helper = abs(dir.y) < 0.95 ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
+    sideA = normalize(cross(helper, dir));
+    sideB = normalize(cross(dir, sideA));
+}
+
+// 五次平滑插值用于连续噪声，让随机目标之间的速度变化更柔。
+float smootherstep01(float t) {
+    float x = clamp(t, 0.0, 1.0);
+    return x * x * x * (x * (x * 6.0 - 15.0) + 10.0);
+}
+
+// 生成稳定的一维随机数，输入相同就返回相同结果。
+float hash11(float n) {
+    return fract(sin(n) * 43758.5453123);
+}
+
+// 生成 -1 到 1 的二维随机目标点，作为连续噪声的格点值。
+vec2 hash21(float n) {
+    float x = hash11(n * 17.13 + 3.71);
+    float y = hash11(n * 29.37 + 11.19);
+    return vec2(x, y) * 2.0 - 1.0;
+}
+
+// 一维连续值噪声：沿时间轴在相邻随机目标点之间平滑过渡。
+vec2 continuousNoise2(float t, vec2 seed) {
+    float base = floor(t);
+    float localT = fract(t);
+    float blend = smootherstep01(localT);
+    float seedOffset = seed.x * 173.31 + seed.y * 419.17;
+    vec2 a = hash21(base + seedOffset);
+    vec2 b = hash21(base + 1.0 + seedOffset);
+    return mix(a, b, blend);
+}
+
+// 使用两层连续噪声生成侧向随机，保留随机感但避免高频 sin/cos 造成杂乱抖动。
+vec2 smoothPlaneRandom(float age, vec2 seed, float phase, float frequency, float speed) {
+    float t = age * max(speed, 0.001) * max(frequency, 0.001) + phase;
+    vec2 base = continuousNoise2(t, seed);
+    vec2 detail = continuousNoise2(t * 2.03 + 17.0, seed + vec2(3.1, 7.7)) * 0.35;
+    return clamp((base + detail) / 1.35, vec2(-1.0), vec2(1.0));
+}
+
+// 三维值噪声用于构建低成本 curl 速度场，输入相同即可稳定复现同一片流场。
+float valueNoise3(vec3 p, vec2 seed) {
+    vec3 base = floor(p);
+    vec3 localT = fract(p);
+    vec3 blend = localT * localT * (3.0 - 2.0 * localT);
+    float seedOffset = seed.x * 157.31 + seed.y * 311.71;
+
+    float n000 = hash11(dot(base + vec3(0.0, 0.0, 0.0), vec3(1.0, 57.0, 113.0)) + seedOffset);
+    float n100 = hash11(dot(base + vec3(1.0, 0.0, 0.0), vec3(1.0, 57.0, 113.0)) + seedOffset);
+    float n010 = hash11(dot(base + vec3(0.0, 1.0, 0.0), vec3(1.0, 57.0, 113.0)) + seedOffset);
+    float n110 = hash11(dot(base + vec3(1.0, 1.0, 0.0), vec3(1.0, 57.0, 113.0)) + seedOffset);
+    float n001 = hash11(dot(base + vec3(0.0, 0.0, 1.0), vec3(1.0, 57.0, 113.0)) + seedOffset);
+    float n101 = hash11(dot(base + vec3(1.0, 0.0, 1.0), vec3(1.0, 57.0, 113.0)) + seedOffset);
+    float n011 = hash11(dot(base + vec3(0.0, 1.0, 1.0), vec3(1.0, 57.0, 113.0)) + seedOffset);
+    float n111 = hash11(dot(base + vec3(1.0, 1.0, 1.0), vec3(1.0, 57.0, 113.0)) + seedOffset);
+
+    float nx00 = mix(n000, n100, blend.x);
+    float nx10 = mix(n010, n110, blend.x);
+    float nx01 = mix(n001, n101, blend.x);
+    float nx11 = mix(n011, n111, blend.x);
+    float nxy0 = mix(nx00, nx10, blend.y);
+    float nxy1 = mix(nx01, nx11, blend.y);
+    return mix(nxy0, nxy1, blend.z) * 2.0 - 1.0;
+}
+
+// 在主方向垂直平面内计算二维 curl，得到局部旋涡速度而不是固定轴心螺旋。
+vec2 curlNoise2InPlane(vec3 fieldPos, vec2 seed) {
+    float eps = 0.35;
+    float nX1 = valueNoise3(fieldPos + vec3(eps, 0.0, 0.0), seed);
+    float nX2 = valueNoise3(fieldPos - vec3(eps, 0.0, 0.0), seed);
+    float nZ1 = valueNoise3(fieldPos + vec3(0.0, 0.0, eps), seed);
+    float nZ2 = valueNoise3(fieldPos - vec3(0.0, 0.0, eps), seed);
+    vec2 curl = vec2(nZ1 - nZ2, -(nX1 - nX2)) / (2.0 * eps);
+    return clamp(curl * 1.7, vec2(-1.0), vec2(1.0));
+}
+
+// 计算噪声流场上升粒子的本帧速度：主方向上升 + 局部 curl + 生命周期径向扩散 + 低频风偏移。
+vec3 turbulentRiseVelocity(Particle p, vec3 mainDir, vec3 sideA, vec3 sideB, float age, float totalLife) {
+    float ageT = clamp(age / max(totalLife, 0.0001), 0.0, 1.0);
+    vec3 relative = p.position.xyz - p.origin.xyz;
+    float upDistance = dot(relative, mainDir);
+    vec3 planeOffset = relative - mainDir * upDistance;
+    float noiseScale = max(p.motion.z, 0.001);
+    float noiseTime = uTime * max(p.motion.w, 0.001) + p.origin.w * 0.19;
+
+    // 将世界空间偏移投影到局部上升坐标，保证主方向改变时 curl 仍围绕该方向流动。
+    vec3 fieldPos = vec3(dot(planeOffset, sideA), upDistance, dot(planeOffset, sideB)) * noiseScale;
+    fieldPos += vec3(p.extra.y * 13.0, noiseTime, p.extra.z * 17.0);
+    vec2 curl = curlNoise2InPlane(fieldPos, p.extra.yz);
+
+    // 出生和死亡边缘降低 curl，减少底部突然横甩和末端噪声跳动。
+    float curlFade = smoothstep(0.02, 0.22, ageT) * (1.0 - smoothstep(0.88, 1.0, ageT));
+    vec3 curlVelocity = (sideA * curl.x + sideB * curl.y) * p.motion.y * curlFade;
+
+    // 上升速度继续走 start/end/speedCurve，便于用现有 speed(...) 控制整体悬停。
+    float curveT = pow(ageT, max(p.speedParams.z, 0.0001));
+    float verticalSpeed = mix(max(abs(p.speedParams.x), 0.0), max(abs(p.speedParams.y), 0.0), curveT);
+
+    // 生命周期后段逐渐向外扩散，形成底部收窄、顶部张开的体积。
+    vec3 fallbackRadial = normalize(sideA * cos(p.origin.w) + sideB * sin(p.origin.w));
+    vec3 radialDir = length(planeOffset) > 0.0001 ? normalize(planeOffset) : fallbackRadial;
+    float radialFade = smoothstep(0.25, 1.0, ageT);
+    vec3 radialVelocity = radialDir * p.extra.x * radialFade;
+
+    // 低频整体风只负责轻微弯曲，不参与局部卷曲细节。
+    vec2 wind = continuousNoise2(uTime * 0.25 + p.origin.w, p.extra.yz + vec2(12.0, 31.0));
+    vec3 windVelocity = (sideA * wind.x + sideB * wind.y) * 0.08 * smoothstep(0.15, 0.85, ageT);
+    return mainDir * verticalSpeed + curlVelocity + radialVelocity + windVelocity;
+}
+
+// 对速度曲线积分，方向平面随机按绝对出生位置重算，避免逐帧累计误差。
+float integratedSpeedDistance(vec4 speedParams, float age, float totalLife) {
+    float startSpeed = max(abs(speedParams.x), 0.0);
+    float endSpeed = max(abs(speedParams.y), 0.0);
+    float curvePower = max(speedParams.z, 0.0001);
+    float ageT = clamp(age / max(totalLife, 0.0001), 0.0, 1.0);
+    return startSpeed * age + (endSpeed - startSpeed) * totalLife * pow(ageT, curvePower + 1.0) / (curvePower + 1.0);
+}
+
+// 按 X/Y/Z 欧拉角旋转局部轨道向量，让圆形轨道可以从水平面倾斜到天空方向。
+vec3 rotateOrbitVector(vec3 v, vec3 angles) {
+    float cp = cos(angles.x);
+    float sp = sin(angles.x);
+    v = vec3(v.x, v.y * cp - v.z * sp, v.y * sp + v.z * cp);
+
+    float cy = cos(angles.y);
+    float sy = sin(angles.y);
+    v = vec3(v.x * cy + v.z * sy, v.y, -v.x * sy + v.z * cy);
+
+    float cr = cos(angles.z);
+    float sr = sin(angles.z);
+    return vec3(v.x * cr - v.y * sr, v.x * sr + v.y * cr, v.z);
+}
+
+// 根据圆周角度和轨道平面角度生成世界空间偏移。
+vec3 orbitOffset(float angle, float radius, float normalDistance, vec3 planeAngles) {
+    vec3 basisX = rotateOrbitVector(vec3(1.0, 0.0, 0.0), planeAngles);
+    vec3 basisZ = rotateOrbitVector(vec3(0.0, 0.0, 1.0), planeAngles);
+    vec3 normal = rotateOrbitVector(vec3(0.0, 1.0, 0.0), planeAngles);
+    return basisX * cos(angle) * radius + basisZ * sin(angle) * radius + normal * normalDistance;
+}
+
+// 圆形模式复用 EmitJob 的空闲槽位：physics.x=基础角度/range起点，physics.w=角度范围/range终点，random.z=出生模式。
+float resolveOrbitSpawnAngle(EmitJob job, float randomValue, int localIndex) {
+    int spawnMode = int(job.random.z + 0.5);
+    float baseAngle = job.physics.x;
+    float phaseRange = job.physics.w;
+
+    if (spawnMode == ORBIT_SPAWN_FIXED) {
+        return baseAngle;
+    }
+
+    if (spawnMode == ORBIT_SPAWN_RANGE) {
+        return mix(baseAngle, phaseRange, randomValue);
+    }
+
+    float span = abs(phaseRange) > 0.0001 ? phaseRange : TWO_PI;
+    if (spawnMode == ORBIT_SPAWN_DISTRIBUTED) {
+        float emitCount = max(job.direction.w, 1.0);
+        return baseAngle + float(localIndex) / emitCount * span;
+    }
+
+    return baseAngle + randomValue * span;
+}
+
+void updateParticle(inout Particle p) {
+    if (p.position.w <= 0.0) {
+        return;
+    }
+
+    p.position.w -= uDeltaTime;
+    if (p.position.w <= 0.0) {
+        p.position.w = 0.0;
+        return;
+    }
+
+    int motionType = int(p.motion.x + 0.5);
+    if (motionType == MOTION_CIRCULAR) {
+        // 圆形/螺旋模式用 age 重算位置，避免逐帧累计误差；velocity.xyz 在该模式下保存轨道平面角度。
+        float age = p.velocity.w - p.position.w;
+        float angle = p.origin.w + age * p.motion.z;
+        p.position.xyz = p.origin.xyz + orbitOffset(angle, p.motion.y, age * p.motion.w, p.velocity.xyz);
+    } else if (motionType == MOTION_DIRECTION_PLANE_RANDOM) {
+        // 方向平面随机模式沿主方向绝对推进，侧向两个轴使用连续随机偏移。
+        float age = p.velocity.w - p.position.w;
+        float totalLife = max(p.velocity.w, 0.0001);
+        vec3 mainDir = length(p.velocity.xyz) < 0.0001 ? vec3(0.0, 1.0, 0.0) : normalize(p.velocity.xyz);
+        vec3 sideA;
+        vec3 sideB;
+        buildPerpendicularBasis(mainDir, sideA, sideB);
+
+        float mainDistance = integratedSpeedDistance(p.speedParams, age, totalLife);
+        vec2 randomOffset = smoothPlaneRandom(age, p.extra.yz, p.origin.w, max(p.motion.z, 0.001), max(p.motion.w, 0.001)) * p.motion.y;
+        p.position.xyz = p.origin.xyz + mainDir * mainDistance + sideA * randomOffset.x + sideB * randomOffset.y;
+    } else if (motionType == MOTION_ARC_DIRECTION) {
+        // 弧面方向模式的真实几何由顶点 Shader 根据 age 同步展开，compute 只保持根部不漂移。
+        p.position.xyz = p.origin.xyz;
+    } else if (motionType == MOTION_TURBULENT_RISE) {
+        // 噪声流场上升模式按速度场逐帧积分，避免绝对 offset 导致固定范围来回摆动。
+        float age = p.velocity.w - p.position.w;
+        float totalLife = max(p.velocity.w, 0.0001);
+        vec3 mainDir = length(p.velocity.xyz) < 0.0001 ? vec3(0.0, 1.0, 0.0) : normalize(p.velocity.xyz);
+        vec3 sideA;
+        vec3 sideB;
+        buildPerpendicularBasis(mainDir, sideA, sideB);
+
+        vec3 fieldVelocity = turbulentRiseVelocity(p, mainDir, sideA, sideB, age, totalLife);
+        p.position.xyz += fieldVelocity * uDeltaTime;
+    } else {
+        // 弹道模式保留原来的速度 + 重力积分，并通过速度曲线缩放本帧位移。
+        p.velocity.y -= p.extra.x * uDeltaTime;
+        p.position.xyz += p.velocity.xyz * speedScaleAtAge(p) * uDeltaTime;
+    }
+}
+
+bool belongsToJob(int id, EmitJob job, out int localIndex) {
+    int startIndex = int(job.position.w + 0.5);
+    int emitCount = int(job.direction.w + 0.5);
+    int distance = (id - startIndex + uMaxParticles) % uMaxParticles;
+    localIndex = distance;
+    return distance < emitCount;
+}
+
+void spawnParticle(inout Particle p, EmitJob job, int id, int localIndex) {
+    float timeSeed = job.random.x + uTime * 0.013;
+    float idSeed = float(id) + job.random.y * 97.0;
+    float r1 = rand(vec2(idSeed, timeSeed));
+    float r2 = rand(vec2(idSeed * 2.17, timeSeed + 3.0));
+    float r3 = rand(vec2(idSeed * 5.91, timeSeed + 7.0));
+    float r4 = rand(vec2(idSeed * 11.37, timeSeed + 11.0));
+    float r5 = rand(vec2(idSeed * 17.71, timeSeed + 17.0));
+
+    p.startColor = job.startColor;
+    p.midColor = job.midColor;
+    p.endColor = job.endColor;
+    p.speedParams = job.speedParams;
+    p.renderParams = job.renderParams;
+    p.sizeControl = job.sizeControl;
+    // sizeControl.y 控制随机尺寸，z/w 会原样保留给 LIGHT_EFFECT 顶点和片元 Shader。
+    float sizeScale = job.sizeControl.y > 0.5 ? 1.0 : mix(0.55, 1.15, r3);
+    // renderParams.y 默认由 CPU 写入 1，继续为普通粒子叠加完整随机角；固定旋转任务写入 0，只使用 job.render.z。
+    float particleRotation = job.renderParams.y > 0.5
+        ? job.render.z + r4 * TWO_PI
+        : job.render.z;
+    p.render = vec4(job.render.x * sizeScale, job.render.y * sizeScale, particleRotation, job.render.w);
+    // 同一个出生随机倍率同步作用于三段尺寸，保持生命周期尺寸曲线比例稳定。
+    p.sizeParams = job.sizeParams * sizeScale;
+    p.motion = job.motion;
+
+    int motionType = int(job.motion.x + 0.5);
+    if (motionType == MOTION_CIRCULAR) {
+        // 圆形模式保持 job.position.xyz 作为圆心，并把粒子直接出生到圆周上的指定/随机位置。
+        vec3 planeAngles = job.direction.xyz;
+        float spawnAngle = resolveOrbitSpawnAngle(job, r1, localIndex);
+        vec3 center = job.position.xyz;
+        vec3 spawnPosition = center + orbitOffset(spawnAngle, job.motion.y, 0.0, planeAngles);
+
+        p.position = vec4(spawnPosition, job.physics.z);
+        p.velocity = vec4(planeAngles, job.physics.z);
+        p.origin = vec4(center, spawnAngle);
+        p.extra = vec4(0.0, r2, r5, job.random.w);
+    } else if (motionType == MOTION_RADIAL_DIFFUSION) {
+        // 径向扩散模式按批次数量均匀分配角度，再加入小扰动，保留旧版“向外炸开”的观感。
+        vec3 planeAngles = job.direction.xyz;
+        float emitCount = max(job.direction.w, 1.0);
+        float baseAngle = float(localIndex) / emitCount * TWO_PI;
+        float angleJitter = (r1 - 0.5) * job.physics.y;
+        float spawnAngle = baseAngle + angleJitter;
+        float speedJitter = mix(0.86, 1.16, r2);
+        float radiusOffset = r3 * job.motion.y;
+        float verticalSpeed = job.motion.z + (r4 - 0.5) * job.motion.w;
+
+        vec3 radialDir = orbitOffset(spawnAngle, 1.0, 0.0, planeAngles);
+        vec3 normal = rotateOrbitVector(vec3(0.0, 1.0, 0.0), planeAngles);
+        vec3 spawnPosition = job.position.xyz + radialDir * radiusOffset + normal * 0.035;
+
+        p.position = vec4(spawnPosition, job.physics.z);
+        float baseSpeed = max(max(abs(job.speedParams.x), abs(job.speedParams.y)), 0.0001);
+        p.velocity = vec4(radialDir * baseSpeed * speedJitter + normal * verticalSpeed, job.physics.z);
+        p.origin = vec4(spawnPosition, spawnAngle);
+        p.extra = vec4(job.physics.w, r2, r5, job.random.w);
+    } else if (motionType == MOTION_DIRECTION_PLANE_RANDOM) {
+        // 方向平面随机模式保存主方向和出生点，后续每帧按 age 重算绝对位置。
+        vec3 dir = job.direction.xyz;
+        if (length(dir) < 0.0001) {
+            dir = vec3(0.0, 1.0, 0.0);
+        }
+        dir = normalize(dir) * (job.speedParams.w < 0.0 ? -1.0 : 1.0);
+
+        p.position = vec4(job.position.xyz, job.physics.z);
+        p.velocity = vec4(dir, job.physics.z);
+        p.origin = vec4(job.position.xyz, r1 * TWO_PI + float(localIndex) * 0.17);
+        p.extra = vec4(job.physics.w, r2, r5, job.random.w);
+    } else if (motionType == MOTION_ARC_DIRECTION) {
+        // 弧面方向模式从光柱根部出生，velocity.xyz 保存最终目标方向，所有同源粒子共享时间参数。
+        vec3 dir = job.direction.xyz;
+        if (length(dir) < 0.0001) {
+            dir = vec3(0.0, 0.0, 1.0);
+        } else {
+            dir = normalize(dir);
+        }
+
+        p.position = vec4(job.position.xyz, job.physics.z);
+        p.velocity = vec4(dir, job.physics.z);
+        p.origin = vec4(job.position.xyz, r1 * TWO_PI + float(localIndex) * 0.17);
+        p.extra = vec4(job.physics.w, r2, r5, job.random.w);
+    } else if (motionType == MOTION_TURBULENT_RISE) {
+        // 噪声流场上升模式从主方向垂直平面的圆盘出生，避免所有粒子从单点开始形成假螺旋。
+        vec3 dir = job.direction.xyz;
+        if (length(dir) < 0.0001) {
+            dir = vec3(0.0, 1.0, 0.0);
+        }
+        dir = normalize(dir) * (job.speedParams.w < 0.0 ? -1.0 : 1.0);
+
+        vec3 sideA;
+        vec3 sideB;
+        buildPerpendicularBasis(dir, sideA, sideB);
+
+        float spawnAngle = r1 * TWO_PI;
+        float spawnRadius = sqrt(r2) * max(job.physics.y, 0.0);
+        vec3 spawnOffset = sideA * cos(spawnAngle) * spawnRadius + sideB * sin(spawnAngle) * spawnRadius;
+        // 高度范围沿归一化主方向应用；默认 -0.04～0.04 与旧版硬编码随机偏移完全一致。
+        float spawnHeightOffset = mix(job.renderParams.z, job.renderParams.w, r3);
+        vec3 spawnPosition = job.position.xyz + spawnOffset + dir * spawnHeightOffset;
+
+        p.position = vec4(spawnPosition, job.physics.z);
+        p.velocity = vec4(dir, job.physics.z);
+        p.origin = vec4(job.position.xyz, spawnAngle + float(localIndex) * 0.11);
+        p.extra = vec4(job.physics.w, r2, r5, job.random.w);
+    } else {
+        // 弹道模式保留原有方向、速度、扩散和重力语义。
+        vec3 dir = job.direction.xyz;
+        if (length(dir) < 0.0001) {
+            dir = vec3(0.0, 1.0, 0.0);
+        } else {
+            dir = normalize(dir);
+        }
+
+        float spawnRadius = max(job.physics.y * 0.25, 0.02);
+        vec3 spawnOffset = vec3(r1 - 0.5, r2 - 0.5, r3 - 0.5) * 2.0 * spawnRadius;
+        vec3 spawnPosition = job.position.xyz + spawnOffset;
+
+        p.position = vec4(spawnPosition, job.physics.z);
+        dir *= job.speedParams.w < 0.0 ? -1.0 : 1.0;
+        float baseSpeed = max(max(abs(job.speedParams.x), abs(job.speedParams.y)), 0.0001);
+        p.velocity = vec4(randomSpread(dir, job.physics.y, baseSpeed, idSeed, timeSeed), job.physics.z);
+        p.origin = vec4(spawnPosition, r1 * TWO_PI + float(localIndex) * 0.17);
+        p.extra = vec4(job.physics.w, r2, r5, job.random.w);
+    }
+}
+
+// 将存活粒子按材质 pipeline 写入连续 active index 列表，渲染阶段只绘制这些活跃下标。
+void appendActiveIndex(Particle p, int id) {
+    if (p.position.w <= 0.0) {
+        return;
+    }
+
+    // 材质表缩减后旧粒子可能残留旧 ID，这里先夹紧再查表，避免 SSBO 越界。
+    int materialId = clamp(int(p.extra.w + 0.5), 0, MATERIAL_COUNT - 1);
+    int pipelineId = int(materials[materialId].flags.x + 0.5);
+    if (pipelineId < 0 || pipelineId >= uRenderPipelineCount) {
+        return;
+    }
+
+    uint writeIndex = atomicAdd(activeCounts[pipelineId], 1u);
+    if (writeIndex >= uint(uMaxParticles)) {
+        return;
+    }
+
+    uint baseIndex = uint(pipelineId * uMaxParticles);
+    activeIndices[baseIndex + writeIndex] = uint(id);
+}
+
+layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
+void main() {
+    int id = int(gl_GlobalInvocationID.x);
+    if (id >= uMaxParticles) {
+        return;
+    }
+
+    Particle p = particles[id];
+    updateParticle(p);
+
+    // 单次 dispatch 处理所有发射器。
+    for (int i = 0; i < uEmitJobCount; i++) {
+        int localIndex;
+        if (belongsToJob(id, jobs[i], localIndex)) {
+            spawnParticle(p, jobs[i], id, localIndex);
+            break;
+        }
+    }
+
+    particles[id] = p;
+    appendActiveIndex(p, id);
+}

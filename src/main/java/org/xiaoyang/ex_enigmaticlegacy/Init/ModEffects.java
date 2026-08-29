@@ -7,6 +7,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.xiaoyang.ex_enigmaticlegacy.Client.particle.effect.SparklingEffect;
 import org.xiaoyang.ex_enigmaticlegacy.Effect.*;
 
 @Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy", bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -21,6 +22,7 @@ public class ModEffects {
     public static final RegistryObject<MobEffect> RANDOM_TELEPORT = EFFECTS.register("random_teleport", RandomTeleport::new);
     public static final RegistryObject<MobEffect> FREEZE_WORST = EFFECTS.register("freeze_worst", FreezeWorst::new);
     public static final RegistryObject<MobEffect> ROOTED = EFFECTS.register("rooted", Rooted::new);
+    public static final RegistryObject<MobEffect> SPARKLING_EFFECT = EFFECTS.register("sparkling", SparklingEffect::new);
 
     public static void registerEffects() {
         EFFECTS.register(FMLJavaModLoadingContext.get().getModEventBus());

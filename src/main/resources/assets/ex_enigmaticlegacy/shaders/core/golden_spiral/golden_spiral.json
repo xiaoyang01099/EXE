@@ -1,0 +1,36 @@
+{
+  "blend": {
+    "func": "add",
+    "srcrgb": "srcalpha",
+    "dstrgb": "1-srcalpha"
+  },
+  "vertex": "ex_enigmaticlegacy:golden_spiral/golden_spiral",
+  "fragment": "ex_enigmaticlegacy:golden_spiral/golden_spiral",
+  "attributes": [
+    "Position",
+    "Color",
+    "UV0"
+  ],
+  "samplers": [
+    { "name": "Sampler0" }
+  ],
+  "uniforms": [
+    { "name": "EffectParams", "type": "float", "count": 4, "values": [0.0, 1.25, 2.4, 0.72] },
+    { "name": "ColorParams", "type": "float", "count": 4, "values": [1.0, 0.62, 0.10, 1.4] },
+    { "name": "EdgeColor", "type": "float", "count": 4, "values": [1.0, 0.92, 0.35, 0.0] },
+    { "name": "Noise1SpriteUV", "type": "float", "count": 4, "values": [0.0, 0.0, 1.0, 1.0] },
+    { "name": "Noise2SpriteUV", "type": "float", "count": 4, "values": [0.0, 0.0, 1.0, 1.0] },
+    { "name": "Noise3SpriteUV", "type": "float", "count": 4, "values": [0.0, 0.0, 1.0, 1.0] },
+    { "name": "Noise1Params", "type": "float", "count": 4, "values": [1.0, 3.0, 0.0, 0.0] },
+    { "name": "Noise2Params", "type": "float", "count": 4, "values": [2.2, 4.5, 0.0, 0.0] },
+    { "name": "Noise3Params", "type": "float", "count": 4, "values": [1.2, 1.8, 0.18, 0.0] },
+    { "name": "Noise1Flow", "type": "float", "count": 4, "values": [0.08, 0.65, 0.0, 0.0] },
+    { "name": "Noise2Flow", "type": "float", "count": 4, "values": [-0.12, 0.42, 0.0, 0.0] },
+    { "name": "Noise3Flow", "type": "float", "count": 4, "values": [0.0, 0.35, 0.0, 0.0] },
+    { "name": "MaskParams", "type": "float", "count": 4, "values": [1.0, 1.0, 0.92, 0.10] },
+    { "name": "HeightFade", "type": "float", "count": 2, "values": [0.10, 0.22] },
+    { "name": "NoiseCutoff", "type": "float", "count": 2, "values": [0.16, 0.72] },
+    { "name": "uView", "type": "matrix4x4", "count": 16, "values": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] },
+    { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] }
+  ]
+}

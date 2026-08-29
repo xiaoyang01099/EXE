@@ -11,11 +11,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.BlockEvent;
 
-
 public class CommonHelper {
-
-    public CommonHelper() {
-    }
+    public CommonHelper() {}
 
     public static void fertilizer(Level world, Block block, int x, int y, int z, int count, Player player) {
         if (world.isClientSide) return;

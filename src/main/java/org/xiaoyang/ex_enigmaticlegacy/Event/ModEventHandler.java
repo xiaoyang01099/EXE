@@ -1,6 +1,5 @@
 package org.xiaoyang.ex_enigmaticlegacy.Event;
 
-import appeng.capabilities.Capabilities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
@@ -45,7 +44,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.*;
@@ -59,8 +57,15 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.server.ServerLifecycleHooks;
+import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigFile;
+import org.xiaoyang.ex_enigmaticlegacy.Item.LightingItem;
+import org.xiaoyang.ex_enigmaticlegacy.Item.ColorfulItem;
+import org.xiaoyang.ex_enigmaticlegacy.Item.MagicBowItem;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.InfinityPotato;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.tile.FullAltarTile;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.generating.BelieverTile;
@@ -78,7 +83,8 @@ import org.xiaoyang.ex_enigmaticlegacy.Item.weapon.Wastelayer;
 import org.xiaoyang.ex_enigmaticlegacy.Network.NetworkHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputMessage.StepHeightMessage;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.JumpPacket;
-import org.xiaoyang.ex_enigmaticlegacy.SpawnControlConfig;
+import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.WhitelistSyncS2CPacket;
+import org.xiaoyang.ex_enigmaticlegacy.Config.SpawnControlConfig;
 import org.xiaoyang.ex_enigmaticlegacy.Util.ColorText;
 import vazkii.botania.api.mana.ManaPool;
 import vazkii.botania.common.block.BotaniaBlocks;
@@ -97,6 +103,28 @@ public class ModEventHandler {
     private static int invulnerableTimer = 0;
     private static final int INVULNERABLE_DURATION = 30;
     private static final int REPAIR_COST = 1500;
+
+    @SubscribeEvent
+    public static void onConfigLoaded(ModConfigEvent event) {
+        ModConfig config = event.getConfig();
+        if (config.getSpec() != ConfigFile.CONFIG_SPEC) {
+            return;
+        }
+
+        if (ModWeapons.COIN_ITEM.isPresent() && ModWeapons.COIN_ITEM.get() instanceof LightingItem coinItem) {
+            coinItem.loadConfigValues();
+        }
+        if (ModWeapons.COLORFUL_COIN.isPresent() && ModWeapons.COLORFUL_COIN.get() instanceof ColorfulItem colorfulCoinItem) {
+            colorfulCoinItem.loadConfigValues();
+        }
+        if (ModWeapons.MAGIC_BOW.isPresent() && ModWeapons.MAGIC_BOW.get() instanceof MagicBowItem magicBowItem) {
+            magicBowItem.loadConfigValues();
+        }
+        HashMap<String, Boolean> whitelistMap = ForgeGameEvent.rebuildEntityDamageWhitelistMap();
+        if (ServerLifecycleHooks.getCurrentServer() != null) {
+            NetworkHandler.sendToAll(new WhitelistSyncS2CPacket(new ArrayList<>(whitelistMap.keySet())));
+        }
+    }
 
     @SubscribeEvent
     public static void onMobSpawnCheck(MobSpawnEvent.SpawnPlacementCheck event) {

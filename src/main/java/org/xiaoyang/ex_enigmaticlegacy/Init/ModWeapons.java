@@ -1,14 +1,18 @@
 package org.xiaoyang.ex_enigmaticlegacy.Init;
 
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.Tiers;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.xiaoyang.ex_enigmaticlegacy.Item.testitem;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.AquaSword;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.NaturalThousandBlades;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.Relic.TerraBow;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.SpaceBlade;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
+import org.xiaoyang.ex_enigmaticlegacy.Item.*;
 import org.xiaoyang.ex_enigmaticlegacy.Item.weapon.*;
 import org.xiaoyang.ex_enigmaticlegacy.Item.weapon.Claymore;
 import org.xiaoyang.ex_enigmaticlegacy.Item.weapon.WIP.*;
@@ -49,5 +53,16 @@ public class ModWeapons {
     public static final RegistryObject<Item> FLARE_BRINGER = REGISTRY.register("flare_bringer", Flarebringer::new);
     public static final RegistryObject<Item> SHADOW_BREAKER = REGISTRY.register("shadow_breaker", Shadowbreaker::new);
     public static final RegistryObject<Item> GAIA_KILLER = REGISTRY.register("gaia_killer", GaiaSlayer::new);
+    public static final RegistryObject<Item> COIN_ITEM = REGISTRY.register("coin", () -> new LightingItem(new Item.Properties()));
+    public static final RegistryObject<Item> COLORFUL_COIN = REGISTRY.register("colorful_coin", () -> new ColorfulItem(new Item.Properties().durability(256).rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> BEAM_CROSS_TEST_ITEM = REGISTRY.register("beam_cross_test", () -> new BeamCrossTestItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> TRIDENT_PLUS = REGISTRY.register("trident_plus", () -> new TridentPlusItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> FLY_SWORD = REGISTRY.register("fly_sword", () -> new FlySwordItem(Tiers.DIAMOND, 4, 2.4F, new Item.Properties().fireResistant()));
+    public static final RegistryObject<Item> FLY_SWORD_PLUS = REGISTRY.register("fly_sword_plus", () -> new FlySwordPlusItem(Tiers.DIAMOND, 6, 2.4F, new Item.Properties().fireResistant().rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> MAGIC_BOW = REGISTRY.register("magic_bow", () -> new MagicBowItem(new Item.Properties().stacksTo(1).durability(384).rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> SPARKLING_FRUIT = REGISTRY.register("sparkling_fruit", () -> new SparklingItem(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> TEST_ITEM = REGISTRY.register("test_item", () -> new testitem(new Item.Properties()));
+
+
 
 }

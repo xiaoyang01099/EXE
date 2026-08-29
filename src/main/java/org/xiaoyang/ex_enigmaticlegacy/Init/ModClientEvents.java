@@ -3,17 +3,24 @@ package org.xiaoyang.ex_enigmaticlegacy.Init;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.xiaoyang.ex_enigmaticlegacy.Item.FlySwordBakedModel;
+import org.xiaoyang.ex_enigmaticlegacy.Item.TridentPlusBakedModel;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.core.render.finalRender.bloomQueue.SwordAuraObjModel;
 import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.block.RainbowTableRenderer;
 import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.layer.SlimeArmorLayer;
 import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.tile.FloweyTileRenderer;
@@ -32,6 +39,7 @@ import org.xiaoyang.ex_enigmaticlegacy.api.shader.EndPortalHaloLoader;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.RainbowCosmicModelLoader;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = Exe.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModClientEvents {
@@ -122,6 +130,10 @@ public class ModClientEvents {
                     }
             );
         });
+        ItemProperties.register(ModWeapons.TRIDENT_PLUS.get(), new ResourceLocation("throwing")
+                , (stack, level, entity, seed) ->
+                entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F
+        );
     }
 
     @SubscribeEvent
@@ -151,6 +163,16 @@ public class ModClientEvents {
         BlockEntityRenderers.register(ModBlockEntities.ADVANCED_SPREADER.get(), RenderTileAdvancedSpreader::new);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onRegisterAdditional(ModelEvent.RegisterAdditional event) {
+        SwordAuraObjModel.registerAdditional(event);
+        event.register(new ModelResourceLocation(new ResourceLocation("ex_enigmaticlegacy", "fly_sword_3d"), "inventory"));
+        event.register(new ModelResourceLocation(new ResourceLocation("ex_enigmaticlegacy", "fly_sword_plus_3d"), "inventory"));
+        event.register(new ModelResourceLocation(new ResourceLocation("ex_enigmaticlegacy", "trident_plus_in_hand"), "inventory"));
+        event.register(new ModelResourceLocation(new ResourceLocation("ex_enigmaticlegacy", "trident_plus_throwing"), "inventory"));
+    }
+
     @SubscribeEvent
     public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
         for (String skinName : event.getSkins()) {
@@ -175,6 +197,38 @@ public class ModClientEvents {
                 event.getModelBakery(),
                 event.getModels()
         );
+    }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void TronModelBake(ModelEvent.ModifyBakingResult event) {
+        Map<ResourceLocation, BakedModel> models = event.getModels();
+        SwordAuraObjModel.onModelBake(event);
+
+        ModelResourceLocation itemLoc = new ModelResourceLocation(new ResourceLocation("ex_enigmaticlegacy", "fly_sword"), "inventory");
+        ModelResourceLocation item3dLoc = new ModelResourceLocation(new ResourceLocation("ex_enigmaticlegacy", "fly_sword_3d"), "inventory");
+        ModelResourceLocation itemPlusLoc = new ModelResourceLocation(new ResourceLocation("ex_enigmaticlegacy", "fly_sword_plus"), "inventory");
+        ModelResourceLocation itemPlus3dLoc = new ModelResourceLocation(new ResourceLocation("ex_enigmaticlegacy", "fly_sword_plus_3d"), "inventory");
+        ModelResourceLocation tridentPlusLoc = new ModelResourceLocation(new ResourceLocation("ex_enigmaticlegacy", "trident_plus"), "inventory");
+        ModelResourceLocation tridentPlusInHandLoc = ItemRenderer.TRIDENT_IN_HAND_MODEL;
+
+        BakedModel guiModel = models.get(itemLoc);
+        BakedModel handModel = models.get(item3dLoc);
+        BakedModel plusGuiModel = models.get(itemPlusLoc);
+        BakedModel plusHandModel = models.get(itemPlus3dLoc);
+        BakedModel tridentPlusGuiModel = models.get(tridentPlusLoc);
+        BakedModel tridentPlusInHandModel = models.get(tridentPlusInHandLoc);
+
+        if (guiModel == null || handModel == null) {
+            return;
+        }
+
+        models.put(itemLoc, new FlySwordBakedModel(guiModel, handModel));
+        if (plusGuiModel != null && plusHandModel != null) {
+            models.put(itemPlusLoc, new FlySwordBakedModel(plusGuiModel, plusHandModel));
+        }
+
+        models.put(tridentPlusLoc, new TridentPlusBakedModel(tridentPlusGuiModel, tridentPlusInHandModel));
     }
 
     private static void addValkyrieLayerToPlayerSkin(EntityRenderersEvent.AddLayers event, String skinType) {
@@ -209,5 +263,6 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent evt) throws IOException {
         SpecialCoreShaders.init(evt.getResourceProvider(), p -> evt.registerShader(p.getFirst(), p.getSecond()));
+        SpecialCoreShaders.registerShaders(evt);
     }
 }

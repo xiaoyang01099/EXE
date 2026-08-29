@@ -36,13 +36,19 @@ public class EntitySoulEnergy extends ThrowableProjectile implements IEntityAddi
     }
 
     public EntitySoulEnergy(EntityType<? extends EntitySoulEnergy> entityType, Level level, LivingEntity owner, LivingEntity target) {
-        super(entityType, owner, level);
+        super(entityType, level);
+        this.setOwner(owner);
         this.target = target;
         this.setNoGravity(true);
+
+        if (target != null) {
+            this.entityData.set(TARGET_ID, target.getId());
+        }
     }
 
     @Override
     public void defineSynchedData() {
+        this.entityData.define(TARGET_ID, -1);
     }
 
     @Override
@@ -77,6 +83,16 @@ public class EntitySoulEnergy extends ThrowableProjectile implements IEntityAddi
     @Override
     public void tick() {
         super.tick();
+
+        if (this.target == null && this.level.isClientSide) {
+            int targetId = this.entityData.get(TARGET_ID);
+            if (targetId >= 0) {
+                Entity entity = this.level.getEntity(targetId);
+                if (entity instanceof LivingEntity) {
+                    this.target = (LivingEntity) entity;
+                }
+            }
+        }
 
         if (this.tickCount > 1000) {
             this.discard();

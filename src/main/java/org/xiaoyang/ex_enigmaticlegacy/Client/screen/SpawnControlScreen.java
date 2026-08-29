@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.xiaoyang.ex_enigmaticlegacy.Network.NetworkHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.PacketToggleSpawn;
-import org.xiaoyang.ex_enigmaticlegacy.SpawnControlConfig;
+import org.xiaoyang.ex_enigmaticlegacy.Config.SpawnControlConfig;
 
 import java.util.ArrayList;
 import java.util.Comparator;

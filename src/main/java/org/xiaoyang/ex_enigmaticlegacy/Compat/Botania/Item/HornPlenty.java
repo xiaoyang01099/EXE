@@ -18,7 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.xiaoyang.ex_enigmaticlegacy.ConfigHandler;
+import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Entity.biological.CatMewEntity;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModSounds;
 import org.xiaoyang.ex_enigmaticlegacy.Network.NetworkHandler;

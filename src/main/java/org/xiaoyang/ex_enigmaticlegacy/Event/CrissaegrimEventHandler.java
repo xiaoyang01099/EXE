@@ -3,7 +3,7 @@ package org.xiaoyang.ex_enigmaticlegacy.Event;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.xiaoyang.ex_enigmaticlegacy.Client.particle.ef.EntitySlash;
+import org.xiaoyang.ex_enigmaticlegacy.Client.particle.effect.EntitySlash;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModEntities;
 import org.xiaoyang.ex_enigmaticlegacy.Item.weapon.Crissaegrim;
 

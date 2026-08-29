@@ -397,6 +397,11 @@
   "item.ex_enigmaticlegacy.cursed_pastels": "被诅咒的魔力之花",
   "item.ex_enigmaticlegacy.mana_pastels": "魔力之花",
   "item.ex_enigmaticlegacy.emc_wand": "EMC权杖",
+  "item.ex_enigmaticlegacy.sunmaker_helmet": "日冕圣盔",
+  "item.ex_enigmaticlegacy.sunmaker_chestplate": "日冕圣铠",
+  "item.ex_enigmaticlegacy.sunmaker_leggings": "日冕圣护膝",
+  "item.ex_enigmaticlegacy.sunmaker_boots": "日冕圣靴",
+
 
   "entity.ex_enigmaticlegacy.nature_bolt": "自然能量弹",
   "entity.ex_enigmaticlegacy.advanced_spark": "超导火花",

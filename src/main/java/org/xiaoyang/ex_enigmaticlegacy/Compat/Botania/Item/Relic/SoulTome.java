@@ -117,10 +117,17 @@ public class SoulTome extends Item implements ICursed, INoEMCItem {
 
         if (!world.isClientSide) {
             Vector3 originalPos = Vector3.fromEntityCenter(player);
-            Vec3 lookVec = player.getViewVector(1.0F);
-            Vector3 vector = originalPos.add(new Vector3(lookVec).multiply(1.0));
+
+            Vec3 toTarget = new Vec3(
+                    target.getX() - player.getX(),
+                    target.getY() - player.getY(),
+                    target.getZ() - player.getZ()
+            ).normalize();
+
+            Vector3 vector = originalPos.copy();
             vector.y += 0.5;
-            Vector3 motion = new Vector3(lookVec).multiply(1.25);
+
+            Vector3 motion = new Vector3(toTarget).multiply(0.3);
 
             EntitySoulEnergy orb = new EntitySoulEnergy(SoulEnergyEntityType, world, player, target);
             orb.setPos(vector.x, vector.y, vector.z);
@@ -194,10 +201,10 @@ public class SoulTome extends Item implements ICursed, INoEMCItem {
                     Vector3 playerVec = Vector3.fromEntityCenter(player);
                     Vector3 diff = entityVec.copy().sub(playerVec).multiply(1.0F / player.distanceTo(entity) * 3.0F);
 
-                    if (!level.isClientSide) {
-                        Vec3 startPos = new Vec3(player.getX(), player.getY() + 1.0, player.getZ());
-                        Vec3 endPos = new Vec3(entity.getX(), entity.getY(), entity.getZ());
+                    Vec3 startPos = new Vec3(player.getX(), player.getY() + 1.0, player.getZ());
+                    Vec3 endPos = new Vec3(entity.getX(), entity.getY(), entity.getZ());
 
+                    if (level.isClientSide) {
                         for (int i = 0; i <= 3; i++) {
                             Proxy.INSTANCE.lightningFX(
                                     level,
@@ -208,13 +215,14 @@ public class SoulTome extends Item implements ICursed, INoEMCItem {
                                     0xFFFFFF
                             );
                         }
-
+                    } else {
                         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
                                 SoundEvents.LIGHTNING_BOLT_THUNDER, player.getSoundSource(), 1.0F, 0.8F);
+
+                        entity.hurt(new ModDamageSources.DamageSourceTLightning(level, player),
+                                (float)(20.0F + 80.0F * Math.random()));
                     }
 
-                    entity.hurt(new ModDamageSources.DamageSourceTLightning(level,player),
-                            (float)(20.0F + 80.0F * Math.random()));
                     entity.setDeltaMovement(diff.x, diff.y + 1.0F, diff.z);
                 }
             }

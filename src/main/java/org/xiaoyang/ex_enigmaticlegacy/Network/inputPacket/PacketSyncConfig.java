@@ -4,7 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-import org.xiaoyang.ex_enigmaticlegacy.SpawnControlConfig;
+import org.xiaoyang.ex_enigmaticlegacy.Config.SpawnControlConfig;
 
 import java.util.HashSet;
 import java.util.Set;

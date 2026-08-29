@@ -155,6 +155,10 @@ public class ModTabs {
         output.accept(ModArmors.ULTIMATE_VALKYRIE_CHESTPLATE.get());
         output.accept(ModArmors.ULTIMATE_VALKYRIE_LEGGINGS.get());
         output.accept(ModArmors.ULTIMATE_VALKYRIE_BOOTS.get());
+        output.accept(ModArmors.SUNMAKER_LEGGINGS.get());
+        output.accept(ModArmors.SUNMAKER_BOOTS.get());
+        output.accept(ModArmors.SUNMAKER_HELMET.get());
+        output.accept(ModArmors.SUNMAKER_CHESTPLATE.get());
     }
 
     private static void addRelic(CreativeModeTab.Output output) {

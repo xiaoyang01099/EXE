@@ -7,6 +7,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.xiaoyang.ex_enigmaticlegacy.Exe;
 
 @SuppressWarnings("removal")
 @Mod.EventBusSubscriber(modid = "ex_enigmaticlegacy", bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -77,6 +78,23 @@ public class ModSounds {
 	public static final RegistryObject<SoundEvent> SONG_OF_THE_ABYSS =
 			SOUND_EVENTS.register("song_of_the_abyss",
 					() -> SoundEvent.createVariableRangeEvent(new ResourceLocation("ex_enigmaticlegacy", "song_of_the_abyss")));
+
+	public static final RegistryObject<SoundEvent> DIMENSIONAL_SLASH_CUT
+			= SOUND_EVENTS.register("dimensional_slash_cut",
+					() -> SoundEvent.createVariableRangeEvent(Exe.path("dimensional_slash_cut")));
+
+	public static final RegistryObject<SoundEvent> DIMENSIONAL_SLASH_BREAK_PREPARE
+			= SOUND_EVENTS.register("dimensional_slash_break_prepare",
+					() -> SoundEvent.createVariableRangeEvent(Exe.path("dimensional_slash_break_prepare")));
+
+	public static final RegistryObject<SoundEvent> DIMENSIONAL_SLASH_PRESSURE_BUILD
+			= SOUND_EVENTS.register("dimensional_slash_pressure_build",
+					() -> SoundEvent.createVariableRangeEvent(Exe.path("dimensional_slash_pressure_build")));
+
+	public static final RegistryObject<SoundEvent> DIMENSIONAL_SLASH_SPACE_FRACTURE
+			= SOUND_EVENTS.register("dimensional_slash_space_fracture",
+					() -> SoundEvent.createVariableRangeEvent(Exe.path("dimensional_slash_space_fracture")));
+
 
 	public static void register() {
 		SOUND_EVENTS.register(FMLJavaModLoadingContext.get().getModEventBus());

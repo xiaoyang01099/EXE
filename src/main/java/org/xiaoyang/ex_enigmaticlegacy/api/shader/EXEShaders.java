@@ -191,6 +191,46 @@ public final class EXEShaders {
         });
     }
 
+    public static final RenderType DIMENSIONAL_SLASH_CORE = RenderType.create("dimensional_slash_core", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 8192, false, true, RenderType.CompositeState.builder()
+            .setShaderState(RenderStateShardAccess.LIGHTNING_SHADER)
+            .setTransparencyState(RenderStateShardAccess.LIGHTNING_TRANSPARENCY)
+            .setCullState(RenderStateShardAccess.NO_CULL)
+            .setDepthTestState(RenderStateShardAccess.LEQUAL_DEPTH_TEST)
+            .setOutputState(RenderStateShardAccess.MAIN_TARGET)
+            .setWriteMaskState(RenderStateShardAccess.COLOR_WRITE)
+            .createCompositeState(false)
+    );
+
+    public static final RenderType DIMENSIONAL_SLASH_INK_CORE = RenderType.create("dimensional_slash_ink_core", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 8192, false, true, RenderType.CompositeState.builder()
+            .setShaderState(RenderStateShardAccess.POSITION_COLOR_SHADER)
+            .setTransparencyState(RenderStateShardAccess.TRANSLUCENT_TRANSPARENCY)
+            .setCullState(RenderStateShardAccess.NO_CULL)
+            .setDepthTestState(RenderStateShardAccess.LEQUAL_DEPTH_TEST)
+            .setOutputState(RenderStateShardAccess.MAIN_TARGET)
+            .setWriteMaskState(RenderStateShardAccess.COLOR_WRITE)
+            .createCompositeState(false)
+    );
+
+    public static final RenderType DIMENSIONAL_SLASH_ENTITY_PIERCE = RenderType.create("dimensional_slash_entity_pierce", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 8192, false, true, RenderType.CompositeState.builder()
+            .setShaderState(RenderStateShardAccess.LIGHTNING_SHADER)
+            .setTransparencyState(RenderStateShardAccess.LIGHTNING_TRANSPARENCY)
+            .setCullState(RenderStateShardAccess.NO_CULL)
+            .setDepthTestState(RenderStateShardAccess.NO_DEPTH_TEST)
+            .setOutputState(RenderStateShardAccess.MAIN_TARGET)
+            .setWriteMaskState(RenderStateShardAccess.COLOR_WRITE)
+            .createCompositeState(false)
+    );
+
+    public static final RenderType DIMENSIONAL_SLASH_ENTITY_PIERCE_INK = RenderType.create("dimensional_slash_entity_pierce_ink", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 8192, false, true, RenderType.CompositeState.builder()
+            .setShaderState(RenderStateShardAccess.POSITION_COLOR_SHADER)
+            .setTransparencyState(RenderStateShardAccess.TRANSLUCENT_TRANSPARENCY)
+            .setCullState(RenderStateShardAccess.NO_CULL)
+            .setDepthTestState(RenderStateShardAccess.NO_DEPTH_TEST)
+            .setOutputState(RenderStateShardAccess.MAIN_TARGET)
+            .setWriteMaskState(RenderStateShardAccess.COLOR_WRITE)
+            .createCompositeState(false)
+    );
+
     public static final RenderType COSMIC_BLOCK_AFTER_LEVEL_RENDER_TYPE = RenderType.create(MODID + ":cosmic_block_after_level", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 2097152, true, false, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> cosmicShader))
             .setDepthTestState(RenderStateShardAccess.LEQUAL_DEPTH_TEST)

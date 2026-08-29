@@ -6,7 +6,8 @@ import java.lang.reflect.Method;
 public final class OculusCompat {
     public static final boolean OCULUS_LOADED = ModList.get().isLoaded("oculus");
     public static final boolean EMBEDDIUM_LOADED = ModList.get().isLoaded("embeddium");
-
+    private static boolean initialized;
+    private static Method shadowStateMethod;
     private static volatile boolean shaderPackReflectionInitialized;
     private static Method isShaderPackInUse;
     private static Object irisApiInstance;
@@ -35,6 +36,26 @@ public final class OculusCompat {
         }
     }
 
+    private static void initialize() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+        try {
+            Class<?> clazz = Class.forName(
+                    "net.irisshaders.iris.shadows.ShadowRenderingState",
+                    false,
+                    OculusCompat.class.getClassLoader()
+            );
+            shadowStateMethod = clazz.getDeclaredMethod(
+                    "areShadowsCurrentlyBeingRendered"
+            );
+            shadowStateMethod.setAccessible(true);
+        } catch (Throwable ignored) {
+            shadowStateMethod = null;
+        }
+    }
+
     private static void initShaderPackReflection() {
         if (shaderPackReflectionInitialized) return;
         synchronized (OculusCompat.class) {
@@ -50,6 +71,18 @@ public final class OculusCompat {
             } finally {
                 shaderPackReflectionInitialized = true;
             }
+        }
+    }
+
+    public static boolean isShadowPass() {
+        initialize();
+        if (shadowStateMethod == null) {
+            return false;
+        }
+        try {
+            return (Boolean) shadowStateMethod.invoke(null);
+        } catch (Throwable ignored) {
+            return false;
         }
     }
 

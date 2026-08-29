@@ -1,0 +1,16 @@
+{
+  "vertex": "ex_enigmaticlegacy:slash_fullscreen",
+  "fragment": "ex_enigmaticlegacy:slash_freeze",
+  "attributes": [ "Position", "UV0" ],
+  "samplers": [
+    { "name": "DiffuseSampler" }
+  ],
+  "uniforms": [
+    { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+    { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+    { "name": "Desaturation", "type": "float", "count": 1, "values": [ 1.0 ] },
+    { "name": "Contrast", "type": "float", "count": 1, "values": [ 1.08 ] },
+    { "name": "Brightness", "type": "float", "count": 1, "values": [ 0.92 ] },
+    { "name": "VignetteStrength", "type": "float", "count": 1, "values": [ 0.18 ] }
+  ]
+}
