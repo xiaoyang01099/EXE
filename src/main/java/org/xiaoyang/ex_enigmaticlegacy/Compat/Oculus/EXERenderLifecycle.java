@@ -13,8 +13,10 @@ public final class EXERenderLifecycle {
         GaiaGuardianLateRenderQueue.endFrame();
         EXECosmicItemLateRenderQueue.endFrame();
         EXECosmicArmorLateRenderQueue.endFrame();
+        EXEMobLateRenderQueue.endFrame();
         EXECosmicBlockLateRenderQueue.endFrame();
         EXEEffectLateRenderQueue.endFrame();
+        EXEGapingVoidLateRenderQueue.endFrame();
         EXEParticleLateRenderQueue.clearAll();
         TrueDemonWeaponParticleEmitter.clearCache();
         EXERenderFrameState.clear();

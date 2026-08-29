@@ -28,9 +28,11 @@ public abstract class EXEOculusAfterLevelMixin {
         GaiaGuardianLateRenderQueue.beginFrame(snap);
         EXECosmicItemLateRenderQueue.beginFrame(snap);
         EXECosmicArmorLateRenderQueue.beginFrame(snap);
+        EXEMobLateRenderQueue.beginFrame(snap);
         EXECosmicBlockLateRenderQueue.beginFrame(snap);
         EXEParticleLateRenderQueue.beginFrame(snap);
         EXEEffectLateRenderQueue.beginFrame(snap);
+        EXEGapingVoidLateRenderQueue.beginFrame(snap);
         TrueDemonWeaponParticleEmitter.beginWorldRender();
     }
 
@@ -42,6 +44,7 @@ public abstract class EXEOculusAfterLevelMixin {
         }
         EXECosmicItemLateRenderQueue.renderAfterLevel();
         EXECosmicArmorLateRenderQueue.renderAfterLevel();
+        EXEMobLateRenderQueue.renderAfterLevel();
         GaiaGuardianLateRenderQueue.renderAfterLevel();
         SpecialLateRenderQueue.renderAfterLevel();
         CosmicBeamLateRenderQueue.renderAfterLevel(poseStack, partialTick);
@@ -50,6 +53,7 @@ public abstract class EXEOculusAfterLevelMixin {
         StarLineLateRenderQueue.renderAfterLevel(poseStack);
         EXECosmicBlockLateRenderQueue.renderAfterLevel();
         EXEParticleLateRenderQueue.renderAfterLevel();
+        EXEGapingVoidLateRenderQueue.renderAfterLevel();
         EXEEffectLateRenderQueue.renderAfterLevel();
     }
 
@@ -66,11 +70,13 @@ public abstract class EXEOculusAfterLevelMixin {
                 StarLineLateRenderQueue::endFrame,
                 EXECosmicItemLateRenderQueue::endFrame,
                 EXECosmicArmorLateRenderQueue::endFrame,
+                EXEMobLateRenderQueue::endFrame,
                 EXERainbowCosmicBlockLateRenderQueue::endFrame,
                 EXERainbowCosmicItemLateRenderQueue::endFrame,
                 EXECosmicBlockLateRenderQueue::endFrame,
                 GaiaGuardianLateRenderQueue::endFrame,
                 EXEParticleLateRenderQueue::endFrame,
+                EXEGapingVoidLateRenderQueue::endFrame,
                 TrueDemonWeaponParticleEmitter::endWorldRender,
                 EXEEffectLateRenderQueue::endFrame,
                 EXERenderFrameState::endFrame

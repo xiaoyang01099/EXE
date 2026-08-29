@@ -16,8 +16,10 @@
   ],
   "client": [
     "EntityRenderDispatcherMixin",
+    "EXEGapingVoidRenderMixin",
     "EXEInfinityArmorModelMixin",
     "EXEInfinityArmorPlayerRenderMixin",
+    "EXEMobLayerMixin",
     "EXEOculusAfterLevelMixin",
     "GaiaGuardianRendererAccessor",
     "GaiaGuardianRendererMixin",
