@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModEntities;
 import vazkii.botania.api.BotaniaAPI;
 

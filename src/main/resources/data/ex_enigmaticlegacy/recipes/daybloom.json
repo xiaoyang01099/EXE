@@ -52,5 +52,8 @@
     {
       "tag": "botania:petals/yellow"
     }
-  ]
+  ],
+  "reagent": {
+    "tag": "botania:seed_apothecary_reagent"
+  }
 }

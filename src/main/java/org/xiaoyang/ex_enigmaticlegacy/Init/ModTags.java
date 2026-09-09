@@ -29,6 +29,8 @@ public class ModTags {
         public static final TagKey<Item> SPECTRITE_ITEMS = tag("spectrite_items");
         public static final TagKey<Item> SINGULARITY = tag("singularity");
         public static final TagKey<Item> MITHRIL_TOOLS = tag("mithril_tools");
+        public static final TagKey<Item> EDGEND = tag("edgend");
+        public static final TagKey<Item> STELLAR_SLASH = tag("stellar_slash");
 
         private static TagKey<Item> tag(String name) {
             return ItemTags.create(new ResourceLocation(Exe.MODID, name));

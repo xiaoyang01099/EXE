@@ -10,7 +10,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
-import org.xiaoyang.ex_enigmaticlegacy.api.shader.EXEShaders;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.cosmic.EXEShaders;
 
 import java.util.*;
 

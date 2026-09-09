@@ -17,9 +17,7 @@ import org.xiaoyang.ex_enigmaticlegacy.Compat.Projecte.Factory.ProjecteFactory;
 import static org.xiaoyang.ex_enigmaticlegacy.Exe.MODID;
 
 public class ModTabs {
-
-    public static final DeferredRegister<CreativeModeTab> TABS =
-            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
+    public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     public static final RegistryObject<CreativeModeTab> TAB_EXENIGMATICLEGACY_BOTANIA =
             TABS.register("ex_enigmaticlegacy_botania", () ->
@@ -56,7 +54,7 @@ public class ModTabs {
         //Projecte物品
         addProjecteItems(output);
         //奇点
-        addSingularity(output);
+        //addSingularity(output);
         //决心
         addDetermination(output);
         //AE2物品
@@ -281,15 +279,15 @@ public class ModTabs {
         output.accept(ModItems.DARK_SUN_RING.get());
         output.accept(ModItems.FLOWER_FINDER_WAND.get());
         output.accept(ModItems.GOLDEN_LAUREL.get());
-        output.accept(ModItems.DIVINE_CLOAK_NJORD.get());
-        output.accept(ModItems.DIVINE_CLOAK_IDUNN.get());
-        output.accept(ModItems.DIVINE_CLOAK_THOR.get());
-        output.accept(ModItems.DIVINE_CLOAK_HEIMDALL.get());
-        output.accept(ModItems.DIVINE_CLOAK_LOKI.get());
+//        output.accept(ModItems.DIVINE_CLOAK_NJORD.get());
+//        output.accept(ModItems.DIVINE_CLOAK_IDUNN.get());
+//        output.accept(ModItems.DIVINE_CLOAK_THOR.get());
+//        output.accept(ModItems.DIVINE_CLOAK_HEIMDALL.get());
+//        output.accept(ModItems.DIVINE_CLOAK_LOKI.get());
+//        output.accept(ModItems.ADVANCED_SPREADER.get());
         output.accept(ModItems.SACABAMBASPIS_SPAWN_EGG.get());
         output.accept(ModItems.XIAOYANG_010_SPAWN_EGG.get());
         output.accept(ModItems.MANA_BOX_ITEM.get());
-       // output.accept(ModItems.ADVANCED_SPREADER.get());
         output.accept(ModItems.MANA_CRYSTAL.get());
         output.accept(ModItems.MANA_CHARGER.get());
         output.accept(ModItems.CELESTIAL_HOLINESS_TRANSMUTER.get());
@@ -484,5 +482,7 @@ public class ModTabs {
         output.accept(ModWeapons.FLARE_BRINGER.get());
         output.accept(ModWeapons.SHADOW_BREAKER.get());
         output.accept(ModWeapons.GAIA_KILLER.get());
+        output.accept(ModWeapons.COSMIC.get());
+        output.accept(ModWeapons.BLADE_FALLEN_STAR.get());
     }
 }

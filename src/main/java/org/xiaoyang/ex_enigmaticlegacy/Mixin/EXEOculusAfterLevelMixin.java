@@ -9,7 +9,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.xiaoyang.ex_enigmaticlegacy.Client.particle.TrueDemonWeaponParticleEmitter;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.*;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.coffin.CoffinSecondRenderer;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.slash.ClientEffects;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.summonportal.SummonPortalRenderer;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.vine.VineRenderer;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.yuhua.YuhuaRenderer;
 
 import java.util.List;
 
@@ -33,6 +37,7 @@ public abstract class EXEOculusAfterLevelMixin {
         EXEParticleLateRenderQueue.beginFrame(snap);
         EXEEffectLateRenderQueue.beginFrame(snap);
         EXEGapingVoidLateRenderQueue.beginFrame(snap);
+        EXETrueBoltLateRenderQueue.beginFrame(snap);
         TrueDemonWeaponParticleEmitter.beginWorldRender();
     }
 
@@ -55,6 +60,13 @@ public abstract class EXEOculusAfterLevelMixin {
         EXEParticleLateRenderQueue.renderAfterLevel();
         EXEGapingVoidLateRenderQueue.renderAfterLevel();
         EXEEffectLateRenderQueue.renderAfterLevel();
+        EXETrueBoltLateRenderQueue.renderAfterLevel();
+        YuhuaRenderer.render(partialTick);
+        CoffinSecondRenderer.render(partialTick);
+        SummonPortalRenderer.render(partialTick);
+        VineRenderer.render(partialTick);
+        org.xiaoyang.ex_enigmaticlegacy.api.shader.frost.FrostRenderer.render(partialTick);
+        org.xiaoyang.ex_enigmaticlegacy.api.shader.stellarslash.StellarSlashRenderer.render(partialTick);
     }
 
     @Inject(method = "renderLevel", at = @At("TAIL"))
@@ -78,6 +90,7 @@ public abstract class EXEOculusAfterLevelMixin {
                 EXEParticleLateRenderQueue::endFrame,
                 EXEGapingVoidLateRenderQueue::endFrame,
                 TrueDemonWeaponParticleEmitter::endWorldRender,
+                EXETrueBoltLateRenderQueue::endFrame,
                 EXEEffectLateRenderQueue::endFrame,
                 EXERenderFrameState::endFrame
         );

@@ -47,6 +47,7 @@ public class MessageParticleEntity {
         context.setPacketHandled(true);
     }
 
+    @net.minecraftforge.api.distmarker.OnlyIn(Dist.CLIENT)
     private void handleOnClient() {
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) return;

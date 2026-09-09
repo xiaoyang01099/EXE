@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import vazkii.botania.client.core.handler.ClientTickHandler;
 import vazkii.botania.client.core.helper.RenderHelper;

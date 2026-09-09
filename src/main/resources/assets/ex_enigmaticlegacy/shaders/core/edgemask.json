@@ -1,0 +1,14 @@
+{
+  "vertex": "ex_enigmaticlegacy:edgemask",
+  "fragment": "ex_enigmaticlegacy:edgemask",
+  "attributes": ["Position", "Color", "UV0"],
+  "samplers": [{"name": "MaskTexture"}],
+  "uniforms": [
+    {"name":"EffectStyle","type":"float","count":1,"values":[0]},
+    {"name":"BladeView","type":"matrix4x4","count":16,"values":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]},
+    {"name":"BladeProjection","type":"matrix4x4","count":16,"values":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]},
+    {"name":"MaskMode","type":"float","count":1,"values":[0]},
+    {"name":"TrailCoordinates","type":"float","count":1,"values":[1]},
+    {"name":"ScreenSpace","type":"float","count":1,"values":[0]}
+  ]
+}

@@ -12,8 +12,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.tile.PolychromeCollapsePrismTile;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialMiscellaneousModels;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.EXERenderHelper;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.SpecialMiscellaneousModels;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.SpecialLateRenderQueue;
 import vazkii.botania.client.core.handler.ClientTickHandler;
 
@@ -67,20 +67,20 @@ public class PolychromeCollapsePrismRenderer implements BlockEntityRenderer<Poly
 
         VertexConsumer buffer = SpecialLateRenderQueue.select(
         buffers,
-        SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM,
-        SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL
+        EXERenderHelper.POLYCHROME_COLLAPSE_PRISM,
+        EXERenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL
         );
 
         ms.pushPose();
 //        ms.mulPose(Vector3f.ZP.rotationDegrees(time * 0.5F % 360F));
-        SpecialRenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay.sprite(), 1, 1, baseAlpha);
+        EXERenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay.sprite(), 1, 1, baseAlpha);
         ms.popPose();
 
         if (completion > 0.2f) {
             ms.pushPose();
             ms.scale(1.2F, 1.2F, 1.2F);
 //            ms.mulPose(Vector3f.ZP.rotationDegrees(-time * 0.3F % 360F));
-            SpecialRenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay.sprite(), 1, 1, baseAlpha * 0.6F);
+            EXERenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay.sprite(), 1, 1, baseAlpha * 0.6F);
             ms.popPose();
         }
 
@@ -143,14 +143,14 @@ public class PolychromeCollapsePrismRenderer implements BlockEntityRenderer<Poly
 
         VertexConsumer buffer = SpecialLateRenderQueue.select(
         buffers,
-        SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM,
-        SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL
+        EXERenderHelper.POLYCHROME_COLLAPSE_PRISM,
+        EXERenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL
         );
 
         float hue = (time / 40.0F) % 1.0F;
         float alpha = 0.6F * completion;
 
-        SpecialRenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay.sprite(), 1, 1, alpha);
+        EXERenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay.sprite(), 1, 1, alpha);
 
         ms.popPose();
 
@@ -163,7 +163,7 @@ public class PolychromeCollapsePrismRenderer implements BlockEntityRenderer<Poly
             ms.scale(innerScale, innerScale, 1.0F);
 
             float innerAlpha = 0.4F * completion;
-            SpecialRenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay.sprite(), 1, 1, innerAlpha);
+            EXERenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay.sprite(), 1, 1, innerAlpha);
 
             ms.popPose();
         }
@@ -195,10 +195,10 @@ public class PolychromeCollapsePrismRenderer implements BlockEntityRenderer<Poly
 
             VertexConsumer buffer = SpecialLateRenderQueue.select(
         buffers,
-        SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM,
-        SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL
+        EXERenderHelper.POLYCHROME_COLLAPSE_PRISM,
+        EXERenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL
         );
-            SpecialRenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay.sprite(), 1, 1, alpha);
+            EXERenderHelper.renderIcon(ms, buffer, 0, 0, SpecialMiscellaneousModels.INSTANCE.polychromeCollapsePrismOverlay.sprite(), 1, 1, alpha);
 
             ms.popPose();
         }

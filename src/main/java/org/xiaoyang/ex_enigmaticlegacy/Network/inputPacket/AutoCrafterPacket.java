@@ -1,6 +1,5 @@
 package org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
@@ -17,7 +16,6 @@ public class AutoCrafterPacket {
     private final BlockPos pos;
     private final ItemStack stack;
     public AutoCrafterPacket(FriendlyByteBuf buffer) {
-        Minecraft instance = Minecraft.getInstance();
         slot = buffer.readInt();
         pos = buffer.readBlockPos();
         stack = buffer.readItem();

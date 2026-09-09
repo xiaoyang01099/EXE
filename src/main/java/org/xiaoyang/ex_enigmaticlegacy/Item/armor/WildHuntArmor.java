@@ -267,6 +267,7 @@ public class WildHuntArmor extends ManasteelArmorItem implements ManaItem, ManaP
     }
 
     @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
     public static void onClientTick(net.minecraftforge.event.TickEvent.ClientTickEvent event) {
         if (event.phase != net.minecraftforge.event.TickEvent.Phase.END) return;
         Minecraft mc = Minecraft.getInstance();

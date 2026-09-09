@@ -37,6 +37,25 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
+sourceSets {
+    stellarVerification {
+        compileClasspath = sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath = output + sourceSets.main.runtimeClasspath
+    }
+    frostVerification {
+        compileClasspath = sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath = output + sourceSets.main.runtimeClasspath
+    }
+    vineVerification {
+        compileClasspath = sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath = output + sourceSets.main.runtimeClasspath
+    }
+    yuhuaVerification {
+        compileClasspath = sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath = output + sourceSets.main.runtimeClasspath
+    }
+}
+
 minecraft {
     mappings channel: mapping_channel, version: mapping_version
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -59,7 +78,36 @@ minecraft {
         }
 
         client {
+            if (project.hasProperty('stellarSmoke')) {
+                workingDirectory project.file('build/stellar-smoke')
+                property 'exe.stellarSmoke', 'true'
+                property 'forge.logging.console.level', 'info'
+                args '--width', '1280', '--height', '720', '--username', 'StellarTest'
+                mods { "${mod_id}" { source sourceSets.stellarVerification } }
+            }
+            if (project.hasProperty('frostSmoke')) {
+                workingDirectory project.file('build/frost-smoke')
+                property 'exe.frostSmoke', 'true'
+                property 'forge.logging.console.level', 'info'
+                args '--width', '1280', '--height', '720', '--username', 'FrostTest'
+                mods { "${mod_id}" { source sourceSets.frostVerification } }
+            }
             property 'forge.enabledGameTestNamespaces', mod_id
+            if (project.hasProperty('vineSmoke')) {
+                workingDirectory project.file('build/vine-smoke')
+                property 'exe.vineSmoke', 'true'
+                property 'forge.logging.console.level', 'info'
+                args '--width', '1280', '--height', '720', '--username', 'VineTest'
+                mods { "${mod_id}" { source sourceSets.vineVerification } }
+            }
+            if (project.hasProperty('yuhuaSmoke')) {
+                workingDirectory project.file('build/yuhua-smoke')
+                property 'exe.yuhuaSmoke', 'true'
+                if (project.hasProperty('yuhuaMultiplayer')) property 'exe.yuhuaMultiplayer', 'true'
+                property 'forge.logging.console.level', 'info'
+                args '--width', '1280', '--height', '720', '--username', 'YuhuaTest'
+                mods { "${mod_id}" { source sourceSets.yuhuaVerification } }
+            }
         }
 
         server {
@@ -69,6 +117,12 @@ minecraft {
 
         gameTestServer {
             property 'forge.enabledGameTestNamespaces', mod_id
+            if (project.hasProperty('yuhuaTest')) {
+                workingDirectory project.file('build/yuhua-server-test')
+                property 'exe.yuhuaTest', 'true'
+                property 'forge.logging.console.level', 'info'
+                mods { "${mod_id}" { source sourceSets.yuhuaVerification } }
+            }
         }
 
         data {
@@ -101,11 +155,16 @@ repositories {
         name = "Curios"
         url = uri("https://maven.theillusivec4.top/")
     }
+    flatDir {
+        dir 'libs'
+    }
 }
 
 dependencies {
 
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    //implementation fg.deobf("blank:jian:1.0-SNAPSHOT")
 
     compileOnly(fg.deobf("curse.maven:crafttweaker-239197:7772873"))
     runtimeOnly(fg.deobf("curse.maven:crafttweaker-239197:7772873"))
@@ -146,8 +205,13 @@ dependencies {
     implementation fg.deobf("curse.maven:photon-871522:7501597")
     implementation fg.deobf("curse.maven:ldlib-626676:8430516")
 
-    implementation fg.deobf("curse.maven:embeddium-908741:5681725")
-    implementation fg.deobf("curse.maven:oculus-581495:6020952")
+    if (project.hasProperty('yuhuaTest')) {
+        compileOnly fg.deobf("curse.maven:embeddium-908741:5681725")
+        compileOnly fg.deobf("curse.maven:oculus-581495:6020952")
+    } else {
+        implementation fg.deobf("curse.maven:embeddium-908741:5681725")
+        implementation fg.deobf("curse.maven:oculus-581495:6020952")
+    }
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
@@ -183,4 +247,22 @@ tasks.named('jar', Jar).configure {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+if (project.hasProperty('yuhuaSmoke') || project.hasProperty('yuhuaTest')) {
+    tasks.matching { it.name in ['runClient', 'runGameTestServer'] }.configureEach {
+        dependsOn 'yuhuaVerificationClasses'
+    }
+}
+
+if (project.hasProperty('vineSmoke')) {
+    tasks.matching { it.name == 'runClient' }.configureEach { dependsOn 'vineVerificationClasses' }
+}
+
+if (project.hasProperty('frostSmoke')) {
+    tasks.matching { it.name == 'runClient' }.configureEach { dependsOn 'frostVerificationClasses' }
+}
+
+if (project.hasProperty('stellarSmoke')) {
+    tasks.matching { it.name == 'runClient' }.configureEach { dependsOn 'stellarVerificationClasses' }
 }

@@ -31,7 +31,7 @@ import vazkii.botania.client.core.handler.ClientTickHandler;
 import java.awt.*;
 
 
-@Mod.EventBusSubscriber(modid = Exe.MODID)
+@Mod.EventBusSubscriber(modid = Exe.MODID, value = Dist.CLIENT)
 @OnlyIn(Dist.CLIENT)
 public class BoundRenderHandler {
     @SubscribeEvent

@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.joml.Matrix4f;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.tile.EntityAdvancedSpark;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialMiscellaneousModels;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.SpecialMiscellaneousModels;
 import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.render.entity.BaseSparkRenderer;
 import vazkii.botania.common.helper.ColorHelper;

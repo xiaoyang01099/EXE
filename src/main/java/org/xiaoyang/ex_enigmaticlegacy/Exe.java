@@ -47,6 +47,7 @@ import org.xiaoyang.ex_enigmaticlegacy.Network.NetworkHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Util.AnimatedChestTexture;
 import org.xiaoyang.ex_enigmaticlegacy.api.emc.NoEMCCommandInterceptor;
 import org.xiaoyang.ex_enigmaticlegacy.api.emc.NoEMCEventHandler;
+
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -146,7 +147,6 @@ public class Exe {
 
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
-
         @SubscribeEvent
         public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
             KeybindHandler.onRegisterKeyMappings(event);
@@ -173,6 +173,9 @@ public class Exe {
         public static void onRegisterReloadListeners(RegisterClientReloadListenersEvent event) {
             EXETextureAtlas.init();
             event.registerReloadListener(new AtlasReloadListener());
+            org.xiaoyang.ex_enigmaticlegacy.api.shader.coffin.CoffinVisuals.Registration.reload(event);
+            org.xiaoyang.ex_enigmaticlegacy.api.shader.coffin.CoffinSecondRenderer.Registration.reload(event);
+            org.xiaoyang.ex_enigmaticlegacy.api.shader.summonportal.SummonPortalRenderer.Registration.reload(event);
         }
     }
 }

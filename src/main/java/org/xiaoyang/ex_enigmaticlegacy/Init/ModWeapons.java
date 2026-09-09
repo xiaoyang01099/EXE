@@ -31,7 +31,7 @@ public class ModWeapons {
     public static final RegistryObject<Item> CRYSTAL_DAGGER = REGISTRY.register("crystal_dagger", CrystalDagger::new);
     public static final RegistryObject<Item> CLAYMORE = REGISTRY.register("claymore", () -> new Claymore(90.0F));
     public static final RegistryObject<Item> WICKEDKRIS = REGISTRY.register("wickedkris", WickedKris::new);
-//    public static final RegistryObject<Item> BLADE_FALLEN_STAR = REGISTRY.register("blade_fallen_star", BladeFallenStar::new);
+    public static final RegistryObject<Item> BLADE_FALLEN_STAR = REGISTRY.register("blade_fallen_star", BladeFallenStar::new);
     public static final RegistryObject<Item> KISS_OF_NYX = REGISTRY.register("kiss_of_nyx", KissOfNyx::new);
     public static final RegistryObject<Item> ICEFORGED_EXCALIBUR = REGISTRY.register("iceforged_excalibur", IceforgedExcalibur::new);
     public static final RegistryObject<Item> JUDGMENT_OF_AURORA = REGISTRY.register("judgment_of_aurora", JudgmentOfAurora::new);
@@ -41,7 +41,7 @@ public class ModWeapons {
     public static final RegistryObject<Item> AQUA_SWORD = REGISTRY.register("aqua_sword", () -> new AquaSword(new Item.Properties()));
     public static final RegistryObject<Item> TERRA_BOW = REGISTRY.register("terra_bow", () -> new TerraBow(new Item.Properties()));
     public static final RegistryObject<Item> HORN_STONE_SWORD = REGISTRY.register("horn_stone_sword", HornstoneSword::new);
-//    public static final RegistryObject<Item> COSMIC = REGISTRY.register("cosmic", Cosmic::new);
+    public static final RegistryObject<Item> COSMIC = REGISTRY.register("cosmic", Cosmic::new);
     public static final RegistryObject<Item> COSMIC_BREAKER = REGISTRY.register("cosmic_breaker", CosmicBreaker::new);
     public static final RegistryObject<Item> COSMIC_ANNIHILATOR_BLADE = REGISTRY.register("cosmic_annihilator_blade", CosmicAnnihilatorBlade::new);
     public static final RegistryObject<Item> END_BROAD_SWORD = REGISTRY.register("end_broad_sword",EndBroadSword::new);

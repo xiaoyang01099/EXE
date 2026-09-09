@@ -9,7 +9,7 @@
 //
 //import org.jetbrains.annotations.NotNull;
 //import org.xiaoyang.ex_enigmaticlegacy.Tile.AstralBlockEntity;
-//import org.xiaoyang.ex_enigmaticlegacy.api.shader.ExralCosmicRenderHelper;
+//import org.xiaoyang.ex_enigmaticlegacy.api.shader.cosmic.ExralCosmicRenderHelper;
 //
 //public class AstralBlockEntityRenderer implements BlockEntityRenderer<AstralBlockEntity> {
 //    public AstralBlockEntityRenderer(BlockEntityRendererProvider.Context context) {

@@ -9,8 +9,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import org.xiaoyang.ex_enigmaticlegacy.api.shader.EXEShaders;
-import org.xiaoyang.ex_enigmaticlegacy.api.shader.ExralCosmicRenderHelper;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.cosmic.EXEShaders;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.cosmic.ExralCosmicRenderHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;

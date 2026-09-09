@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import vazkii.botania.client.fx.WispParticleData;
 
 import java.util.function.Supplier;

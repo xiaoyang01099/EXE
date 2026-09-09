@@ -18,7 +18,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import org.xiaoyang.ex_enigmaticlegacy.Entity.others.EntityShinyEnergy;
 import org.xiaoyang.ex_enigmaticlegacy.api.emc.INoEMCItem;
 import top.theillusivec4.curios.api.SlotContext;

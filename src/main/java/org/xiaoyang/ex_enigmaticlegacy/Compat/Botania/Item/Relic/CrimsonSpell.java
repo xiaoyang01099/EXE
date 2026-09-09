@@ -25,7 +25,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import org.xiaoyang.ex_enigmaticlegacy.Entity.others.EntityCrimsonOrb;
 import org.xiaoyang.ex_enigmaticlegacy.Event.RelicsEventHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModEntities;

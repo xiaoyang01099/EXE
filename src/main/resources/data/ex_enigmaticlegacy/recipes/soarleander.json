@@ -34,5 +34,8 @@
     {
       "item": "botania:rune_greed"
     }
-  ]
+  ],
+  "reagent": {
+    "tag": "botania:seed_apothecary_reagent"
+  }
 }

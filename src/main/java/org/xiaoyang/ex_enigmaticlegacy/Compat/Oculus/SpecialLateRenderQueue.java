@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.EXERenderHelper;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -49,15 +49,15 @@ public final class SpecialLateRenderQueue {
 
         EXELatePassState.prepare();
         try {
-            buffers.endBatch(SpecialRenderHelper.END_PORTAL_AFTER_LEVEL);
-            buffers.endBatch(SpecialRenderHelper.ENCHANTER_RUNE_AFTER_LEVEL);
-            buffers.endBatch(SpecialRenderHelper.RAINBOW_MANA_WATER_AFTER_LEVEL);
-            buffers.endBatch(SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL);
-            buffers.endBatch(SpecialRenderHelper.MANA_POOL_WATER_AFTER_LEVEL);
-            buffers.endBatch(SpecialRenderHelper.TERRA_PLATE_AFTER_LEVEL);
-            buffers.endBatch(SpecialRenderHelper.MANA_PYLON_GLOW_AFTER_LEVEL);
-            buffers.endBatch(SpecialRenderHelper.NATURA_PYLON_GLOW_AFTER_LEVEL);
-            buffers.endBatch(SpecialRenderHelper.GAIA_PYLON_GLOW_AFTER_LEVEL);
+            buffers.endBatch(EXERenderHelper.END_PORTAL_AFTER_LEVEL);
+            buffers.endBatch(EXERenderHelper.ENCHANTER_RUNE_AFTER_LEVEL);
+            buffers.endBatch(EXERenderHelper.RAINBOW_MANA_WATER_AFTER_LEVEL);
+            buffers.endBatch(EXERenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL);
+            buffers.endBatch(EXERenderHelper.MANA_POOL_WATER_AFTER_LEVEL);
+            buffers.endBatch(EXERenderHelper.TERRA_PLATE_AFTER_LEVEL);
+            buffers.endBatch(EXERenderHelper.MANA_PYLON_GLOW_AFTER_LEVEL);
+            buffers.endBatch(EXERenderHelper.NATURA_PYLON_GLOW_AFTER_LEVEL);
+            buffers.endBatch(EXERenderHelper.GAIA_PYLON_GLOW_AFTER_LEVEL);
         } finally {
             EXELatePassState.finish();
             buffers = null;
@@ -72,15 +72,15 @@ public final class SpecialLateRenderQueue {
     private static MultiBufferSource.BufferSource getOrCreateBuffers() {
         if (buffers == null) {
             Map<RenderType, BufferBuilder> fixedBuffers = new LinkedHashMap<>();
-            add(fixedBuffers, SpecialRenderHelper.RAINBOW_MANA_WATER_AFTER_LEVEL);
-            add(fixedBuffers, SpecialRenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL);
-            add(fixedBuffers, SpecialRenderHelper.MANA_POOL_WATER_AFTER_LEVEL);
-            add(fixedBuffers, SpecialRenderHelper.TERRA_PLATE_AFTER_LEVEL);
-            add(fixedBuffers, SpecialRenderHelper.MANA_PYLON_GLOW_AFTER_LEVEL);
-            add(fixedBuffers, SpecialRenderHelper.NATURA_PYLON_GLOW_AFTER_LEVEL);
-            add(fixedBuffers, SpecialRenderHelper.GAIA_PYLON_GLOW_AFTER_LEVEL);
-            add(fixedBuffers, SpecialRenderHelper.ENCHANTER_RUNE_AFTER_LEVEL);
-            add(fixedBuffers, SpecialRenderHelper.END_PORTAL_AFTER_LEVEL);
+            add(fixedBuffers, EXERenderHelper.RAINBOW_MANA_WATER_AFTER_LEVEL);
+            add(fixedBuffers, EXERenderHelper.POLYCHROME_COLLAPSE_PRISM_AFTER_LEVEL);
+            add(fixedBuffers, EXERenderHelper.MANA_POOL_WATER_AFTER_LEVEL);
+            add(fixedBuffers, EXERenderHelper.TERRA_PLATE_AFTER_LEVEL);
+            add(fixedBuffers, EXERenderHelper.MANA_PYLON_GLOW_AFTER_LEVEL);
+            add(fixedBuffers, EXERenderHelper.NATURA_PYLON_GLOW_AFTER_LEVEL);
+            add(fixedBuffers, EXERenderHelper.GAIA_PYLON_GLOW_AFTER_LEVEL);
+            add(fixedBuffers, EXERenderHelper.ENCHANTER_RUNE_AFTER_LEVEL);
+            add(fixedBuffers, EXERenderHelper.END_PORTAL_AFTER_LEVEL);
 
             buffers = MultiBufferSource.immediateWithBuffers(
                     fixedBuffers,

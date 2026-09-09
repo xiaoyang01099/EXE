@@ -1,5 +1,5 @@
 {
-  "type": "avaritia:extreme_shaped",
+  "type": "endless:extreme_craft",
   "result": {
     "item": "ex_enigmaticlegacy:enhancement_crystal"
   },
@@ -16,13 +16,13 @@
   ],
   "key": {
     "Q": {
-      "item": "avaritia:infinity_catalyst"
+      "item": "endless:infinity_catalyst"
     },
     "W": {
-      "item": "avaritia:neutronium_ingot"
+      "item": "endless:neutronium_ingot"
     },
     "E": {
-      "item": "avaritia:crystal_matrix_ingot"
+      "item": "endless:crystal_matrix_ingot"
     }
   }
 }

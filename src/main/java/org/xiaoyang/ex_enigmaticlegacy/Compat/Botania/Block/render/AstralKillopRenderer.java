@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModItems;
-import org.xiaoyang.ex_enigmaticlegacy.api.shader.ExralCosmicRenderHelper;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.cosmic.ExralCosmicRenderHelper;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.functional.AstralKillop;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.functional.AstralKillopTile;
 

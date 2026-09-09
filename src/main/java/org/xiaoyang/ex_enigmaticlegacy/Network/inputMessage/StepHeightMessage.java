@@ -27,6 +27,15 @@ public class StepHeightMessage {
     }
 
     public static void handle(StepHeightMessage msg, Supplier<NetworkEvent.Context> contextSupplier) {
+        if (contextSupplier.get().getDirection().getReceptionSide().isClient()) {
+            net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(net.minecraftforge.api.distmarker.Dist.CLIENT,
+                    () -> () -> handleClient(msg, contextSupplier));
+        }
+        contextSupplier.get().setPacketHandled(true);
+    }
+
+    @net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
+    private static void handleClient(StepHeightMessage msg, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             if (context.getDirection().getReceptionSide().isClient()) {

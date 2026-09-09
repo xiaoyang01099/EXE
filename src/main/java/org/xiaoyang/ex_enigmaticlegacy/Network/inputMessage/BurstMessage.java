@@ -43,6 +43,15 @@ public class BurstMessage {
     }
 
     public static void handle(BurstMessage message, Supplier<NetworkEvent.Context> supplier) {
+        if (supplier.get().getDirection().getReceptionSide().isClient()) {
+            net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(net.minecraftforge.api.distmarker.Dist.CLIENT,
+                    () -> () -> handleClient(message, supplier));
+        }
+        supplier.get().setPacketHandled(true);
+    }
+
+    @net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
+    private static void handleClient(BurstMessage message, Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             Level level = Minecraft.getInstance().level;

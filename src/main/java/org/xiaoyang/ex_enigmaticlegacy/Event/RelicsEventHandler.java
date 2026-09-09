@@ -39,7 +39,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModDamageSources;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModItems;
 import org.xiaoyang.ex_enigmaticlegacy.Network.ClientProxy;

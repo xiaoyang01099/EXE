@@ -401,6 +401,7 @@ public class ModEventHandler {
     }
 
     @SubscribeEvent
+    @net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             Minecraft mc = Minecraft.getInstance();
@@ -900,6 +901,7 @@ public class ModEventHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
+    @net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
     public static void onRenderGameOverlay(RenderGuiOverlayEvent.Post event) {
         if (event.getOverlay() != VanillaGuiOverlay.HOTBAR.type()) {
             return;

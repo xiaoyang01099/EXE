@@ -43,6 +43,7 @@ public class EffectMessage {
         ctx.get().setPacketHandled(true);
     }
 
+    @net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
     private static void handleClient(EffectMessage message) {
         Minecraft.getInstance().execute(() -> {
             Function<CompoundTag, ?> effect = FXRegistry.effects.get(message.id);

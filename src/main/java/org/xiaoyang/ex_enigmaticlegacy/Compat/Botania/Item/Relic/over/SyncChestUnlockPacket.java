@@ -22,6 +22,15 @@ public class SyncChestUnlockPacket {
     }
 
     public static void handle(SyncChestUnlockPacket msg, Supplier<NetworkEvent.Context> ctx) {
+        if (ctx.get().getDirection().getReceptionSide().isClient()) {
+            net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(net.minecraftforge.api.distmarker.Dist.CLIENT,
+                    () -> () -> handleClient(msg, ctx));
+        }
+        ctx.get().setPacketHandled(true);
+    }
+
+    @net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
+    private static void handleClient(SyncChestUnlockPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             var player = Minecraft.getInstance().player;
             if (player != null) {

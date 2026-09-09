@@ -2,7 +2,7 @@
   "type": "ex_enigmaticlegacy:celestial_transmute",
   "inputs": [
     {
-      "item": "avaritia:infinity_catalyst",
+      "item": "endless:infinity_catalyst",
       "count": 1
     },
     {
@@ -23,7 +23,7 @@
       "count": 1
     },
     {
-      "item": "avaritia:iron_singularity",
+      "item": "endless:iron_singularity",
       "count": 5
     }
   ],

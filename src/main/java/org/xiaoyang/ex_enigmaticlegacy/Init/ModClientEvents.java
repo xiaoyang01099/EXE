@@ -28,15 +28,15 @@ import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.render.*;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.MithrillMultiTool;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.SphereNavigation;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.TerraShovel;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialCoreShaders;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialMiscellaneousModels;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.EXECoreShaders;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.SpecialMiscellaneousModels;
 import org.xiaoyang.ex_enigmaticlegacy.Client.model.*;
 import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.block.*;
 import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.layer.DragonWingsLayer;
 import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.layer.WitherArmorLayer;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
-import org.xiaoyang.ex_enigmaticlegacy.api.shader.EndPortalHaloLoader;
-import org.xiaoyang.ex_enigmaticlegacy.api.shader.RainbowCosmicModelLoader;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.end.EndPortalHaloLoader;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.cosmic.RainbowCosmicModelLoader;
 
 import java.io.IOException;
 import java.util.Map;
@@ -262,7 +262,7 @@ public class ModClientEvents {
 
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent evt) throws IOException {
-        SpecialCoreShaders.init(evt.getResourceProvider(), p -> evt.registerShader(p.getFirst(), p.getSecond()));
-        SpecialCoreShaders.registerShaders(evt);
+        EXECoreShaders.init(evt.getResourceProvider(), p -> evt.registerShader(p.getFirst(), p.getSecond()));
+        EXECoreShaders.registerShaders(evt);
     }
 }

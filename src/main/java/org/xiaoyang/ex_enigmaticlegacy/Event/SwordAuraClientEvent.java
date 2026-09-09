@@ -1,17 +1,24 @@
 package org.xiaoyang.ex_enigmaticlegacy.Event;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.ViewportEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.bolt.TrueBolt;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.EXECoreShaders;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.EXERenderFrameState;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.EXETrueBoltLateRenderQueue;
 import org.xiaoyang.ex_enigmaticlegacy.Util.CameraShakeUtil;
 import org.xiaoyang.ex_enigmaticlegacy.Event.registry.ChargeLightningClientRegistry;
 import org.xiaoyang.ex_enigmaticlegacy.Item.BeamCrossTestItem;
@@ -33,6 +40,20 @@ public class SwordAuraClientEvent {
         ForgeEvent.playSwordAuraSound(minecraft.player);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (event.phase == TickEvent.Phase.END) {
+            if (mc.level == null) {
+                TrueBolt.Manager.clear();
+                return;
+            }
+            if (mc.isPaused()) return;
+            TrueBolt.Manager.tick();
+        }
+    }
+
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
         if (Exe.POST == null || Minecraft.getInstance().level == null) return;
@@ -47,6 +68,31 @@ public class SwordAuraClientEvent {
             AutoTrackingClientHandler.submitLockedTargetOutline(Minecraft.getInstance().level);
             SparklingClientHandler.submitSparklingFireOutlines(Minecraft.getInstance().level, event.getFrustum());
             Exe.POST.doPostProcessing();
+        }
+
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
+            if (EXERenderFrameState.isShadowPass()) {
+                return;
+            }
+
+            PoseStack poseStack = event.getPoseStack();
+            Vec3 cameraPosition = event.getCamera().getPosition();
+
+            if (EXECoreShaders.boltShader == null) {
+                return;
+            }
+
+            if (EXETrueBoltLateRenderQueue.shouldDefer()) {
+                EXETrueBoltLateRenderQueue.enqueue(poseStack, cameraPosition, event.getPartialTick());
+                return;
+            }
+            poseStack.pushPose();
+            try {
+                TrueBolt.Manager.renderAll(poseStack, cameraPosition, event.getPartialTick()
+                );
+            } finally {
+                poseStack.popPose();
+            }
         }
     }
 

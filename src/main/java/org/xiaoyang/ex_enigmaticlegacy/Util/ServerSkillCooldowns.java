@@ -8,6 +8,7 @@ import java.util.UUID;
 
 // ServerSkillCooldowns 负责服务端技能防刷冷却，不使用原版物品冷却。
 public class ServerSkillCooldowns {
+    public static final String STELLAR_SLASH = "stellar_slash";
     public static final String BATTO_SLASH = "batto_slash"; // 拔刀斩服务端冷却 key。
     public static final String SUMMON_FLY_SWORD = "summon_fly_sword"; // 召唤飞剑服务端冷却 key。
     public static final String DIMENSION_SLASH = "dimension_slash"; // 次元斩服务端冷却 key。

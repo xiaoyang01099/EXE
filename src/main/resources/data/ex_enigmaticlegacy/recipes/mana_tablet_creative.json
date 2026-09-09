@@ -1,5 +1,5 @@
 {
-  "type": "avaritia:extreme_shaped",
+  "type": "endless:extreme_craft",
   "result": {
     "item": "botania:mana_tablet",
     "nbt": {
@@ -104,7 +104,7 @@
       "item": "botania:elementium_block"
     },
     "e": {
-      "item": "avaritia:infinity_catalyst"
+      "item": "endless:infinity_catalyst"
     }
   }
 }

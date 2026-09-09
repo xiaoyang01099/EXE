@@ -1,5 +1,5 @@
 {
-  "type": "avaritia:compressor",
+  "type": "endless:compressor",
   "result": {
     "item": "minecraft:debug_stick"
   },

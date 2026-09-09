@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.RenderType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.EXERenderHelper;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.SpecialLateRenderQueue;
 import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.render.block_entity.ManaPoolBlockEntityRenderer;
@@ -25,7 +25,7 @@ public abstract class ManaPoolBlockEntityRendererMixin {
             MultiBufferSource buffers, RenderType type) {
         if (type == RenderHelper.MANA_POOL_WATER && SpecialLateRenderQueue.shouldDefer()) {
             return SpecialLateRenderQueue.getBuffer(
-                    SpecialRenderHelper.MANA_POOL_WATER_AFTER_LEVEL
+                    EXERenderHelper.MANA_POOL_WATER_AFTER_LEVEL
             );
         }
         return buffers.getBuffer(type);

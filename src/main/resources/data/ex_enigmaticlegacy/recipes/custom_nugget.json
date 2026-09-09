@@ -2,19 +2,19 @@
   "type": "ex_enigmaticlegacy:celestial_transmute",
   "inputs": [
     {
-      "item": "avaritia:neutron_pile",
+      "item": "endless:neutronium_pile",
       "count": 64
     },
     {
-      "item": "avaritia:neutron_nugget",
+      "item": "endless:neutronium_nugget",
       "count": 32
     },
     {
-      "item": "avaritia:crystal_matrix_block",
+      "item": "endless:crystal_matrix_block",
       "count": 20
     },
     {
-      "item": "avaritia:diamond_singularity",
+      "item": "endless:diamond_singularity",
       "count": 5
     }
   ],

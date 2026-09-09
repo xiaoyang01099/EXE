@@ -37,6 +37,15 @@ public class ApotheosisParticleMessage {
     }
 
     public static void handle(ApotheosisParticleMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
+        if (contextSupplier.get().getDirection().getReceptionSide().isClient()) {
+            net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(net.minecraftforge.api.distmarker.Dist.CLIENT,
+                    () -> () -> handleClient(message, contextSupplier));
+        }
+        contextSupplier.get().setPacketHandled(true);
+    }
+
+    @net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
+    private static void handleClient(ApotheosisParticleMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
 
         if (context.getDirection().getReceptionSide().isClient()) {

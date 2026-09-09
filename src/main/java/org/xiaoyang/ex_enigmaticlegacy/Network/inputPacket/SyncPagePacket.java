@@ -30,6 +30,15 @@ public class SyncPagePacket {
     }
 
     public static void handle(SyncPagePacket msg, Supplier<NetworkEvent.Context> ctx) {
+        if (ctx.get().getDirection().getReceptionSide().isClient()) {
+            net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(net.minecraftforge.api.distmarker.Dist.CLIENT,
+                    () -> () -> handleClient(msg, ctx));
+        }
+        ctx.get().setPacketHandled(true);
+    }
+
+    @net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
+    private static void handleClient(SyncPagePacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Minecraft mc = Minecraft.getInstance();
             if (mc.level == null) return;

@@ -28,7 +28,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Hud.ClientHelper;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigHandler;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.mana.ManaItem;

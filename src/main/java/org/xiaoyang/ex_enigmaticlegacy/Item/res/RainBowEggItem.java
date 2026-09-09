@@ -21,7 +21,7 @@ import java.util.List;
 
 public class RainBowEggItem extends Item {
     public RainBowEggItem(){
-        super(new Properties());
+        super(new Properties().stacksTo(1));
     }
 
     @Override

@@ -80,6 +80,8 @@ public class ExtremeCraftingDeconstructionManager {
             return server.getRecipeManager();
         }
 
+        if (net.minecraftforge.fml.loading.FMLLoader.getDist() != net.minecraftforge.api.distmarker.Dist.CLIENT) return null;
+
         Minecraft mc = Minecraft.getInstance();
         if (mc != null && mc.level != null) {
             return mc.level.getRecipeManager();

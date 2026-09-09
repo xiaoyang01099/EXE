@@ -57,6 +57,8 @@ public class DeconstructionManager {
             return server.getRecipeManager();
         }
 
+        if (net.minecraftforge.fml.loading.FMLLoader.getDist() != net.minecraftforge.api.distmarker.Dist.CLIENT) return null;
+
         if (Minecraft.getInstance() != null && Minecraft.getInstance().level != null) {
             return Minecraft.getInstance().level.getRecipeManager();
         }

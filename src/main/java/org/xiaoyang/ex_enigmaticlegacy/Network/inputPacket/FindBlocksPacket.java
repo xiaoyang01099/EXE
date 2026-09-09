@@ -35,6 +35,15 @@ public class FindBlocksPacket {
     }
 
     public static void handle(FindBlocksPacket packet, Supplier<NetworkEvent.Context> supplier) {
+        if (supplier.get().getDirection().getReceptionSide().isClient()) {
+            net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(net.minecraftforge.api.distmarker.Dist.CLIENT,
+                    () -> () -> handleClient(packet, supplier));
+        }
+        supplier.get().setPacketHandled(true);
+    }
+
+    @net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
+    private static void handleClient(FindBlocksPacket packet, Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
             Player player = Minecraft.getInstance().player;

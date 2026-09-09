@@ -8,8 +8,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import org.joml.Matrix4f;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialCoreShaders;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.EXECoreShaders;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.EXERenderHelper;
 
 public class CosmicBlockRenderer implements BlockEntityRenderer<CosmicBlockEntity> {
 
@@ -19,7 +19,7 @@ public class CosmicBlockRenderer implements BlockEntityRenderer<CosmicBlockEntit
     @Override
     public void render(CosmicBlockEntity blockEntity, float partialTicks, PoseStack poseStack,
                        MultiBufferSource bufferSource, int light, int overlay) {
-        var shader = SpecialCoreShaders.cosmicBackground();
+        var shader = EXECoreShaders.cosmicBackground();
         if (shader != null) {
             float gameTime = (Minecraft.getInstance().level.getGameTime() + partialTicks) / 24000.0f;
 
@@ -28,7 +28,7 @@ public class CosmicBlockRenderer implements BlockEntityRenderer<CosmicBlockEntit
             shader.safeGetUniform("ColorCycle").set((float)Math.sin(gameTime * 0.5) * 0.5f + 0.5f);
         }
 
-        VertexConsumer buffer = bufferSource.getBuffer(SpecialRenderHelper.COSMIC_BACKGROUND);
+        VertexConsumer buffer = bufferSource.getBuffer(EXERenderHelper.COSMIC_BACKGROUND);
 
         poseStack.pushPose();
 

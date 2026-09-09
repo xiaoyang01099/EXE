@@ -21,7 +21,7 @@ import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.EXELatePassState;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.EXERenderFrameState;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.EXERenderLifecycle;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
-import org.xiaoyang.ex_enigmaticlegacy.api.shader.EXEShaders;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.cosmic.EXEShaders;
 
 import java.util.ArrayList;
 import java.util.List;

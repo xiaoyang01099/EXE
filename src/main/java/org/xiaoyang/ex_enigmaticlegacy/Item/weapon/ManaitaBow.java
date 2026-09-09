@@ -31,7 +31,7 @@ public class ManaitaBow extends BowItem {
     private final Random random = new Random();
 
     public ManaitaBow() {
-        super(new Properties());
+        super(new Properties().stacksTo(1));
     }
 
     @Override

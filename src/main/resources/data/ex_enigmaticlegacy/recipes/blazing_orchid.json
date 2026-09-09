@@ -1,8 +1,6 @@
 {
   "type": "botania:petal_apothecary",
-  "output": {
-    "item": "ex_enigmaticlegacy:blazing_orchid"
-  },
+
   "ingredients": [
     {
       "item": "minecraft:nether_brick"
@@ -34,5 +32,11 @@
     {
       "item": "botania:red_petal"
     }
-  ]
+  ],
+  "output": {
+    "item": "ex_enigmaticlegacy:blazing_orchid"
+  },
+  "reagent": {
+    "tag": "botania:seed_apothecary_reagent"
+  }
 }

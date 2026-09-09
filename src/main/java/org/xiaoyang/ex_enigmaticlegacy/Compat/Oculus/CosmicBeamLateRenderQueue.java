@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexSorting;
 import net.minecraft.client.Minecraft;
 import org.joml.Matrix4f;
-import org.xiaoyang.ex_enigmaticlegacy.api.shader.CosmicBeamRenderer;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.cosmic.CosmicBeamRenderer;
 
 import java.util.ArrayList;
 import java.util.List;

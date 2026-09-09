@@ -2,7 +2,9 @@ package org.xiaoyang.ex_enigmaticlegacy.Config;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import org.xiaoyang.ex_enigmaticlegacy.Block.BlockPeacefulTable;
@@ -21,6 +23,15 @@ public class ConfigHandler {
     public static int emcFlowerManaPerEMC = 300;
     public static int emcFlowerMaxMana = 10000;
     public static double sprawlRodSpeed = 1.5;
+
+    public static boolean bladeFlashEnabled;
+    public static boolean bladeFlashHeldSwordTrails;
+    public static boolean bladeFlashDemoOnSwordSwing;
+    public static double bladeFlashTrailSeconds;
+    public static double bladeFlashDistortionPixels;
+    public static double bladeFlashBrightness;
+    public static int bladeFlashMaxTrails;
+    public static int bladeFlashMaxSamplesPerTrail;
 
     public static int astralKillopManaCost = 100;
     public static int astralKillopNuggetDay = 14;
@@ -45,6 +56,7 @@ public class ConfigHandler {
 
     public static boolean infinityPotatoDrawHalo = true;
     public static boolean itemNameplateEnabled = true;
+    public static volatile boolean freezePlayers = true;
 
     private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
     private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
@@ -61,11 +73,30 @@ public class ConfigHandler {
     public static ForgeConfigSpec.IntValue INVO_HEIGHT;
     public static ForgeConfigSpec.IntValue MAX_SECTIONS;
     public static ForgeConfigSpec.BooleanValue IS_LARGE_SCREEN;
+    public static ForgeConfigSpec.BooleanValue FREEZE_PLAYERS;
+
+    @Mod.EventBusSubscriber(modid = Exe.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static final class FrostConfigEvents {
+        @SubscribeEvent
+        public static void changed(ModConfigEvent event) {
+            if (event.getConfig().getSpec() == COMMON_SPEC && !(event instanceof ModConfigEvent.Unloading))
+                freezePlayers = FREEZE_PLAYERS.get();
+        }
+    }
 
     public static ForgeConfigSpec.BooleanValue PERSIST_ON_DEATH;
     public static ForgeConfigSpec.BooleanValue SHOW_GUI_BUTTON;
     public static ForgeConfigSpec.BooleanValue REQUIRE_RING;
     public static ForgeConfigSpec.IntValue FILTER_RANGE;
+
+    public static ForgeConfigSpec.BooleanValue ENABLED;
+    public static ForgeConfigSpec.BooleanValue HELD_SWORD_TRAILS;
+    public static ForgeConfigSpec.BooleanValue DEMO_ON_SWORD_SWING;
+    public static ForgeConfigSpec.DoubleValue TRAIL_SECONDS;
+    public static ForgeConfigSpec.DoubleValue DISTORTION_PIXELS;
+    public static ForgeConfigSpec.DoubleValue BRIGHTNESS;
+    public static ForgeConfigSpec.IntValue MAX_TRAILS;
+    public static ForgeConfigSpec.IntValue MAX_SAMPLES;
 
     public static ForgeConfigSpec.IntValue emcFlowerManaPerEMCConfig;
     public static ForgeConfigSpec.IntValue emcFlowerMaxManaConfig;
@@ -78,7 +109,6 @@ public class ConfigHandler {
     public static ForgeConfigSpec.IntValue REPAIR_TICK;
 
     public static ForgeConfigSpec.BooleanValue enableDragonArmorOverlayConfig;
-
     public static ForgeConfigSpec.DoubleValue starlitGuiScaleConfig;
     public static ForgeConfigSpec.DoubleValue starlitJeiScaleConfig;
 
@@ -153,11 +183,38 @@ public class ConfigHandler {
                 .define("drawHalo", true);
         CLIENT_BUILDER.pop(); // infinity_potato
 
+        CLIENT_BUILDER.comment("Blade Flash Settings").push("blade_flash");
+        ENABLED = CLIENT_BUILDER
+                .comment("Enable Blade Flash rendering")
+                .define("enabled", true);
+        HELD_SWORD_TRAILS = CLIENT_BUILDER
+                .comment("Continuously sample held items in ex_enigmaticlegacy:edgend, including walking and turning. The tag is empty by default.")
+                .define("heldSwordTrails", true);
+        DEMO_ON_SWORD_SWING = CLIENT_BUILDER
+                .comment("Legacy synthetic arcs when heldSwordTrails is false. Both swings and V require an item in ex_enigmaticlegacy:edgend.")
+                .define("demoOnSwordSwing", false);
+        TRAIL_SECONDS = CLIENT_BUILDER
+                .defineInRange("trailSeconds", 0.45, 0.05, 2.0);
+        DISTORTION_PIXELS = CLIENT_BUILDER
+                .defineInRange("distortionPixels", 20.0, 0.0, 80.0);
+        BRIGHTNESS = CLIENT_BUILDER
+                .defineInRange("brightness", 1.0, 0.0, 5.0);
+        MAX_TRAILS = CLIENT_BUILDER
+                .defineInRange("maxTrails", 64, 1, 256);
+        MAX_SAMPLES = CLIENT_BUILDER
+                .defineInRange("maxSamplesPerTrail", 128, 4, 256);
+        CLIENT_BUILDER.pop(); // blade_flash
+
+
         CLIENT_BUILDER.pop(); // client
         CLIENT_SPEC = CLIENT_BUILDER.build();
 
         // ========== COMMON ==========
         COMMON_BUILDER.comment("Common Settings").push("common");
+        COMMON_BUILDER.push("sunmakerFrost");
+        FREEZE_PLAYERS = COMMON_BUILDER.comment("Allow the Sunmaker frost aura to freeze survival players. Disabling also releases frozen players.")
+                .define("freezePlayers", true);
+        COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Peaceful Table Settings").push("peaceful_table");
         peacefulTableInAllDifficultiesConfig = COMMON_BUILDER
@@ -369,6 +426,7 @@ public class ConfigHandler {
     }
 
     public static void syncCommonConfig() {
+        freezePlayers = FREEZE_PLAYERS.get();
         emcFlowerManaPerEMC = emcFlowerManaPerEMCConfig.get();
         emcFlowerMaxMana = emcFlowerMaxManaConfig.get();
         lockWorldNameNebulaRod = new ArrayList<>(lockWorldNameNebulaRodConfig.get());
@@ -408,6 +466,14 @@ public class ConfigHandler {
         starlitJeiScale = starlitJeiScaleConfig.get().floatValue();
         infinityPotatoDrawHalo = infinityPotatoDrawHaloConfig.get();
         itemNameplateEnabled = itemNameplateEnabledConfig.get();
+        bladeFlashEnabled = ENABLED.get();
+        bladeFlashHeldSwordTrails = HELD_SWORD_TRAILS.get();
+        bladeFlashDemoOnSwordSwing = DEMO_ON_SWORD_SWING.get();
+        bladeFlashTrailSeconds = TRAIL_SECONDS.get();
+        bladeFlashDistortionPixels = DISTORTION_PIXELS.get();
+        bladeFlashBrightness = BRIGHTNESS.get();
+        bladeFlashMaxTrails = MAX_TRAILS.get();
+        bladeFlashMaxSamplesPerTrail = MAX_SAMPLES.get();
         Exe.LOGGER.info("Starlit Sanctum GUI scales loaded: GUI={}, JEI={}",
                 starlitGuiScale, starlitJeiScale);
         Exe.LOGGER.info("Infinity Potato config loaded: drawHalo={}", infinityPotatoDrawHalo);
@@ -455,6 +521,17 @@ public class ConfigHandler {
         public static int getManaCost() { return nebulaRodManaCost; }
         public static int getCoordinateLimit() { return limitXZCoords; }
         public static boolean isWorldLocked(String worldName) { return lockWorldNameNebulaRod.contains(worldName); }
+    }
+
+    public static class BladeFlash {
+        public static boolean isEnabled() { return bladeFlashEnabled; }
+        public static boolean isHeldSwordTrails() { return bladeFlashHeldSwordTrails; }
+        public static boolean isDemoOnSwordSwing() { return bladeFlashDemoOnSwordSwing; }
+        public static double getTrailSeconds() { return bladeFlashTrailSeconds; }
+        public static double getDistortionPixels() { return bladeFlashDistortionPixels; }
+        public static double getBrightness() { return bladeFlashBrightness; }
+        public static int getMaxTrails() { return bladeFlashMaxTrails; }
+        public static int getMaxSamplesPerTrail() { return bladeFlashMaxSamplesPerTrail; }
     }
 
     public static class FlowerConfig {

@@ -1,5 +1,5 @@
 {
-  "type": "avaritia:extreme_shaped",
+  "type": "endless:extreme_craft",
   "result": {
     "item": "ex_enigmaticlegacy:mana_ivy_regen",
     "nbt": {
@@ -26,7 +26,7 @@
       "item": "ex_enigmaticlegacy:asgardandelion"
     },
     "X": {
-      "item": "avaritia:infinity_catalyst"
+      "item": "endless:infinity_catalyst"
     },
     "Q": {
       "item": "botania:infinite_fruit"

@@ -38,7 +38,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModDamageSources;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModEffects;
 import org.xiaoyang.ex_enigmaticlegacy.api.emc.INoEMCItem;

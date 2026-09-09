@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModItems;
 import org.xiaoyang.ex_enigmaticlegacy.Tile.StarlitSanctumTile;
-import org.xiaoyang.ex_enigmaticlegacy.api.shader.ExralCosmicRenderHelper;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.cosmic.ExralCosmicRenderHelper;
 
 public class StarlitSanctumRenderer implements BlockEntityRenderer<StarlitSanctumTile> {
 

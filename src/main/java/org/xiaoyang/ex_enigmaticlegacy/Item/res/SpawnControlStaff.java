@@ -36,8 +36,7 @@ public class SpawnControlStaff extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level level,
-                                List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         tooltipComponents.add(Component.translatable("item.spawncontrol.spawn_control_staff.tooltip"));
     }
 }

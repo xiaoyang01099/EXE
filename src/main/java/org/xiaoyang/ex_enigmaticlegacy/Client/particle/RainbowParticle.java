@@ -32,8 +32,7 @@ public class RainbowParticle extends Particle {
     private static final float SATURATION = 0.75F;
     private static final float BRIGHTNESS = 1.0F;
 
-    protected RainbowParticle(ClientLevel level, double x, double y, double z,
-                              double xSpeed, double ySpeed, double zSpeed) {
+    protected RainbowParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
         this.lifetime = 60 + this.random.nextInt(40);
         this.gravity = -0.02F;

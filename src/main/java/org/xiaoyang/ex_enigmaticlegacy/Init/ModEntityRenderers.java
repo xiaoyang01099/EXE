@@ -18,10 +18,6 @@ import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.block.*;
 import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.others.*;
 import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.tile.*;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.render.*;
-import org.xiaoyang.ex_enigmaticlegacy.api.test.NebulaBowArrowAroundEffectRenderer;
-import org.xiaoyang.ex_enigmaticlegacy.api.test.NebulaBowArrowLowRenderer;
-import org.xiaoyang.ex_enigmaticlegacy.api.test.ShockwaveRenderer;
-
 
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -59,9 +55,6 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.SLIME_CANNON_BALL.get(), RendererSlimeCannonBall::new);
 		event.registerEntityRenderer(ModEntities.SLING_BULLET.get(), RenderSlingBullet::new);
 		event.registerEntityRenderer(ModEntities.INFINITY_ARROW_LEVEL_ENTITY.get(), EntityInfinityArrowLevelRenderer::new);
-		event.registerEntityRenderer(ModEntities.SHOCK_WAVE.get(), ShockwaveRenderer::new);
-		event.registerEntityRenderer(ModEntities.NEBULA_ARROW.get(), NebulaBowArrowLowRenderer::new);
-		event.registerEntityRenderer(ModEntities.NEBULA_ARROW_AROUND.get(), NebulaBowArrowAroundEffectRenderer::new);
 		event.registerEntityRenderer(ModEntities.FLY_SWORD_ENTITY.get(), FlySwordEntityRender::new);
 		event.registerEntityRenderer(ModEntities.RAILGUN_BEAM_ENTITY.get(), RailgunBeamEntityRender::new);
 		event.registerEntityRenderer(ModEntities.COLORFUL_COIN_ENTITY.get(), ColorfulEntityRender::new);

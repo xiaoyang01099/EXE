@@ -1,4 +1,26 @@
 {
+  "death.attack.ex_enigmaticlegacy.stellar_slash": "%1$s was cut apart by %2$s's stellar slash",
+  "death.attack.ex_enigmaticlegacy.stellar_slash.item": "%1$s was cut apart by %2$s using %3$s",
+  "hud.ex_enigmaticlegacy.frost": "Frost %s / 100",
+  "item.ex_enigmaticlegacy.sunmaker.frost": "Full set: 3-block frost aura, freeze in 10s, shatter after 2s",
+  "color.ex_enigmaticlegacy.yuhua.3": "Ice Blue",
+  "color.ex_enigmaticlegacy.yuhua.4": "Crimson",
+  "color.ex_enigmaticlegacy.yuhua.5": "Rose Quartz",
+  "color.ex_enigmaticlegacy.yuhua.6": "Moonstone",
+  "color.ex_enigmaticlegacy.yuhua.7": "Sapphire",
+  "color.ex_enigmaticlegacy.yuhua.8": "Amber",
+  "color.ex_enigmaticlegacy.yuhua.9": "Black Jade",
+  "color.ex_enigmaticlegacy.yuhua.10": "Peridot",
+  "color.ex_enigmaticlegacy.yuhua.11": "Tourmaline",
+  "commands.ex_enigmaticlegacy.summon_portal": "Summon portal visual: %s seconds",
+  "key.ex_enigmaticlegacy.yuhua_cast": "Jade: Mark / Shatter (sneak: toggle automatic)",
+  "key.ex_enigmaticlegacy.yuhua_color": "Jade: Cycle Color",
+  "key.ex_enigmaticlegacy.yuhua_auto": "Jade: Toggle Automatic",
+  "message.ex_enigmaticlegacy.yuhua_color": "[Jade] Color: %s",
+  "message.ex_enigmaticlegacy.yuhua_auto": "[Jade] Automatic: %s",
+  "color.ex_enigmaticlegacy.yuhua.0": "Emerald Green",
+  "color.ex_enigmaticlegacy.yuhua.1": "Gold",
+  "color.ex_enigmaticlegacy.yuhua.2": "Purple",
   "advancements.oh_my_god.descr": "Oh My God",
   "advancements.aristocratic.descr": "§3Iridium",
   "advancements.aristocratic.title": "§6Aristocratic",
@@ -140,6 +162,8 @@
   "block.ex_enigmaticlegacy.lebethron_wood": "Lebethron Wood",
   "block.ex_enigmaticlegacy.lebethron_wood_glowing": "Lebethron Log",
 
+  "death.attack.ex_enigmaticlegacy.black_coffin": "%1$s was consumed by the Black Coffin",
+  "death.attack.ex_enigmaticlegacy.black_coffin.player": "%1$s was consumed by %2$s's Black Coffin",
   "death.attack.trueDamage.player":"%1$s was judged to death by %2$s",
   "death.attack.trueDamageUndef.player":"%1$s was judged to death",
   "death.attack.attackOblivion.player":"%1$s's soul was consumed by Oblivion",
@@ -155,6 +179,8 @@
   "death.attack.attackDarkMatter":"%1$s's soul drowned in the primordial darkness.",
   "death.attack.Magic":"%1$s was destroyed by %2$s using magic.",
 
+  "item.ex_enigmaticlegacy.prism_rod": "Prism Rod",
+  "item.ex_enigmaticlegacy.spawn_control_staff": "Spawn Control Staff",
   "item.ex_enigmaticlegacy.emc_wand": "EMC Wand ",
   "item.ex_enigmaticlegacy.slime_necklace": "Slime Necklace",
   "item.ex_enigmaticlegacy.slime_cannon": "Slime Cannon",
@@ -293,6 +319,7 @@
   "item.ex_enigmaticlegacy.iridium_ingot": "§7Iridium Ingot",
   "item.ex_enigmaticlegacy.judgment_of_aurora": "Judgment Of Aurora",
   "item.ex_enigmaticlegacy.kiss_of_nyx": "Kiss Of Nyx",
+  "item.ex_enigmaticlegacy.kiss_of_nyx.vines": "Right-click: entangle for 10s, dealing 1 magic damage per second",
   "item.ex_enigmaticlegacy.lava_ingot": "§cLava Ingot",
   "item.ex_enigmaticlegacy.mana_nether_star": "Mana Nether Star",
   "item.ex_enigmaticlegacy.manaita_boots": "Mana Boots",
@@ -479,6 +506,8 @@
   "subtitles.scray": "",
   "subtitles.what": "",
 
+  "key.ex_enigmaticlegacy.preview": "Preview slash",
+  "key.ex_enigmaticlegacy.debug": "Cycle mask debug view",
   "jei.ex_enigmaticlegacy.starlit_crafting.count": "Count: %s",
   "gui.ex_enigmaticlegacy.starlit_sanctum.mana": "%s §7/ %s §7Mana",
   "gui.ex_enigmaticlegacy.starlit_sanctum.mana_percent": "§7(%s%%)",
@@ -1308,5 +1337,8 @@
   "item.ex_enigmaticlegacy.corruption_detector.color": "Color: %s",
   "item.ex_enigmaticlegacy.corruption_protection_amulet.tooltip.1": "Grants immunity to corruption effects when worn",
   "item.ex_enigmaticlegacy.corruption_protection_amulet.tooltip.2": "Continuously consumes durability",
-  "item.ex_enigmaticlegacy.corruption_protection_amulet.durability": "Durability: %d"
+  "item.ex_enigmaticlegacy.corruption_protection_amulet.durability": "Durability: %d",
+  "item.spawncontrol.spawn_control_staff.tooltip": "Right-click to open the GUI and control its spawning",
+  "misc.ex_enigmaticlegacy.color.format": "Right Click To Generate Colorful Magic"
+
 }

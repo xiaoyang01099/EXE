@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
-import org.xiaoyang.ex_enigmaticlegacy.api.shader.CosmicBeamRenderer;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.cosmic.CosmicBeamRenderer;
 
 public class InfinityRod extends Item {
     public InfinityRod() {

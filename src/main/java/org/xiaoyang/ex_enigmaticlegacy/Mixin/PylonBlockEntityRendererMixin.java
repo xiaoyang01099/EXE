@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.RenderType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.EXERenderHelper;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.SpecialLateRenderQueue;
 import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.render.block_entity.PylonBlockEntityRenderer;
@@ -29,17 +29,17 @@ public abstract class PylonBlockEntityRendererMixin {
 
         if (type == RenderHelper.MANA_PYLON_GLOW) {
             return SpecialLateRenderQueue.getBuffer(
-                    SpecialRenderHelper.MANA_PYLON_GLOW_AFTER_LEVEL
+                    EXERenderHelper.MANA_PYLON_GLOW_AFTER_LEVEL
             );
         }
         if (type == RenderHelper.NATURA_PYLON_GLOW) {
             return SpecialLateRenderQueue.getBuffer(
-                    SpecialRenderHelper.NATURA_PYLON_GLOW_AFTER_LEVEL
+                    EXERenderHelper.NATURA_PYLON_GLOW_AFTER_LEVEL
             );
         }
         if (type == RenderHelper.GAIA_PYLON_GLOW) {
             return SpecialLateRenderQueue.getBuffer(
-                    SpecialRenderHelper.GAIA_PYLON_GLOW_AFTER_LEVEL
+                    EXERenderHelper.GAIA_PYLON_GLOW_AFTER_LEVEL
             );
         }
 

@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import org.joml.Quaternionf;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.BlockAdvancedSpreader;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.tile.TileAdvancedSpreader;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialMiscellaneousModels;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.SpecialMiscellaneousModels;
 import vazkii.botania.api.state.BotaniaStateProperties;
 import vazkii.botania.client.core.handler.ClientTickHandler;
 import vazkii.botania.client.core.handler.MiscellaneousModels;

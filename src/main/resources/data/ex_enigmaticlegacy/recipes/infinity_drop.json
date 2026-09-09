@@ -1,5 +1,5 @@
 {
-  "type": "avaritia:extreme_shaped",
+  "type": "endless:extreme_craft",
   "result": {
     "item": "ex_enigmaticlegacy:infinitydrop"
   },
@@ -19,13 +19,13 @@
       "item": "minecraft:ghast_tear"
     },
     "B": {
-      "item": "avaritia:infinity_catalyst"
+      "item": "endless:infinity_catalyst"
     },
     "C": {
-      "item": "avaritia:neutron_nugget"
+      "item": "endless:neutron_nugget"
     },
     "D": {
-      "item": "avaritia:neutron_pile"
+      "item": "endless:neutron_pile"
     }
   }
 }

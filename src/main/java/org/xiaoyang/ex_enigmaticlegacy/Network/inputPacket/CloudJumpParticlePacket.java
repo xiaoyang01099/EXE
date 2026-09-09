@@ -33,6 +33,15 @@ public class CloudJumpParticlePacket {
     }
 
     public static void handle(CloudJumpParticlePacket msg, Supplier<NetworkEvent.Context> ctx) {
+        if (ctx.get().getDirection().getReceptionSide().isClient()) {
+            net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(net.minecraftforge.api.distmarker.Dist.CLIENT,
+                    () -> () -> handleClient(msg, ctx));
+        }
+        ctx.get().setPacketHandled(true);
+    }
+
+    @net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
+    private static void handleClient(CloudJumpParticlePacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             if (ctx.get().getDirection().getReceptionSide().isClient()) {
                 Level level = net.minecraft.client.Minecraft.getInstance().level;

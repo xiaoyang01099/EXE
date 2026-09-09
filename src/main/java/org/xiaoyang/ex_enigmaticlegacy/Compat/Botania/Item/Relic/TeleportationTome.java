@@ -20,7 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import org.xiaoyang.ex_enigmaticlegacy.Event.RelicsEventHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Network.NetworkHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.PortalTraceMessage;

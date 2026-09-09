@@ -1,5 +1,5 @@
 {
-  "type": "avaritia:extreme_shaped",
+  "type": "endless:extreme_craft",
   "result": {
     "item": "botania:creative_pool"
   },
@@ -16,10 +16,10 @@
   ],
   "key": {
     "Q": {
-      "item": "avaritia:infinity_catalyst"
+      "item": "endless:infinity_catalyst"
     },
     "E": {
-      "item": "avaritia:neutronium_block"
+      "item": "endless:neutronium_block"
     },
     "R": {
       "item": "botania:gaia_head"

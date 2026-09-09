@@ -25,5 +25,8 @@
     {
       "item": "minecraft:lily_pad"
     }
-  ]
+  ],
+  "reagent": {
+    "tag": "botania:seed_apothecary_reagent"
+  }
 }

@@ -19,7 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialCoreShaders;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.EXECoreShaders;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.EXEParticleLateRenderQueue;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.slash.ParticleOwnership;
@@ -321,9 +321,9 @@ public class TrueDemonParticle extends TextureSheetParticle {
         public void end(@NonNull Tesselator tessellate) {
             if (EXEParticleLateRenderQueue.shouldDefer()) return;
 
-            BLACK_LAYER_BUFFER.draw(SpecialCoreShaders.getTrueDemonParticleShader(), 0);
-            WHITE_LAYER_BUFFER.draw(SpecialCoreShaders.getTrueDemonParticleWhiteShader(), 1);
-            MAGENTA_LAYER_BUFFER.draw(SpecialCoreShaders.getTrueDemonParticleMagentaShader(), 2);
+            BLACK_LAYER_BUFFER.draw(EXECoreShaders.getTrueDemonParticleShader(), 0);
+            WHITE_LAYER_BUFFER.draw(EXECoreShaders.getTrueDemonParticleWhiteShader(), 1);
+            MAGENTA_LAYER_BUFFER.draw(EXECoreShaders.getTrueDemonParticleMagentaShader(), 2);
 
             RenderSystem.depthMask(true);
             RenderSystem.enableCull();

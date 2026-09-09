@@ -33,7 +33,7 @@ public class HolyRing extends Item implements ICurioItem {
     private static final UUID DAMAGE_INCREASE_UUID = UUID.fromString("c7f1a9a0-cf14-4720-9a77-431bc89d3ddf");
 
     public HolyRing() {
-        super(new Properties());
+        super(new Properties().stacksTo(1));
     }
 
     @Override

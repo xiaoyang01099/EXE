@@ -39,7 +39,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.NetworkDirection;
 import org.jetbrains.annotations.NotNull;
 import org.xiaoyang.ex_enigmaticlegacy.Event.RelicsEventHandler;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import org.xiaoyang.ex_enigmaticlegacy.Network.NetworkHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputMessage.EntityMotionMessage;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputMessage.OverthrowChatMessage;

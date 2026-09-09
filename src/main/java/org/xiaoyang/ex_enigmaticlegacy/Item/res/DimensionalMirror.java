@@ -24,7 +24,7 @@ import java.util.List;
 
 public class DimensionalMirror extends Item {
     public DimensionalMirror() {
-        super(new Properties());
+        super(new Properties().stacksTo(1));
     }
 
     @Override

@@ -8,8 +8,8 @@
 //import net.minecraft.core.BlockPos;
 //import net.minecraft.core.Direction;
 //import org.joml.Matrix4f;
-//import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialCoreShaders;
-//import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialRenderHelper;
+//import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.EXECoreShaders;
+//import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.EXERenderHelper;
 //
 //public class StarrySkyBlockRenderer implements BlockEntityRenderer<StarrySkyBlockEntity> {
 //
@@ -20,7 +20,7 @@
 //    public void render(StarrySkyBlockEntity blockEntity, float partialTick, PoseStack poseStack,
 //                       MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
 //
-//        var shader = SpecialCoreShaders.getStarrySkyShader();
+//        var shader = EXECoreShaders.getStarrySkyShader();
 //        if (shader != null) {
 //            float gameTime = blockEntity.getAnimationTime(partialTick);
 //
@@ -30,7 +30,7 @@
 //            shader.safeGetUniform("BlockPos").set((float)pos.getX(), (float)pos.getY(), (float)pos.getZ());
 //        }
 //
-//        VertexConsumer consumer = bufferSource.getBuffer(SpecialRenderHelper.STARRY_SKY);
+//        VertexConsumer consumer = bufferSource.getBuffer(EXERenderHelper.STARRY_SKY);
 //
 //        Matrix4f matrix = poseStack.last().pose();
 //        BlockPos blockPos = blockEntity.getBlockPos();

@@ -5,7 +5,7 @@ import org.xiaoyang.ex_enigmaticlegacy.api.shader.core.render.finalRender.PostRe
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.core.render.finalRender.bloomQueue.CircleShockwaveQueue;
 
 public class CircleShockwavePostQueue implements PostRenderTaskQueue<ShockwaveTask> {
-    public final CircleShockwaveQueue queue; // 现有法阵冲击波队列。
+    public final CircleShockwaveQueue queue;
 
     public CircleShockwavePostQueue(CircleShockwaveQueue queue) {
         this.queue = queue;

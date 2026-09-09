@@ -2,7 +2,7 @@
   "type": "ex_enigmaticlegacy:celestial_transmute",
   "inputs": [
     {
-      "item": "avaritia:crystal_matrix_ingot",
+      "item": "endless:crystal_matrix_ingot",
       "count": 16
     },
     {
@@ -10,7 +10,7 @@
       "count": 64
     },
     {
-      "item": "avaritia:infinity_catalyst",
+      "item": "endless:infinity_catalyst",
       "count": 1
     },
     {

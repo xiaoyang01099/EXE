@@ -17,7 +17,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialCoreShaders;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.EXECoreShaders;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.EXEParticleLateRenderQueue;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.slash.ParticleOwnership;
@@ -198,7 +198,7 @@ public class TrueDemonStarParticle extends TextureSheetParticle {
         public void end(Tesselator tessellator) {
             if (EXEParticleLateRenderQueue.shouldDefer()) return;
 
-            STAR_BUFFER.draw(SpecialCoreShaders.getTrueDemonStarParticleShader());
+            STAR_BUFFER.draw(EXECoreShaders.getTrueDemonStarParticleShader());
 
             RenderSystem.depthMask(true);
             RenderSystem.enableCull();

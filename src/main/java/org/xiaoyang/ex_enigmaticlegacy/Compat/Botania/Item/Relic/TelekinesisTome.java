@@ -25,7 +25,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import org.xiaoyang.ex_enigmaticlegacy.Event.RelicsEventHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModDamageSources;
 import org.xiaoyang.ex_enigmaticlegacy.Network.NetworkHandler;

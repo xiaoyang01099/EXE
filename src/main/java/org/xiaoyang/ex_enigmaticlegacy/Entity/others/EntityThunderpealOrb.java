@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import org.xiaoyang.ex_enigmaticlegacy.Event.RelicsEventHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModDamageSources;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModEntities;

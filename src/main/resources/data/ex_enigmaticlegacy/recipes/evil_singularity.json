@@ -1,12 +1,12 @@
 {
-  "type": "avaritia:compressor",
-  "result": {
-    "item": "ex_enigmaticlegacy:evil_singularity"
+  "type": "endless:neutronium",
+  "category": "misc",
+  "count": 600,
+  "input": {
+    "tag": "ex_enigmaticlegacy:evilblock"
   },
-  "cost": 600,
-  "ingredients": [
-    {
-      "item": "ex_enigmaticlegacy:evilblock"
-    }
-  ]
+  "output": {
+    "item": "ex_enigmaticlegacy:evil_singularity",
+    "nbt": "{type:evil}"
+  }
 }

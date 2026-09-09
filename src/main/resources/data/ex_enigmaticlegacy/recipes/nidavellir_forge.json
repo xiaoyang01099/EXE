@@ -1,13 +1,16 @@
 {
-  "type": "ex_enigmaticlegacy:nidavellir_forge",
-  "mana": 2000,
-  "color": 16711680,
-  "ingredients": [
-    {"item": "minecraft:netherite_ingot"},
-    {"item": "minecraft:dragon_breath", "count": 3},
-    {"item": "minecraft:end_crystal"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NNN",
+    "N N",
+    "NNN"
   ],
-  "output": {
+  "key": {
+    "N": {
+      "item": "endless:crystal_matrix_ingot"
+    }
+  },
+  "result": {
     "item": "ex_enigmaticlegacy:song_of_the_abyss",
     "count": 1
   }

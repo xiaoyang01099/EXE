@@ -47,6 +47,7 @@ import vazkii.botania.common.item.equipment.bauble.BaubleItem;
 import java.util.List;
 
 @SuppressWarnings("removal")
+@OnlyIn(value = Dist.CLIENT, _interface = ICurioRenderer.class)
 public class DivineCloak extends BaubleItem implements ICurioItem, ICurioRenderer {
     public static final int NJORD = 0;
     public static final int IDUNN = 1;
@@ -91,8 +92,9 @@ public class DivineCloak extends BaubleItem implements ICurioItem, ICurioRendere
     };
 
     @OnlyIn(Dist.CLIENT)
-    private static final ModelLayerLocation CLOAK_LAYER = new ModelLayerLocation(
-            new ResourceLocation("botania", "cloak"), "main");
+    private static ModelLayerLocation cloakLayer() {
+        return new ModelLayerLocation(new ResourceLocation("botania", "cloak"), "main");
+    }
 
     @OnlyIn(Dist.CLIENT)
     private CloakModel model;
@@ -248,7 +250,7 @@ public class DivineCloak extends BaubleItem implements ICurioItem, ICurioRendere
         if (model == null) {
             try {
                 EntityModelSet modelSet = Minecraft.getInstance().getEntityModels();
-                ModelPart root = modelSet.bakeLayer(CLOAK_LAYER);
+                ModelPart root = modelSet.bakeLayer(cloakLayer());
                 model = new CloakModel(root);
             } catch (Exception e) {
                 Exe.LOGGER.error("Failed to initialize cloak model", e);
@@ -257,6 +259,7 @@ public class DivineCloak extends BaubleItem implements ICurioItem, ICurioRendere
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public <T extends LivingEntity, M extends EntityModel<T>> void render(
             ItemStack stack, SlotContext slotContext, PoseStack matrixStack,
             RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer,

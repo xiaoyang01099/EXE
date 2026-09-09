@@ -1,0 +1,14 @@
+{
+  "vertex": "ex_enigmaticlegacy:coffin",
+  "fragment": "ex_enigmaticlegacy:coffin",
+  "attributes": ["Position", "Color", "UV0"],
+  "samplers": [
+    {"name": "ParticleTexture"},
+    {"name": "LaserTexture"},
+    {"name": "SpikeTexture"}],
+  "blend": {"func":"add", "srcrgb":"one", "dstrgb":"1-srcalpha", "srcalpha":"zero", "dstalpha":"one"},
+  "uniforms": [
+    {"name":"BladeView","type":"matrix4x4","count":16,"values":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]},
+    {"name":"BladeProjection","type":"matrix4x4","count":16,"values":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]}
+  ]
+}

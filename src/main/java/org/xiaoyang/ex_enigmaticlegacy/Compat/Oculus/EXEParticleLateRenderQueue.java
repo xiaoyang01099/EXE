@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.SpecialCoreShaders;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.EXECoreShaders;
 
 import java.util.*;
 
@@ -51,10 +51,10 @@ public final class EXEParticleLateRenderQueue {
             return;
         }
 
-        ShaderInstance blackShader = SpecialCoreShaders.getTrueDemonParticleShader();
-        ShaderInstance whiteShader = SpecialCoreShaders.getTrueDemonParticleWhiteShader();
-        ShaderInstance magentaShader = SpecialCoreShaders.getTrueDemonParticleMagentaShader();
-        ShaderInstance starShader = SpecialCoreShaders.getTrueDemonStarParticleShader();
+        ShaderInstance blackShader = EXECoreShaders.getTrueDemonParticleShader();
+        ShaderInstance whiteShader = EXECoreShaders.getTrueDemonParticleWhiteShader();
+        ShaderInstance magentaShader = EXECoreShaders.getTrueDemonParticleMagentaShader();
+        ShaderInstance starShader = EXECoreShaders.getTrueDemonStarParticleShader();
         if (Minecraft.getInstance().level == null || particleModelView == null || particleProjection == null
                 || blackShader == null || whiteShader == null || magentaShader == null || starShader == null) {
             clearQueuedGeometry();

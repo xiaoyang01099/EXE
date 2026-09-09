@@ -17,6 +17,7 @@ public final class EXERenderLifecycle {
         EXECosmicBlockLateRenderQueue.endFrame();
         EXEEffectLateRenderQueue.endFrame();
         EXEGapingVoidLateRenderQueue.endFrame();
+        EXETrueBoltLateRenderQueue.endFrame();
         EXEParticleLateRenderQueue.clearAll();
         TrueDemonWeaponParticleEmitter.clearCache();
         EXERenderFrameState.clear();

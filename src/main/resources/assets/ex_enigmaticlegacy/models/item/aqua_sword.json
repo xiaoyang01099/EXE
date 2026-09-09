@@ -1,4 +1,8 @@
 {
+  "type": {
+    "coffin": "second",
+    "blade": "cosmic"
+  },
   "parent": "item/handheld",
   "textures": {
     "layer0": "ex_enigmaticlegacy:item/weapons/aqua_sword"

@@ -1,6 +1,7 @@
 package org.xiaoyang.ex_enigmaticlegacy.Network;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -9,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -19,11 +21,19 @@ import org.xiaoyang.ex_enigmaticlegacy.Network.inputMessage.*;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.*;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.DimensionalSlashC2SPacket;
 import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.DimensionalSlashS2CPacket;
+import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.TrueBoltSpawnPacket;
+import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.CoffinPacket;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.summonportal.SummonPortalEffects;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.vine.VineEffects;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.yuhua.YuhuaNetwork;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class NetworkHandler {
-    private static final String PROTOCOL_VERSION = "1";
+    private static final String PROTOCOL_VERSION = "8-stellar-slash-forms";
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(Exe.MODID, "main"),
             () -> PROTOCOL_VERSION,
@@ -38,6 +48,12 @@ public class NetworkHandler {
             ProjecteFactory.NetworkRegister(CHANNEL, packetId);
         }
         packetId += 7;
+
+        CHANNEL.messageBuilder(CoffinPacket.State.class, packetId++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(CoffinPacket.State::encode)
+                .decoder(CoffinPacket.State::decode)
+                .consumerMainThread((packet, ctx) -> CoffinPacket.clientReceiver.accept(packet))
+                .add();
 
         CHANNEL.messageBuilder(SwordAuraCastC2SPacket.class, packetId++, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(SwordAuraCastC2SPacket::encode)
@@ -158,6 +174,22 @@ public class NetworkHandler {
                 .decoder(WhitelistSyncS2CPacket::new)
                 .consumerMainThread(WhitelistSyncS2CPacket::handle)
                 .add();
+
+        CHANNEL.registerMessage(
+                packetId++,
+                TrueBoltSpawnPacket.class,
+                TrueBoltSpawnPacket::encode,
+                TrueBoltSpawnPacket::new,
+                TrueBoltSpawnPacket::handle
+        );
+
+        CHANNEL.registerMessage(
+                packetId++,
+                TrueBoltSpawnPacket.class,
+                TrueBoltSpawnPacket::encode,
+                TrueBoltSpawnPacket::new,
+                TrueBoltSpawnPacket::handle
+        );
 
         CHANNEL.registerMessage(
                 packetId++,
@@ -636,6 +668,17 @@ public class NetworkHandler {
                 StepHeightMessage::decode,
                 StepHeightMessage::handle
         );
+        packetId = YuhuaNetwork.register(CHANNEL, packetId);
+        packetId = SummonPortalEffects.register(CHANNEL, packetId);
+        packetId = org.xiaoyang.ex_enigmaticlegacy.api.shader.ItemEffectTypes.register(CHANNEL,packetId);
+        packetId = VineEffects.register(CHANNEL, packetId);
+        packetId = org.xiaoyang.ex_enigmaticlegacy.api.shader.frost.FrostEffects.register(CHANNEL, packetId);
+        packetId = org.xiaoyang.ex_enigmaticlegacy.api.shader.stellarslash.StellarSlashEffects.register(CHANNEL, packetId);
+    }
+
+    public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
+        CHANNEL.registerMessage(packetId, messageType, encoder, decoder, messageConsumer);
+        packetId++;
     }
 
     public static void sendToServer(Object packet) {

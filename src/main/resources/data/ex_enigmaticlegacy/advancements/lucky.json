@@ -15,6 +15,7 @@
     "announce_to_chat": true,
     "hidden": false
   },
+
   "criteria": {
     "lucky": {
       "trigger": "minecraft:inventory_changed",

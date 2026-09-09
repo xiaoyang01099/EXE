@@ -5,7 +5,7 @@ import org.xiaoyang.ex_enigmaticlegacy.api.shader.core.render.finalRender.PostRe
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.core.render.finalRender.bloomQueue.ExcaliburSpiralQueue;
 
 public class ExcaliburSpiralPostQueue implements PostRenderTaskQueue<ExcaliburSpiralTask> {
-    public final ExcaliburSpiralQueue queue; // 咖喱棒螺旋队列。
+    public final ExcaliburSpiralQueue queue;
 
     public ExcaliburSpiralPostQueue(ExcaliburSpiralQueue queue) {
         this.queue = queue;

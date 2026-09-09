@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Model.Vector3;
+import org.xiaoyang.ex_enigmaticlegacy.Client.help.Vector3;
 import org.xiaoyang.ex_enigmaticlegacy.Event.RelicsEventHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModDamageSources;
 import org.xiaoyang.ex_enigmaticlegacy.Network.NetworkHandler;
