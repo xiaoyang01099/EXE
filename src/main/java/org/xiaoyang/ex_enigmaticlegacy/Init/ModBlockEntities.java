@@ -22,6 +22,10 @@ import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.hybrid.TileEntityRu
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.BlockItemManaBox;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import org.xiaoyang.ex_enigmaticlegacy.Tile.*;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.res.TileCursedManaPool;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.res.TileCursedManaSpreader;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.res.TileCursedGourmaryllis;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.res.TileManaConverter;
 
 
 public class ModBlockEntities {
@@ -61,6 +65,10 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<ArdentAzarcissusTile>> ARDENT_AZARCISSUS_TILE = BLOCK_ENTITIES.register("ardent_azarcissus_tile", () -> BlockEntityType.Builder.of((pos, state) -> new ArdentAzarcissusTile(ModBlockEntities.ARDENT_AZARCISSUS_TILE.get(), pos, state), ModBlocks.ARDENT_AZARCISSUS.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileEntityAquaticAnglerNarcissus>> AQUATIC_ANGLER_NARCISSUS_TILE = BLOCK_ENTITIES.register("aquatic_angler_narcissus_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityAquaticAnglerNarcissus(ModBlockEntities.AQUATIC_ANGLER_NARCISSUS_TILE.get(), pos, state), ModBlocks.AQUATIC_ANGLER_NARCISSUS.get()).build(null));
     public static final RegistryObject<BlockEntityType<NightshadeTile>> NIGHTSHADE_TILE = register("nightshade_tile", ModBlocks.NIGHTSHADE, NightshadeTile::new);
+    public static final RegistryObject<BlockEntityType<TileCursedManaPool>> CURSED_MANA_POOL = BLOCK_ENTITIES.register("cursed_mana_pool", () -> BlockEntityType.Builder.of(TileCursedManaPool::new, ModBlocks.CURSED_MANA_POOL.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileCursedManaSpreader>> CURSED_SPREADER = BLOCK_ENTITIES.register("cursed_spreader", () -> BlockEntityType.Builder.of(TileCursedManaSpreader::new, ModBlocks.CURSED_SPREADER.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileManaConverter>> MANA_CONVERTER = BLOCK_ENTITIES.register("mana_converter", () -> BlockEntityType.Builder.of(TileManaConverter::new, ModBlocks.MANA_CONVERTER.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileCursedGourmaryllis>> CURSED_GOURMARYLLIS_TILE = BLOCK_ENTITIES.register("cursed_gourmaryllis", () -> BlockEntityType.Builder.of(TileCursedGourmaryllis::new, ModBlocks.CURSED_FLOWER.get()).build(null));
 
 
 
@@ -75,7 +83,7 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<AstralBlockEntity>> ASTRAL_BLOCK_ENTITY = BLOCK_ENTITIES.register("astral_block", () -> BlockEntityType.Builder.of((pos, state) -> new AstralBlockEntity(ModBlockEntities.ASTRAL_BLOCK_ENTITY.get(), pos, state), ModBlocks.ASTRAL_BLOCK.get()).build(null));
 //    public static final RegistryObject<BlockEntityType<CosmicBlockEntity>> COSMIC_BLOCK_ENTITY = BLOCK_ENTITIES.register("cosmic_block", () -> BlockEntityType.Builder.of((pos, state) -> new CosmicBlockEntity(ModBlockEntities.COSMIC_BLOCK_ENTITY.get(), pos, state), ModBlockss.COSMIC_BLOCK.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileEntityExtremeAutoCrafter>> EXTREME_AUTO_CRAFTER_TILE = BLOCK_ENTITIES.register("extreme_auto_crafter_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityExtremeAutoCrafter(ModBlockEntities.EXTREME_AUTO_CRAFTER_TILE.get(), pos, state), ModBlocks.EXTREME_AUTO_CRAFTER.get()).build(null));
-//    public static final RegistryObject<BlockEntityType<TileEntityInfinityCompressor>> INFINITY_COMPRESSOR_TILE = BLOCK_ENTITIES.register("infinity_compressor_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityInfinityCompressor(ModBlockEntities.INFINITY_COMPRESSOR_TILE.get(), pos, state), ModBlockss.INFINITY_COMPRESSOR.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileEntityInfinityCompressor>> INFINITY_COMPRESSOR_TILE = BLOCK_ENTITIES.register("infinity_compressor_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileEntityInfinityCompressor(ModBlockEntities.INFINITY_COMPRESSOR_TILE.get(), pos, state), ModBlocks.INFINITY_COMPRESSOR.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileManaBox>> MANA_BOX_TILE = BLOCK_ENTITIES.register("mana_box_tile", () -> BlockEntityType.Builder.of((pos, state) -> new TileManaBox(ModBlockEntities.MANA_BOX_TILE.get(), pos, state), ModBlocks.MANA_BOX.get()).build(null));
     public static final RegistryObject<BlockEntityType<NeutroniumDecompressorTile>> NEUTRONIUM_DECOMPRESSOR_TILE = BLOCK_ENTITIES.register("neutronium_decompressor_tile", () -> BlockEntityType.Builder.of((pos, state) -> new NeutroniumDecompressorTile(ModBlockEntities.NEUTRONIUM_DECOMPRESSOR_TILE.get(), pos, state), ModBlocks.NEUTRONIUM_DECOMPRESSOR.get()).build(null));
 //    public static final RegistryObject<BlockEntityType<StarrySkyBlockEntity>> STARRY_SKY_BLOCK_ENTITY = BLOCK_ENTITIES.register("starry_block", () -> BlockEntityType.Builder.of((pos, state) -> new StarrySkyBlockEntity(ModBlockEntities.STARRY_SKY_BLOCK_ENTITY.get(), pos, state), ModBlockss.STARRY_SKY_BLOCK.get()).build(null));

@@ -22,14 +22,17 @@
     "LivingEntityAccess",
     "ManaEnchanterBlockEntityRendererMixin",
     "ManaPoolBlockEntityRendererMixin",
+    "TilePoolMixin",
     "MixinBiomePrecipitation",
     "PylonBlockEntityRendererMixin",
     "SparklingWebMixin",
     "TerrestrialAgglomerationPlateBlockEntityRendererMixin"
   ],
   "client": [
+    "BlendModeAccessor",
     "FrostClientLevelMixin",
     "FrostEntityRenderMixin",
+    "FrostSoundChannelMixin",
     "YuhuaEntityRenderMixin",
     "CoffinClientLevelMixin",
     "EntityRenderDispatcherMixin",

@@ -38,6 +38,10 @@ java {
 }
 
 sourceSets {
+    spreaderVerification {
+        compileClasspath = sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath = output + sourceSets.main.runtimeClasspath
+    }
     stellarVerification {
         compileClasspath = sourceSets.main.output + sourceSets.main.compileClasspath
         runtimeClasspath = output + sourceSets.main.runtimeClasspath
@@ -78,6 +82,27 @@ minecraft {
         }
 
         client {
+            if (project.hasProperty('lightningSmoke')) {
+                workingDirectory project.file('build/lightning-smoke')
+                property 'exe.lightningSmoke', 'true'
+                property 'forge.logging.console.level', 'info'
+                args '--width', '1280', '--height', '720', '--username', 'LightningTest'
+                mods { "${mod_id}" { source sourceSets.stellarVerification } }
+            }
+            if (project.hasProperty('blackScreenSmoke')) {
+                workingDirectory project.file('build/black-screen-smoke')
+                property 'exe.blackScreenSmoke', 'true'
+                property 'forge.logging.console.level', 'info'
+                args '--width', '1280', '--height', '720', '--username', 'BlackScreenTest'
+                mods { "${mod_id}" { source sourceSets.stellarVerification } }
+            }
+            if (project.hasProperty('waterSmoke')) {
+                workingDirectory project.file('build/water-smoke')
+                property 'exe.waterSmoke', 'true'
+                property 'forge.logging.console.level', 'info'
+                args '--width', '1280', '--height', '720', '--username', 'WaterTest'
+                mods { "${mod_id}" { source sourceSets.stellarVerification } }
+            }
             if (project.hasProperty('stellarSmoke')) {
                 workingDirectory project.file('build/stellar-smoke')
                 property 'exe.stellarSmoke', 'true'
@@ -90,6 +115,13 @@ minecraft {
                 property 'exe.frostSmoke', 'true'
                 property 'forge.logging.console.level', 'info'
                 args '--width', '1280', '--height', '720', '--username', 'FrostTest'
+                mods { "${mod_id}" { source sourceSets.frostVerification } }
+            }
+            if (project.hasProperty('frostAudioSmoke')) {
+                workingDirectory project.file('build/frost-audio-smoke')
+                property 'exe.frostAudioSmoke', 'true'
+                property 'forge.logging.console.level', 'info'
+                args '--width', '960', '--height', '540', '--username', 'FrostAudioTest'
                 mods { "${mod_id}" { source sourceSets.frostVerification } }
             }
             property 'forge.enabledGameTestNamespaces', mod_id
@@ -117,6 +149,11 @@ minecraft {
 
         gameTestServer {
             property 'forge.enabledGameTestNamespaces', mod_id
+            if (project.hasProperty('spreaderTest')) {
+                workingDirectory project.file('build/spreader-server-test')
+                property 'forge.logging.console.level', 'info'
+                mods { "${mod_id}" { source sourceSets.spreaderVerification } }
+            }
             if (project.hasProperty('yuhuaTest')) {
                 workingDirectory project.file('build/yuhua-server-test')
                 property 'exe.yuhuaTest', 'true'
@@ -205,7 +242,7 @@ dependencies {
     implementation fg.deobf("curse.maven:photon-871522:7501597")
     implementation fg.deobf("curse.maven:ldlib-626676:8430516")
 
-    if (project.hasProperty('yuhuaTest')) {
+    if (project.hasProperty('yuhuaTest') || project.hasProperty('spreaderTest')) {
         compileOnly fg.deobf("curse.maven:embeddium-908741:5681725")
         compileOnly fg.deobf("curse.maven:oculus-581495:6020952")
     } else {
@@ -255,14 +292,19 @@ if (project.hasProperty('yuhuaSmoke') || project.hasProperty('yuhuaTest')) {
     }
 }
 
+if (project.hasProperty('spreaderTest')) {
+    tasks.matching { it.name == 'runGameTestServer' }.configureEach { dependsOn 'spreaderVerificationClasses' }
+}
+
 if (project.hasProperty('vineSmoke')) {
     tasks.matching { it.name == 'runClient' }.configureEach { dependsOn 'vineVerificationClasses' }
 }
 
-if (project.hasProperty('frostSmoke')) {
+if (project.hasProperty('frostSmoke') || project.hasProperty('frostAudioSmoke')) {
     tasks.matching { it.name == 'runClient' }.configureEach { dependsOn 'frostVerificationClasses' }
 }
 
-if (project.hasProperty('stellarSmoke')) {
+if (project.hasProperty('stellarSmoke') || project.hasProperty('waterSmoke') || project.hasProperty('blackScreenSmoke') || project.hasProperty('lightningSmoke')) {
     tasks.matching { it.name == 'runClient' }.configureEach { dependsOn 'stellarVerificationClasses' }
 }
+

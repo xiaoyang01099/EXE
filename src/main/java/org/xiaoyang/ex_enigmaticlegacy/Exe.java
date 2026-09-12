@@ -24,6 +24,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.coffin.CoffinSecondRenderer;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.coffin.CoffinVisuals;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.core.render.system.Loader;
 import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigFile;
 import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigHandler;
@@ -47,6 +49,8 @@ import org.xiaoyang.ex_enigmaticlegacy.Network.NetworkHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Util.AnimatedChestTexture;
 import org.xiaoyang.ex_enigmaticlegacy.api.emc.NoEMCCommandInterceptor;
 import org.xiaoyang.ex_enigmaticlegacy.api.emc.NoEMCEventHandler;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.summonportal.SummonPortalRenderer;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.CorruptionHudRenderer;
 
 import java.util.AbstractMap;
 import java.util.Collection;
@@ -61,7 +65,7 @@ public class Exe {
     public static boolean isEx = false;
     private static final Collection<AbstractMap.SimpleEntry<Runnable, Integer>> workQueue = new ConcurrentLinkedQueue<>();
     public static PostProcessing POST;
-    public static ExecutorService AkatPool = Executors.newCachedThreadPool();
+    public static ExecutorService Pool = Executors.newCachedThreadPool();
 
     public static void queueServerWork(int tick, Runnable action) {
         workQueue.add(new AbstractMap.SimpleEntry<>(action, tick));
@@ -96,8 +100,9 @@ public class Exe {
         ModIntegrationFlowers.BLOCK_ITEM_REGISTRY.register(modEventBus);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            MinecraftForge.EVENT_BUS.register(new EffectManager());
             FXHandler.registerEffects();
+            MinecraftForge.EVENT_BUS.register(new EffectManager());
+            MinecraftForge.EVENT_BUS.register(new CorruptionHudRenderer());
         });
 
         MinecraftForge.EVENT_BUS.register(new RelicsEventHandler());
@@ -116,8 +121,8 @@ public class Exe {
         }
     }
 
-    public static void submitAkatTask(Runnable runnable) {
-        AkatPool.submit(runnable);
+    public static void submitTask(Runnable runnable) {
+        Pool.submit(runnable);
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -173,9 +178,9 @@ public class Exe {
         public static void onRegisterReloadListeners(RegisterClientReloadListenersEvent event) {
             EXETextureAtlas.init();
             event.registerReloadListener(new AtlasReloadListener());
-            org.xiaoyang.ex_enigmaticlegacy.api.shader.coffin.CoffinVisuals.Registration.reload(event);
-            org.xiaoyang.ex_enigmaticlegacy.api.shader.coffin.CoffinSecondRenderer.Registration.reload(event);
-            org.xiaoyang.ex_enigmaticlegacy.api.shader.summonportal.SummonPortalRenderer.Registration.reload(event);
+            CoffinVisuals.Registration.reload(event);
+            CoffinSecondRenderer.Registration.reload(event);
+            SummonPortalRenderer.Registration.reload(event);
         }
     }
 }

@@ -15,6 +15,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModBlocks;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.CurseAbilityHandler;
 import vazkii.botania.api.block_entity.SpecialFlowerBlockEntity;
 import vazkii.botania.forge.block.ForgeSpecialFlowerBlock;
 
@@ -43,6 +44,15 @@ public class CurseThistle extends ForgeSpecialFlowerBlock {
     @Override
     public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
         BlockState soil = worldIn.getBlockState(pos.below());
-        return soil.is(Blocks.DIRT) || soil.is(Blocks.GRASS_BLOCK) || soil.is(ModBlocks.BLOCKNATURE.get());
+        if (!(soil.is(Blocks.DIRT) || soil.is(Blocks.GRASS_BLOCK) || soil.is(ModBlocks.BLOCKNATURE.get()))) {
+            return false;
+        }
+        // 诅咒蓟必须处于七咒之戒持有者的影响范围内才能存活。
+        if (!(worldIn instanceof Level level)) {
+            return false;
+        }
+        return level.getEntitiesOfClass(Player.class,
+                        new net.minecraft.world.phys.AABB(pos).inflate(8.0D))
+                .stream().anyMatch(CurseAbilityHandler.INSTANCE::hasFullCurses);
     }
 }

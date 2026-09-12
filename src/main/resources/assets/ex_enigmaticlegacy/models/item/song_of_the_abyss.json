@@ -1,7 +1,8 @@
 {
   "type": {
     "coffin": "default",
-    "blade": "default"
+    "blade": "default",
+    "stellarslash": "stellar"
   },
   "parent": "item/handheld",
   "textures": {

@@ -79,6 +79,10 @@ public class ModSounds {
 			SOUND_EVENTS.register("song_of_the_abyss",
 					() -> SoundEvent.createVariableRangeEvent(new ResourceLocation("ex_enigmaticlegacy", "song_of_the_abyss")));
 
+	public static final RegistryObject<SoundEvent> FROST_FREEZE =
+			SOUND_EVENTS.register("frost_freeze",
+					() -> SoundEvent.createVariableRangeEvent(new ResourceLocation("ex_enigmaticlegacy", "frost_freeze")));
+
 	public static final RegistryObject<SoundEvent> DIMENSIONAL_SLASH_CUT
 			= SOUND_EVENTS.register("dimensional_slash_cut",
 					() -> SoundEvent.createVariableRangeEvent(Exe.path("dimensional_slash_cut")));

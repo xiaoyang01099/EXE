@@ -1,7 +1,8 @@
 {
   "type": {
     "coffin": "second",
-    "blade": "cosmic"
+    "blade": "cosmic",
+    "stellarslash": "water"
   },
   "parent": "item/handheld",
   "textures": {

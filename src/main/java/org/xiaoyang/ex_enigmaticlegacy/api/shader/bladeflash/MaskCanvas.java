@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.opengl.GL11;
+import org.xiaoyang.ex_enigmaticlegacy.api.shader.ItemEffectTypes;
 
 public final class MaskCanvas {
     public enum Channel { SOLID, ALPHA, RED }
@@ -110,7 +111,7 @@ public final class MaskCanvas {
         shader.safeGetUniform("MaskMode").set((float) channel.ordinal());
         shader.safeGetUniform("TrailCoordinates").set(trailCoordinates ? 1.0F : 0.0F);
         shader.safeGetUniform("ScreenSpace").set(screenSpace ? 1.0F : 0.0F);
-        shader.safeGetUniform("EffectStyle").set(style==org.xiaoyang.ex_enigmaticlegacy.api.shader.ItemEffectTypes.Blade.COSMIC?1f:0f);
+        shader.safeGetUniform("EffectStyle").set(style== ItemEffectTypes.Blade.COSMIC?1f:0f);
         if (screenSpace) {
             RenderSystem.disableDepthTest();
             RenderSystem.depthMask(false);

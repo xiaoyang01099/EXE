@@ -23,6 +23,10 @@ import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.generating.*;
 import org.xiaoyang.ex_enigmaticlegacy.Block.*;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.hybrid.AquaticAnglerNarcissus;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Flower.hybrid.RuneFlower;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.res.BlockCursedManaPool;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.res.BlockCursedManaSpreader;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.res.BlockManaConverter;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.res.BlockCursedFlower;
 
 import static org.xiaoyang.ex_enigmaticlegacy.Exe.MODID;
 import static vazkii.botania.common.block.BotaniaBlocks.livingrock;
@@ -51,10 +55,13 @@ public class ModBlocks {
     public static final RegistryObject<Block> DILUTED_CONTAINER = BLOCKS.register("diluted_container", () -> new ManaContainerBlock(ManaContainerBlock.Variant.DILUTED, BlockBehaviour.Properties.copy(livingrock)));
     public static final RegistryObject<Block> ASTRAL_BLOCK = BLOCKS.register("astral_block", () -> new AstralBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
     public static final RegistryObject<Block> MANA_BRACKET = BLOCKS.register("mana_bracket", () -> new ManaBracket(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(1.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
+    public static final RegistryObject<Block> CURSED_MANA_POOL = BLOCKS.register("cursed_mana_pool", () -> new BlockCursedManaPool(BlockCursedManaPool.Variant.DEFAULT, BlockBehaviour.Properties.copy(livingrock).noOcclusion()));
+    public static final RegistryObject<Block> CURSED_SPREADER = BLOCKS.register("cursed_spreader", () -> new BlockCursedManaSpreader(BlockCursedManaSpreader.Variant.CURSED, BlockBehaviour.Properties.copy(Blocks.BIRCH_WOOD).noOcclusion()));
+    public static final RegistryObject<Block> MANA_CONVERTER = BLOCKS.register("mana_converter", () -> new BlockManaConverter(BlockBehaviour.Properties.copy(livingrock).noOcclusion()));
     public static final RegistryObject<Block> ENGINEER_HOPPER = BLOCKS.register("engineer_hopper", () -> new BlockEngineerHopper(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F, 8.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion()));
 //    public static final RegistryObject<Block> COSMIC_BLOCK = BLOCKS.register("cosmic_block", () -> new CosmicBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
     public static final RegistryObject<Block> EXTREME_AUTO_CRAFTER = BLOCKS.register("extreme_auto_crafter", () -> new BlockExtremeAutoCrafter(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(50F, 2000F).requiresCorrectToolForDrops().sound(SoundType.GLASS)));
-//    public static final RegistryObject<Block> INFINITY_COMPRESSOR = BLOCKS.register("infinity_compressor", () -> new BlockInfinityCompressor(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(50F, 2000F).requiresCorrectToolForDrops().lightLevel((state) -> 15)));
+    public static final RegistryObject<Block> INFINITY_COMPRESSOR = BLOCKS.register("infinity_compressor", () -> new BlockInfinityCompressor(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(50F, 2000F).requiresCorrectToolForDrops().lightLevel((state) -> 15)));
     public static final RegistryObject<Block> EXTREME_CRAFTING_DISASSEMBLY_TABLE = BLOCKS.register("extreme_crafting_disassembly_table", ExtremeCraftingDisassembly::new);
     public static final RegistryObject<Block> NEUTRONIUM_DECOMPRESSOR = BLOCKS.register("neutronium_decompressor", NeutroniumDecompressorBlock::new);
 //    public static final RegistryObject<Block> STARRY_SKY_BLOCK = BLOCKS.register("starry", () -> new StarrySkyBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0f, 2.0f).sound(SoundType.STONE).noOcclusion()));
@@ -114,6 +121,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> VACUITY = BLOCKS.register("vacuity", () -> new Vacuity(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.VACUITY_TILE::get));
     public static final RegistryObject<Block> YU_SHOU_CLOVER = BLOCKS.register("yu_shou_clover", () -> new YushouClover(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.YU_SHOU_CLOVER_TILE::get));
     public static final RegistryObject<Block> CURSET_THISTLE = BLOCKS.register("curse_thistle", () -> new CurseThistle(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.CURSET_THISTLE_TILE::get));
+    public static final RegistryObject<Block> CURSED_FLOWER = BLOCKS.register("cursed_flower", () -> new BlockCursedFlower(FLOWER_PROPS, ModBlockEntities.CURSED_GOURMARYLLIS_TILE::get));
     public static final RegistryObject<Block> RUNE_FLOWER = BLOCKS.register("rune_flower", () -> new RuneFlower(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.RUNE_FLOWER_TILE::get));
     public static final RegistryObject<Block> ENDER_LAVENDER = BLOCKS.register("ender_lavender", () -> new EnderLavender(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.ENDER_LAVENDER_TILE::get));
     public static final RegistryObject<Block> AUREA_AMICITIA_CARNATION = BLOCKS.register("aurea_amicitia_carnation", () -> new AureaAmicitiaCarnation(MobEffects.HEALTH_BOOST, 360, FLOWER_PROPS, ModBlockEntities.AUREA_AMICITIA_CARNATION_TILE::get));

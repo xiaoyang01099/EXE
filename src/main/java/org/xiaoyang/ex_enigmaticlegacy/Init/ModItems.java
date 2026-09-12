@@ -37,6 +37,7 @@ public class ModItems {
     //扩展花
     public static final RegistryObject<Item> PRISM_FLOWER = blockFlower(ModBlocks.PRISM_FLOWER);
     public static final RegistryObject<Item> CURSET_THISTLE = blockFlower(ModBlocks.CURSET_THISTLE);
+    public static final RegistryObject<Item> CURSED_FLOWER = blockFlower(ModBlocks.CURSED_FLOWER);
     public static final RegistryObject<Item> YU_SHOU_CLOVER = blockFlower(ModBlocks.YU_SHOU_CLOVER);
     public static final RegistryObject<Item> VACUITY = blockFlower(ModBlocks.VACUITY);
     public static final RegistryObject<Item> STREET_LIGHT = blockFlower(ModBlocks.STREET_LIGHT);
@@ -68,13 +69,16 @@ public class ModItems {
     public static final RegistryObject<Item> RUNE_FLOWER = blockHyFlower(ModBlocks.RUNE_FLOWER);
     public static final RegistryObject<Item> ASTRAL_KILLOP = blockFlower(ModBlocks.ASTRAL_KILLOP);
     public static final RegistryObject<Item> RAINBOW_GENERATING_FLOWER = blockFlower(ModBlocks.RAINBOW_GENERATING_FLOWER);
+    public static final RegistryObject<Item> CURSED_MANA_POOL = block(ModBlocks.CURSED_MANA_POOL);
+    public static final RegistryObject<Item> CURSED_SPREADER = block(ModBlocks.CURSED_SPREADER);
+    public static final RegistryObject<Item> MANA_CONVERTER = block(ModBlocks.MANA_CONVERTER);
 
 
     //方块物品
     public static final RegistryObject<Item> MANA_BOX_ITEM = ITEMS.register("mana_box", BlockItemManaBox::new);
     public static final RegistryObject<Item> BLOCKNATURE = blockFlower(ModBlocks.BLOCKNATURE);
     public static final RegistryObject<Item> PRISMATICRADIANCEBLOCK = blockFlower(ModBlocks.PRISMATICRADIANCEBLOCK);
-    //public static final RegistryObject<Item> ADVANCED_SPREADER = block(ModBlocks.ADVANCED_SPREADER);
+    public static final RegistryObject<Item> ADVANCED_SPREADER = block(ModBlocks.ADVANCED_SPREADER);
     public static final RegistryObject<Item> MANA_CRYSTAL = block(ModBlocks.MANA_CRYSTAL);
     public static final RegistryObject<Item> MANA_CHARGER = block(ModBlocks.MANA_CHARGER);
     public static final RegistryObject<Item> CELESTIAL_HOLINESS_TRANSMUTER = block(ModBlocks.CELESTIAL_HOLINESS_TRANSMUTER);
@@ -106,7 +110,7 @@ public class ModItems {
     public static final RegistryObject<Item> MANA_BRACKET = block(ModBlocks.MANA_BRACKET);
     public static final RegistryObject<Item> ENGINEER_HOPPER = block(ModBlocks.ENGINEER_HOPPER);
     public static final RegistryObject<Item> EXTREME_AUTO_CRAFTER = block(ModBlocks.EXTREME_AUTO_CRAFTER);
-//    public static final RegistryObject<Item> INFINITY_COMPRESSOR = block(ModBlocks.INFINITY_COMPRESSOR);
+    public static final RegistryObject<Item> INFINITY_COMPRESSOR = block(ModBlocks.INFINITY_COMPRESSOR);
     public static final RegistryObject<Item> EXTREME_CRAFTING_DISASSEMBLY_TABLE = block(ModBlocks.EXTREME_CRAFTING_DISASSEMBLY_TABLE);
     public static final RegistryObject<Item> NEUTRONIUM_DECOMPRESSOR = block(ModBlocks.NEUTRONIUM_DECOMPRESSOR);
     public static final RegistryObject<Item> LEBETHRON_WOOD = block(ModBlocks.LEBETHRON_WOOD);

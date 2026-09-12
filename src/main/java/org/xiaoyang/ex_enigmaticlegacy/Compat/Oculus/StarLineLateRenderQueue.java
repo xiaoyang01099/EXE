@@ -54,6 +54,10 @@ public final class StarLineLateRenderQueue {
             return;
         }
 
+        if (EXERenderFrameState.isShadowPass()) {
+            pending = null;
+            return;
+        }
         Entry e = pending;
         Matrix4f prevProj = new Matrix4f(RenderSystem.getProjectionMatrix());
         PoseStack mvStack = RenderSystem.getModelViewStack();

@@ -26,14 +26,16 @@ import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.CoffinPacket;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.summonportal.SummonPortalEffects;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.vine.VineEffects;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.yuhua.YuhuaNetwork;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.CorruptionSyncPacket;
 
 import java.util.Optional;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class NetworkHandler {
-    private static final String PROTOCOL_VERSION = "8-stellar-slash-forms";
+    private static final String PROTOCOL_VERSION = "10-lightning-slash";
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(Exe.MODID, "main"),
             () -> PROTOCOL_VERSION,
@@ -262,6 +264,15 @@ public class NetworkHandler {
                 RecipeTransferPacket::decode,
                 RecipeTransferPacket::handle
         );
+        CHANNEL.registerMessage(packetId++, InfinityCompressorControlPacket.class,
+                InfinityCompressorControlPacket::encode,
+                InfinityCompressorControlPacket::new,
+                InfinityCompressorControlPacket::handle);
+
+        CHANNEL.registerMessage(packetId++, InfinityCompressorRecipePacket.class,
+                InfinityCompressorRecipePacket::encode,
+                InfinityCompressorRecipePacket::new,
+                InfinityCompressorRecipePacket::handle);
 
         CHANNEL.registerMessage(
                 packetId++,
@@ -674,6 +685,9 @@ public class NetworkHandler {
         packetId = VineEffects.register(CHANNEL, packetId);
         packetId = org.xiaoyang.ex_enigmaticlegacy.api.shader.frost.FrostEffects.register(CHANNEL, packetId);
         packetId = org.xiaoyang.ex_enigmaticlegacy.api.shader.stellarslash.StellarSlashEffects.register(CHANNEL, packetId);
+        CHANNEL.registerMessage(packetId++, CorruptionSyncPacket.class,
+                CorruptionSyncPacket::encode, CorruptionSyncPacket::decode,
+                CorruptionSyncPacket::handle);
     }
 
     public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
@@ -757,14 +771,13 @@ public class NetworkHandler {
         CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
     }
 
-//    public static void broadcastCorruptionUpdate(ServerLevel level, BlockPos pos, int corruption) {
-//        CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(pos)), new CorruptionSyncPacket(pos, corruption))
-//        ;
-//    }
-//
-//    public static void sendAllCorruptionData(ServerPlayer player, Map<BlockPos, Integer> data) {
-//        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new CorruptionSyncPacket(data));
-//    }
+    public static void broadcastCorruptionUpdate(ServerLevel level, BlockPos pos, int corruption) {
+        CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(pos)), new CorruptionSyncPacket(pos, corruption));
+    }
+
+    public static void sendAllCorruptionData(ServerPlayer player, Map<BlockPos, Integer> data) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new CorruptionSyncPacket(data));
+    }
 
     public static void sendToNearby(ServerLevel level, BlockPos pos, double radius, Object msg) {
         for (ServerPlayer player : level.players()) {

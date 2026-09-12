@@ -67,6 +67,7 @@ public abstract class EXEOculusAfterLevelMixin {
         VineRenderer.render(partialTick);
         org.xiaoyang.ex_enigmaticlegacy.api.shader.frost.FrostRenderer.render(partialTick);
         org.xiaoyang.ex_enigmaticlegacy.api.shader.stellarslash.StellarSlashRenderer.render(partialTick);
+        org.xiaoyang.ex_enigmaticlegacy.api.shader.bladeflash.BladeEvents.renderAfterWorld();
     }
 
     @Inject(method = "renderLevel", at = @At("TAIL"))

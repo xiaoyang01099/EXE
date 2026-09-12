@@ -129,7 +129,7 @@
     "dimensional_slash_cut": {
       "sounds": [
         {
-          "name": "ex_enigmaticlegacy:slash_cut",
+          "name": "ex_enigmaticlegacy:dimensional_slash_cut",
           "stream": false,
           "preload": true,
           "attenuation_distance": 32
@@ -139,7 +139,7 @@
     "dimensional_slash_break_prepare": {
       "sounds": [
         {
-          "name": "ex_enigmaticlegacy:slash_break_prepare",
+          "name": "ex_enigmaticlegacy:dimensional_slash_break_prepare",
           "stream": false,
           "preload": true,
           "attenuation_distance": 32
@@ -149,7 +149,7 @@
     "dimensional_slash_pressure_build": {
       "sounds": [
         {
-          "name": "ex_enigmaticlegacy:slash_pressure_build",
+          "name": "ex_enigmaticlegacy:dimensional_slash_pressure_build",
           "stream": false,
           "preload": true,
           "attenuation_distance": 32
@@ -159,12 +159,24 @@
     "dimensional_slash_space_fracture": {
       "sounds": [
         {
-          "name": "ex_enigmaticlegacy:slash_space_fracture",
+          "name": "ex_enigmaticlegacy:dimensional_slash_space_fracture",
           "stream": false,
           "preload": true,
           "attenuation_distance": 32
         }
       ]
     }
+  },
+  "frost_freeze": {
+    "sounds": [
+      {
+        "name": "ex_enigmaticlegacy:frost_freeze",
+        "volume": 0.9,
+        "pitch": 1.0,
+        "preload": true,
+        "stream": false,
+        "attenuation_distance": 16
+      }
+    ]
   }
 }

@@ -28,6 +28,7 @@ public class ModScreens {
             MenuScreens.register(ModMenus.EXTREME_AUTO_CRAFTER_MENU.get(), GuiExtremeAutoCrafter::new);
             MenuScreens.register(ModMenus.EXTREME_CRAFTING_DISASSEMBLY_MENU.get(), ExtremeDisassemblyScreen::new);
             MenuScreens.register(ModMenus.NEUTRONIUM_DECOMPRESSOR_MENU.get(), NeutroniumDecompressorScreen::new);
+            MenuScreens.register(ModMenus.INFINITY_COMPRESSOR_MENU.get(), GuiInfinityCompressor::new);
 
 
             if (ModList.get().isLoaded("projecte")) {

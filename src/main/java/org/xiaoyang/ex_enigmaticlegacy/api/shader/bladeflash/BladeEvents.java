@@ -16,6 +16,7 @@ import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModTags;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.coffin.CoffinVisuals;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.EXERenderFrameState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +43,7 @@ public final class BladeEvents {
     private record Swing(int tick, boolean active) {}
     private static final Map<UUID, Swing> SWINGS = new HashMap<>();
     private static ClientLevel lastLevel;
+    private static RenderLevelStageEvent pendingWorld;
 
     @Mod.EventBusSubscriber(modid = Exe.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static final class Registration {
@@ -60,6 +62,7 @@ public final class BladeEvents {
             BladeFlashClient.clear();
             DemoSlashes.clear();
             SWINGS.clear();
+            pendingWorld = null;
             BladeFlashRenderer.INSTANCE.release();
             lastLevel = mc.level;
         }
@@ -87,7 +90,9 @@ public final class BladeEvents {
 
     @SubscribeEvent
     public static void render(RenderLevelStageEvent event) {
+        if (EXERenderFrameState.isShadowPass()) return;
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SKY) {
+            pendingWorld = null;
             HeldItemTrails.beginFrame(event);
             return;
         }
@@ -98,6 +103,14 @@ public final class BladeEvents {
         }
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
         if (Minecraft.getInstance().level == null) return;
+        pendingWorld = event;
+        if (!EXERenderFrameState.shouldDeferWorldEffect()) renderAfterWorld();
+    }
+
+    public static void renderAfterWorld() {
+        RenderLevelStageEvent event = pendingWorld;
+        pendingWorld = null;
+        if (event == null || Minecraft.getInstance().level == null) return;
         DemoSlashes.update();
         CoffinVisuals.render(event);
         BladeFlashRenderer.INSTANCE.render(event);

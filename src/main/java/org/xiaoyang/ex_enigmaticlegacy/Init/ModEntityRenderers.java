@@ -69,5 +69,6 @@ public class ModEntityRenderers {
 		event.registerEntityRenderer(ModEntities.HEAVENLY_THUNDER.get(), HeavenlyThunderRenderer::new);
 		event.registerEntityRenderer(ModEntities.EXCALIBUR_CHARGE.get(), ExcaliburChargeRenderer::new);
 		event.registerEntityRenderer(ModEntities.EXCALIBUR_SWORD_WAVE.get(), ExcaliburSwordWaveRenderer::new);
+		event.registerEntityRenderer(ModEntities.CURSED_MANA_BURST.get(), EntityNullRender::new);
 	}
 }

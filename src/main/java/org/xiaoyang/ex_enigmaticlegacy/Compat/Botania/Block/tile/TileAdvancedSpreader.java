@@ -8,20 +8,22 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -31,6 +33,8 @@ import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.BlockAdvancedSpreade
 import org.xiaoyang.ex_enigmaticlegacy.Config.ConfigHandler;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModBlockEntities;
 import vazkii.botania.api.BotaniaAPIClient;
+import vazkii.botania.api.BotaniaAPI;
+import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.BotaniaForgeClientCapabilities;
 import vazkii.botania.api.block.WandBindable;
 import vazkii.botania.api.block.WandHUD;
@@ -43,15 +47,17 @@ import vazkii.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 import vazkii.botania.common.block.block_entity.mana.ThrottledPacket;
 import vazkii.botania.common.entity.ManaBurstEntity;
 import vazkii.botania.common.handler.BotaniaSounds;
-import vazkii.botania.common.helper.MathHelper;
+import vazkii.botania.common.handler.ManaNetworkHandler;
+import vazkii.botania.common.item.LexicaBotaniaItem;
 import vazkii.botania.xplat.BotaniaConfig;
+import vazkii.botania.xplat.XplatAbstractions;
 
+import java.util.List;
 import java.util.UUID;
 
 public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements ManaSpreader, WandBindable, KeyLocked, ThrottledPacket, Wandable {
     private static final int TICKS_ALLOWED_WITHOUT_PINGBACK = 20;
     private static final double PINGBACK_EXPIRED_SEARCH_DISTANCE = 0.5;
-
     private static final String TAG_MANA = "mana";
     private static final String TAG_ROTATION_X = "rotationX";
     private static final String TAG_ROTATION_Y = "rotationY";
@@ -63,29 +69,33 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
     private static final String TAG_LAST_PINGBACK_X = "lastPingbackX";
     private static final String TAG_LAST_PINGBACK_Y = "lastPingbackY";
     private static final String TAG_LAST_PINGBACK_Z = "lastPingbackZ";
-
     private int mana = 0;
     public float rotationX = 0F;
     public float rotationY = 0F;
     private boolean canShoot = true;
     public int burstParticleTick = 0;
     public int lastBurstDeathTick = -1;
-
-    @Nullable
-    public DyeColor paddingColor = null;
-
+    @Nullable public DyeColor paddingColor = null;
     private ManaReceiver receiver = null;
     private ManaReceiver receiverLastTick = null;
     private UUID identity = UUID.randomUUID();
-
     public int pingbackTicks = 0;
     public double lastPingbackX = 0;
     public double lastPingbackY = Integer.MIN_VALUE;
     public double lastPingbackZ = 0;
-
     private boolean requestsClientUpdate = false;
-
     private IItemHandlerModifiable itemHandlerWrapper;
+    private LazyOptional<TileAdvancedSpreader> selfCapability = LazyOptional.of(() -> this);
+    private LazyOptional<IItemHandlerModifiable> inventoryCapability = LazyOptional.of(this::getItemHandlerModifiable);
+    private LazyOptional<WandHUD> hudCapability = LazyOptional.of(() -> new WandHud(this));
+    private List<ManaBurstEntity.PositionProperties> lastTentativeBurst;
+    private ItemStack simulatedLens = ItemStack.EMPTY;
+    private float simulatedRotationX, simulatedRotationY;
+    private int simulatedBurstMana;
+    private boolean invalidTentativeBurst;
+    @Nullable private BlockPos clientBinding;
+    private String inputKey = "";
+    private String outputKey = "";
 
     public TileAdvancedSpreader(BlockPos pos, BlockState state) {
         super(ModBlockEntities.ADVANCED_SPREADER.get(), pos, state);
@@ -97,15 +107,27 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
             return false;
         }
 
-        if (!player.isShiftKeyDown()) {
-            if (level != null && !level.isClientSide) {
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        if (level == null) return false;
+        if (!level.isClientSide) {
+            if (player.isShiftKeyDown()) {
+                var hit = LexicaBotaniaItem.doRayTrace(level, player, ClipContext.Fluid.NONE);
+                Vec3 offset = hit.getLocation().subtract(Vec3.atCenterOf(worldPosition));
+                if (side.getAxis() != Direction.Axis.Y && offset.horizontalDistanceSqr() > 1.0E-8) {
+                    setRotationX((float) Math.toDegrees(Math.atan2(-offset.z, offset.x)));
+                }
+                setRotationY((float) -offset.y * 180F);
             }
+            commitRedirection();
         }
         return true;
     }
 
     public static void commonTick(Level level, BlockPos pos, BlockState state, TileAdvancedSpreader spreader) {
+        if (spreader.isRemoved()) return;
+        if (!ManaNetworkHandler.instance.isCollectorIn(level, spreader)) {
+            BotaniaAPI.instance().getManaNetworkInstance().fireManaNetworkEvent(
+                    spreader, ManaBlockType.COLLECTOR, ManaNetworkAction.ADD);
+        }
         if (level.isClientSide) {
             clientTick(level, pos, state, spreader);
         } else {
@@ -127,6 +149,22 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
     }
 
     private static void serverTick(Level level, BlockPos pos, BlockState state, TileAdvancedSpreader spreader) {
+        if (spreader.needsNewBurstSimulation()) {
+            spreader.checkForReceiver();
+        }
+        for (Direction direction : Direction.values()) {
+            BlockPos adjacent = pos.relative(direction);
+            if (!level.hasChunkAt(adjacent)) continue;
+            ManaReceiver neighbor = XplatAbstractions.INSTANCE.findManaReceiver(level, adjacent, direction.getOpposite());
+            if (neighbor instanceof ManaPool pool && neighbor != spreader.receiver
+                    && (!(pool instanceof KeyLocked locked) || locked.getOutputKey().equals(spreader.getInputKey()))) {
+                int transfer = Math.min(pool.getCurrentMana(), spreader.getMaxMana() - spreader.mana);
+                if (transfer > 0) {
+                    pool.receiveMana(-transfer);
+                    spreader.receiveMana(transfer);
+                }
+            }
+        }
         if (!spreader.canShoot) {
             if (spreader.pingbackTicks <= 0) {
                 AABB aabb = new AABB(
@@ -154,22 +192,30 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
             }
         }
 
-        spreader.checkForReceiver();
-
-        if (spreader.canShoot && spreader.receiver != null) {
-            if (!spreader.receiver.isFull() && spreader.receiver.canReceiveManaFromBursts()) {
-                spreader.tryShootBurst();
-            }
+        boolean powered = level.hasNeighborSignal(pos);
+        boolean shouldShoot = !powered && !spreader.invalidTentativeBurst;
+        if (spreader.receiver instanceof KeyLocked locked) {
+            shouldShoot &= locked.getInputKey().equals(spreader.getOutputKey());
+        }
+        ItemStack lens = spreader.getItemHandler().getItem(0);
+        if (lens.getItem() instanceof ControlLensItem control && control.isControlLens(lens)) {
+            control.onControlledSpreaderTick(lens, spreader, powered);
+            shouldShoot &= control.allowBurstShooting(lens, spreader, powered);
+        }
+        if (shouldShoot && spreader.canShoot && spreader.receiver != null
+                && !spreader.receiver.isFull() && spreader.receiver.canReceiveManaFromBursts()) {
+            spreader.tryShootBurst();
         }
 
-        if (spreader.receiverLastTick != spreader.receiver) {
-            spreader.requestsClientUpdate = true;
+        if (spreader.requestsClientUpdate || spreader.receiverLastTick != spreader.receiver) {
+            spreader.requestsClientUpdate = false;
             VanillaPacketDispatcher.dispatchTEToNearbyPlayers(spreader);
         }
         spreader.receiverLastTick = spreader.receiver;
     }
 
     private void checkForReceiver() {
+        receiver = null;
         ManaBurstEntity fakeBurst = createBurst(true);
         if (fakeBurst != null) {
             fakeBurst.setScanBeam();
@@ -180,14 +226,33 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
             } else {
                 this.receiver = null;
             }
+            lastTentativeBurst = fakeBurst.propsList;
         }
+        simulatedLens = getItemHandler().getItem(0).copy();
+        simulatedRotationX = rotationX;
+        simulatedRotationY = rotationY;
+        simulatedBurstMana = ConfigHandler.ABSpreaderConfig.getSpreaderBurstMana();
+    }
+
+    private boolean needsNewBurstSimulation() {
+        invalidTentativeBurst = false;
+        if (lastTentativeBurst == null || simulatedRotationX != rotationX || simulatedRotationY != rotationY
+                || simulatedBurstMana != ConfigHandler.ABSpreaderConfig.getSpreaderBurstMana()
+                || !ItemStack.matches(simulatedLens, getItemHandler().getItem(0))) return true;
+        for (ManaBurstEntity.PositionProperties props : lastTentativeBurst) {
+            if (!props.contentsEqual(level)) {
+                invalidTentativeBurst = props.isInvalidIn(level);
+                return !invalidTentativeBurst;
+            }
+        }
+        return receiver != null && (!level.hasChunkAt(receiver.getManaReceiverPos())
+                || XplatAbstractions.INSTANCE.findManaReceiver(level, receiver.getManaReceiverPos(), null) != receiver);
     }
 
     private void tryShootBurst() {
         ManaBurstEntity burst = createBurst(false);
-        if (burst != null && level != null) {
-            mana -= ConfigHandler.ABSpreaderConfig.getSpreaderBurstMana();
-            level.addFreshEntity(burst);
+        if (burst != null && level != null && !level.isClientSide && level.addFreshEntity(burst)) {
+            receiveMana(-burst.getStartingMana());
             if (!BotaniaConfig.common().silentSpreaders()) {
                 this.level.playSound((Player)null, this.worldPosition, BotaniaSounds.spreaderFire, SoundSource.BLOCKS, 0.05F * (this.paddingColor != null ? 0.2F : 1.0F), 0.7F + 0.3F * (float)Math.random());
             }
@@ -199,21 +264,16 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
 
     @Nullable
     private ManaBurstEntity createBurst(boolean fake) {
-        int maxMana = ConfigHandler.ABSpreaderConfig.getSpreaderBurstMana();
-
-        if (mana < maxMana && !fake) {
-            return null;
-        }
-
-        ManaBurstEntity burst = new ManaBurstEntity(level, worldPosition, rotationX, rotationY, fake);
-
+        if (level == null) return null;
+        int maxMana = Math.min(getMaxMana(), Math.max(1, ConfigHandler.ABSpreaderConfig.getSpreaderBurstMana()));
+        var variant = getAdvancedVariant();
         BurstProperties props = new BurstProperties(
                 maxMana,
-                35,
-                maxMana / 4.5F,
+                variant.preLossTicks,
+                variant.lossPerTick,
                 0.0F,
-                2.5F,
-                0x9ACD32
+                variant.motionModifier,
+                variant.color
         );
 
         ItemStack lens = getItemHandlerModifiable().getStackInSlot(0);
@@ -221,7 +281,9 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
             lensEffect.apply(lens, props, level);
         }
 
-        burst.setSourceLens(lens);
+        if (props.maxMana <= 0 || (!fake && mana < props.maxMana)) return null;
+        ManaBurstEntity burst = new ManaBurstEntity(level, worldPosition, rotationX, rotationY, fake);
+        burst.setSourceLens(lens.copy());
         burst.setColor(props.color);
         burst.setMana(props.maxMana);
         burst.setStartingMana(props.maxMana);
@@ -238,7 +300,12 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
     }
 
     @Override
-    public void onClientDisplayTick() {}
+    public void onClientDisplayTick() {
+        if (level != null && level.isClientSide) {
+            ManaBurstEntity burst = createBurst(true);
+            if (burst != null) burst.getCollidedTile(false);
+        }
+    }
 
     @Override
     public float getManaYieldMultiplier(ManaBurst burst) {
@@ -247,7 +314,10 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
 
     @Override
     public void setCanShoot(boolean canShoot) {
-        this.canShoot = canShoot;
+        if (this.canShoot != canShoot) {
+            this.canShoot = canShoot;
+            setChanged();
+        }
     }
 
     @Override
@@ -309,16 +379,17 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
 
     @Override
     public void setRotationX(float rot) {
-        this.rotationX = rot;
+        this.rotationX = Float.isFinite(rot) ? Mth.positiveModulo(rot, 360F) : 0F;
     }
 
     @Override
     public void setRotationY(float rot) {
-        this.rotationY = rot;
+        this.rotationY = Float.isFinite(rot) ? Mth.clamp(rot, -90F, 90F) : 0F;
     }
 
     @Override
     public void commitRedirection() {
+        lastTentativeBurst = null;
         setChanged();
     }
 
@@ -344,8 +415,11 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
 
     @Override
     public void receiveMana(int mana) {
-        this.mana = Math.min(this.mana + mana, getMaxMana());
-        setChanged();
+        int next = (int) Math.max(0L, Math.min((long) this.mana + mana, getMaxMana()));
+        if (this.mana != next) {
+            this.mana = next;
+            setChanged();
+        }
     }
 
     @Override
@@ -354,7 +428,7 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
     }
 
     public int getMaxMana() {
-        return ConfigHandler.ABSpreaderConfig.getSpreaderMaxMana();
+        return Math.max(1, ConfigHandler.ABSpreaderConfig.getSpreaderMaxMana());
     }
 
     public BlockAdvancedSpreader.VariantN getAdvancedVariant() {
@@ -367,7 +441,8 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
 
     @Override
     public BlockPos getBinding() {
-        return receiver == null ? null : receiver.getManaReceiverPos();
+        return level != null && level.isClientSide ? clientBinding
+                : receiver == null ? null : receiver.getManaReceiverPos();
     }
 
     @Override
@@ -377,7 +452,8 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
 
     @Override
     public boolean bindTo(Player player, ItemStack wand, BlockPos pos, Direction side) {
-        if (level == null) return false;
+        if (level == null || pos.equals(worldPosition) || !level.hasChunkAt(pos)) return false;
+        if (level.isClientSide) return true;
 
         VoxelShape shape = level.getBlockState(pos).getShape(level, pos);
         AABB axis = shape.isEmpty() ? new AABB(pos) : shape.bounds().move(pos);
@@ -390,39 +466,69 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
         );
 
         Vec3 diffVec = blockVec.subtract(thisVec);
-        Vec3 diffVec2D = new Vec3(diffVec.x, diffVec.z, 0);
-        Vec3 rotVec = new Vec3(0, 1, 0);
-
-        double angle = MathHelper.angleBetween(rotVec, diffVec2D) / Math.PI * 180.0;
-        if (blockVec.x < thisVec.x) {
-            angle = -angle;
-        }
-        rotationX = (float)angle + 90;
-
-        rotVec = new Vec3(diffVec.x, 0, diffVec.z);
-        angle = MathHelper.angleBetween(diffVec, rotVec) * 180.0 / Math.PI;
-        if (blockVec.y < thisVec.y) {
-            angle = -angle;
-        }
-        rotationY = (float)angle;
-
-        setChanged();
+        setRotationX((float) Math.toDegrees(Math.atan2(diffVec.z, -diffVec.x)));
+        setRotationY((float) Math.toDegrees(Math.atan2(diffVec.y, diffVec.horizontalDistance())));
+        commitRedirection();
         return true;
     }
 
     @Override
     public String getInputKey() {
-        return "";
+        return inputKey;
     }
 
     @Override
     public String getOutputKey() {
-        return "";
+        return outputKey;
     }
 
     @Override
     public void markDispatchable() {
         requestsClientUpdate = true;
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        if (level != null && !level.isClientSide) requestsClientUpdate = true;
+    }
+
+    private void removeFromNetwork() {
+        if (level != null) {
+            BotaniaAPI.instance().getManaNetworkInstance().fireManaNetworkEvent(
+                    this, ManaBlockType.COLLECTOR, ManaNetworkAction.REMOVE);
+        }
+        receiver = null;
+        receiverLastTick = null;
+        lastTentativeBurst = null;
+    }
+
+    @Override
+    public void setRemoved() {
+        removeFromNetwork();
+        super.setRemoved();
+    }
+
+    @Override
+    public void onChunkUnloaded() {
+        removeFromNetwork();
+        super.onChunkUnloaded();
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        selfCapability.invalidate();
+        inventoryCapability.invalidate();
+        hudCapability.invalidate();
+    }
+
+    @Override
+    public void reviveCaps() {
+        super.reviveCaps();
+        selfCapability = LazyOptional.of(() -> this);
+        inventoryCapability = LazyOptional.of(this::getItemHandlerModifiable);
+        hudCapability = LazyOptional.of(() -> new WandHud(this));
     }
 
     public IItemHandlerModifiable getItemHandlerModifiable() {
@@ -459,9 +565,11 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
         cmp.putDouble(TAG_LAST_PINGBACK_Y, lastPingbackY);
         cmp.putDouble(TAG_LAST_PINGBACK_Z, lastPingbackZ);
 
-        if (paddingColor != null) {
-            cmp.putInt(TAG_PADDING_COLOR, paddingColor.getId());
-        }
+        cmp.putInt(TAG_PADDING_COLOR, paddingColor == null ? -1 : paddingColor.getId());
+        cmp.putString("inputKey", inputKey);
+        cmp.putString("outputKey", outputKey);
+        cmp.putBoolean("hasBinding", receiver != null);
+        if (receiver != null) cmp.putLong("binding", receiver.getManaReceiverPos().asLong());
 
         cmp.putLong(TAG_UUID_MOST, identity.getMostSignificantBits());
         cmp.putLong(TAG_UUID_LEAST, identity.getLeastSignificantBits());
@@ -470,16 +578,16 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
     @Override
     public void readPacketNBT(CompoundTag cmp) {
         super.readPacketNBT(cmp);
-        mana = cmp.getInt(TAG_MANA);
-        rotationX = cmp.getFloat(TAG_ROTATION_X);
-        rotationY = cmp.getFloat(TAG_ROTATION_Y);
-        canShoot = cmp.getBoolean(TAG_CAN_SHOOT);
-        pingbackTicks = cmp.getInt(TAG_PINGBACK_TICKS);
+        mana = Mth.clamp(cmp.getInt(TAG_MANA), 0, getMaxMana());
+        setRotationX(cmp.getFloat(TAG_ROTATION_X));
+        setRotationY(cmp.getFloat(TAG_ROTATION_Y));
+        canShoot = !cmp.contains(TAG_CAN_SHOOT) || cmp.getBoolean(TAG_CAN_SHOOT);
+        pingbackTicks = Mth.clamp(cmp.getInt(TAG_PINGBACK_TICKS), 0, TICKS_ALLOWED_WITHOUT_PINGBACK);
         lastPingbackX = cmp.getDouble(TAG_LAST_PINGBACK_X);
         lastPingbackY = cmp.getDouble(TAG_LAST_PINGBACK_Y);
         lastPingbackZ = cmp.getDouble(TAG_LAST_PINGBACK_Z);
 
-        if (cmp.contains(TAG_PADDING_COLOR)) {
+        if (cmp.contains(TAG_PADDING_COLOR) && cmp.getInt(TAG_PADDING_COLOR) >= 0) {
             paddingColor = DyeColor.byId(cmp.getInt(TAG_PADDING_COLOR));
         } else {
             paddingColor = null;
@@ -490,18 +598,15 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
         if (most != 0 || least != 0) {
             identity = new UUID(most, least);
         }
+        inputKey = cmp.getString("inputKey");
+        outputKey = cmp.getString("outputKey");
+        clientBinding = cmp.getBoolean("hasBinding") ? BlockPos.of(cmp.getLong("binding")) : null;
+        lastTentativeBurst = null;
     }
 
     @Override
     public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
         readPacketNBT(tag);
-    }
-
-    @Nullable
-    @Override
-    public Packet getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
@@ -514,9 +619,14 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
 
     @NotNull
     @Override
-    public  LazyOptional getCapability(@NotNull Capability cap, @Nullable Direction side) {
-        if (cap == BotaniaForgeClientCapabilities.WAND_HUD) {
-            return LazyOptional.of(() -> new WandHud(this)).cast();
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if (isRemoved()) return LazyOptional.empty();
+        if (cap == BotaniaForgeCapabilities.MANA_RECEIVER || cap == BotaniaForgeCapabilities.WANDABLE) {
+            return selfCapability.cast();
+        }
+        if (cap == ForgeCapabilities.ITEM_HANDLER) return inventoryCapability.cast();
+        if (level != null && level.isClientSide && cap == BotaniaForgeClientCapabilities.WAND_HUD) {
+            return hudCapability.cast();
         }
         return super.getCapability(cap, side);
     }
@@ -530,7 +640,7 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
 
         @Override
         public void renderHUD(GuiGraphics guiGraphics, Minecraft mc) {
-            int color = 0xADFF2F;
+            int color = spreader.getAdvancedVariant().hudColor;
             String name = (new ItemStack(this.spreader.getBlockState().getBlock()))
                     .getHoverName().getString();
 
@@ -553,8 +663,8 @@ public class TileAdvancedSpreader extends SimpleInventoryBlockEntity implements 
                 guiGraphics.renderItem(lens, x, y);
             }
 
-            if (spreader.receiver != null) {
-                var receiverPos = spreader.receiver.getManaReceiverPos();
+            BlockPos receiverPos = spreader.getBinding();
+            if (receiverPos != null && spreader.level != null && spreader.level.hasChunkAt(receiverPos)) {
                 ItemStack receiverStack = new ItemStack(
                         spreader.level.getBlockState(receiverPos).getBlock()
                 );

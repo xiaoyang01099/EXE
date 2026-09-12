@@ -9,9 +9,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
@@ -23,14 +25,17 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.xiaoyang.ex_enigmaticlegacy.Init.ModEffects;
 import org.xiaoyang.ex_enigmaticlegacy.Init.ModSounds;
 import org.xiaoyang.ex_enigmaticlegacy.api.EXEAPI;
 import vazkii.botania.api.internal.ManaBurst;
 import vazkii.botania.api.mana.*;
+import vazkii.botania.api.mana.ManaBarTooltip;
 import vazkii.botania.client.fx.WispParticleData;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class AquaSword extends SwordItem implements ManaItem, LensEffectItem {
     private static final int MAX_MANA = 100000;
@@ -54,6 +59,12 @@ public class AquaSword extends SwordItem implements ManaItem, LensEffectItem {
     }
 
     private void handleManaAbsorption(ItemStack stack, Level world, Player player) {
+        if (world.isClientSide) {
+            if (getInternalMana(stack) < MAX_MANA && world.random.nextFloat() < 0.1F) {
+                spawnManaAbsorptionParticles(world, player);
+            }
+            return;
+        }
         BlockPos pos = player.getOnPos();
 
         for (BlockPos blockPos : BlockPos.betweenClosed(pos.offset(-2, 0, -2), pos.offset(2, 1, 2))) {
@@ -69,9 +80,6 @@ public class AquaSword extends SwordItem implements ManaItem, LensEffectItem {
                         setInternalMana(stack, currentMana + actualAbsorb);
                         pool.receiveMana(-actualAbsorb);
 
-                        if (world.isClientSide && world.random.nextFloat() < 0.1f) {
-                            spawnManaAbsorptionParticles(world, player);
-                        }
                     }
                 }
             }
@@ -164,7 +172,7 @@ public class AquaSword extends SwordItem implements ManaItem, LensEffectItem {
                     if (living.hurt(player.damageSources().playerAttack(player),
                             EXEAPI.MITHRIL_TOOL_TIER.getAttackDamageBonus() / 2.0F)) {
 
-//                        living.addEffect(new MobEffectInstance(ModEffects.DROWNING.get(), 2000, effectLevel));
+                        living.addEffect(new MobEffectInstance(ModEffects.DROWNING.get(), 2000, effectLevel));
 
                         if (getInternalMana(stack) >= manaCost) {
                             setInternalMana(stack, getInternalMana(stack) - manaCost);
@@ -201,7 +209,7 @@ public class AquaSword extends SwordItem implements ManaItem, LensEffectItem {
 
     private int getPowerLevel(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
-        return tag.getInt(TAG_POWER_LEVEL);
+        return Mth.clamp(tag.getInt(TAG_POWER_LEVEL), 0, MANA_COSTS.length - 1);
     }
 
     private void setPowerLevel(ItemStack stack, int level) {
@@ -211,7 +219,7 @@ public class AquaSword extends SwordItem implements ManaItem, LensEffectItem {
 
     private int getInternalMana(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
-        return tag.getInt(TAG_INTERNAL_MANA);
+        return Mth.clamp(tag.getInt(TAG_INTERNAL_MANA), 0, MAX_MANA);
     }
 
     private void setInternalMana(ItemStack stack, int mana) {
@@ -394,7 +402,7 @@ public class AquaSword extends SwordItem implements ManaItem, LensEffectItem {
 
     @Override
     public int getMana() {
-        return MAX_MANA;
+        return 0;
     }
 
     @Override
@@ -431,7 +439,27 @@ public class AquaSword extends SwordItem implements ManaItem, LensEffectItem {
         return false;
     }
 
-    // ========== LensEffect 接口实现 ==========
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return getInternalMana(stack) > 0;
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return Math.round(13.0F * (float) getInternalMana(stack) / (float) MAX_MANA);
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        float fraction = Mth.clamp((float) getInternalMana(stack) / (float) MAX_MANA, 0.0F, 1.0F);
+        return Mth.hsvToRgb(fraction / 3.0F, 1.0F, 1.0F);
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        float fraction = Mth.clamp((float) getInternalMana(stack) / (float) MAX_MANA, 0.0F, 1.0F);
+        return Optional.of(new ManaBarTooltip(fraction));
+    }
 
     @Override
     public void apply(ItemStack stack, BurstProperties props, Level level) {

@@ -88,6 +88,7 @@ public final class HeldItemTrails {
     }
 
     public static void sampleModel(PoseStack pose) {
+        if (org.xiaoyang.ex_enigmaticlegacy.Compat.Oculus.EXERenderFrameState.isShadowPass()) return;
         if (!inFrame || CONTEXTS.isEmpty() || !ConfigHandler.ENABLED.get() || !ConfigHandler.HELD_SWORD_TRAILS.get()) return;
         Context context = CONTEXTS.peek();
         if (context.owner == null || context.owner.level() != Minecraft.getInstance().level) return;

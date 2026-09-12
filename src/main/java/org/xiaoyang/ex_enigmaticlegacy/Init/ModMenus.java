@@ -90,6 +90,9 @@ public class ModMenus {
                 return new ContainerExtremeAutoCrafter(windowId, inv, tileEntity);
             });
 
+    public static final RegistryObject<MenuType<ContainerInfinityCompressor>> INFINITY_COMPRESSOR_MENU =
+            register("infinity_compressor_menu", ContainerInfinityCompressor::new);
+
     public static RegistryObject<MenuType<MagicTableMenu>> MAGIC_TABLE_MENU = null;
     public static RegistryObject<MenuType<EMCWandMenu>> EMC_MENU = null;
 

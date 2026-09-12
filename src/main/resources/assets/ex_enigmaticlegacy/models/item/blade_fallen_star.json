@@ -1,4 +1,7 @@
 {
+  "type": {
+    "stellarslash": "lightning"
+  },
   "parent": "item/handheld",
   "textures": {
     "layer0": "ex_enigmaticlegacy:item/weapons/blade_fallen_star"

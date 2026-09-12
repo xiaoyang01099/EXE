@@ -6,6 +6,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item.SphereNavigation;
 
@@ -36,20 +40,22 @@ public class FindBlocksPacket {
 
     public static void handle(FindBlocksPacket packet, Supplier<NetworkEvent.Context> supplier) {
         if (supplier.get().getDirection().getReceptionSide().isClient()) {
-            net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(net.minecraftforge.api.distmarker.Dist.CLIENT,
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
                     () -> () -> handleClient(packet, supplier));
         }
         supplier.get().setPacketHandled(true);
     }
 
-    @net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private static void handleClient(FindBlocksPacket packet, Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
             Player player = Minecraft.getInstance().player;
             if (player != null) {
-                Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(packet.blockId));
-                if (block != null) {
+                ResourceLocation id = ResourceLocation.tryParse(packet.blockId);
+                if (id == null || !BuiltInRegistries.BLOCK.containsKey(id)) return;
+                Block block = BuiltInRegistries.BLOCK.get(id);
+                if (block != Blocks.AIR) {
                     SphereNavigation.findBlocks(player.level(), block, packet.meta, player);
                 }
             }

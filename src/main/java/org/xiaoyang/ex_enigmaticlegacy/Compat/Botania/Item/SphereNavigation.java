@@ -3,6 +3,8 @@ package org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -11,15 +13,20 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Hud.ItemsRemainingRender;
+import org.xiaoyang.ex_enigmaticlegacy.Network.NetworkHandler;
+import org.xiaoyang.ex_enigmaticlegacy.Network.inputPacket.FindBlocksPacket;
+import net.minecraftforge.network.PacketDistributor;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.common.helper.ItemNBTHelper;
@@ -28,11 +35,13 @@ import vazkii.botania.common.item.relic.RelicItem;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class SphereNavigation extends RelicItem {
     public static final int RANGE_SEARCH = 16;
     public static final int MAX_COOLDOWN = 158;
     public static final int MANA_COST = 50;
+    private static final String TAG_ENABLED = "navigationEnabled";
 
     public SphereNavigation(Properties properties) {
         super(properties);
@@ -47,10 +56,9 @@ public class SphereNavigation extends RelicItem {
     public Component getName(ItemStack stack) {
         Block block = getFindBlock(stack);
         if (block != null) {
-            ItemStack renderStack = new ItemStack(block, 1);
             return super.getName(stack).copy()
                     .append(ChatFormatting.RESET + " (")
-                    .append(renderStack.getHoverName().copy().withStyle(ChatFormatting.GREEN))
+                    .append(block.getName().copy().withStyle(ChatFormatting.GREEN))
                     .append(ChatFormatting.RESET + ")");
         }
         return super.getName(stack);
@@ -60,14 +68,14 @@ public class SphereNavigation extends RelicItem {
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
-        boolean active = stack.getDamageValue() == 0;
+        boolean active = isEnabled(stack);
         tooltip.add(Component.translatable(active ? "botaniamisc.active" : "botaniamisc.inactive"));
 
         Block findBlock = getFindBlock(stack);
         if (findBlock != null) {
             tooltip.add(Component.translatable("ex_enigmaticlegacy.sphereNavigation.target")
                     .append(": ")
-                    .append(new ItemStack(findBlock).getHoverName())
+                    .append(findBlock.getName())
                     .withStyle(ChatFormatting.GRAY));
         }
     }
@@ -75,24 +83,25 @@ public class SphereNavigation extends RelicItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.isShiftKeyDown() && getFindBlock(stack) != null) {
-            int dmg = stack.getDamageValue();
-            stack.setDamageValue(dmg == 0 ? MAX_COOLDOWN : 0);
-
-            world.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.3F,
-                    dmg == 0 ? 0.8F : 1.2F);
-
-            if (world.isClientSide) {
+        // Use Botania's relic convention so the client predicts the toggle
+        // immediately and the server persists the same state.
+        if (hand == InteractionHand.MAIN_HAND && player.isSecondaryUseActive()
+                && getFindBlock(stack) != null) {
+            boolean enabled = !isEnabled(stack);
+            setEnabled(stack, enabled);
+            if (!world.isClientSide) {
+                world.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.3F,
+                        enabled ? 1.2F : 0.8F);
                 player.displayClientMessage(
-                        Component.translatable(dmg == 0 ?
-                                "ex_enigmaticlegacy.sphereNavigation.disabled" :
-                                "ex_enigmaticlegacy.sphereNavigation.enabled"),
+                        Component.translatable(enabled ?
+                                "ex_enigmaticlegacy.sphereNavigation.enabled" :
+                                "ex_enigmaticlegacy.sphereNavigation.disabled"),
                         true
                 );
             }
 
-            return InteractionResultHolder.success(stack);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }
 
         return InteractionResultHolder.pass(stack);
@@ -111,24 +120,23 @@ public class SphereNavigation extends RelicItem {
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
 
-            if (block != null) {
+            if (!state.isAir()) {
                 ItemStack renderStack = new ItemStack(block, 1);
-                setFindBlock(stack, block, 0);
-
-                world.playSound(null, player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.3F, 1.2F);
-
                 if (world.isClientSide) {
-                    ItemsRemainingRender.set(renderStack, renderStack.getHoverName().getString());
+                    ItemsRemainingRender.set(renderStack, block.getName().getString());
+                } else {
+                    setFindBlock(stack, block, 0);
+                    world.playSound(null, player.getX(), player.getY(), player.getZ(),
+                            SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.3F, 1.2F);
                     player.displayClientMessage(
                             Component.translatable("ex_enigmaticlegacy.sphereNavigation.set")
                                     .append(": ")
-                                    .append(renderStack.getHoverName()),
+                                    .append(block.getName()),
                             true
                     );
                 }
 
-                return InteractionResult.SUCCESS;
+                return InteractionResult.sidedSuccess(world.isClientSide);
             }
         }
 
@@ -139,41 +147,44 @@ public class SphereNavigation extends RelicItem {
     public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, world, entity, slot, selected);
 
-        if (!(entity instanceof Player player)) return;
-
-        if (world.isClientSide) {
-            Block findBlock = getFindBlock(stack);
-            if (findBlock != null && stack.getDamageValue() == 0 && canWork(stack)) {
-                findBlocks(world, findBlock, getFindMeta(stack), player);
-            }
-            return;
-        }
+        if (world.isClientSide || !(entity instanceof Player player) || !isEnabled(stack)) return;
 
         Block findBlock = getFindBlock(stack);
-        if (findBlock != null && stack.getDamageValue() == 0 && canWork(stack)) {
+        if (findBlock == null) return;
+        int cooldown = ItemNBTHelper.getInt(stack, "cooldown", 0);
+        if (cooldown > 0) {
+            ItemNBTHelper.setInt(stack, "cooldown", Math.min(cooldown, MAX_COOLDOWN) - 1);
+            return;
+        }
+        if (canWork(stack)) {
             if (ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_COST, true)) {
                 setMaxTick(stack);
+                if (player instanceof ServerPlayer serverPlayer) {
+                    NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> serverPlayer),
+                            new FindBlocksPacket(findBlock, getFindMeta(stack)));
+                }
             } else {
-                stack.setDamageValue(MAX_COOLDOWN);
+                setEnabled(stack, false);
             }
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     public static void findBlocks(Level world, Block findBlock, int findMeta, Player player) {
-        if (!world.isClientSide) return;
+        if (!world.isClientSide || findBlock == Blocks.AIR) return;
 
-        ItemStack renderStack = null;
+        ItemStack renderStack = new ItemStack(findBlock);
         int maxDisplayBlocks = 32;
         int totalFoundBlocks = 0;
-        int displayedBlocks = 0;
+        List<BlockPos> highlights = new ArrayList<>(maxDisplayBlocks);
         BlockPos playerPos = player.blockPosition();
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
         for (int y = -32; y < 16; y++) {
             for (int x = -RANGE_SEARCH; x < RANGE_SEARCH; x++) {
                 for (int z = -RANGE_SEARCH; z < RANGE_SEARCH; z++) {
-                    BlockPos pos = playerPos.offset(x, y, z);
-                    if (pos.getY() < world.getMinBuildHeight()) {
+                    pos.setWithOffset(playerPos, x, y, z);
+                    if (world.isOutsideBuildHeight(pos) || !world.hasChunkAt(pos)) {
                         continue;
                     }
 
@@ -181,28 +192,25 @@ public class SphereNavigation extends RelicItem {
                     Block block = state.getBlock();
 
                     if (block == findBlock) {
-                        if (renderStack == null) {
-                            renderStack = new ItemStack(block, 1);
-                        }
                         totalFoundBlocks++;
-
-                        if (displayedBlocks < maxDisplayBlocks) {
-                            int remaining = totalFoundBlocks - displayedBlocks;
-                            if (world.random.nextInt(remaining) == 0 || displayedBlocks == 0) {
-                                displayedBlocks++;
-                                spawnParticlesForBlock(world, pos, x, y, z);
-                            }
+                        if (highlights.size() < maxDisplayBlocks) {
+                            highlights.add(pos.immutable());
+                        } else {
+                            int replacement = world.random.nextInt(totalFoundBlocks);
+                            if (replacement < maxDisplayBlocks) highlights.set(replacement, pos.immutable());
                         }
                     }
                 }
             }
         }
 
-        if (renderStack != null) {
-            ItemsRemainingRender.set(renderStack,
-                    Component.translatable("ex_enigmaticlegacy.sphereNavigation.founded").getString()
-                            + " " + totalFoundBlocks);
+        for (BlockPos highlight : highlights) {
+            spawnParticlesForBlock(world, highlight, highlight.getX() - playerPos.getX(),
+                    highlight.getY() - playerPos.getY(), highlight.getZ() - playerPos.getZ());
         }
+        ItemsRemainingRender.set(renderStack.isEmpty() ? new ItemStack(Items.COMPASS) : renderStack,
+                Component.translatable("ex_enigmaticlegacy.sphereNavigation.founded").getString()
+                        + " " + totalFoundBlocks);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -238,16 +246,18 @@ public class SphereNavigation extends RelicItem {
         }
     }
 
-
     public boolean canWork(ItemStack stack) {
-        int tick = ItemNBTHelper.getInt(stack, "cooldown", 0);
-        if (tick == 0) {
-            return true;
-        }
-        if (tick > 0) {
-            ItemNBTHelper.setInt(stack, "cooldown", tick - 1);
-        }
-        return false;
+        return ItemNBTHelper.getInt(stack, "cooldown", 0) <= 0;
+    }
+
+    public static boolean isEnabled(ItemStack stack) {
+        return stack.hasTag() && stack.getTag().contains(TAG_ENABLED)
+                ? stack.getTag().getBoolean(TAG_ENABLED) : stack.getDamageValue() == 0;
+    }
+
+    public static void setEnabled(ItemStack stack, boolean enabled) {
+        stack.getOrCreateTag().putBoolean(TAG_ENABLED, enabled);
+        stack.getOrCreateTag().remove("Damage");
     }
 
     public void setMaxTick(ItemStack stack) {
@@ -255,9 +265,11 @@ public class SphereNavigation extends RelicItem {
     }
 
     public static void setFindBlock(ItemStack stack, Block block, int meta) {
-        String blockId = ForgeRegistries.BLOCKS.getKey(block).toString();
-        ItemNBTHelper.setString(stack, "findBlockID", blockId);
+        ResourceLocation blockId = ForgeRegistries.BLOCKS.getKey(block);
+        if (blockId == null || block == Blocks.AIR) return;
+        ItemNBTHelper.setString(stack, "findBlockID", blockId.toString());
         ItemNBTHelper.setInt(stack, "findBlockMeta", meta);
+        ItemNBTHelper.setInt(stack, "cooldown", 0);
     }
 
     @Nullable
@@ -266,7 +278,10 @@ public class SphereNavigation extends RelicItem {
         if (blockID.isEmpty()) {
             return null;
         }
-        return ForgeRegistries.BLOCKS.getValue(new net.minecraft.resources.ResourceLocation(blockID));
+        ResourceLocation id = ResourceLocation.tryParse(blockID);
+        if (id == null || !ForgeRegistries.BLOCKS.containsKey(id)) return null;
+        Block block = ForgeRegistries.BLOCKS.getValue(id);
+        return block == Blocks.AIR ? null : block;
     }
 
     public static int getFindMeta(ItemStack stack) {

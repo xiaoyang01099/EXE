@@ -2,6 +2,8 @@ package org.xiaoyang.ex_enigmaticlegacy.Init;
 
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -37,6 +39,8 @@ import org.xiaoyang.ex_enigmaticlegacy.Client.renderer.layer.WitherArmorLayer;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.end.EndPortalHaloLoader;
 import org.xiaoyang.ex_enigmaticlegacy.api.shader.cosmic.RainbowCosmicModelLoader;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.res.RenderCursedSpreader;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.res.RenderTileCursedPool;
 
 import java.io.IOException;
 import java.util.Map;
@@ -73,6 +77,7 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void registerItemCapabilities(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CURSED_FLOWER.get(), RenderType.cutout());
             ItemProperties.register(ModWeapons.TERRA_BOW.get(),
                     new ResourceLocation("pull"),
                     (stack, level, entity, seed) -> {
@@ -101,7 +106,7 @@ public class ModClientEvents {
             ItemProperties.register(
                     ModItems.SPHERE_NAVIGATION.get(),
                     new ResourceLocation("ex_enigmaticlegacy", "enabled"),
-                    (stack, world, entity, seed) -> stack.getDamageValue() == 0 ? 1.0F : 0.0F
+                    (stack, world, entity, seed) -> SphereNavigation.isEnabled(stack) ? 1.0F : 0.0F
             );
             ItemProperties.register(
                     ModItems.SPHERE_NAVIGATION.get(),
@@ -156,8 +161,8 @@ public class ModClientEvents {
         BlockEntityRenderers.register(ModBlockEntities.ENGINEER_HOPPER_TILE.get(), RenderTileEngineerHopper::new);
 //        BlockEntityRenderers.register(ModBlockEntities.COSMIC_BLOCK_ENTITY.get(), CosmicBlockRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.FLOWEYTILE.get(), FloweyTileRenderer::new);
-//        BlockEntityRenderers.register(ModBlockEntities.CURSED_SPREADER.get(), RenderCursedSpreader::new);
-//        BlockEntityRenderers.register(ModBlockEntities.CURSED_MANA_POOL.get(), RenderTileCursedPool::new);
+        BlockEntityRenderers.register(ModBlockEntities.CURSED_SPREADER.get(), RenderCursedSpreader::new);
+        BlockEntityRenderers.register(ModBlockEntities.CURSED_MANA_POOL.get(), RenderTileCursedPool::new);
 //        BlockEntityRenderers.register(ModBlockEntities.STARRY_SKY_BLOCK_ENTITY.get(), StarrySkyBlockRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.STARLIT_SANCTUM_OF_MYSTIQUE.get(), StarlitSanctumRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.ADVANCED_SPREADER.get(), RenderTileAdvancedSpreader::new);

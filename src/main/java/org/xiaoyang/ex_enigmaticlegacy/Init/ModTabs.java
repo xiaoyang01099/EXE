@@ -181,6 +181,7 @@ public class ModTabs {
         output.accept(ModItems.ASTRAL_KILLOP.get());
         output.accept(ModItems.RAINBOW_GENERATING_FLOWER.get());
         output.accept(ModItems.CURSET_THISTLE.get());
+        output.accept(ModItems.CURSED_FLOWER.get());
         output.accept(ModItems.YU_SHOU_CLOVER.get());
         output.accept(ModItems.VACUITY.get());
         output.accept(ModItems.STREET_LIGHT.get());
@@ -279,12 +280,15 @@ public class ModTabs {
         output.accept(ModItems.DARK_SUN_RING.get());
         output.accept(ModItems.FLOWER_FINDER_WAND.get());
         output.accept(ModItems.GOLDEN_LAUREL.get());
+        output.accept(ModItems.CURSED_MANA_POOL.get());
+        output.accept(ModItems.CURSED_SPREADER.get());
+        output.accept(ModItems.MANA_CONVERTER.get());
 //        output.accept(ModItems.DIVINE_CLOAK_NJORD.get());
 //        output.accept(ModItems.DIVINE_CLOAK_IDUNN.get());
 //        output.accept(ModItems.DIVINE_CLOAK_THOR.get());
 //        output.accept(ModItems.DIVINE_CLOAK_HEIMDALL.get());
 //        output.accept(ModItems.DIVINE_CLOAK_LOKI.get());
-//        output.accept(ModItems.ADVANCED_SPREADER.get());
+        output.accept(ModItems.ADVANCED_SPREADER.get());
         output.accept(ModItems.SACABAMBASPIS_SPAWN_EGG.get());
         output.accept(ModItems.XIAOYANG_010_SPAWN_EGG.get());
         output.accept(ModItems.MANA_BOX_ITEM.get());
@@ -325,6 +329,7 @@ public class ModTabs {
         output.accept(ModItems.BLOCKNATURE.get());
         output.accept(ModItems.PRISMATICRADIANCEBLOCK.get());
         output.accept(ModItems.EXTREME_AUTO_CRAFTER.get());
+        output.accept(ModItems.INFINITY_COMPRESSOR.get());
         output.accept(ModItems.EXTREME_CRAFTING_DISASSEMBLY_TABLE.get());
         output.accept(ModItems.NEUTRONIUM_DECOMPRESSOR.get());
     }

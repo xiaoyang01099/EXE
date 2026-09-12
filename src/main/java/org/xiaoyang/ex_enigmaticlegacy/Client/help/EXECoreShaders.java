@@ -98,11 +98,7 @@ public class EXECoreShaders {
 
     }
 
-    public static void init(ResourceProvider resourceProvider,
-                            Consumer<Pair<ShaderInstance, Consumer<ShaderInstance>>> registerShader) throws IOException {
-
-
-
+    public static void init(ResourceProvider resourceProvider, Consumer<Pair<ShaderInstance, Consumer<ShaderInstance>>> registerShader) throws IOException {
         registerShader.accept(Pair.of(
                 new ShaderInstance(resourceProvider, "blade",
                         DefaultVertexFormat.POSITION_TEX),

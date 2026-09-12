@@ -29,6 +29,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xiaoyang.ex_enigmaticlegacy.Compat.Botania.Block.tile.TileAdvancedSpreader;
+import org.xiaoyang.ex_enigmaticlegacy.Init.ModBlockEntities;
 import vazkii.botania.api.mana.LensEffectItem;
 import vazkii.botania.api.state.BotaniaStateProperties;
 import vazkii.botania.common.block.BotaniaWaterloggedBlock;
@@ -69,7 +70,7 @@ public class BlockAdvancedSpreader extends BotaniaWaterloggedBlock implements En
 
     public BlockAdvancedSpreader(VariantN v, BlockBehaviour.Properties props) {
         super(props);
-        this.registerDefaultState(this.stateDefinition.any()
+        this.registerDefaultState(this.defaultBlockState()
                 .setValue(BotaniaStateProperties.HAS_SCAFFOLDING, false));
         this.variant = v;
     }
@@ -111,6 +112,8 @@ public class BlockAdvancedSpreader extends BotaniaWaterloggedBlock implements En
 
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, @javax.annotation.Nullable LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(world, pos, state, placer, stack);
+        if (world.isClientSide) return;
         Direction orientation = placer == null ? Direction.WEST : Direction.orderedByNearest(placer)[0].getOpposite();
         BlockEntity tile = world.getBlockEntity(pos);
 
@@ -134,7 +137,7 @@ public class BlockAdvancedSpreader extends BotaniaWaterloggedBlock implements En
                     spreader.rotationX = 180F;
                     break;
             }
-            spreader.setChanged();
+            spreader.commitRedirection();
         }
     }
 
@@ -150,7 +153,7 @@ public class BlockAdvancedSpreader extends BotaniaWaterloggedBlock implements En
             return InteractionResult.PASS;
         }
 
-        boolean mainHandEmpty = player.getMainHandItem().isEmpty();
+        boolean handEmpty = heldItem.isEmpty();
         IItemHandlerModifiable itemHandler = spreader.getItemHandlerModifiable();
         ItemStack lens = itemHandler.getStackInSlot(0);
 
@@ -168,25 +171,33 @@ public class BlockAdvancedSpreader extends BotaniaWaterloggedBlock implements En
                 || (playerHasWool && !woolIsSame)
                 || (playerHasScaffolding && !state.getValue(BotaniaStateProperties.HAS_SCAFFOLDING));
 
+        // Predict the interaction, but only the server may change inventories or block data.
+        if (world.isClientSide) {
+            boolean shouldRemove = (state.getValue(BotaniaStateProperties.HAS_SCAFFOLDING) && player.isSecondaryUseActive())
+                    || (!lens.isEmpty() && (handEmpty || lensIsSame))
+                    || (spreader.paddingColor != null && (handEmpty || woolIsSame));
+            return shouldInsert || shouldRemove ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        }
+
         if (shouldInsert) {
             if (playerHasLens) {
                 ItemStack toInsert = heldItem.copy();
                 toInsert.setCount(1);
 
-                heldItem.shrink(1);
+                if (!player.getAbilities().instabuild) heldItem.shrink(1);
                 if (!lens.isEmpty()) {
                     player.getInventory().placeItemBackInInventory(lens);
                 }
 
                 itemHandler.setStackInSlot(0, toInsert);
-                world.playSound(player, pos, BotaniaSounds.spreaderAddLens, SoundSource.BLOCKS, 1F, 1F);
+                world.playSound(null, pos, BotaniaSounds.spreaderAddLens, SoundSource.BLOCKS, 1F, 1F);
                 spreader.setChanged();
                 return InteractionResult.sidedSuccess(world.isClientSide);
 
             } else if (playerHasWool) {
                 Block woolBlock = Block.byItem(heldItem.getItem());
 
-                heldItem.shrink(1);
+                if (!player.getAbilities().instabuild) heldItem.shrink(1);
                 if (spreader.paddingColor != null) {
                     ItemStack spreaderWool = new ItemStack(ColorHelper.WOOL_MAP.apply(spreader.paddingColor));
                     player.getInventory().placeItemBackInInventory(spreaderWool);
@@ -194,7 +205,7 @@ public class BlockAdvancedSpreader extends BotaniaWaterloggedBlock implements En
 
                 spreader.paddingColor = ColorHelper.getWoolColor(woolBlock);
                 spreader.setChanged();
-                world.playSound(player, pos, BotaniaSounds.spreaderCover, SoundSource.BLOCKS, 1F, 1F);
+                world.playSound(null, pos, BotaniaSounds.spreaderCover, SoundSource.BLOCKS, 1F, 1F);
                 return InteractionResult.sidedSuccess(world.isClientSide);
 
             } else {
@@ -205,7 +216,7 @@ public class BlockAdvancedSpreader extends BotaniaWaterloggedBlock implements En
                     heldItem.shrink(1);
                 }
 
-                world.playSound(player, pos, BotaniaSounds.spreaderScaffold, SoundSource.BLOCKS, 1F, 1F);
+                world.playSound(null, pos, BotaniaSounds.spreaderScaffold, SoundSource.BLOCKS, 1F, 1F);
                 return InteractionResult.sidedSuccess(world.isClientSide);
             }
         }
@@ -218,25 +229,25 @@ public class BlockAdvancedSpreader extends BotaniaWaterloggedBlock implements En
             world.setBlockAndUpdate(pos, state.setValue(BotaniaStateProperties.HAS_SCAFFOLDING, false));
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 
-            world.playSound(player, pos, BotaniaSounds.spreaderUnScaffold, SoundSource.BLOCKS, 1F, 1F);
+            world.playSound(null, pos, BotaniaSounds.spreaderUnScaffold, SoundSource.BLOCKS, 1F, 1F);
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
 
-        if (!lens.isEmpty() && (mainHandEmpty || lensIsSame)) {
+        if (!lens.isEmpty() && (handEmpty || lensIsSame)) {
             player.getInventory().placeItemBackInInventory(lens);
             itemHandler.setStackInSlot(0, ItemStack.EMPTY);
 
-            world.playSound(player, pos, BotaniaSounds.spreaderRemoveLens, SoundSource.BLOCKS, 1F, 1F);
+            world.playSound(null, pos, BotaniaSounds.spreaderRemoveLens, SoundSource.BLOCKS, 1F, 1F);
             spreader.setChanged();
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
 
-        if (spreader.paddingColor != null && (mainHandEmpty || woolIsSame)) {
+        if (spreader.paddingColor != null && (handEmpty || woolIsSame)) {
             player.getInventory().placeItemBackInInventory(wool);
             spreader.paddingColor = null;
             spreader.setChanged();
 
-            world.playSound(player, pos, BotaniaSounds.spreaderUncover, SoundSource.BLOCKS, 1F, 1F);
+            world.playSound(null, pos, BotaniaSounds.spreaderUncover, SoundSource.BLOCKS, 1F, 1F);
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
 
@@ -245,7 +256,7 @@ public class BlockAdvancedSpreader extends BotaniaWaterloggedBlock implements En
 
     @Override
     public void onRemove(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
+        if (!world.isClientSide && !state.is(newState.getBlock())) {
             BlockEntity tile = world.getBlockEntity(pos);
             if (tile instanceof TileAdvancedSpreader  spreader) {
 
@@ -268,8 +279,8 @@ public class BlockAdvancedSpreader extends BotaniaWaterloggedBlock implements En
                 }
             }
 
-            super.onRemove(state, world, pos, newState, isMoving);
         }
+        super.onRemove(state, world, pos, newState, isMoving);
     }
 
     @Override
@@ -286,10 +297,6 @@ public class BlockAdvancedSpreader extends BotaniaWaterloggedBlock implements En
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return (lvl, pos, st, be) -> {
-            if (be instanceof TileAdvancedSpreader spreader) {
-                TileAdvancedSpreader.commonTick(lvl, pos, st, spreader);
-            }
-        };
+        return createTickerHelper(type, ModBlockEntities.ADVANCED_SPREADER.get(), TileAdvancedSpreader::commonTick);
     }
 }

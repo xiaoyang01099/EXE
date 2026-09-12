@@ -1,6 +1,9 @@
 {
-  "parent": "botania:block/shapes/pool",
+  "parent": "botania:block/shapes/mana_pool",
   "textures": {
-    "all": "ex_enigmaticlegacy:block/cursed_mana_pool"
+    "bottom": "ex_enigmaticlegacy:block/cursed_mana_pool_bottom",
+    "inside": "ex_enigmaticlegacy:block/cursed_mana_pool_inside",
+    "side": "ex_enigmaticlegacy:block/cursed_mana_pool_side",
+    "top": "ex_enigmaticlegacy:block/cursed_mana_pool_top"
   }
 }

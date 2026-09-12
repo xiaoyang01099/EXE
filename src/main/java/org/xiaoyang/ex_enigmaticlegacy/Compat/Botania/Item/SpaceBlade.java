@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
@@ -19,6 +20,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -33,6 +35,7 @@ import org.xiaoyang.ex_enigmaticlegacy.api.EXEAPI;
 import vazkii.botania.api.internal.ManaBurst;
 import vazkii.botania.api.mana.BurstProperties;
 import vazkii.botania.api.mana.LensEffectItem;
+import vazkii.botania.api.mana.ManaBarTooltip;
 import vazkii.botania.api.mana.ManaItem;
 import vazkii.botania.api.mana.ManaPool;
 import vazkii.botania.client.fx.SparkleParticleData;
@@ -42,6 +45,7 @@ import vazkii.botania.common.entity.ManaBurstEntity;
 import vazkii.botania.common.handler.BotaniaSounds;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class SpaceBlade extends SwordItem implements ManaItem, LensEffectItem {
@@ -58,14 +62,16 @@ public class SpaceBlade extends SwordItem implements ManaItem, LensEffectItem {
     @Override
     public void inventoryTick(ItemStack stack, Level world, Entity entity, int slotId, boolean isSelected) {
         if (entity instanceof Player player) {
+            if (world.isClientSide) {
+                handleClientParticles(stack, world, entity, isSelected);
+                return;
+            }
             BlockPos pos = player.getOnPos();
             if (getLevel(stack) < 6 && getManaTag(stack) >= CREATIVE_MANA[getLevel(stack) + 1]) {
                 setLevel(stack, getLevel(stack) + 1);
                 world.playSound(player, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
-                if (world.isClientSide) {
                     player.displayClientMessage(
                             Component.translatable("message.mana_full", getLevel(stack)), false);
-                }
             }
 
             for (BlockPos blockPos : BlockPos.betweenClosed(pos.offset(-2, 0, -2), pos.offset(2, 1, 2))) {
@@ -86,28 +92,24 @@ public class SpaceBlade extends SwordItem implements ManaItem, LensEffectItem {
             }
 
             int tick = stack.getOrCreateTag().getInt(NBT_TICK);
-            if (!world.isClientSide) {
-                if (tick > 0) {
-                    stack.getOrCreateTag().putInt(NBT_TICK, tick - 1);
-                }
-            } else if (tick > 26 && isSelected) {
-                for (int i = 0; i < 14; ++i) {
-                    float r = world.random.nextBoolean() ? 0.88235295F : 0.39607844F;
-                    float g = world.random.nextBoolean() ? 0.2627451F : 0.81960785F;
-                    float b = world.random.nextBoolean() ? 0.9411765F : 0.88235295F;
-                    SparkleParticleData sparkle = SparkleParticleData.sparkle(
-                            1.8F * (float) (Math.random() - 0.5F),
-                            r + (float) (Math.random() / 4.0F - 0.125F),
-                            g + (float) (Math.random() / 4.0F - 0.125F),
-                            b + (float) (Math.random() / 4.0F - 0.125F),
-                            3
-                    );
-                    world.addParticle(sparkle,
-                            entity.getX() + (Math.random() - 0.5F),
-                            entity.getY() + (Math.random() - 0.5F) * 2.0F - 0.5F,
-                            entity.getZ() + (Math.random() - 0.5F),
-                            0, 0, 0);
-                }
+            if (tick > 0) {
+                stack.getOrCreateTag().putInt(NBT_TICK, tick - 1);
+            }
+        }
+    }
+
+    private void handleClientParticles(ItemStack stack, Level world, Entity entity, boolean isSelected) {
+        int tick = stack.getOrCreateTag().getInt(NBT_TICK);
+        if (tick > 26 && isSelected) {
+            for (int i = 0; i < 14; ++i) {
+                float r = world.random.nextBoolean() ? 0.88235295F : 0.39607844F;
+                float g = world.random.nextBoolean() ? 0.2627451F : 0.81960785F;
+                float b = world.random.nextBoolean() ? 0.9411765F : 0.88235295F;
+                SparkleParticleData sparkle = SparkleParticleData.sparkle(
+                        1.8F * (float) (Math.random() - 0.5F), r, g, b, 3);
+                world.addParticle(sparkle, entity.getX() + (Math.random() - 0.5F),
+                        entity.getY() + (Math.random() - 0.5F) * 2.0F - 0.5F,
+                        entity.getZ() + (Math.random() - 0.5F), 0, 0, 0);
             }
         }
     }
@@ -165,19 +167,19 @@ public class SpaceBlade extends SwordItem implements ManaItem, LensEffectItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isCrouching()) {
-            trySpawnBurst(player, 1);
-            int manaCost = (int) Math.floor(getSwordDamage(stack) * 100);
-            if (getManaTag(stack) >= manaCost * 8) {
-                for (int i = 0; i < 8; i++) {
-                    trySpawnDirectionalBurst(player, i * 45F);
+            if (!level.isClientSide) {
+                trySpawnBurst(player, 1);
+                int manaCost = (int) Math.floor(getSwordDamage(stack) * 100);
+                if (getManaTag(stack) >= manaCost * 8) {
+                    for (int i = 0; i < 8; i++) {
+                        trySpawnDirectionalBurst(player, i * 45F);
+                    }
+                    setManaTag(stack, getManaTag(stack) - manaCost);
                 }
-                setManaTag(stack, getManaTag(stack) - manaCost);
-            }
 
-            if (getLevel(stack) >= 1 && getManaTag(stack) <= CREATIVE_MANA[getLevel(stack)]) {
-                setLevel(stack, getLevel(stack) - 1);
-                level.playSound(player, player.getOnPos(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
-                if (level.isClientSide) {
+                if (getLevel(stack) >= 1 && getManaTag(stack) <= CREATIVE_MANA[getLevel(stack)]) {
+                    setLevel(stack, getLevel(stack) - 1);
+                    level.playSound(player, player.getOnPos(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
                     player.displayClientMessage(
                             Component.translatable("message.insufficient_mana", getLevel(stack)), false);
                 }
@@ -313,11 +315,11 @@ public class SpaceBlade extends SwordItem implements ManaItem, LensEffectItem {
     }
 
     public int getManaTag(ItemStack stack) {
-        return stack.getOrCreateTag().getInt(NBT_MANA);
+        return Mth.clamp(stack.getOrCreateTag().getInt(NBT_MANA), 0, MAX_MANA);
     }
 
     public void setManaTag(ItemStack stack, int mana) {
-        stack.getOrCreateTag().putInt(NBT_MANA, mana);
+        stack.getOrCreateTag().putInt(NBT_MANA, Mth.clamp(mana, 0, MAX_MANA));
     }
 
     public int getLevel(ItemStack stack) {
@@ -330,12 +332,12 @@ public class SpaceBlade extends SwordItem implements ManaItem, LensEffectItem {
 
     @Override
     public int getMana() {
-        return getManaTag(new ItemStack(this));
+        return 0;
     }
 
     @Override
     public int getMaxMana() {
-        return Integer.MAX_VALUE;
+        return MAX_MANA;
     }
 
     @Override
@@ -355,6 +357,28 @@ public class SpaceBlade extends SwordItem implements ManaItem, LensEffectItem {
 
     @Override
     public boolean isNoExport() { return false; }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return getManaTag(stack) > 0;
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return Math.round(13.0F * (float) getManaTag(stack) / (float) MAX_MANA);
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        float fraction = Mth.clamp((float) getManaTag(stack) / (float) MAX_MANA, 0.0F, 1.0F);
+        return Mth.hsvToRgb(fraction / 3.0F, 1.0F, 1.0F);
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        float fraction = Mth.clamp((float) getManaTag(stack) / (float) MAX_MANA, 0.0F, 1.0F);
+        return Optional.of(new ManaBarTooltip(fraction));
+    }
 
     @Override
     public void apply(ItemStack itemStack, BurstProperties burstProperties, Level level) {}

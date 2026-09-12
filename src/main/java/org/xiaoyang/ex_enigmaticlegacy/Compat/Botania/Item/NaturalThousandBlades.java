@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
@@ -19,6 +20,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -33,6 +35,7 @@ import org.xiaoyang.ex_enigmaticlegacy.api.EXEAPI;
 import vazkii.botania.api.internal.ManaBurst;
 import vazkii.botania.api.mana.BurstProperties;
 import vazkii.botania.api.mana.LensEffectItem;
+import vazkii.botania.api.mana.ManaBarTooltip;
 import vazkii.botania.api.mana.ManaItem;
 import vazkii.botania.api.mana.ManaPool;
 import vazkii.botania.client.fx.SparkleParticleData;
@@ -42,6 +45,7 @@ import vazkii.botania.common.entity.ManaBurstEntity;
 import vazkii.botania.common.handler.BotaniaSounds;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class NaturalThousandBlades extends SwordItem implements ManaItem, LensEffectItem {
@@ -67,7 +71,9 @@ public class NaturalThousandBlades extends SwordItem implements ManaItem, LensEf
             handlePlantShield(stack, world, player);
             handleBloomEffects(stack, world, player);
             handleParticleEffects(stack, world, entity, isSelected);
-            updateCooldowns(stack);
+            if (!world.isClientSide) {
+                updateCooldowns(stack);
+            }
         }
     }
 
@@ -79,13 +85,17 @@ public class NaturalThousandBlades extends SwordItem implements ManaItem, LensEf
     }
 
     private void handleManaAbsorption(ItemStack stack, Level world, Player player) {
+        // Mana pools are authoritative on the server. Mutating them on the
+        // client causes the displayed value to flicker and then be rolled back
+        // by the next inventory synchronization packet.
+        if (world.isClientSide) {
+            return;
+        }
         BlockPos pos = player.getOnPos();
         if (getLevel(stack) < 6 && getManaTag(stack) >= CREATIVE_MANA[getLevel(stack) + 1]) {
             setLevel(stack, getLevel(stack) + 1);
             world.playSound(player, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
-            if (world.isClientSide) {
-                player.displayClientMessage(Component.translatable("message.mana_full", getLevel(stack)), false);
-            }
+            player.displayClientMessage(Component.translatable("message.mana_full", getLevel(stack)), false);
         }
 
         for (BlockPos blockPos : BlockPos.betweenClosed(pos.offset(-2, 0, -2), pos.offset(2, 1, 2))) {
@@ -107,6 +117,12 @@ public class NaturalThousandBlades extends SwordItem implements ManaItem, LensEf
     }
 
     private void handlePlantShield(ItemStack stack, Level world, Player player) {
+        if (world.isClientSide) {
+            if (getLevel(stack) >= 4 && player.tickCount % 20 == 0) {
+                spawnShieldParticles(world, player);
+            }
+            return;
+        }
         if (getLevel(stack) >= 4 && getManaTag(stack) >= SHIELD_COST) {
             if (player.tickCount % 20 == 0) {
                 List<LivingEntity> nearbyEntities = world.getEntitiesOfClass(
@@ -120,9 +136,6 @@ public class NaturalThousandBlades extends SwordItem implements ManaItem, LensEf
                     player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 25, 1));
                     player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 25, 0));
 
-                    if (world.isClientSide) {
-                        spawnShieldParticles(world, player);
-                    }
                 }
             }
         }
@@ -134,7 +147,7 @@ public class NaturalThousandBlades extends SwordItem implements ManaItem, LensEf
                 spawnBloomParticles(world, player);
             }
 
-            if (player.tickCount % 20 == 0) {
+            if (!world.isClientSide && player.tickCount % 20 == 0) {
                 List<LivingEntity> nearbyEntities = world.getEntitiesOfClass(
                         LivingEntity.class,
                         player.getBoundingBox().inflate(5.0D),
@@ -334,7 +347,7 @@ public class NaturalThousandBlades extends SwordItem implements ManaItem, LensEf
         ItemStack stack = player.getItemInHand(hand);
 
         if (player.isCrouching()) {
-            if (getLevel(stack) >= 6 && getManaTag(stack) >= BLOOM_COST) {
+            if (!level.isClientSide && getLevel(stack) >= 6 && getManaTag(stack) >= BLOOM_COST) {
                 activateSpaceBloom(stack, level, player);
                 return InteractionResultHolder.success(stack);
             }
@@ -557,11 +570,11 @@ public class NaturalThousandBlades extends SwordItem implements ManaItem, LensEf
     }
 
     public int getManaTag(ItemStack stack) {
-        return stack.getOrCreateTag().getInt(NBT_MANA);
+        return Mth.clamp(stack.getOrCreateTag().getInt(NBT_MANA), 0, MAX_MANA);
     }
 
     public void setManaTag(ItemStack stack, int mana) {
-        stack.getOrCreateTag().putInt(NBT_MANA, mana);
+        stack.getOrCreateTag().putInt(NBT_MANA, Mth.clamp(mana, 0, MAX_MANA));
     }
 
     public int getLevel(ItemStack stack) {
@@ -574,12 +587,12 @@ public class NaturalThousandBlades extends SwordItem implements ManaItem, LensEf
 
     @Override
     public int getMana() {
-        return getManaTag(new ItemStack(this));
+        return 0;
     }
 
     @Override
     public int getMaxMana() {
-        return Integer.MAX_VALUE;
+        return MAX_MANA;
     }
 
     @Override
@@ -609,6 +622,28 @@ public class NaturalThousandBlades extends SwordItem implements ManaItem, LensEf
     @Override
     public boolean isNoExport() {
         return false;
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return getManaTag(stack) > 0;
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return Math.round(13.0F * (float) getManaTag(stack) / (float) MAX_MANA);
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        float fraction = Mth.clamp((float) getManaTag(stack) / (float) MAX_MANA, 0.0F, 1.0F);
+        return Mth.hsvToRgb(fraction / 3.0F, 1.0F, 1.0F);
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        float fraction = Mth.clamp((float) getManaTag(stack) / (float) MAX_MANA, 0.0F, 1.0F);
+        return Optional.of(new ManaBarTooltip(fraction));
     }
 
     @Override

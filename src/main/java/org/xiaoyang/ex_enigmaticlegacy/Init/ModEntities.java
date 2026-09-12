@@ -25,6 +25,7 @@ import org.xiaoyang.ex_enigmaticlegacy.Client.particle.effect.EntitySlash;
 import org.xiaoyang.ex_enigmaticlegacy.Entity.biological.*;
 import org.xiaoyang.ex_enigmaticlegacy.Entity.others.*;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
+import org.xiaoyang.ex_enigmaticlegacy.api.test.curse.res.EntityCursedManaBurst;
 
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -373,6 +374,9 @@ public class ModEntities {
 	public static final RegistryObject<EntityType<SpectriteCrystalEntity>> SPECTRITE_CRYSTAL = register("spectrite_crystal",
 			EntityType.Builder.<SpectriteCrystalEntity>of(SpectriteCrystalEntity::new, MobCategory.MISC)
 					.sized(2.0F, 2.0F));
+
+	public static final RegistryObject<EntityType<EntityCursedManaBurst>> CURSED_MANA_BURST = ENTITIES.register("cursed_mana_burst", () -> EntityType.Builder.<EntityCursedManaBurst>of(EntityCursedManaBurst::new, MobCategory.MISC)
+			.sized(0.25F, 0.25F).clientTrackingRange(64).updateInterval(1).setShouldReceiveVelocityUpdates(true).build("cursed_mana_burst"));
 
 
 	private static <T extends Entity> RegistryObject<EntityType<T>> register(String registryname, EntityType.Builder<T> entityTypeBuilder) {

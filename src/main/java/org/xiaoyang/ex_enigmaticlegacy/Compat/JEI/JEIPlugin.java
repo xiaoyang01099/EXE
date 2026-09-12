@@ -1,5 +1,6 @@
 package org.xiaoyang.ex_enigmaticlegacy.Compat.JEI;
 
+import com.yuo.endless.compat.jei.NeutroniumCRecipeCategory;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.*;
@@ -11,6 +12,10 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.fml.ModList;
 import org.xiaoyang.ex_enigmaticlegacy.Client.screen.CelestialHTScreen;
 import org.xiaoyang.ex_enigmaticlegacy.Client.screen.RainbowTableScreen;
+import org.xiaoyang.ex_enigmaticlegacy.Client.screen.GuiInfinityCompressor;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.JEI.AvaritiaJei.InfinityCompressorTransferHandler;
+import org.xiaoyang.ex_enigmaticlegacy.Compat.JEI.AvaritiaJei.AvaTransferHandler;
+import com.yuo.endless.compat.jei.ExtremeCraftRecipeCategory;
 import org.xiaoyang.ex_enigmaticlegacy.Container.CelestialHTMenu;
 import org.xiaoyang.ex_enigmaticlegacy.Container.RainbowTableContainer;
 import org.xiaoyang.ex_enigmaticlegacy.Exe;
@@ -26,11 +31,6 @@ import java.util.Objects;
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
     public static final ResourceLocation PLUGIN_ID = new ResourceLocation(Exe.MODID, "jei_plugin");
-
-//    public static final mezz.jei.api.recipe.RecipeType<ExtremeCraftingRecipe>
-//            EXTREME_CRAFTING_TYPE = new mezz.jei.api.recipe.RecipeType<>(
-//            new ResourceLocation("avaritia", "extreme_crafting"),
-//            ExtremeCraftingRecipe.class);
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -68,6 +68,11 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipeClickArea(
                 RainbowTableScreen.class, 99, 51, 35, 5,
                 RainbowTableCategory.RECIPE_TYPE);
+        // The original Avaritiaddons GUI uses WanionLib's "R" button here.
+        // Clicking it opens the Neutronium Compressor recipe list in JEI.
+        registration.addRecipeClickArea(
+                GuiInfinityCompressor.class, 151, 7, 18, 18,
+                NeutroniumCRecipeCategory.RECIPE_TYPE);
     }
 
     @Override
@@ -91,9 +96,11 @@ public class JEIPlugin implements IModPlugin {
                         5, 36
                 )
         );
-//        registration.addUniversalRecipeTransferHandler(new AvaTransferHandler());
+        registration.addRecipeTransferHandler(new AvaTransferHandler(), ExtremeCraftRecipeCategory.RECIPE_TYPE);
         registration.addRecipeTransferHandler(new StarlitSanctumTransferHandler(registration.getTransferHelper()),
                 StarlitSanctumCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new InfinityCompressorTransferHandler(registration.getTransferHelper()),
+                NeutroniumCRecipeCategory.RECIPE_TYPE);
     }
 
     @Override
@@ -107,12 +114,13 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 new ItemStack(ModBlocks.NIDAVELLIR_FORGE.get()),
                 NidavellirCategory.RECIPE_TYPE);
-//        registration.addRecipeCatalyst(
-//                new ItemStack(ModBlocks.EXTREME_AUTO_CRAFTER.get()),
-//                EXTREME_CRAFTING_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.EXTREME_AUTO_CRAFTER.get()),
+                ExtremeCraftRecipeCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(
                 new ItemStack(ModBlocks.STARLIT_SANCTUM.get()),
                 StarlitSanctumCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.INFINITY_COMPRESSOR.get()),
+                NeutroniumCRecipeCategory.RECIPE_TYPE);
 
         if (ModList.get().isLoaded("projecte") && ModBlocks.MAGIC_TABLE != null) {
             registration.addRecipeCatalyst(

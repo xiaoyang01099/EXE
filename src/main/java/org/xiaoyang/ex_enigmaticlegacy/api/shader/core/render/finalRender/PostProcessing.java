@@ -159,7 +159,7 @@ public class PostProcessing {
     }
 
     public void addParticle(ParticleEmitTask task) {
-        Exe.submitAkatTask(() -> particleSystem.emit(task));
+        Exe.submitTask(() -> particleSystem.emit(task));
         isRendering = true;
     }
 

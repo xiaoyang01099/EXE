@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "ex_enigmaticlegacy:block/cursed_spreader" }
+    "": {
+      "model": "ex_enigmaticlegacy:block/cursed_spreader"
+    }
   }
 }
